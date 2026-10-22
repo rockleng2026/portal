@@ -1,0 +1,436 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>发布商品</title>
+<style type="text/css">
+html, body, div, span,applet, object, iframe, h1, h2, h3,      
+
+h4, h5, h6, p,blockquote, pre, a, acronym,      
+
+address, big, cite, code,del, dfn, em, font, img, ins,      
+
+kbd, q, s, samp, small,strike, strong, sub, sup, tt,      
+
+var, dl, dt, dd,  ul,li, fieldset, form, label, legend,      
+
+table, caption, tbody,tfoot, thead, tr, th, td , input,div{      
+
+margin: 0;      
+
+padding: 0;      
+
+border: 0;      
+
+outline: 0;
+font-size:12px;      
+
+font-weight:inherit;      
+
+font-style: inherit;      
+
+font-size: 100%;      
+
+font-family:Arial, Helvetica, sans-serif,"宋体";    
+
+vertical-align:baselinebaseline;      
+
+}      
+
+:focus { outline:0;}      
+
+a, a:link, a:visited,a:hover, a:active{text-decoration:none; font-family:Arial, Helvetica, sans-serif,"宋体";}      
+
+table { border-collapse:separate;border-spacing: 0px;}      
+
+th, td {text-align: left;font-weight: normal;}      
+
+img, iframe {border:none; text-decoration:none;}      
+
+ul {list-style:none;}      
+
+input, textarea, select,button {font-size: 100%;font-family: inherit;}      
+
+select {margin:inherit;}      
+
+hr {margin: 0;padding:0;border: 0;color: #000;background-color: #000;height: 1px}
+body{
+	background:#f4f9fd;	
+	}
+.fa_boder{
+	width:1060px;
+	height:auto;
+	padding:20px;
+	overflow:hidden;
+	margin:10px auto;
+	font-size:12px;
+	border:solid 3px #97C4E3;
+	background:#f4f9fd;	
+	}
+.fa_width{
+	width:1060px;
+	height:auto;	
+	}
+.fa_overflow{
+	overflow:hidden;	
+	}
+.fa_wrt{
+	font-family:"微软雅黑";	
+	}			
+.fa_top{
+	height:30px;
+	line-height:30px;
+	font-size:14px;
+	color:#4498db;
+	line-height:30px;
+	border-bottom:solid 1px #98ccf5;		
+	}
+.fa_top span{
+	width:5px;
+	height:5px;
+	background:#069;
+	display:block;
+	float:left;	
+	position:inherit;
+	border-radius:3px;
+	margin-top:13px;
+	margin-right:5px;
+	}
+.fa_body{
+	margin:8px auto;	
+	}	
+.fa_body dl{
+	width:1060px;
+	height:auto;
+	overflow:hidden;
+	margin-bottom:8px;	
+	}
+.fa_body dt{
+	width:90px;
+	float:left;
+	height:25px;
+	line-height:25px;
+	color:#004779;	
+	}
+.fa_body dd{
+	float:left;
+	margin-left:5px;
+	width:960px;
+	height:auto;
+	overflow:hidden;
+	line-height:25px;
+	color:#004779;	
+	}
+.fa_body em{
+	color:#F00;
+	margin-left:3px;
+	margin-top:-8px;	
+	}	
+.fa_input{
+	border:solid 1px #5794bf;
+	height:23px;
+	line-height:23px;
+	width:220px;
+	border-radius:3px;
+	text-indent:5px;
+	background:#fff;
+	color:#000;	
+	}
+.fa_leit{
+	width:960px;
+	height:25px;
+	line-height:25px;
+	margin-bottom:10px;	
+	}
+.fa_buttom{
+	padding:3px 10px;
+	color:#000;
+	margin:0px 5px;
+	border:solid 1px #707070;
+	bakcground:#ececec;
+	border-radius:3px;	
+	}
+.fa_buttom:hover{
+	background-color:#09F;
+	color:#fff;	
+	}	
+.fa_leid{
+	width:960px;
+	height:280px;	
+	}
+.fa_leid ul li{
+	width:280px;
+	float:left;
+	height:280px;
+	overflow-y:auto;
+	margin-right:20px;
+	border:solid 1px #1d699d;
+	}
+.fa_lei_li{
+	width:260px;
+	margin-left:2px;
+	height:auto;
+	margin-top:8px;
+	border:none;
+	overflow:hidden;
+	}
+.fa_lei_li li{
+	width:260px;
+	border:none !important;
+	height:auto !important;	
+	overflow:hidden;
+	text-indent:5px;
+	margin-bottom:5px;	
+	}
+.fa_lei_li a{	
+	display:block;
+	color:#000;
+	width:255px;
+	border:solid 1px #f4f9fd;
+	font-size:12px;
+	}
+.fa_lei_li span{
+	margin-left:15px;	
+	}
+.fa_lei_li a:hover{
+	color:#0e6fb0;
+	border:solid 1px #7cb6dd;
+	}
+.fa_yes a{
+	color:#0e6fb0;
+	border:solid 1px #7cb6dd;	
+	}
+.fa_no{
+	color:#666; !important	
+	}
+.input_select{
+	border:solid 1px #5794bf;
+	height:23px;
+	line-height:23px;
+	width:220px;
+	border-radius:3px;
+	text-indent:0px;
+	margin:0px;
+	background:#fff;
+	color:#000;		
+	}
+.fa_body  label{
+	float:left;
+	height:25px;
+	line-height:25px;
+	color:#000;
+	margin-right:15px;	
+	}
+.fa_body input{
+	margin-right:5px;	
+	}
+.fa_picture{
+	width:960px;
+	height:auto;
+	overflow:hidden;
+	}
+.fa_picture li{
+	width:130px;
+	float:left;
+	margin:0px;
+	padding:0px;	
+	}
+.fa_picture_t{
+	width:100px;
+	height:100px;
+	border:solid 1px #004779;
+	background:#fff;	
+	}
+.fa_picture_d{
+	width:100px;
+	height:30px;
+	text-align:center;
+	margin-top:8px;	
+	}
+.input_texta{
+	width:880px;
+	padding:10px;
+	height:150px;
+	border:solid 1px #004779;
+	line-height:22px;
+	color:#000;
+	font-size:12px;	
+	}
+.fa_table{
+	width:900px;
+	border-left:solid 1px #88ccfc;
+	border-top:solid 1px #88ccfc;	
+	}
+.fa_table th{
+	text-align:center;
+	border-bottom:solid 1px #88ccfc;
+	border-right:solid 1px #88ccfc;
+	text-align:center;
+	height:26px;
+	line-height:26px;
+	background:#b9def9;
+	color:#105585;
+	font-size:12px;
+	font-weight:bold;	
+	}
+.fa_table td{
+	text-align:center;
+	border-bottom:solid 1px #88ccfc;
+	border-right:solid 1px #88ccfc;
+	min-height:30px;
+	height:26px;
+	padding:5px 0px;
+	}
+.fa_inputs{
+	border:solid 1px #5794bf;
+	height:23px;
+	line-height:23px;
+	width:130px;
+	text-align:center;
+	margin:0px 10px;
+	text-indent:5px;
+	background:#fff;
+	color:#000;		
+	}
+.fa_footer{
+	height:auto;
+	margin-top:15px;
+	overflow:hidden;
+	text-align:center;
+	margin-bottom:15px;
+	}
+.fa_buttoms{
+	padding:3px 15px;
+	background:#277fd0;
+	color:#fff;
+	font-family:"微软雅黑";
+	border:solid 1px #274969;	
+	}
+.fa_buttoms:hover{
+	background:#0e4f8c;	
+	}
+.fa_zong{
+	width:900px;
+	height:auto;
+	border:dotted 1px #2b77aa;
+	padding:10px 0px;
+	overflow:hidden;
+	}
+.fa_zong dl{
+	width:900px;
+	height:auto;
+	overflow:hidden;	
+	}	
+.fa_zong dt{
+	width:120px;
+	text-align:right;
+	float:left;
+	height:25px;
+	line-height:25px;	
+	}
+.fa_zong dd{
+	width:740px;
+	float:left;
+	height:auto;
+	overflow:hidden;
+	line-height:25px;	
+	}																																			
+</style>
+</head>
+
+<body>
+<div class="fa_boder">
+   <div class="fa_wrt fa_width fa_top"><span></span>发布商品</div>
+   <div class="fa_width fa_body">
+      <dl><dt>商品编码：</dt><dd><input type="text" value="SP-23113245" name="spbm" class="fa_input" /> <em>*</em></dd></dl>
+      <dl><dt>商品类目：</dt><dd>
+        <div class="fa_leit"><input type="text" value="请输入查询内容" class="fa_input" /> <input type="submit" value="查询" class="fa_buttom" /><em>*注：单机显示下一级，双击显示类目属性。</em></div>
+        <div class="fa_leid"><ul>
+          <li><ul class="fa_lei_li">
+            <li class="fa_yes"><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li class="fa_no">网店/网络服务/软件</li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>            
+          </ul></li>
+          <li><ul class="fa_lei_li">
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>            
+          </ul></li>
+          <li><ul class="fa_lei_li">
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>
+            <li><a href="#">网店/网络服务/软件<span>>></span></a></li>            
+          </ul></li>
+        </ul></div>
+      </dd></dl>
+      <dl><dt>商品名称：</dt><dd><input type="text" class="fa_input" /><em>*</em></dd></dl>
+      <dl><dt>商品规格：</dt><dd><input type="text" class="fa_input" /><em>*</em></dd></dl>
+      <dl><dt>商品单位：</dt><dd><input type="text" class="fa_input" /><em>*</em></dd></dl>
+      <dl><dt>商品价格：</dt><dd><input type="text" class="fa_input" /><em>*</em></dd></dl>
+      <dl><dt>商品数量：</dt><dd><input type="text" class="fa_input" /><em>*</em></dd></dl>
+      <dl><dt>录入人：</dt><dd><input type="text" class="fa_input" /><em>*</em></dd></dl>
+      <dl><dt>商品状态：</dt><dd><select class="input_select"><option>仓库中的商品</option><option>发布待审核</option></select><em>*</em></dd></dl>
+      <dl><dt>生成上架单：</dt><dd><label><input type="radio" value="是" name="sc" />是</label><label><input type="radio" value="否" name="sc" />否</label></dd></dl>
+      <dl><dt>创建时间：</dt><dd><input type="text" class="fa_input" /><em>*</em></dd></dl> 
+      <dl><dt>图片上传：</dt><dd><input type="file" class="fa_input"  /> <input type="submit" value="上传" class="fa_buttom" /> <em>*请使用500k以内的图片，800*800像素，可以在宝贝详情里面有宝贝放大功能。</em></dd></dl>
+      <dl><dt>商品图片：</dt><dd><ul class="fa_picture">
+        <li><div class="fa_picture_t">x</div><div class="fa_picture_d"><input type="button" class="fa_buttom" value="删除此图片" /> </div></li>
+        <li><div class="fa_picture_t">x</div><div class="fa_picture_d"><input type="button" class="fa_buttom" value="删除此图片" /> </div></li>
+        <li><div class="fa_picture_t">x</div><div class="fa_picture_d"><input type="button" class="fa_buttom" value="删除此图片" /> </div></li>
+        <li><div class="fa_picture_t">x</div><div class="fa_picture_d"><input type="button" class="fa_buttom" value="删除此图片" /> </div></li>
+        <li><div class="fa_picture_t">x</div><div class="fa_picture_d"><input type="button" class="fa_buttom" value="删除此图片" /> </div></li>
+      </ul></dd></dl>
+      <dl><dt>商品详情：</dt><dd><textarea class="input_texta">请在此处输入内容</textarea></dd></dl>
+      <dl><dt>商品特殊属性：</dt><dd>
+        <div class="fa_zong">
+          <dl><dt>服务器所在地：</dt><dd><select><option>北京</option><option>深圳</option><option>珠海</option></select><em>*请选择</em></dd></dl>
+          <dl><dt>服务器支持CPU个数：</dt><dd><select><option>北京</option><option>深圳</option><option>珠海</option></select><em>*请选择</em></dd></dl>
+          <dl><dt>服务器CPU类型：</dt><dd><select><option>北京</option><option>深圳</option><option>珠海</option></select><em>*请选择</em></dd></dl>
+          <dl><dt>服务器硬盘容量：</dt><dd><select><option>北京</option><option>深圳</option><option>珠海</option></select><em>*请选择</em></dd></dl>
+          <dl><dt>服务器所在地：</dt><dd><select><option>北京</option><option>深圳</option><option>珠海</option></select><em>*请选择</em></dd></dl>
+          <dl><dt>服务器所在地：</dt><dd><select><option>北京</option><option>深圳</option><option>珠海</option></select><em>*请选择</em></dd></dl>
+        </div>
+      </dd></dl>
+      <dl><dt>商品规格：</dt><dd><div class="fa_zong">  <dl><dt>计费周期：</dt><dd><label><input type="checkbox" /> 月付</label><label><input type="checkbox" /> 季付</label><label><input type="checkbox" /> 半年付</label></dd></dl>
+      <dl><dt>线路：</dt><dd><label><input type="checkbox" /> 电信</label><label><input type="checkbox" /> 联通</label><label><input type="checkbox" /> 移动</label></dd></dl></div></dd></dl>
+      <dl><dt>商品规则：</dt><dd><table class="fa_table">
+        <thead><tr>
+        <th width="15%">计费周期</th><th width="15%">线路</th><th width="15%">价格</th><th width="15%">数量</th><th width="40%">备注</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>11</td><td>22</td><td><input type="text" class="fa_inputs" /></td><td><input type="text" class="fa_inputs"  /></td><td>备注什么呢？</td></tr>
+           <tr><td>11</td><td>22</td><td><input type="text" class="fa_inputs" /></td><td><input type="text" class="fa_inputs"  /></td><td>备注什么呢？</td></tr>
+            <tr><td>11</td><td>22</td><td><input type="text" class="fa_inputs" /></td><td><input type="text" class="fa_inputs"  /></td><td>备注什么呢？</td></tr>
+        </tbody>
+      </table></dd></dl>      
+   </div>
+   <div class="fa_footer fa_width">
+     <input type="button" value="确定" class="fa_buttoms" style="margin-right:20px;" /> <input type="reset" value="重新填写" class="fa_buttoms" />
+   </div>
+</div>
+</body>
+</html>

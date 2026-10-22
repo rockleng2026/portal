@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>jquery hover滑过图片显示提示框提示信息|jsfoot 网页特效</title>
+<meta name="keywords" content="jquery hover滑过图片显示提示框提示信息"/>
+<meta name="description" content="jquery特效,js特效,flash特效,div+css教程,html5教程"/>
+<link href="810_files/style.css" type="text/css" rel="stylesheet"/>
+<script type="text/javascript" src="810_files/jquery.js"></script>
+</head>
+
+<body>
+<!--演示内容开始-->
+<script type="text/javascript">
+$(function(){
+	var a;   
+	$(".cover-list li").hover(function(){
+
+		if(a){
+			window.clearTimeout(a)
+		}
+		var c=this;
+		a=window.setTimeout(function(){
+			var g=$(".detail-frame",c).html();
+			var i=$("img",c).offset().left;
+			var h=$("img",c).offset().top;
+			if($(c).width()==150){
+				var j=160
+			}else{
+				var j=$("img",c).width()+10
+			}
+			$("body").append('<div class="detail-tip"></div>');
+			if($(c).hasClass("r-end")){
+				$(".detail-tip").html(g).append('<span class="arrow-right"></span>').css("left",i+j-492).css("top",h);
+			}else{
+				$(".detail-tip").html(g).append('<span class="arrow-left"></span>').css("left",i+j).css("top",h);
+			}
+			
+		},200)
+	},function(){
+		if(a){
+			window.clearTimeout(a)
+		}
+		$(".detail-tip").remove()
+	});
+});
+</script>
+
+<style type="text/css">
+*{margin:0;padding:0;list-style-type:none;}
+a,img{border:0;}
+body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
+
+/* cover-list */
+.cover-list{width:670px;margin:20px auto;}
+.cover-list li{float:left;margin:0 15px 15px 0;display:inline;width:152px;height:150px;overflow:hidden;}
+/* detail-frame */
+.detail-frame{display:none;}
+.arrow-left{position:absolute;width:6px;height:9px;top:30px;left:0;margin-left:-6px;background:url(images/arrow_gray.gif) no-repeat;}
+.arrow-right{position:absolute;width:6px;height:9px;top:30px;left:320px;background:url(images/arrow_gray.gif) no-repeat -6px 0;}
+.detail-tip{position:absolute;width:300px;background:#fff;border:1px solid #ddd;padding:10px;}
+.detail-tip h2{font-size:12px;line-height:18px;color:#3366cc;}
+.detail-tip p{margin:10px 0 0 0;font-size:14px;}
+</style>
+
+	<div class="cover-list"> 
+		<ul>
+			<li>
+				<div class="detail-frame">
+					<h2>flash导航条制作一个鼠标滑过动画特效flash导航条源码下载</h2>
+					<p>flash导航条制作一个鼠标滑过背景动画特效事件，含flash导航条源码免费下载。</p>
+				</div>
+				<a href="http://www.jsfoot.com/flash/menu/2012-03-04/380.html" target="_blank"><img alt="flash导航条制作一个鼠标滑过动画特效flash导航条源码下载" src="810_files/smalleee9787ef98ca7eb735c3399a1d284d5.jpg" height="150" width="150"></a>
+			</li>
+			<li>
+				<div class="detail-frame">
+					<h2>flash导航条制作二级菜单子菜单的flash导航条源码</h2>
+					<p>flash导航条制作一个鼠标滑过显示动画二级菜单栏目的flash导航条源码，flash导航条下载二级菜单源码。</p>
+				</div>
+				<a href="http://www.jsfoot.com/flash/menu/2012-03-04/382.html" target="_blank"><img alt="flash导航条制作二级菜单子菜单的flash导航条源码" src="810_files/smallee5978bd2682039e1d65aed3a8a02ab6.jpg" height="150" width="150"></a>
+			</li>
+			<li>
+				<div class="detail-frame">
+					<h2>div+css多张背景图片规范写法图片透明度显示</h2>
+					<p>div+css教程多张背景图片最规范的书写方法，当鼠标滑过A标签背景图片透明度显示。</p>
+				</div>
+				<a href="http://www.jsfoot.com/css3/layout/2012-08-07/730.html" target="_blank"><img alt="div+css布局限制图片最大宽度图片垂直居中(兼容IE6/IE7/IE8/FF)" src="810_files/smallda1a1ff8828722e330aa7e7d89e287db.jpg" height="150" width="150"></a>
+			</li>
+			<li class="r-end">
+				<div class="detail-frame">
+					<h2>div+css制作在IE6 上用absolute模拟fixed IE6浏览器定位层框不闪动</h2>
+					<p>用div+css制作浏览器浮动菜单定位层，IE6 浏览器上用absolute模拟fixed，浮动菜单定位层随页面滚动不闪动。只需用div+css就能控制浮动定位层，兼容IE6以上浏览器，是一个很不错的IE6浮动定位层解决方案。</p>
+				</div>
+				<a href="http://www.jsfoot.com/css3/layout/2011-10-13/215.html" target="_blank"><img alt="div+css制作在IE6 上用absolute模拟fixed IE6浏览器定位层框不闪动" src="810_files/smalla4c7c67dec86de131924d9e69e745e18.jpg" height="150" width="150"></a>
+			</li>
+			<li>
+				<div class="detail-frame">
+					<h2>jquery 图片特效用CSS3和HTML5制作仿动画头条报纸缩小到放大翻转图片展示</h2>
+					<p>今天做一个非常有趣的，并建立“纺纱报纸”带有古典场景，CSS3、HTML5、jQuery、canvas元素制作报纸缩小到放大翻转图片展示效果的过程，非常逼真。</p>
+				</div>
+				<a href="http://www.jsfoot.com/html5/tx/2011-08-13/120.html" target="_blank"><img alt="jquery 图片特效用CSS3和HTML5制作仿动画头条报纸缩小到放大翻转图片展示" src="810_files/small323ce4b13f72648e096bd1a86cba762a.jpg" height="150" width="150"></a>
+			</li>
+			<li>
+				<div class="detail-frame">
+					<h2>jquery 幻灯片切换应用一个HTML5的幻灯片</h2>
+					<p>这一次，我们正在与新的canvas元素和jQuery，这是完全在旧浏览器的功能逐步增强，以及HTML5的幻灯片。</p>
+				</div>
+				<a href="http://www.jsfoot.com/html5/tx/2011-02-21/42.html" target="_blank"><img alt="jquery 幻灯片切换应用一个HTML5的幻灯片" src="810_files/small5be1afce8d42e773d6eceba386d7189e.jpg" height="150" width="150"></a>
+			</li>
+			<li>
+				<div class="detail-frame">
+					<h2>jquery html5 canvas 图表插件获取表格数据值生成走势图</h2>
+					<p>jquery html5 canvas 图表插件自动获取表格数据值生成走势图,支持多种排列走势图方式。html5 canvas,html5下载。</p>
+				</div>
+				<a href="http://www.jsfoot.com/html5/tb/2012-03-21/470.html" target="_blank"><img alt="jquery html5 canvas 图表插件获取表格数据值生成走势图" src="810_files/small79a68c9cb9b4b0963961be6db7ed646a.jpg" height="150" width="150"></a>
+			</li>
+			<li class="r-end">
+				<div class="detail-frame">
+					<h2>jquery ui用户体验特效使用jQuery和CSS3的七彩滑块调节数据大小</h2>
+					<p>在本教程中我们使用jQuery和CSS3中带来新的变革，创造了一个三维动态滑块效果的功能。</p>
+				</div>
+				<a href="http://www.jsfoot.com/jquery/other/2011-02-22/50.html" target="_blank"><img alt="jquery ui用户体验特效使用jQuery和CSS3的七彩滑块调节数据大小" src="810_files/small523df9bab0cd4dab9051fb83c24db30f.jpg" height="150" width="150"></a>
+			</li>
+		</ul>
+	</div>	
+<!--演示内容结束-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--百度流量统计代码 只能对本网站流量统计 和特效无关，请不好拷贝-->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fc082905b96decbbbf721b0f5daf8b225' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="810_files/h.js" type="text/javascript"></script>
+
+</body></html>

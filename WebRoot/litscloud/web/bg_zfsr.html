@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（支付输入错误）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv">
+   </div>
+       <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" style="background-image:url(images/bg_01.png); color:#ffffff;">我的<br />账户</a></li>
+                <li><a href="bg_indent.html">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_data.html" >个人资料</a></li>
+                    <li><a href="bg_pay.html" style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">在线支付</a></li>
+                    <li><a href="bg_password.html">修改密码</a></li>
+                    <li><a href="bg_zhaopass.html">忘记密码</a></li>
+                    <li><a href="bg_wycz.html">我要充值</a></li>
+                    <li><a href="bg_zhxx.html">账户信息</a></li>
+                    <li><a href="bg_czjl.html">充值记录</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="bg_zf">
+              <div class="bg_zft"><span>您好，欢迎使用支付宝付款！<a href="#">支付遇到问题？</a></span><img src="images/zf_01.gif" /></div>
+              <div class="bg_zfm">
+                 <div class="bg_zfmt"></div>
+                 <div class="bg_zfmc">
+                   <div class="bg_zfmcl">
+                    <div class="bg_zfmct"><img src="images/zf_08.gif" />您正在使用即时到帐交易<img src="images/zf_09.gif" /></div>
+                    <div class="bg_zfmcc">立云预付款录款</div>
+                    <div class="bg_zfmcd">商品描述：万网预付款<br />
+收款方：深圳立云科技有限公司<br />
+交易金额：2000.00元<br />
+交易类型： <img src="images/zf_08.gif" />  即时到帐交易</div></div>
+ <div class="bg_zfmcr">￥<span>2000.00</span>元</div>
+                 </div>
+                 <div class="bg_zfmd"></div>
+              </div> 
+              <div class="bg_zfu">
+                 <div class="bg_zful">
+                    <div class="bg_zful_t"></div>
+                    <div class="bg_zful_c">
+                       <div class="bg_zful_ct">我有支付宝账户，轻松付款：</div>
+                       <div class="bg_zful_cc">
+                          <div class="bg_zful_cct">
+                            <div class="bg_zful_cctl">支付宝账户：</div>
+                            <div class="bg_zful_cctr">
+                                <div class="bg_zful_cctrt"><input type="text" class="bg_yxhm" name="bg_yxhm" value="邮箱地址或手机号码" /> <a href="#">忘记账户名</a></div>
+                                <div class="bg_zful_cctrd"><img src="images/bg_39.jpg" /> 请输入正确的Email地址或11位手机号码。</div>
+                            </div>
+                          </div>
+                          <div class="bg_zful_cct">
+                            <div class="bg_zful_cctl">支付密码：</div>
+                            <div class="bg_zful_cctr">
+                                <div class="bg_zful_cctrt"><input type="password" class="bg_yxhm" name="bg_yxhm" value="" /> <a href="#">忘记密码？</a></div>
+                                <div class="bg_zful_cctrd"><img src="images/bg_39.jpg" /> 请填写支付密码。</div>
+                            </div>
+                          </div>
+                          <div class="bg_zful_cct">
+                            <div class="bg_zful_cctl">验证码：</div>
+                            <div class="bg_zful_cctr">
+                                <div class="bg_zful_cctrt"><input type="text" class="bg_yzms" name="bg_yzms" value="" /> <img src="images/bg_20.png" style="float:left; margin-right:5px;" /> <a href="#">看不清，换一张？</a></div>
+                                <div class="bg_zful_cctrd"><img src="images/bg_39.jpg" /> 请填写验证码。</div>
+                            </div>
+                          </div>
+                       </div>
+                       <div class="bg_zful_cd"><a href="#">下一步</a></div>
+                    </div>
+                    <div class="bg_zful_d"></div>
+                 </div>
+                 
+                 <div class="bg_zful" style="float:left; margin-left:5px;">
+                    <div class="bg_zful_t"></div>
+                    <div class="bg_zful_c">
+                       <div class="bg_zful_ct">我没有支付宝账户，也能付款：</div>
+                       <div class="bg_zful_cm">支持国内众多主流银行，有卡就能付！</div>
+                       <div class="bg_zful_cc">
+                          <div class="bg_zful_cct">
+                            <div class="bg_zful_cctl">邮箱或手机号：</div>
+                            <div class="bg_zful_cctr">
+                                <div class="bg_zful_cctrt"><input type="text" class="bg_yxhm" name="bg_yxhm" value="邮箱地址或手机号码" /> <a href="#">忘记账户名</a></div>
+                                <div class="bg_zful_cctrd"><img src="images/bg_39.jpg" /> 请填写邮箱或手机号。</div>
+                            </div>
+                          </div>
+                          <div class="bg_zful_cct">
+                            <div class="bg_zful_cctl">验证码：</div>
+                            <div class="bg_zful_cctr">
+                                <div class="bg_zful_cctrt"><input type="text" class="bg_yzms" name="bg_yzms" value="" /> <img src="images/bg_20.png" style="float:left; margin-right:5px;" /> <a href="#">看不清，换一张？</a></div>
+                                <div class="bg_zful_cctrd"><img src="images/bg_39.jpg" /> 请填写验证码。</div>
+                            </div>
+                          </div>
+                       </div>
+                       <div class="bg_zful_cd"><a href="#">下一步</a></div>
+                    </div>
+                    <div class="bg_zful_d"></div>
+                 </div>
+                 
+                 
+                 
+              </div>               
+          </div>      
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+ <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（找回密码）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv">
+   </div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" style="background-image:url(images/bg_01.png); color:#ffffff;">我的<br />账户</a></li>
+                <li><a href="bg_indent.html">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_data.html" >个人资料</a></li>
+                    <li><a href="bg_pay.html">在线支付</a></li>
+                    <li><a href="bg_password.html">修改密码</a></li>
+                    <li><a href="bg_zhaopass.html" style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">忘记密码</a></li>
+                    <li><a href="bg_wycz.html">我要充值</a></li>
+                    <li><a href="bg_zhxx.html">账户信息</a></li>
+                    <li><a href="bg_czjl.html">充值记录</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="bg_d">
+             <div class="bg_dt"></div>
+             <div class="bg_dc">
+                <div class="bg_dq">
+                    <div class="bg_dqt">找回密码</div>
+                    <div class="bg_dqc">
+                      <div class="bg_dqcl"></div>
+                      <div class="bg_dqcr"></div>
+                    </div>
+                    <div class="bg_zhaopass">
+                      <div class="bg_zhaopass_t"><img src="images/bg_21.png" /></div>
+                      <div class="bg_zhaopass_c">
+                         <div class="bg_zhaopass_cl">账号：</div>
+                         <div class="bg_zhaopass_cr"><input type="text" name="data_name" class="data_name" value="44556677@qq.com" /> &nbsp; <img src="images/bg_18.png" /></div>
+                      </div>
+                     <div class="bg_zhaopass_c">
+                         <div class="bg_zhaopass_cl">验证码：</div>
+                         <div class="bg_zhaopass_cm"><input type="text" name="data_yzm" class="data_yzm"/></div>
+                         <div class="bg_zhaopass_cc"><a href="#"><img src="images/bg_20.png" /></a></div>
+                         <div class="bg_zhaopass_ch">看不清？<a href="#">换一个</a></div>
+                         <div class="bg_zhaopass_cs"><img src="images/bg_19.png" />&nbsp;请输入验证码</div>
+                      </div> 
+                    </div>
+                    <div class="bg_an">
+                        <div class="bg_anc"><a href="bg_zhaopass03.html">下一步</a></div>
+                    </div>
+                </div>  
+                
+             </div>
+             <div class="bg_dd"></div>
+          </div>      
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+ <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

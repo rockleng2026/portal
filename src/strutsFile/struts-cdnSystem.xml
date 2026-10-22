@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    
+   <struts>
+    <!-- CDN操作package -->
+   <package name="PackageCDNSystem" extends="struts-default">
+	   <action name="*CdnSystemAction" class="CdnSystemAction" method="{1}">
+	   	<result name="cdnIndex">/cdnSystem/cdnIndex.jsp</result>
+	   	<result name="urlList">/cdnSystem/cdnUrlRefresh.jsp</result>
+	   	<result name="dirList">/cdnSystem/cdnDirRefresh.jsp</result>
+	   	<result name="updateUrl" type="redirect">selectUrlCdnSystemAction.Action</result>
+	   	<result name="addurl" type="redirect">selectUrlCdnSystemAction.Action</result>
+	   	<result name="dirUrl" type="redirect">selectDirCdnSystemAction.Action</result>
+	   	<result name="addDir" type="redirect">selectDirCdnSystemAction.Action</result>
+	   	<result name="no">/No.jsp</result>
+	   </action>
+	   
+	  
+   </package>
+   </struts>

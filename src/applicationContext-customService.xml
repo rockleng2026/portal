@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 	 	
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	
+	<bean id="MalfunctionDeclarDaoImpl" class="com.fuao.fajxc.dao.impl.customService.MalfunctionDeclarDaoImpl" parent="baseDao"/>
+	<bean id="ServerMonitordao" class="com.fuao.fajxc.dao.impl.customService.ServerMonitoringDaoImpl" parent="baseDao"/>
+	<bean id="ClientReturnOrderDao" class="com.fuao.fajxc.dao.impl.customService.ClientReturnOrderDaoImpl" parent="baseDao"/>
+	<bean id="customerServicedao" class="com.fuao.fajxc.dao.impl.customService.CustomerDaoImpl" parent="baseDao"/>
+	<bean id="sendmesDao" class="com.fuao.fajxc.dao.impl.customService.SendRefubishDaoImpl" parent="baseDao"></bean>
+    <bean id="prodect_OrderDao" class="com.fuao.fajxc.product_manageDaoImpl.Product_orderDaoImpl" parent="baseDao"></bean>
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+
+		<!-- 故障申报 -->
+		<bean id="MalfunctionDeclarBussinessImpl" class="com.fuao.fajxc.bussiness.impl.customService.MalfunctionDeclarBussinessImpl">
+		<property name="mddao" ref="MalfunctionDeclarDaoImpl"/>
+		<!-- <property name="srbiz" ref="sendmes"/> -->
+		</bean>
+		<!-- 服务器监控记录 -->
+		<bean id="ServerMonitorviz" class="com.fuao.fajxc.bussiness.impl.customService.ServerMonitoringBussinessImpl">
+		<property name="smdao" ref="ServerMonitordao"/>
+		</bean>
+		
+		<!-- 客户退单 -->
+		<bean id="ClientReturnOrderBussinessBiz" class="com.fuao.fajxc.bussiness.impl.customService.ClientReturnOrderBussinessImpl">
+			<property name="clientReturnOrderDao" ref="ClientReturnOrderDao"></property>
+		</bean>
+		
+		<bean id="customservicebiz" class="com.fuao.fajxc.bussiness.impl.customService.CustomerServiceBussinessImpl">
+		<property name="csdao" ref="customerServicedao"/>
+		</bean>
+		
+		<!-- 消息提醒 -->
+		<bean id="sendmes" class="com.fuao.fajxc.bussiness.impl.customService.SendRefurbishBussinessImpl">
+		<property name="sendDao" ref="sendmesDao"/>
+		</bean>
+	 	 
+	 	<bean id="prodect_OrderService" class="com.fuao.fajxc.product_manageServiceImpl.Product_orderServiceImpl" >
+		<property name="prodect_OrderDao" ref="prodect_OrderDao"></property>
+		</bean>
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 故障申报Action注入 -->
+		<bean id="MalfunctionDeclareAction" class="com.fuao.fajxc.action.customService.MalfunctionDeclareAction">
+		<property name="mdbiz" ref="MalfunctionDeclarBussinessImpl"></property>
+		<property name="customerBussiness" ref="customerBussiness"></property>
+		<property name="messager" ref="MessageremindBiz"></property>
+		<property name="general" ref="Genral"></property>
+		</bean>
+		
+		
+		<!-- 故障申报 -->
+		<bean id="malmpl" class="com.fuao.fajxc.bussiness.impl.customService.MalfunctionDeclarBussinessImpl">
+		<property name="mddao" ref="MalfunctionDeclarDaoImpl"/>
+		</bean>
+		
+		<!-- 新portal系统的故障action -->
+		<bean id="FaultAction" class="com.fuao.fajxc.action.customService.FaultAction">
+		  <property name="maldao" ref="malmpl"></property>
+		  <property name="pdao" ref="prodect_OrderDao"></property>
+		  <property name="customerBussiness" ref="customerBussiness"></property>
+		  <property name="messager" ref="MessageremindBiz"></property>
+		  <property name="general" ref="Genral"></property>
+		</bean>
+		
+		<!-- 故障处理Action注入  -->
+        <bean id="MalfunctionDisposalAction" class="com.fuao.fajxc.action.customService.MalfunctionDisposalAction">
+        </bean> 
+        
+        <!-- 服务器监控Action注入 -->
+         <bean id="ServerMonitoringAction" class="com.fuao.fajxc.action.customService.ServerMonitoringAction">
+         <property name="smbiz" ref="ServerMonitorviz"></property>
+        </bean> 
+        
+        <!-- 客户退单Action -->
+        <bean id="ClientReturnOrderAction" class="com.fuao.fajxc.action.customService.ClientReturnOrderAction">
+        	<property name="clientReturnOrderBussinessImpl" ref="ClientReturnOrderBussinessBiz"></property>
+        	<property name="audBussiness" ref="auditingBussiness"></property>
+        </bean>
+        
+        <bean id="CustomerServiceAction" class="com.fuao.fajxc.action.customService.CustomServiceAction">
+        	<property name="csbiz" ref="customservicebiz"></property>
+        	<property name="salsBuness" ref="saleBussiness"></property>
+        	<property name="product_CommentService" ref="prodect_OrderService"></property>
+        </bean>
+        <bean id="ClientCustomerServiceAction" class="com.fuao.fajxc.action.customService.ClientCustomServiceAction">
+        	<property name="csbiz" ref="customservicebiz"></property>
+        	<property name="salsBuness" ref="saleBussiness"></property>
+        	<property name="product_CommentService" ref="prodect_OrderService"></property>
+        </bean>
+        
+        
+        <!-- 消息提醒 -->
+        <bean id="sendmesAction" class="com.fuao.fajxc.action.customService.SendRefurbishAction">
+        	<property name="sendbus" ref="sendmes"></property>
+        	<property name="messageBussiness" ref="messageBu"></property>
+        </bean>
+        
+        <bean id="CategoryAction" class="test.CategoryAction">
+        	<property name="impl" ref="customservicebiz"></property>
+        </bean>
+	 </beans>

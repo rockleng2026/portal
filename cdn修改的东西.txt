@@ -1,0 +1,95 @@
+修改的实体类
+	1.Cache    字段 private Orderdata orderdata 改为 private CDNsaleOrder CDNsaleorder 对应的是 CDNsaleorder Id
+		
+		配置文件 
+			原文件：
+			 <many-to-one name="orderdata" class="com.fuao.fajxc.vo.Orderdata" fetch="select">
+            			<column name="orderdataid">
+            			</column>
+        		</many-to-one>
+			
+			修改后：
+			<many-to-one name="CDNsaleorder" class="com.fuao.fajxc.vo.CDNsaleOrder" fetch="select">
+	            		<column name="orderdataid">
+        		    </column>
+			
+			
+	2.CDNip    字段 private Orderdata orderdata 改为 private CDNsaleOrder CDNsaleorder 对应的是 CDNsaleorder Id 
+
+		配置文件 
+			原文件：
+			 <many-to-one name="orderdata" class="com.fuao.fajxc.vo.Orderdata" fetch="select">
+            			<column name="orderdataid">
+            			</column>
+        		</many-to-one>
+			
+			修改后： 
+			<many-to-one name="CDNsaleorder" class="com.fuao.fajxc.vo.CDNsaleOrder" fetch="select">
+	            		<column name="orderdataid">
+        		    </column>
+
+	3.District    字段 private Orderdata orderdata 改为 private CDNsaleOrder CDNsaleorder 对应的是 CDNsaleorder Id 
+
+		配置文件 
+			原文件：
+			 <many-to-one name="orderdata" class="com.fuao.fajxc.vo.Orderdata" fetch="select">
+            			<column name="orderdataid">
+            			</column>
+        		</many-to-one>
+			
+			修改后： 
+			<many-to-one name="CDNsaleorder" class="com.fuao.fajxc.vo.CDNsaleOrder" fetch="select">
+	            		<column name="orderdataid">
+        		    </column>
+
+	4.SetMealCentert    字段 private Orderdata orderdata 改为 private CDNsaleOrder CDNsaleorder 对应的是 CDNsaleorder Id 
+
+		配置文件  
+			原文件：
+			 <many-to-one name="orderdata" class="com.fuao.fajxc.vo.Orderdata" fetch="select">
+            			<column name="orderdataid">
+            			</column>
+        		</many-to-one>
+			
+			修改后：
+			<many-to-one name="CDNsaleorder" class="com.fuao.fajxc.vo.CDNsaleOrder" fetch="select">
+	            		<column name="orderdataid">
+        		    </column>
+
+	5.setmeal.hbm.xml
+		<property name="describe" type="java.lang.String">
+            		<column name="describe" length="200">
+            		</column>
+      		</property> 
+				改为
+
+		<property name="describe" type="java.lang.String">
+            		<column name="describe1" length="200">
+           		</column>
+        	</property>
+		原因：因为describe在数据库是关键字执行查询，修改等报错所以后面加个1  对应的数据库setmeal也更改
+
+
+	6.有些jsp页面的修改，与实体类的字段名字不一样post请求提交试题会报错
+
+		如
+			原来代码：
+				<input type="hidden" id="delFlag" name="delFlag" value="0" />
+			实体对应的字段名称是delflag
+
+			修改为
+			<input type="hidden" id="delflag" name="delflag" value="0" />
+		
+
+
+
+
+
+
+
+
+
+
+
+
+

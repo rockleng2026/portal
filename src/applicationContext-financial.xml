@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	 
+	
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 收款单dao注入 -->
+		<bean id="chargeDao" class="com.fuao.fajxc.dao.impl.finance.ChargeDaoImpl" parent="baseDao">
+		</bean>
+		<!-- 付款单dao注入 -->
+        <bean id="payDao" class="com.fuao.fajxc.dao.impl.finance.PayDaoImpl" parent="baseDao">
+		</bean>
+		<bean id="auditingDao" class="com.fuao.fajxc.dao.impl.system.AuditingOrderDaoImpl" parent="baseDao"></bean>
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+		<!--收款单Bussiness注入 -->
+		<bean id="chargeBussiness" class="com.fuao.fajxc.bussiness.impl.finance.ChargeBussinessImpl" >
+			<property name="chargeDao" ref="chargeDao"></property>
+		</bean>
+		<!--付款单Bussiness注入 -->
+		<bean id="payBussiness" class="com.fuao.fajxc.bussiness.impl.finance.PayBussinessImpl" >
+			<property name="paydao" ref="payDao"></property>
+		</bean>
+		<bean id="auditingBussiness" class="com.fuao.fajxc.bussiness.system.impl.AuditingBussinessImpl">
+		<property name="audd" ref="auditingDao"></property>
+		</bean>
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 收款单Action注入 -->
+		<bean id="ChargeAction" class="com.fuao.fajxc.action.finance.ChargeAction">
+			<property name="chargeBussiness" ref="chargeBussiness"></property>
+			<property name="empbiz" ref="empBussiness"></property>
+			<property name="audBussiness" ref="auditingBussiness"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		    <property name="docuBussiness" ref="DocBussiness"></property>
+		    <property name="saledBussis" ref="saleBussiness"></property>
+		</bean>
+		<!-- 付款单Action注入 -->
+		<bean id="payAction" class="com.fuao.fajxc.action.finance.PayAction">
+			
+			<property name="audBussiness" ref="auditingBussiness"></property>
+			<property name="paybussiness" ref="payBussiness"></property>
+			<property name="empBussiness" ref="empBussiness"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+			
+		</bean>
+	 </beans>

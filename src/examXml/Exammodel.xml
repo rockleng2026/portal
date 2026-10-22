@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    
+    <!-- 试卷的struts -->
+    <struts>
+       <package name="examPapers" extends="struts-default">
+       		<action name="*ModelAction" class="modelAction" method="{1}">
+   				<result name="update">UpdateModel.jsp</result>
+   				<result name="add">AddModel.jsp</result>
+   				<result name="modelMain">ModelHomepage.jsp</result>
+  			 </action>
+       </package>
+    </struts>

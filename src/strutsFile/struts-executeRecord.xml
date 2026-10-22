@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+
+	<package name="ExecuteRecordPackage" extends="struts-default">
+		<!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+				<interceptor-ref name="system">
+					<param name="name">SystemAction拦截</param>
+					<!-- 指定要拦截的方法名 -->
+					<param name="includeMethods">add,update,goDetail,goMore</param>
+				</interceptor-ref>
+				<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- 执行记录相关action -->
+		<action name="*Record" class="ExecuteRecordAction" method="{1}">
+			<!-- 点击动态没有数据时 -->
+			<result name="noData">/executeRecord/noData.jsp</result>
+			<!-- 更多列表显示全部动态 -->
+			<result name="moreList">/executeRecord/executeRecordList.jsp</result>
+			
+			<!-- 部门信息 -->
+			<result name="Department">/Basic/Department/DepartmentMessage.jsp</result>
+			<!-- 仓库信息 -->
+			<result name="Depot">/Basic/depot/DepotMessage.jsp</result>
+			<!-- 供应商信息 -->
+			<result name="Supplier">/Basic/supplier/SupplierMessage.jsp</result>
+			<!-- 日程计划 -->
+			<result name="Scheduleplan">/schedule/scheduleList.jsp</result>
+			<!-- 员工信息 -->
+			<result name="Employee">/Basic/employee/EmployeeMessage.jsp</result>
+			<!-- 登陆信息 -->
+			<result name="Users">/executeRecord/userLoginRecord.jsp</result>
+			<!-- 客户信息 -->
+			<result name="Customer">/Basic/customer/customerList.jsp</result>
+			<!-- 销售订单 -->
+			<result name="SaleOrder">/sale/saleorder/saleroderList.jsp</result>
+			<!-- 请购单 -->
+			<result name="ApplyBuy">/purchasing/requisitioning/rList.jsp</result>
+			<!-- 采购订单 -->
+			<result name="PurOrder">/purchasing/purOrder/purchaseOrder.jsp</result>
+			<!-- 合同 -->
+			<result name="Contract">/contract/contractList.jsp</result>
+			<!-- 到货单 -->
+			<result name="ToOrder">/purchasing/toOrder/toOrderList.jsp</result>
+			<!-- 采购退货单 -->
+			<result name="ReturnOrder">/purchasing/returnOrder/purReturnOrderList.jsp</result>
+			<!-- 收款单 -->
+			<result name="Charge">/Financial/charge/chargeList.jsp</result>
+			<!-- 付款单 -->
+			<result name="PaymentLog">/Financial/pay/PayDoc.jsp</result>
+			<!-- 入库单 -->
+			<result name="Storage">/stockpile/warehousing/warehousingInfo.jsp</result>
+			<!-- 出库单 -->
+			<result name="Outbound">/stockpile/outbound/outboundInfo.jsp</result>
+			<!-- 盘点单 -->
+			<result name="Stat">/stockpile/Stat/stat.jsp</result>
+			<!-- 报损单 -->
+			<result name="Ruin">/stockpile/TheDamageTheGood/query.jsp</result>
+			<!-- 商品信息 -->
+			<result name="Property">/commodity/CommodityList.jsp</result>
+			<!-- 商品类型 -->
+			<result name="CommodityTpye">/commodity/commodityTypeList.jsp</result>
+			<!-- 接受/完成的任务 -->
+			<result name="MissionEmp">/mission/myrecevmission.jsp</result>
+			<!-- 发布的任务 -->
+			<result name="Mission">/mission/mybuildmission.jsp</result>
+			<!-- 客户跟进记录 -->
+			<result name="IntentFollowUp">/Basic/customer/followupList.jsp</result>
+			<!-- 客户试用记录 -->
+			<result name="CustomerTryout">/Basic/customer/customerTryoutList.jsp</result>
+			<!-- 单据模板信息 -->
+			<result name="FormTemp">/form/formtemplist.jsp</result>
+			<!-- 单据详细信息 -->
+			<result name="FormDetail">/form/formdetaillist.jsp</result>
+			<!-- 服务器上架单-->
+			<result name="UpServer">/Server/upserver/upserverInfo.jsp</result>
+			<!-- 服务器下架单-->
+			<result name="DownServer">/Server/downserver/downserverInfo.jsp</result>
+			<!-- 客户试用记录 -->
+			<result name="WorkLog">/workLogs/otherWorklogList.jsp</result>
+			<!-- CDN套餐 -->
+			<result name="SetMeal">/cdn/setmealList.jsp</result>
+			<!-- CDN套餐属性 -->
+			<result name="SetMealProperty">/cdn/setMealPropertyList.jsp</result>
+			<!-- CDN域名类型 -->
+			<result name="RealmType">/cdn/realmTypeList.jsp</result>
+			<!-- 暂时未用 -->
+			<result name="toorder" type="redirect">goListworknotepad.do?planStyle=0</result>
+
+		</action>
+		
+		<action name="*Todo" class="TodoAction"  method="{1}">
+			<result name="SaleOrder">/todo/saleorderTodo.jsp</result>
+
+			<!-- 故障单 -->
+			<result name ="ConkOut">/todo/conkoutTodo.jsp</result>
+			
+			<!-- 搜索功能列表 -->
+			<result name ="functionlist">/todo/functionSearch.jsp</result>
+			
+			<!-- 合同 -->
+			<result name ="Contract">/todo/contractTodo.jsp</result>
+			
+			<!-- 下架单 -->
+			<result name ="UpServer">/todo/upServerTodo.jsp</result>
+		</action>
+	
+	</package>
+
+</struts>

@@ -1,0 +1,504 @@
+<%@ page language="java" import="java.util.*" pageEncoding="GBK"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<base href="<%=basePath%>" />
+<title>立云-立于云之端【立云平台为客户提供：服务器租用,服务器托管,云服务器,云主机,CDN，电信,联通,移动,BGP,双线带宽供应等互联网应用】</title>
+<meta name="keywords" content="服务器租用,服务器托管,云服务器,云主机,主机,主机托管,主机租用,双线服务器,双线机房,BGP机房,电信机房,联通机房,BGP服务器,电信服务器租用,联通服务器租用" />
+<meta name="description" content="立云平台为客户提供中国顶级的服务器租用，服务器托管，云服务器，云主机，BPG服务器，BGP带宽，电信带宽联通带宽，CDN，虚拟空间，vps，带宽租用服务商。10年品质保障；官方网站www.litscloud.com" />
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />    
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+<meta http-equiv="description" content="This is my page" />
+<link href="tuan/css/css.css" rel="stylesheet" type="text/css" />
+<script type='text/javascript' src='tuan/js/jquery-1.7.2.min.js'></script>
+<script type='text/javascript' src='tuan/js/tab.js'></script>
+<!-- 解决IE6不缓存背景图片的问题-->
+<!--[if IE 6]>
+<script type="text/javascript">
+document.execCommand("BackgroundImageCache", false, true);
+</script>
+<![endif]-->
+<script type="text/javascript">
+ function goumai(formid){
+ 	//alert(formid);
+ 	$("#"+formid).submit();
+ }
+</script>
+</head>
+
+<body>
+<div class="top">
+	<div class="logo"><a href="#"><img src="litscloud/images/LOGO.png" /></a></div>
+    <div class="nav">
+    	<ul>
+        	<li><a href="#"  class="menuon" id="a1" onmouseover="slide('a','b','1');" >HOME</a></li>
+            <li class="tg"><a href="tuan/" class="menuno tuangou" id="a2" onmouseover="slide('a','b','2');">团购</a></li>
+            <li><a href="litscloud/web/LitsCloudServer.html" class="menuno" id="a3" onmouseover="slide('a','b','3');" >云服务</a></li>
+            <li><a href="litscloud/web/apply.html" class="menuno" id="a4" onmouseover="slide('a','b','4');" >云应用</a></li>
+            <li><a href="litscloud/web/about.html" class="menuno" id="a5" onmouseover="slide('a','b','5');" >关于我们</a></li>
+            <li><a href="litscloud/ucenter/u_login.jsp" class="menuno" id="a6" onmouseover="slide('a','b','6');" >会员中心</a></li>
+        </ul>
+    </div>
+</div>
+<div class="top2">
+	<div class="phone"><a href="#"></a></div>
+    <div class="nav2">
+    <c:if test="${customer.customerName != null}">
+    <div class="dison" id="b" style="display: block">
+    	<ul>
+         
+        <li>欢迎你：</li>
+        <li><a href="litscloud/ucenter/u_zhanghu.jsp">${customer.customerName}</a></li>
+        <li>登陆IP：</li>
+        <li>${customer.localip}</li>
+        <li><a href="javascript:void(0);" onclick="logout('<%= basePath%>')" title="点我退出登陆">登出</a></li>
+        </ul>
+       
+     </div> 
+     </c:if>
+    <div class="dison" id="b1">
+    	<ul>
+        <!-- 
+        <li><a href="#">云存储平台</a></li>
+        <li><a href="#">视频云平台</a></li>
+        <li><a href="#">协同管理云</a></li>
+        <li><a href="#">企业私有云</a></li>
+        <li><a href="#">政府单位门户</a></li>
+        </ul>
+         -->
+     </div> 
+         <div class="disno" id="b2">
+    	<ul>
+    	<!-- 
+        <li><a href="#">云存储平台2</a></li>
+        <li><a href="#">视频云平台2</a></li>
+        <li><a href="#">协同管理云2</a></li>
+        <li><a href="#">企业私有云2</a></li>
+        <li><a href="#">政府单位门户2</a></li>
+        -->
+        </ul>
+     </div>
+       <div class="disno" id="b3">
+    	<ul>
+    	<!-- 
+        <li><a href="#">云存储平台3</a></li>
+        <li><a href="#">视频云平台3</a></li>
+        <li><a href="#">协同管理云3</a></li>
+        <li><a href="#">企业私有云3</a></li>
+        <li><a href="#">政府单位门户3</a></li>
+        -->
+        </ul>
+     </div>  
+       <div class="disno" id="b4">
+    	<ul>
+    	<!-- 
+        <li><a href="#">云存储平台4</a></li>
+        <li><a href="#">视频云平台4</a></li>
+        <li><a href="#">协同管理云4</a></li>
+        <li><a href="#">企业私有云4</a></li>
+        <li><a href="#">政府单位门户4</a></li>
+        -->
+        </ul>
+     </div>  
+       <div class="disno" id="b5">
+    	<ul>
+    	<!-- 
+        <li><a href="#">云存储平台5</a></li>
+        <li><a href="#">视频云平台5</a></li>
+        <li><a href="#">协同管理云5</a></li>
+        <li><a href="#">企业私有云5</a></li>
+        <li><a href="#">政府单位门户5</a></li>
+        -->
+        </ul>
+     </div>    
+       <div class="disno" id="b6">
+    	<ul>
+    	<!-- 
+        <li><a href="#">云存储平台6</a></li>
+        <li><a href="#">视频云平台6</a></li>
+        <li><a href="#">协同管理云6</a></li>
+        <li><a href="#">企业私有云6</a></li>
+        <li><a href="#">政府单位门户6</a></li>
+        -->
+        </ul>
+     </div>   
+         
+    </div>
+</div>
+
+<div style=" overflow:hidden;width:960px;height:300px; position:relative; margin:0 auto">
+<div id="slideshow">
+  <div class="img"> <span><a href="#" target="_blank"><img src="tuan/img/Banner01.png" /></a><a href="#" target="_blank"><img src="tuan/img/Banner02.png" /></a><a href="#" target="_blank"><img src="tuan/img/Banner03.png" /></a></span>
+    <div class="paging pattern"></div>
+    <div class="paging subpattern"></div>
+  </div>
+</div>
+</div>
+<script type='text/javascript' src='tuan/js/jquery.slider.js'></script>
+<div class="a">
+	<div class="a-left">
+    	<ul class="a-list">
+        <li><img src="tuan/img/a1.jpg" /></li>
+        <li class="li2">安全稳定的云主机</li>
+        <li class="li3">任何时候,你需要看到 <span class="hui">云主机</span>给你带来的
+安全感！高配置云主机只从<span class="price">199</span>元起...</li>
+		<li class="li4"><a href="#">进一步了解  >></a></li>
+        </ul>
+    </div>
+    <div class="a-center">
+    	<ul class="a-list">
+        <li><img src="tuan/img/a2.jpg" /></li>
+        <li class="li2">完善的门户级云平台</li>
+        <li class="li3">从<span class="hui">微小企业网站到政府企事业单位门户平台</span>，从
+数据梳理分析到决策支撑，C-Portal整体..</li>
+		<li class="li4"><a href="#">进一步了解  >></a></li>
+        </ul>
+    </div>
+    <div class="a-right">
+    	<h2>便捷服务</h2>
+        <ul>
+        	<li><a href="#"><span class="span1">充值</span><span>续费</span></a></li>
+            <li><a href="#"><span class="span1">工单</span><span>咨讯</span></a></li>
+            <li><a href="#"><span class="span1">资讯</span><span>帮助</span></a></li>
+            <li><a href="#"><span class="span1">工单</span><span>查询</span></a></li>
+            <li><a href="#"><span class="span1">CDN<span></span>分发</span></a></li>
+            <li><a href="#"><span style=" font-size:14px" class="span2">PORTAL</span><span>平台</span></a></li>
+        </ul>
+    </div>
+</div>
+<div class="b">
+	<h2 class="h2">优惠套餐</h2>
+	<div class="b1">
+    	<form action="litscloud/web/buildorderCustomerServerC.Action" method="post" id="form1" name="form1">
+    		<input  type="hidden" id="spec_checkstr" name="spec_checkstr" value="" />
+            <input  type="hidden" id="sgid" name="sgid" value="97" />
+            <input  type="hidden" id="sgcode" name="sgcode" value="SP-2013073100004" />
+            <input type="hidden"  id="permoney" name="permoney" value="18999"/>
+            <input type="hidden" id="shuliang" name="shuliang" value="1" />
+    	<div class="b-w">
+        <div class="li-hover"><img src="tuan/img/lihover.gif" /></div>
+        	<div class="rq"><img src="tuan/img/hotsale.gif" /></div>
+        	<em class="price1"><span>18999元</span>/年</em>
+            <ul>
+            <input type="hidden" value="服务器租用"/>
+            <li> <span>CPU:</span> 至强5520</li> 
+            <li> <span>CPU数量:</span> 1(个)</li>
+            <li><span>内存:</span> 4GB DDR3 ECC REG</li>
+            <li><span>硬盘:</span> 500GB SATA硬盘</li>
+            <li><span>带宽:</span> 100Mbps</li>
+            <li> <span>服务器结构:</span> 1(U)</li> 
+            <li><span>机房:</span> 山东滨州电信机房</li>
+            </ul>
+            <p class="qg-btn"><a href="javascript:void(0);" title="点击立即购买" onclick="goumai('form1')">立即抢购</a></p>
+        </div>
+        </form>
+    </div>
+    <div class="b1 b2">
+    	<form action="litscloud/web/buildorderCustomerServerC.Action" method="post" id="form2" name="form2">
+    		<input  type="hidden" id="spec_checkstr" name="spec_checkstr" value="" />
+            <input  type="hidden" id="sgid" name="sgid" value="96" />
+            <input  type="hidden" id="sgcode" name="sgcode" value="SP-2013073000016" />
+            <input type="hidden"  id="permoney" name="permoney" value="17999"/>
+            <input type="hidden" id="shuliang" name="shuliang" value="1" />
+    	<div class="b-w">
+         <div class="li-hover"><img src="tuan/img/lihover.gif" /></div>
+        	<div class="rq"><img src="tuan/img/rq.gif" /></div>
+        	<em class="price1"><span>17999元</span>/年</em>
+            <ul>
+           <li> <span>CPU:</span> 至强5520</li>
+           <li> <span>CPU数量:</span> 1(个)</li> 
+           
+<li><span>内存:</span> 4GB DDR3 ECC REG</li>
+<li><span>硬盘:</span> 500GB SATA硬盘</li>
+<li><span>带宽:</span> 100Mbps</li>
+<li> <span>服务器结构:</span> 1(U)</li> 
+<li><span>机房:</span> 山东德州联通机房</li>
+            </ul>
+            <p class="qg-btn"><a href="javascript:void(0);" title="点击立即购买" onclick="goumai('form2')">立即抢购</a></p>
+        </div>
+        </form>
+    </div>
+    <div class="b1 b3">
+    	<form action="litscloud/web/buildorderCustomerServerC.Action" method="post" id="form3" name="form3">
+    		<input  type="hidden" id="spec_checkstr" name="spec_checkstr" value="" />
+            <input  type="hidden" id="sgid" name="sgid" value="98" />
+            <input  type="hidden" id="sgcode" name="sgcode" value="SP-2013073100005" />
+            <input type="hidden"  id="permoney" name="permoney" value="39999"/>
+            <input type="hidden" id="shuliang" name="shuliang" value="1" />
+    	<div class="b-w">
+         <div class="li-hover"><img src="tuan/img/lihover.gif" /></div>
+        	<div class="rq"><img src="tuan/img/tuijian.gif" /></div>
+        	<em class="price1"><span>39999元</span>/年</em>
+            <ul>
+            <input type="hidden" value="服务器租用"/>
+            <li> <span>CPU:</span> 至强5520</li> 
+            <li> <span>CPU数量:</span> 1(个)</li>
+            <li><span>内存:</span> 4GB DDR3 ECC REG</li>
+            <li><span>硬盘:</span> 500GB SATA硬盘</li>
+            <li><span>带宽:</span> 100Mbps</li>
+            <li> <span>服务器结构:</span> 1(U)</li> 
+            <li><span>机房:</span> 河南洛阳双线机房</li>
+            </ul>
+            <p class="qg-btn"><a href="javascript:void(0);" title="点击立即购买" onclick="goumai('form3')">立即抢购</a></p>
+        </div>
+        </form>
+    </div>
+    <div style=" clear:both;height:30px;"></div>
+       <div class="b1">
+    	<form action="litscloud/web/buildorderCustomerServerC.Action" method="post" id="form4" name="form4">
+    		<input  type="hidden" id="spec_checkstr" name="spec_checkstr" value="" />
+            <input  type="hidden" id="sgid" name="sgid" value="99" />
+            <input  type="hidden" id="sgcode" name="sgcode" value="SP-2013073100009" />
+            <input type="hidden"  id="permoney" name="permoney" value="6999"/>
+            <input type="hidden" id="shuliang" name="shuliang" value="1" />
+    	<div class="b-w">
+        	 <div class="li-hover"><img src="tuan/img/lihover.gif" /></div>
+        	<em class="price1"><span>6999元</span>/年</em>
+            <ul>
+            <input type="hidden" value="服务器租用"/>
+            <li> <span>CPU:</span> 至强5520</li> 
+            <li> <span>CPU数量:</span> 1(个)</li>
+            <li><span>内存:</span> 4GB DDR3 ECC REG</li>
+            <li><span>硬盘:</span> 500GB SATA硬盘</li>
+            <li><span>带宽:</span> 10Mbps</li>
+            <li> <span>服务器结构:</span> 1(U)</li> 
+            <li><span>机房:</span> 山东德州联通机房</li>
+            </ul>
+            <p class="qg-btn"><a href="javascript:void(0);" title="点击立即购买" onclick="goumai('form4')">立即抢购</a></p>
+        </div>
+    </div>
+       <div class="b1 b2">
+    	<form action="litscloud/web/buildorderCustomerServerC.Action" method="post" id="form5" name="form5">
+    		<input  type="hidden" id="spec_checkstr" name="spec_checkstr" value="" />
+            <input  type="hidden" id="sgid" name="sgid" value="100" />
+            <input  type="hidden" id="sgcode" name="sgcode" value="SP-2013073100010" />
+            <input type="hidden"  id="permoney" name="permoney" value="59999"/>
+            <input type="hidden" id="shuliang" name="shuliang" value="1" />
+    	<div class="b-w">
+        	 <div class="li-hover"><img src="tuan/img/lihover.gif" /></div>
+        	<em class="price1"><span>59999元</span>/年</em>
+            <ul>
+            <input type="hidden" value="服务器租用"/>
+            <li><span>CPU:</span> 至强5520*2</li> 
+            <li> <span>CPU数量:</span> 2(个)</li>
+            <li><span>内存:</span> 4GB DDR3 ECC REG</li>
+            <li><span>硬盘:</span> 500GB SATA硬盘</li>
+            <li><span>带宽:</span> 50Mbps</li>
+            <li> <span>服务器结构:</span> 1(U)</li> 
+            <li><span>机房:</span>河南洛阳BGP机房</li>
+            </ul>
+            <p class="qg-btn"><a href="javascript:void(0);" title="点击立即购买" onclick="goumai('form5')">立即抢购</a></p>
+        </div>
+    </div>
+       <div class="b1 b3">
+    	<form action="litscloud/web/buildorderCustomerServerC.Action" method="post" id="form6" name="form6">
+    		<input  type="hidden" id="spec_checkstr" name="spec_checkstr" value="" />
+            <input  type="hidden" id="sgid" name="sgid" value="101" />
+            <input  type="hidden" id="sgcode" name="sgcode" value="SP-2013073100011" />
+            <input type="hidden"  id="permoney" name="permoney" value="16999"/>
+            <input type="hidden" id="shuliang" name="shuliang" value="1" />
+    	<div class="b-w">
+        	 <div class="li-hover"><img src="tuan/img/lihover.gif" /></div>
+        	<em class="price1"><span>16999元</span>/月</em>
+            <ul>
+            <input type="hidden" value="服务器租用"/>
+            <li><span>CPU:</span> 至强5520*2</li> 
+            <li> <span>CPU数量:</span> 2(个)</li>
+            <li><span>内存:</span> 8GB DDR3 ECC REG</li>
+            <li><span>硬盘:</span> 500GB SATA硬盘</li>
+            <li><span>带宽:</span> 1000Mbps</li>
+            <li> <span>服务器结构:</span> 1(U)</li> 
+            <li><span>机房:</span> 山东德州联通机房</li>
+            </ul>
+            <p class="qg-btn"><a href="javascript:void(0);" title="点击立即购买" onclick="goumai('form6')">立即抢购</a></p>
+        </div>
+    </div>
+</div>
+
+<div class="c">
+	<div class="c-left">
+    	<h2 class="h2">安全可靠地云主机</h2>
+        <div class="yun">
+        <ul class="yzj">
+        	<li><a href="#"><img src="tuan/img/dix.png" /></a></li>
+            <li class="li2"><a href="#">全时通电信云服务器系列</a></li>
+            <li class="li3"><a href="#">满足全国电信快速访问，高运算，大存储，高带宽等
+动态苛刻要求！</a></li>
+        </ul>
+        <ul class="yzj">
+        	<li><a href="#"><img src="tuan/img/liant.png" /></a></li>
+            <li class="li2"><a href="#">全时通联通云服务器系列</a></li>
+            <li class="li3"><a href="#">满足全国联通快速访问，高运算，大存储，高带宽等
+动态苛刻要求！</a></li>
+        </ul>
+        <ul class="yzj">
+        	<li><a href="#"><img src="tuan/img/lid.png" /></a></li>
+            <li class="li2"><a href="#">全时通双线云服务器系列</a></li>
+            <li class="li3"><a href="#">满足全国电信/联通快速访问，高运算，大存储，高带宽等
+动态苛刻要求！</a></li>
+        </ul>
+        </div>
+        <h2 class="h2">解决问题的关键</h2>
+        <div class="yun">
+             <ul class="yzj">
+        	<li><a href="#"><img src="tuan/img/bgphk.png" /></a></li>
+            <li class="li2"><a href="#">全时通BGP云服务器系列</a></li>
+            <li class="li3"><a href="#">满足全国所有线路快速访问，高运算，大存储，高带宽等
+动态苛刻要求！</a></li>
+        </ul>
+        <ul class="yzj">
+        	<li><a href="#"><img src="tuan/img/hk.png" /></a></li>
+            <li class="li2"><a href="#">全时通香港云服务器系列</a></li>
+            <li class="li3"><a href="#">满足全球快速访问，高运算，大存储，高带宽等
+动态苛刻要求！</a></li>
+        </ul>
+        <ul class="yzj">
+        	<li><a href="#"><img src="tuan/img/usa.png" /></a></li>
+            <li class="li2"><a href="#">全时通美国云服务器系列</a></li>
+            <li class="li3"><a href="#">满足国外快速访问，高运算，大存储，高带宽等
+动态苛刻要求！</a></li>
+        </ul>
+        </div>
+    </div>
+    <div class="c-right">
+    	<h2 class="h2">客户再说?</h2>
+        <ul class="khs">
+        	<li>
+            <div class="number"><em>1</em></div>
+            <div class="name">
+            	<p class="p1">深圳快播CEO</p>
+                <p class="p2">王先生</p>
+            </div>
+            </li>
+            <li class="li2">近六年的合作，立云为我司的国际国
+内发展提供了可靠的软硬件业务保障！</li>
+        </ul>
+         <ul class="khs">
+        	<li>
+            <div class="number"><em>2</em></div>
+            <div class="name">
+            	<p class="p1">深圳安宝儿CEO</p>
+                <p class="p2">轩先生</p>
+            </div>
+            </li>
+            <li class="li2">做电商5年以来，立云平台从网站到前后台业务管理，协同一体化，让我司业务快速扩展到全国市场</li>
+        </ul>
+         <ul class="khs">
+        	<li>
+            <div class="number"><em>3</em></div>
+            <div class="name">
+            	<p class="p1">深圳宏图腾设计部总监</p>
+                <p class="p2">李小姐</p>
+            </div>
+            </li>
+            <li class="li2">我们公司所有设计的网站都使用立云平台的服务，合作多年一样，未出现过任何问题，深得我们客户的信赖。</li>
+        </ul>
+    </div>
+</div>
+<div class="liuyan">
+	<div class="liuyan-n">
+    	<div class="liuyan-n1">
+        	<h1>有什么需要请您留言。。。</h1>
+            <div class="ly-input">
+            <p><input type="text" value="姓名"></p>
+            <p><input type="text" value="邮箱"></p>
+            <p><input type="text" value="电话"></p>
+            <p><input type="text" value="地址"></p>
+            </div>
+            <div class="ly-text">
+            <textarea name="" cols="" rows="" style="width:583px;height:152px;border:1px solid #6c63a3" name="">在此输入留言内容，我们会尽快与您联系</textarea>
+            </div>
+        </div>
+        <a href="javascript:alert('暂未开放!');" class="tj"><img src="tuan/img/tj.gif" /></a>
+    </div>
+</div>
+<div class="t1"></div>
+<div class="footer">
+<div class="footer-n">
+<ul class="ul1">
+	<li class="li1">Links</li>
+    <li class="li2">业务管理平台</li>
+    <li class="li-a"><a href="#">在线工单</a></li>
+    <li class="li-a"><a href="#">咨询帮助</a></li>
+    <li class="li-a"><a href="#">充值付费</a></li>
+    <li class="li-a"><a href="#">合作投资</a></li>
+    <li class="li-a"><a href="#">培训交流</a></li>
+</ul>
+<ul class="ul1 ul2">
+	<li class="li1">Navigate</li>
+    <li class="li2">方案中心</li>
+    <li class="li-a"><a href="#">游戏行业方案</a></li>
+    <li class="li-a"><a href="#">小微企业方案</a></li>
+    <li class="li-a"><a href="#">政府单位方案</a></li>
+    <li class="li-a"><a href="#">文公平台方案</a></li>
+    <li class="li-a"><a href="#">家庭个人方案</a></li>
+</ul>
+<ul class="ul1 ul3">
+	<li class="li1">Superiority</li>
+    <li class="li2">关注并推荐我们</li>
+    <li class="li-text"><a href="#">现在我们陆续开通各手机、PC、平台业务
+平台，您可以通过关注和转发我们的微博、
+微信，获取最新产品和方案，并且可以通过
+推荐客户和推荐人才到我司领取神秘大礼包
+（万元现金、IPHONE、S4、IPAD……想有就有！）</a></li>
+</ul>
+<ul class="ul4">
+	<li><img src="tuan/img/f.gif" /><a href="#">请访问我们在facebook上</a></li>
+    <li><img src="tuan/img/v.gif" /><a href="#">请访问我们在facebook上</a></li>
+    <li><img src="tuan/img/yun.gif" /></li>
+    <li style="color:#777">Copyright &copy; 2008-2013 ItsCloud INC.Corp</li>
+    <li style="color:#969696">中华云计算平台by点点滴滴即时云</li>
+</ul>
+</div>
+</div>
+<!-- 在线客服S -->
+<LINK rel=stylesheet type=text/css href="kfonline/common.css" />
+<SCRIPT type=text/javascript src="kfonline/jquery.js"></SCRIPT>
+<SCRIPT type=text/javascript src="kfonline/kefu.js"></SCRIPT>
+<DIV id=floatTools class=float0831>
+<DIV class=floatL><A id=aFloatTools_Show class=btnOpen 
+title=查看在线客服 
+onclick="javascript:$('#divFloatToolsView').animate({width: 'show', opacity: 'show'}, 'normal',function(){ $('#divFloatToolsView').show();kf_setCookie('RightFloatShown', 0, '', '/', 'www.91200.cn'); });$('#aFloatTools_Show').attr('style','display:none');$('#aFloatTools_Hide').attr('style','display:block');" 
+href="javascript:void(0);">展开</A> <A style="DISPLAY: none" id=aFloatTools_Hide class=btnCtn 
+title=隐藏在线客服 
+onclick="javascript:$('#divFloatToolsView').animate({width: 'hide', opacity: 'hide'}, 'normal',function(){ $('#divFloatToolsView').hide();kf_setCookie('RightFloatShown', 1, '', '/', 'www.91200.cn'); });$('#aFloatTools_Show').attr('style','display:block');$('#aFloatTools_Hide').attr('style','display:none');" 
+href="javascript:void(0);">收缩</A> </DIV>
+<DIV id=divFloatToolsView class=floatR style="DISPLAY: none">
+    <DIV class=tp></DIV>
+    <DIV class=cn>
+      <UL>
+        <LI class=top>
+          <H3 class=titZx>QQ咨询</H3>
+        </LI>
+        <LI><a><img border="0" src="http://wpa.qq.com/pa?p=2:537029160:52" align="absmiddle" /></a> <a  href="http://wpa.qq.com/msgrd?v=3&uin=537029160&Menu=yes" target="_blank">售前客服</a></LI>
+                <LI><a><img border="0" src="http://wpa.qq.com/pa?p=2:296064621:52" align="absmiddle" /></a> <a  href="http://wpa.qq.com/msgrd?v=3&uin=296064621&Menu=yes" target="_blank">售前客服</a></LI>
+                        <LI><a><img border="0" src="http://wpa.qq.com/pa?p=2:419718285:52" align="absmiddle" /></a> <a  href="http://wpa.qq.com/msgrd?v=3&uin=419718285&Menu=yes" target="_blank">售前客服</a></LI>                      
+        <LI><a><img border="0" src="http://wpa.qq.com/pa?p=2:2292135944:52" align="absmiddle" /></a> <a  href="http://wpa.qq.com/msgrd?v=3&uin=2292135944&Menu=yes" target="_blank">售前客服</a></LI>
+        <LI><a><img border="0" src="http://wpa.qq.com/pa?p=2:2292135944:52" align="absmiddle" /></a> <a  href="http://wpa.qq.com/msgrd?v=3&uin=2292135944&Menu=yes" target="_blank">售后客服</a></LI>
+        <LI><a><img border="0" src="http://wpa.qq.com/pa?p=2:537029160:52" align="absmiddle" /></a> <a  href="http://wpa.qq.com/msgrd?v=3&uin=537029160&Menu=yes" target="_blank">售后客服</a></LI>
+                <LI><a><img border="0" src="http://wpa.qq.com/pa?p=2:537029160:52" align="absmiddle" /></a> <a  href="http://wpa.qq.com/msgrd?v=3&uin=537029160&Menu=yes" target="_blank">渠道</a></LI>
+                        <LI><a><img border="0" src="http://wpa.qq.com/pa?p=2:419718285:52" align="absmiddle" /></a> <a  href="http://wpa.qq.com/msgrd?v=3&uin=419718285&Menu=yes" target="_blank">财务</a></LI>
+                                <LI><a><img border="0" src="http://wpa.qq.com/pa?p=2:9395381:52" align="absmiddle" /></a> <a  href="http://wpa.qq.com/msgrd?v=3&uin=9395381&Menu=yes" target="_blank">投诉建议</a></LI>
+        <LI><a>&nbsp;<img border="0" src="http://amos.alicdn.com/online.aw?v=2&uid=idctao&site=cntaobao&s=2&charset=utf-8" align="absmiddle" /></a> <a  href="http://www.taobao.com/webww/ww.php?ver=3&touid=idctao&siteid=cntaobao&status=2&charset=utf-8" target="_blank">&nbsp;旺旺客服</a></LI>
+        
+      </UL>
+      <UL>
+        <LI>
+          <H3 class=titDh>电话咨询</H3>
+        </LI>
+        <LI><SPAN class=icoTl>075529558715</SPAN> </LI>
+      </UL>
+    </DIV>
+  </DIV>
+</DIV>
+<!-- 在线客服E -->
+</body>
+</html>

@@ -1,0 +1,237 @@
+@charset "utf-8";
+/* CSS Document */
+.lbar{ float:left; width:650px;}
+.rbar{ float:right; width:235px;}
+
+/*column*/
+.columnA,.columnB,.columnC,.columnD,.columnE,.columnA,.columnA{display:block; clear:both; zoom:1;overflow:hidden; }
+.columnA{ height:38px; background:url(../images/boxbg.gif) 0 0 no-repeat; color:#C94700; font:bold 14px/38px "宋体"; padding:5px 10px 0 25px; }
+.columnB{ height:40px; background:url(../images/boxbg.gif) -240px 0 no-repeat; color:#C94700; font:bold 14px/40px "宋体"; padding:0 10px 0 25px;}
+.columnC{ height:42px; background:url(../images/boxbg.gif) -480px 0 no-repeat; color:#C94700; font:bold 14px/42px "宋体"; padding:0 10px 0 25px;}
+.columnD{ height:40px; background:url(../images/boxbg.gif) 0 -290px no-repeat; color:#C94700; font:bold 14px/40px "宋体"; padding:1px 10px 0 25px; }
+.columnE{ height:24px; color:#555; font:bold 14px/24px "宋体"; padding:0 10px 0 10px;}
+
+/*mod*/
+.topban_ind{ display:block; clear:both; width:646px; height:232px; border:#e3e3e3 1px solid; position:relative; padding:1px; margin-bottom:15px; overflow:hidden;}
+.topban_ind img{ position:absolute; left:1px;top:1px; z-index:1;}
+.topban_ind ul{ position:absolute; left:458px;top:1px; z-index:2; list-style:none;}
+.topban_ind ul li{ display:block; color:#616161; height:47px; overflow:hidden;}
+.topban_ind ul li em{float:left;color:#DADADA; font:bold 20px/46px verdana; font-style:italic; }
+.topban_ind ul li sub{ font:normal 12px/58px "宋体";_font-size:14px;_line-height:50px;+font-size:14px;+line-height:50px;}
+.topban_ind ul li span{ float:left; width:105px;font:bold 16px/46px tahoma,"宋体"; _margin-left:-6px;+margin-left:-6px;}
+.topban_ind ul li a{ display:block; clear:both;}
+.topban_ind .AA{ width:166px;background:url(../images/bg_topban.gif) 19px -49px no-repeat;padding:0 0 0 22px; cursor:pointer;}
+.topban_ind .Anow,.topban_ind .AA:hover{width:152px;background:url(../images/bg_topban.gif) 0 0 no-repeat; color:#E44A0F;padding:0 5px 0 32px;}
+.topban_ind .Anow em,.topban_ind .AA:hover em{ display:none;}
+.topban_ind .Anow span,.topban_ind .AA:hover span{ width:116px;+width:122px;_width:119px;}
+
+h6{ font:bold 12px/24px "宋体"; color:#333;}
+h6 a{ color:#333; text-decoration:underline; margin:0 20px;}
+.topic{ display:block; clear:both; padding:5px; zoom:1; overflow:hidden;}
+.face_toppic{ float:left; width:68px; height:68px;background:url(../images/bg_face.gif) 0 0 no-repeat; padding:6px; margin:4px 10px 0 0;}
+.topic p{ height:66px; line-height:22px; text-indent:2em;}
+.btn_talk{ float:right;background:url(../images/btn.gif) 0 0 no-repeat; width:106px; height:33px; border:0; margin:30px 10px 15px 20px;}
+
+	/*gray box*/
+	.graybox{ display:block; clear:both; background:url(../images/boxbg02.gif) 0 0 repeat-y;  margin-bottom:15px;zoom:1; overflow:hidden;}
+	.graybox_m{display:block; clear:both; background: url(../images/boxbg03.gif) top center no-repeat; padding:0 10px; zoom:1; overflow:hidden;}
+	.graybox_bottom{display:block; background:url(../images/boxbg.gif) -480px -86px no-repeat;font-size:0; padding:0 0 5px 0;zoom:1;_margin:0 0 -2px 0;+margin:0 0 -2px 0;}
+	
+	.grayboxB{ display:block; clear:both; background:url(../images/boxbg05.gif) left bottom no-repeat; padding:0 0 6px 0;margin-bottom:15px; zoom:1; overflow:hidden;}
+	.grayboxB_m{display:block; clear:both; background: url(../images/boxbg.gif) 0 -348px no-repeat;border:#DEDEDE 1px solid; border-top:none; border-bottom:none; padding:16px 16px 10px 16px; zoom:1; overflow:hidden;}
+
+	/*login*/
+	.md_login,.news,.mban{ display:block; overflow:hidden; margin-bottom:15px;}
+	.md_bottom{ display:block; background:url(../images/boxbg.gif) 0 -86px no-repeat;font-size:0; padding:0 0 5px 0;zoom:1; }
+	.md_login .t_fgpw{ color:#c30; text-decoration:underline;}
+	.md_login .t_fgpw:hover{ color:#c30; text-decoration:none;}
+	.login_t_reg{ font:bold 14px/28px "宋体"; text-decoration:underline; color:#333;}
+	.md_login .liline{ border-top:#e3e3e3 1px solid;}
+	.md_login ul.loginok{display:block; clear:both; list-style:none; margin:12px 15px 0 15px; overflow:hidden;}
+	.md_login ul.loginok li{ display:block; clear:both; padding:4px 0; overflow:hidden;}
+	.md_login ul.loginok li em{ font-weight:bold; font-style:normal;}
+	.md_login ul.loginok li span{ font-weight:normal; float:none;}
+	.md_login ul.login{ display:block; clear:both; list-style:none; margin:12px 20px 0 20px; overflow:hidden;}
+	.md_login ul.login li{ display:block; clear:both; padding:3px 0; overflow:hidden;}
+	.md_login ul.login li span{ font-weight:bold; width:52px; float:left;}
+	.md_login .inputA{ border:#A4ACAF 1px solid; width:120px; height:20px; font:normal 12px/20px verdana, "宋体"; vertical-align:middle; padding:0 2px;}
+	.md_login .inputA1{ border:#A4ACAF 1px solid; width:78px; height:20px; font:normal 12px/20px verdana, "宋体"; vertical-align:middle; padding:0 2px;}
+	.md_login .inputA2{ width:40px; height:20px; font:normal 12px/20px verdana, "宋体"; vertical-align:middle; padding:0 2px;}
+	.md_login .inputB{ margin:0 3px 0 0;}
+	.lok_btn{ display:block; clear:both; overflow:hidden; padding-top:15px; text-align:center;  color:#f60;font-size:14px;}
+	.lok_btn a{ color:#f60; text-decoration:none;}
+	.lok_btn a:hover{ color:#f60; text-decoration:underline;}
+	
+	/*news*/
+	.news_bottom{ display:block; background:url(../images/boxbg.gif) -240px -86px no-repeat;font-size:0; zoom:1; padding:0 0 5px 0; }
+	
+	/*gamestar*/
+	.gamerstar{ display:block; text-align:center; line-height:34px; margin:8px 0 0 0;}
+	
+	/*service*/
+	ul.service{ display:block; list-style:none; padding:10px 18px;}
+	ul.service li a{ margin-right:5px;}
+	
+	/*part link*/
+	.part{display:block; margin:0 -18px 0 0; zoom:1; overflow:hidden;}
+	.part a{ display:inline; float:left; width:137px; height:52px; border:#ccc 1px solid; margin:0 18px 0 1px;}
+
+/*cont*/
+.contA{ display:block; clear:both; overflow:hidden; list-style:none; padding:8px 12px;}
+.contA li{ display:block; clear:both; line-height:22px;}
+.contA li em{ float:right; font-style:normal; font-size:11px;}
+.contA li span{display:inline; float:left; width:73%;white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}
+
+/*botton*/
+.btn_login{ background:url(../images/btn.gif) 0 -86px no-repeat; width:106px; height:37px; border:0; margin:10px 0;}
+
+/*link*/
+.link{ display:block; clear:both; width:900px;background:url(../images/link_bg_t.gif) 0 0 no-repeat; zoom:1; padding:5px 0 0 0; margin:0 auto;}
+.linkm{ display:block; clear:both; background:#D3D3D3 url(../images/link_bg_b.gif) 0 bottom no-repeat; padding-bottom:2px;overflow:hidden;}
+.linkmain{  display:block; clear:both;background:#F6F6F6 url(../images/link_bg_m.gif) 0 0 repeat-x; border:#fff 1px solid; border-top:none; border-bottom:none; overflow:hidden; margin:0 1px; padding:0 0 5px 0;}
+.link_cont{ display:block; clear:both; margin:0 10px; overflow:hidden;}
+.link_cont a{ margin-right:8px;}
+
+
+
+.Game1{width:650px; height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px 0px; position:relative; z-index:1; display:none; clear:both;}
+	.Game1 .Icon{width:200px; height:153px; background:url(../images/game_main.gif) no-repeat -8px -2430px; position:absolute; left:3px; top:-5px; z-index:2;}
+	.Game1 .Title{ width:250px; height:25px; background:url(../images/bg_gameshow1.gif) no-repeat -659px -449px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; position:absolute; left:56px; top:20px; z-index:3;}
+	.Game1 .TitleRight{ cursor:pointer; width:320px; height:49px; position:absolute; right:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game1 .TitleRight div{width:310px; height:44px; margin:0px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -20px -2842px; vertical-align:top;}
+			.Game1 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -659px -492px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+	
+
+
+.Game2{ width:650px; height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px -93px; position:relative; z-index:1; display:none; clear:both;}
+	.Game2 .Icon{width:360px; height:153px; background:url(../images/game_main.gif) no-repeat 0px -2835px; position:absolute; right:-30px; top:-10px; z-index:2;}
+	.Game2 .Title{ width:240px; height:33px; background:url(../images/bg_gameshow1.gif) no-repeat -659px -502px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:33px; text-align:right; position:absolute; right:10px; top:15px; z-index:3;}
+	.Game2 .TitleRight{cursor:pointer; width:320px; height:49px; position:absolute; left:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game2 .TitleRight div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -8px -2455px; vertical-align:top; display:block;}
+			.Game2 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -659px -437px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+			
+
+
+.Game3{width:650px; height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px 0px; position:relative; z-index:1; display:none; clear:both;}
+	.Game3 .Icon{width:200px; height:253px; background:url(../images/game_main.gif) no-repeat 14px -3020px; position:absolute; left:-10px; top:-5px; z-index:2;}
+	.Game3 .Title{ width:250px; height:25px; background:url(../images/bg_gameshow1.gif) no-repeat -987px -500px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; position:absolute; left:56px; top:20px; z-index:3;}
+	.Game3 .TitleRight{cursor:pointer; width:320px; height:49px; position:absolute; right:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game3 .TitleRight div{width:310px; height:44px; margin:0px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -20px -2250px; vertical-align:top;}
+			.Game3 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -659px -382px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+
+
+
+.Game4{ width:650px; height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px -93px; position:relative; z-index:1; display:none; clear:both;}
+	.Game4 .Icon{width:355px; height:153px; background:url(../images/game_main.gif) no-repeat 0px -2250px; position:absolute; right:-30px; top:-10px; z-index:2;}
+	.Game4 .Title{ width:240px; height:33px; background:url(../images/bg_gameshow1.gif) no-repeat -659px -394px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:33px; text-align:right; position:absolute; right:10px; top:15px; z-index:3;}
+	.Game4 .TitleRight{cursor:pointer; width:320px; height:49px; position:absolute; left:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game4 .TitleRight div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -20px -3040px; vertical-align:top; display:block;}
+			.Game4 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -987px -490px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+
+
+.Game5{width:650px; height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px 0px; position:relative; z-index:1; display:none; clear:both;}
+	.Game5 .Icon{width:200px; height:253px; background:url(../images/game_main.gif) no-repeat 12px -2590px; position:absolute; left:-10px; top:-5px; z-index:2;}
+	.Game5 .Title{ width:250px; height:25px; background:url(../images/bg_gameshow1.gif) no-repeat -987px -447px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; position:absolute; left:56px; top:20px; z-index:3;}
+	.Game5 .TitleRight{cursor:pointer; width:320px; height:49px; position:absolute; right:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game5 .TitleRight div{width:310px; height:44px; margin:0px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -10px -213px; vertical-align:top;}
+			.Game5 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -988px -58px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+
+
+
+.Game6{ width:650px; height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px -93px; position:relative; z-index:1; display:none; clear:both;}
+	.Game6 .Icon{width:355px; height:153px; background:url(../images/game_main.gif) no-repeat 0px -210px; position:absolute; right:-30px; top:-10px; z-index:2;}
+	.Game6 .Title{ width:240px; height:33px; background:url(../images/bg_gameshow1.gif) no-repeat -988px -68px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:33px; text-align:right; position:absolute; right:10px; top:15px; z-index:3;}
+	.Game6 .TitleRight{cursor:pointer; width:320px; height:49px; position:absolute; left:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game6 .TitleRight div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -42px -2620px; vertical-align:top; display:block;}
+			.Game6 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -987px -437px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+
+
+.Game7{ height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px 0px; position:relative; z-index:1; display:none; clear:both;}
+	.Game7 .Icon{width:100px; height:153px; background:url(../images/game_main.gif) no-repeat 0px -1615px; position:absolute; left:-10px; top:-5px; z-index:2;}
+	.Game7 .Title{ width:250px; height:25px; background:url(../images/bg_gameshow1.gif) no-repeat -987px -283px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; position:absolute; left:56px; top:20px; z-index:3;}
+	.Game7 .TitleRight{cursor:pointer; width:320px; height:49px; position:absolute; right:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game7 .TitleRight div{width:310px; height:44px; margin:0px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -10px -590px; vertical-align:top;}
+			.Game7 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -988px -112px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+	
+.Game8{ width:650px; height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px -93px; position:relative; z-index:1; display:none; clear:both;}
+	.Game8 .Icon{width:355px; height:153px; background:url(../images/game_main.gif) no-repeat 0px -590px; position:absolute; right:-30px; top:-10px; z-index:2;}
+	.Game8 .Title{ width:240px; height:33px; background:url(../images/bg_gameshow1.gif) no-repeat -988px -120px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:33px; text-align:right; position:absolute; right:10px; top:15px; z-index:3;}
+	.Game8 .TitleRight{cursor:pointer; width:320px; height:49px; position:absolute; left:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game8 .TitleRight div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -44px -1625px; vertical-align:top; display:block;}
+			.Game8 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -987px -273px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+	
+
+.Game9{ width:650px; height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px 0px; position:relative; z-index:1; display:none; clear:both;}
+	.Game9 .Icon{width:100px; height:153px; background:url(../images/game_main.gif) no-repeat 0px 0px; position:absolute; left:-10px; top:-5px; z-index:2;}
+	.Game9 .Title{ width:250px; height:25px; background:url(../images/bg_gameshow1.gif) no-repeat -659px -69px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; position:absolute; left:56px; top:20px; z-index:3;}
+	.Game9 .TitleRight{cursor:pointer; width:320px; height:49px; position:absolute; right:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game9 .TitleRight div{width:310px; height:44px; margin:0px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -25px -1101px; vertical-align:top;}
+			.Game9 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -987px -382px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+	
+.Game10{ width:650px; height:170px; padding-top:83px; margin:0px auto 10px auto; background:url(../images/bg_gameshow1.gif) no-repeat 0px -93px; position:relative; z-index:1; display:none; clear:both;}
+	.Game10 .Icon{width:360px; height:153px; background:url(../images/game_main.gif) no-repeat 0px -1094px; position:absolute; right:-30px; top:-10px; z-index:2;}
+	.Game10 .Title{ width:240px; height:33px; background:url(../images/bg_gameshow1.gif) no-repeat -987px -392px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:33px; text-align:right; position:absolute; right:10px; top:15px; z-index:3;}
+	.Game10 .TitleRight{cursor:pointer; width:320px; height:49px; position:absolute; left:0px; top:0px; z-index:3; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px;}
+		.Game10 .TitleRight div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -30px -10px; vertical-align:top; display:block;}
+			.Game10 .TitleRight div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -659px -59px;  font:italic 14px "黑体"; font-weight:bold; color:#333; line-height:30px; text-align:right; }
+	
+
+.GameBg{width:650px; height:170px; background:url(../images/bg_gameshow2.gif) no-repeat center bottom; position:absolute; left:0px; top:83px; z-index:1;}
+.GameBody{width:562px; height:170px; padding:0px 28px 0px 60px;  position:relative; z-index:4; }
+	.GameBody .h4{ float:left; width:370px; font:bold 14px/24px "宋体"; color:#000;}
+	.GameBody .ListLeft{float:left; list-style:none; width:370px; height:110px; overflow:hidden;}
+		.GameBody .ListLeft li{height:22px; line-height:22px;_margin:0 0 -2px 0; +margin:0 0 -2px 0;}
+			.GameBody .ListLeft li .item{float:left;width:320px; white-space:nowrap;}
+			.GameBody .ListLeft li em{float:right; color:#333; width:50px; text-align:center; font-style:normal;}
+	
+	.GameBody .ListRight{float:right;list-style:none; width:170px; margin:-15px 0 0 0;}
+		.GameBody .ListRight li{height:22px; line-height:22px;}
+			.GameBody .ListRight li .item{float:left;width:70px; text-align:right; padding:0 5px 0 0;}
+			.GameBody .ListRight li a{float:left;}
+			.GameBody .ListRight li em{float:right; color:#f00; font-style:normal; font-weight:bold;}
+	.GameBody .Btn{float:right;background:url(../images/btn.gif) 0 -42px no-repeat; width:106px; height:33px; border:none; margin:10px 20px 0 20px;}
+
+
+
+.Games1{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:left; margin-bottom:10px;}
+	.Games1 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -8px -2455px; vertical-align:top; display:block;}
+		.Games1 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -659px -436px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+
+.Games2{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:right; margin-bottom:10px;}
+	.Games2 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -20px -2842px; vertical-align:top; display:block;}
+		.Games2 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -659px -492px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+
+.Games3{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:left; margin-bottom:10px;}
+	.Games3 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -20px -3040px; vertical-align:top; display:block;}
+		.Games3 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -987px -490px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+
+.Games4{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:right; margin-bottom:10px;}
+	.Games4 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -20px -2250px; vertical-align:top; display:block;}
+		.Games4 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -659px -382px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+
+.Games5{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:left; margin-bottom:10px;}
+	.Games5 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -42px -2620px; vertical-align:top; display:block;}
+		.Games5 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -987px -437px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+
+.Games6{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:right; margin-bottom:10px;}
+	.Games6 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -10px -213px; vertical-align:top; display:block;}
+		.Games6 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -988px -58px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+
+
+.Games7{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:left; margin-bottom:10px;}
+	.Games7 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -44px -1625px; vertical-align:top; display:block;}
+		.Games7 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -987px -273px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+
+.Games8{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:right; margin-bottom:10px;}
+	.Games8 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat 0px -590px; vertical-align:top; display:block;}
+		.Games8 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -988px -112px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+	
+.Games9{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:left; margin-bottom:10px;}
+	.Games9 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -30px -10px; vertical-align:top; display:block;}
+		.Games9 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -659px -59px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+
+
+.Games10{cursor:pointer; width:320px; height:49px; background:url(../images/bg_gameshow1.gif) no-repeat -660px 0px; display:inline; float:right; margin-bottom:10px;}
+	.Games10 div{width:310px; height:44px; margin:1px 0px 0px 5px; background:url(../images/game_main.gif) no-repeat -25px -1101px; vertical-align:top; display:block;}
+		.Games10 div a{width:250px; height:33px; padding:11px 10px 0px 0px; margin-left:auto; display:block; background:url(../images/bg_gameshow1.gif) no-repeat -987px -382px;  font:italic 14px "黑体"; font-weight:bold; color:#666; line-height:25px; text-align:right; }
+

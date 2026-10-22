@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="gbk"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+  <package name="prj" extends="struts-default" namespace="/">
+
+     <!-- 项目管理action -->
+    <action name="*Prj" class="prjAction" method="{1}">
+         <result name="prjlist">project/project.jsp</result>
+         <result name="add" type="redirect">getAllPrj.do</result>
+         <result name="empinfo">project/prjempinfo.jsp</result>
+         <result name="prjprocess">project/prjprocess.jsp</result>
+         <result name="update" type="redirect">getAllPrj.do</result>
+         <result name="startprj">project/fqxm.jsp</result>
+        
+         <result name="download" type="stream">
+           <param name="inputName">inputStream</param>
+           <param name="contentDisposition">attachment;filename="${project.annex}"</param>
+           <param name="contentType">application/octet-stream</param>
+         </result>
+    </action>
+
+  </package>
+
+</struts>

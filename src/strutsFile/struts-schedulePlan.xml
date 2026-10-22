@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+
+	<package name="SchedulePlanPackage" extends="struts-default">
+		<!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+				<interceptor-ref name="system">
+					<param name="name">SystemAction拦截</param>
+					<!-- 指定要拦截的方法名 -->
+					<param name="includeMethods">select,goList,addScheduleInfo</param>
+				</interceptor-ref>
+				<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- 日程计划相关action -->
+		<action name="*worknotepad" class="SchedulePlaningAction" method="{1}">
+			<result name="goAdd">/schedule/addSchedule.jsp</result>
+			<result name="goScheduleList">/schedule/scheduleList.jsp</result>
+			<result name="show">/schedule/detailScheduleInfo.jsp</result>
+			<result name="goUpdate">/schedule/updateScheduleInfo.jsp</result>
+			<result name="updateSchedule" type="redirect">goListworknotepad.do?planStyle=0</result>
+			<result name="updatePlan" type="redirect">goListworknotepad.do?planStyle=1</result>
+			<result name="goPlanList">/schedule/planList.jsp</result>
+			<result name="goRemindList">/schedule/remindList.jsp</result>
+			<result name="showPlan">/schedule/detailPlanInfo.jsp</result>
+			<result name="showRemind">/schedule/detailRemind.jsp</result>
+			<result name="goUpdatePlan">/schedule/updatePlanInfo.jsp</result>
+			<result name="goUpdateRemind">/schedule/updateRemind.jsp</result>
+			<result name="login" type="redirect">UserLogin.do</result>
+		</action>
+		<!-- 添加日程计划action -->
+		<action name="addScheduleInfo" class="SchedulePlaningAction" method="addScheduleInfo">
+			<interceptor-ref name="token"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="addSuccess" type="redirect">goListworknotepad.do?planStyle=0</result>
+			<result name="addPlanSuccess" type="redirect">goListworknotepad.do?planStyle=1</result>
+			<result name="addRemindSuccess" type="redirect">goListworknotepad.do?planStyle=2</result>
+			<result name="goaddworklogpage" type="redirect" >goAddWorkLog.do?mark=0</result>
+			<result name="error">/schedule/addSchedule.jsp</result>
+		</action>
+		<!-- 绑定任务 -->
+		<action name="*TaskProject" class="taskAction" method="{1}">
+		</action>
+
+	</package>
+
+</struts>

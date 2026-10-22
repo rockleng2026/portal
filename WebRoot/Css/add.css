@@ -1,0 +1,170 @@
+@charset "GBK";
+
+/* CSS Document */
+body,td,th {
+	font-size: 12px;
+}
+
+body, form {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+
+a:link {
+	text-decoration: none;
+}
+
+a:visited {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+a:active {
+	text-decoration: none;
+}
+
+.table_add {
+	
+}
+.table_add td{
+	margin: 2px;
+}
+
+.table_add_head {
+	background-image: url(../images/add_head_Bg.gif);
+	background-repeat: repeat-x;
+	background-position: center;
+	height: 45px;
+}
+
+.table_add_bottom {
+	background-image: url(../images/add_bottom_Bg.gif);
+	background-repeat: repeat-x;
+	background-position: center;
+	height: 45px;
+}
+
+.input_title {
+	width: 99%;
+}
+
+.select_neib {
+	width: 200px;
+}
+
+.input_on {
+	border: 1px solid #999;
+	background-color: #FFFFCC;
+}
+
+.input_off {
+	border: 1px solid #CCC;
+	background-color: #FFF;
+}
+
+.input_move {
+	border: 1px solid #999;
+	background-color: #FFFFCC;
+}
+
+.input_out { /*height:16px;默认高度*/
+	height: 25px;
+	border: 1px solid #CCC;
+	background-color: #FFF;
+}
+
+.text {
+	color: #666666;
+}
+
+.hand_table_01,.onmouOver_01 {
+	cursor: pointer;
+	height: 37px;
+	line-height: 37px;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.left_on_td,.right_on_td {
+	width: 3px;
+}
+
+.onmouOver_01 .left_on_td {
+	background-image: url(../images/f1_left.gif);
+}
+
+.onmouOver_01 .right_on_td {
+	background-image: url(../images/f1_right.gif);
+}
+
+.onmouOver_01 .center_on_td {
+	background-image: url(../images/f2_bg.gif);
+}
+
+.input_on {
+	padding: 2px 8px 0pt 3px;
+	height: 18px;
+	border: 1px solid #999;
+	background-color: #FFFFCC;
+}
+
+.input_off {
+	padding: 2px 8px 0pt 3px;
+	height: 18px;
+	border: 1px solid #CCC;
+	background-color: #FFF;
+}
+
+.input_move {
+	padding: 2px 8px 0pt 3px;
+	height: 18px;
+	border: 1px solid #999;
+	background-color: #FFFFCC;
+}
+
+.input_out { /*height:16px;默认高度*/
+	padding: 2px 8px 0pt 3px;
+	height: 18px;
+	border: 1px solid #CCC;
+	background-color: #FFF;
+}
+
+.input_text { /*height:16px;默认高度*/
+	padding: 2px 8px 0pt 3px;
+	border: 1px solid #CCC;
+	background-color: #FFF;
+}
+.table_record td{
+	line-height:25px;
+}
+
+ .linenor td{
+	BACKGROUND: #f9fbff;
+	height:30px;
+	border-bottom:1px dotted #CCC;
+	padding-left:15px;
+}
+ .linemov td{
+	BACKGROUND: #ffffe0;
+	height:30px;
+	border-bottom:1px dotted #CCC;
+	padding-left:15px;
+}
+.table_0000 td{
+	border-bottom:0px dotted #CCC;	
+	padding-left:0px;
+}
+.hidden_Ipt{
+	display: none;
+}
+#fileUrl{
+	line-height:21px;
+	margin-top:0px;
+	margin-bottom:0px;
+	margin-left:25px;
+}

@@ -1,0 +1,140 @@
+<html>
+	<head>
+	    <meta http-equiv=Content-Type content=text/html; charset=utf-8> 
+		<meta name=GENERATOR content=Microsoft FrontPage 4.0> 
+		<title>Upload</title>
+		<link href="browser.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="js/common.js"></script>
+<script language="javascript">
+function SetCurrentFolder( resourceType, folderPath )
+{
+	var sUrl = oConnector.ConnectorUrl + 'Command=FileUpload' ;
+	sUrl += '&Type=' + resourceType ;
+	sUrl += '&CurrentFolder=' + encodeURIComponent( folderPath ) ;
+
+	document.getElementById('frmUpload').action = sUrl ;
+}
+  
+function OnSubmit()
+{ 
+    var pic = document.getElementById('picture');
+    //var img = new Image();
+    //img.src = pic;
+    //alert(pic.fileSize);
+    //var picSize = pic.fileSize;
+	if ( document.getElementById('NewFile').value.length == 0 )
+	{
+		alert( 'Please select a Picture from your computer' ) ;
+		return false ;
+	}
+	else
+	{  
+	   
+	   if(checkFileName(document.getElementById('NewFile').value)==false)
+	   {
+	      alert('请点击浏览按钮，选择您要上传的jpg、jpeg、png、gif、bmp格式的图片文件');
+	      return false;
+	   }
+	   if(pic.fileSize>15000)
+	   {
+		    document.getElementById('eUploadMessage').innerHTML = '<font color="red">上传图片大小不能超过150K!</font>';
+	        return false;
+	   }
+	}
+	// Set the interface elements.
+	document.getElementById('eUploadMessage').innerHTML = '上传一张新的图片到文件(Upload in progress, please wait...)' ;
+    document.getElementById('btnUpload').disabled = true ;
+	return true ;
+}
+function checkFileName(fileName)
+{
+     //var imgw = new Image();   
+     //imgw.src = fileName;
+		  if(fileName!="")
+		  {
+				str= fileName;
+				strs=str.toLowerCase();
+				lens=strs.length;
+				var i=strs.lastIndexOf(".");
+				extname=strs.substring(i+1,lens);
+				if((extname!="jpg" && extname!="jpeg" && extname!="JPEG" && extname!="JPG")&&(extname!="gif"&&extname!="GIF")&&(extname!="png"&&extname!="PNG")&&(extname!="bmp"&&extname!="bmp")) {
+					 alert("上传文件仅支持jpg,jpeg,gif,png,bmp格式的图片");
+					 return false;
+				} 
+				else
+				{
+				  return true;
+				}
+		  }
+		  else
+		  {
+			return true;
+		  }
+}
+
+function OnUploadCompleted( errorNumber, data )
+{
+	// Reset the Upload Worker Frame.
+	window.parent.frames['frmUploadWorker'].location = 'javascript:void(0)' ;
+
+	// Reset the upload form (On IE we must do a little trick to avoid problems).
+	if ( document.all )
+		document.getElementById('NewFile').outerHTML = '<input id="NewFile" name="NewFile" style="WIDTH: 100%" type="file">' ;
+	else
+		document.getElementById('frmUpload').reset() ;
+
+	// Reset the interface elements.
+	document.getElementById('eUploadMessage').innerHTML = 'Upload a picture picture in this folder' ;
+	document.getElementById('btnUpload').disabled = false ;
+
+	switch ( errorNumber )
+	{
+		case 0 :
+			window.parent.frames['frmResourcesList'].Refresh() ;
+			break ;
+		case 1 :	// Custom error.
+			alert( data ) ;
+			break ;
+		case 201 :
+			window.parent.frames['frmResourcesList'].Refresh() ;
+			alert( 'A file with the same name is already available. The uploaded file has been renamed to "' + data + '"' ) ;
+			break ;
+		case 202 :
+			alert( 'Invalid file' ) ;
+			break ;
+		default :
+			alert( 'Error on file upload. Error number: ' + errorNumber ) ;
+			break ;
+	}
+}
+
+function changSrc(aa)
+{
+  var pic = document.getElementById('picture');
+  pic.src=aa.value;
+}
+window.onload = function()
+{
+	window.top.IsLoadedUpload = true ;
+}
+</script>
+	</head>
+	<body bottommargin="0" topmargin="0">
+		<form id="frmUpload" action="" target="frmUploadWorker" method="post" enctype="multipart/form-data" onsubmit="return OnSubmit();">
+			<table height="100%" cellspacing="0" cellpadding="0" width="100%" border="0">
+				<tr>
+					<td nowrap="nowrap">
+						<span id="eUploadMessage">您可以上传一张新的图片到文件夹</span><br>
+						<table cellspacing="0" cellpadding="0" width="100%" border="0">
+							<tr>
+								<td width="100%"><input id="NewFile" name="NewFile" style="WIDTH: 100%" type="file" onchange="changSrc(this)"></td>
+								<td nowrap="nowrap">&nbsp;<input id="btnUpload" type="submit" value="上传">
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</body>
+</html>

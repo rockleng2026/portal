@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+   <class name="com.fuao.fajxc.vo.Project" table="project">
+     <id name="id" column="id" type="integer">
+       <generator class="native"/>
+     </id>
+     <property name="prjname" column="prjname" type="string" />
+     <property name="prjmanager" column="prjmanager" type="string" />
+     <property name="prjtype" column="prjtype" type="string" />
+     <property name="begintime" column="begintime" type="date" />
+     <property name="endtime" column="endtime" type="date" />
+     <property name="yjendtime" column="yjendtime" type="date" />
+     <property name="prjplan" column="prjplan" type="integer" />
+     <property name="deptid" column="deptid" type="integer" />
+     <property name="leadname" column="leadname" type="string" />
+     <property name="leadevaluate" column="leadevaluate" type="string" />
+     <property name="prjdes" column="prjdes" type="string" />
+     <property name="prjfunction" column="prjfunction" type="string" />
+     <property name="delflag" column="delflag" type="integer" />
+     <property name="isapproval" column="isapproval" type="integer" />
+     <property name="startperson" column="startperson" type="string"/>
+     <property name="annex" column="annex" type="string"/>
+    
+     <!-- 对部门一对一       -->
+     <one-to-one name="dept" class="com.fuao.fajxc.vo.Department" cascade="all"></one-to-one>
+     
+     <set name="projectemp" inverse="true">
+            <key>
+                <column name="prjempid" />
+            </key>
+            <one-to-many class="com.fuao.fajxc.vo.ProjectEmp" />
+     </set>      
+     <set name="projectlead" inverse="true">
+            <key>
+                <column name="id" />
+            </key>
+            <one-to-many class="com.fuao.fajxc.vo.ProjectLead" />
+     </set>
+   </class>
+
+</hibernate-mapping>

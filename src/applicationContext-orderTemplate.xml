@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	
+<!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	 <bean id="smDao" class="com.fuao.fajxc.dao.impl.orderTemplate.SetMealDaoImpl" parent="commBaseDao"></bean>
+	 <bean id="soDao" class="com.fuao.fajxc.dao.impl.orderTemplate.SaleOrderDaoImpl" parent="commBaseDao"></bean>
+	 
+<!-- >>>>>>>>>>>>>>>>>>>>>>>bussinessImpl层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->	
+	<bean id="smBussiness" class="com.fuao.fajxc.bussiness.impl.orderTemplate.SetMealBussinessImpl" >
+		<property name="smdao" ref="smDao"></property>
+		<property name="commBaseDao" ref="commBaseDao"></property>
+	</bean>
+	
+	<bean id="soBussiness" class="com.fuao.fajxc.bussiness.impl.orderTemplate.SaleOrderBussinessImpl" >
+		<property name="commBaseDao" ref="soDao"></property>
+	</bean>
+		
+<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!-- 套餐 -->
+	<bean id="SetMealAction" class="com.fuao.fajxc.action.orderTemplate.SetMealAction">
+		<property name="setMealBussiness" ref="smBussiness"></property>
+	</bean>
+	
+	<bean id="orderAction" class="com.fuao.fajxc.action.orderTemplate.SaleOrderAction">
+		<property name="saleOrderBussiness" ref="soBussiness"></property>
+		<property name="audBussiness" ref="auditingBussiness"></property>
+	</bean>
+	
+	<!-- 套餐属性 -->
+	<bean id="SetMealProAction" class="com.fuao.fajxc.action.orderTemplate.SetMealProAction">
+		<property name="setMealBussiness" ref="smBussiness"></property>
+	</bean>
+</beans>

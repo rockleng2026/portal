@@ -1,0 +1,5 @@
+[DEFAULT]
+BASEURL=tencent://AddPortal/?Menu=Yes&Exe=QQ&PanelID=20015
+[InternetShortcut]
+URL=tencent://AddPortal/?Menu=Yes&Exe=QQ&PanelID=20015
+

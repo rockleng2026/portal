@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+
+	<package name="PackageContract" extends="struts-default">
+ <!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+			<interceptor-ref name="system">
+			<param name="name">自定义拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">select,get,getpage,returnOrderList</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+			</interceptor-stack>
+		</interceptors>
+		<!-- 采购合同 -->
+		<action name="*Contract" class="ContractAction" method="{1}">
+			<result name="success">/purchasing/contract.jsp</result>
+		</action>
+		<!-- 请购单 -->
+		<action name="*Rejectioning" class="RequisitioningAction" method="{1}">
+			<interceptor-ref name="myInter"></interceptor-ref>
+			<result name="success">purchasing/requisitioning/rList.jsp</result>
+			<result name="add">/purchasing/requisitioning/add.jsp</result>
+			<result name="info">/purchasing/requisitioning/applyBuyInfo.jsp
+			</result>
+</action>
+
+		<!-- 采购订单 -->
+		<action name="*PurchaseOrder" class="PurchaseOrderAction"
+			method="{1}">
+			<!--引用拦截器栈 -->
+			<interceptor-ref name="myInter"></interceptor-ref>
+			<result name="success">/purchasing/purOrder/purchaseOrder.jsp</result>
+			<result name="add">/purchasing/purOrder/addPurOrder.jsp</result>
+			<result name="detail">/purchasing/purOrder/purInfo.jsp</result>
+			<result name="List">/purchasing/purOrder/purchaseOrderList.jsp</result>
+			<result name="please">/purchasing/purOrder/pleaseOrder.jsp</result>
+		</action>
+
+
+		<!-- 采购退换商品 -->
+		<action name="*Rejection" class="RejectionAction" method="{1}">
+			<interceptor-ref name="myInter"></interceptor-ref>
+			<result name="failure">/purchasing/rejection.jsp</result>
+			<result name="skippage">/purchasing/returnOrder/addPurReturnOrder.jsp</result>
+			<result name="success">/purchasing/returnOrder/purReturnOrderList.jsp</result>
+			<result name="selectreturnorder">/purchasing/returnOrder/selectreturnorder.jsp</result>
+			<result name="select" type="redirect">returnOrderListRejection.do</result>
+		</action>
+
+
+ <!-- 到货单Action -->
+    <action name="*ToOrder" class="ToOrderAction" method="{1}" >
+     <interceptor-ref name="myInter"></interceptor-ref>
+     <result name="listToOrder">/purchasing/toOrder/toOrderList.jsp</result>
+     <result name="ToOrder">/purchasing/toOrder/toOrder.jsp</result>
+     <result name="toorderlist">/purchasing/toOrder/listToOrder.jsp</result>
+     <result name="selecttoorder">/purchasing/toOrder/selectToOrder.jsp</result>
+     <result name="select" type="redirect">getpageToOrder.do</result>
+    </action>
+
+		<!-- 采购价格一览表 -->
+		<action name="*ScheduleOfValues" class="ScheduleOfValuesAction"	method="{1}">
+			<!--引用拦截器栈 -->
+			<interceptor-ref name="myInter"></interceptor-ref>
+			<result name="success">/purchasing/scheduleOfValues/scheduleOfValues.jsp</result>
+		</action>
+	</package>
+
+</struts>

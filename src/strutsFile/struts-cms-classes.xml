@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="gbk"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+  <package name="PackageClasses" extends="json-default" namespace="/cms">
+    <action name="*Classes" class="classesAction" method="{1}">
+    	  <result name="show">/cms/papers/titleManage.jsp</result>
+          <result type="json"/>
+    </action>
+
+    <action name="delclassid" class="classesAction" method="del">
+    	<result name="success" type="json">
+		        <param name="del"></param>
+		</result>
+    </action>
+
+  </package>
+</struts>

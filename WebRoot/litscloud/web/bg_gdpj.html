@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（追加评价）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv">
+   </div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心>订单管理>评价宝贝</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" >我的<br />账户</a></li>
+                <li><a href="bg_indent.html" style="background-image:url(images/bg_01.png); color:#ffffff;">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_indent.html" target="_parent">订单管理</a></li>
+                    <li><a href="bg_zxgd.html">在线工单</a></li>
+                     <li><a href="bg_wdgd.html"  style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">我的工单</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="bg_ping">
+              <div class="bg_ping_t">您的评价</div>
+              <div class="bg_ping_cc">
+                <div class="bg_ping_cl"></div>
+                <div class="bg_ping_cr"></div>
+              </div>
+              <div class="bg_ping_d">
+                 <div class="bg_ping_dt"></div>
+                 <div class="bg_ping_dc">
+                     <div class="bg_ping_dct">
+                       <div class="bg_ping_dctl">
+                          <div class="bg_ping_dctlt"></div>
+                          <div class="bg_ping_dctlc">
+                             <div class="bg_ping_dctlcc"><img src="images/log_36.gif" /></div>
+                          </div>
+                          <div class="bg_ping_dctlm"></div>
+                          <div class="bg_ping_dctld">IP数量：1 宽带总数：10<br />服务器配置：I3  Windows2003</div>
+                       </div> 
+                       <div class="bg_ping_dctr">
+                           <div class="bg_ping_dctr_t">
+                               <div class="bg_ping_dctr_tm">
+                                  <div class="bg_ping_dctr_tml"><input name="pfxz" type="radio" value="满意" /><img src="images/log_29.gif" /></div>
+                                  <div class="bg_ping_dctr_tmr"><div class="bg_ping_dctr_tmrh"><p style="height:8px;"></p>满意</div></div>
+                               </div>
+                               
+                               <div class="bg_ping_dctr_tm">
+                                  <div class="bg_ping_dctr_tml"><input name="pfxz" type="radio" value="一般" /><img src="images/log_30.gif" /></div>
+                                  <div class="bg_ping_dctr_tmr"><div class="bg_ping_dctr_tmrb"><p style="height:8px;"></p>一般</div></div>
+                               </div>
+                               
+                               
+                               <div class="bg_ping_dctr_tm">
+                                  <div class="bg_ping_dctr_tml"><input name="pfxz" type="radio" value="不满意" /><img src="images/log_31.gif" /></div>
+                                  <div class="bg_ping_dctr_tmr"><div class="bg_ping_dctr_tmrj"><p></p>不满<br />意</div></div>
+                               </div>
+                               
+                           </div>
+                           <div class="bg_ping_dctr_s"><img src="images/log_40.gif" />
+                           <img src="images/log_40.gif" />
+                           <img src="images/log_40.gif" />
+                           <img src="images/log_40.gif" />
+                           <img src="images/log_40.gif" />
+                           5分
+                           </div>
+                           <div class="bg_ping_dctr_c">请输入您的评价信息：</div>
+                           <div class="bg_ping_dctr_m">
+                             <textarea name="pl_pl" rows="" cols=""  class="pl_pl">评价信息 </textarea>
+                           </div>
+                           <div class="bg_ping_dctr_d">
+                             <div class="bg_ping_dctr_dl"><a href="#">晒图片</a></div>
+                             <div class="bg_ping_dctr_dc">可以晒五张</div>
+                             <div class="bg_ping_dctr_dr"><input name="pl_gk" type="radio" value="公开评论" /><span>公开评论</span>
+                               <input name="pl_gk" type="radio" value="匿名评论" />匿名评论</div>
+                           </div>
+                       </div>  
+                     </div>    
+                     
+                     
+                     <div class="bg_ping_an"><a href="#">发表评论</a></div>
+                 </div>
+                 <div class="bg_ping_dd"></div>
+              </div>
+          </div>      
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

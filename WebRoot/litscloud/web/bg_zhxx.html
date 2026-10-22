@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（账户信息）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv">
+   </div>
+     <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" style="background-image:url(images/bg_01.png); color:#ffffff;">我的<br />账户</a></li>
+                <li><a href="bg_indent.html">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_data.html" >个人资料</a></li>
+                    <li><a href="bg_pay.html">在线支付</a></li>
+                    <li><a href="bg_password.html">修改密码</a></li>
+                    <li><a href="bg_zhaopass.html">忘记密码</a></li>
+                    <li><a href="bg_wycz.html">我要充值</a></li>
+                    <li><a href="bg_zhxx.html" style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">账户信息</a></li>
+                    <li><a href="bg_czjl.html">充值记录</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="ly_xx">
+             <div class="ly_xxt">
+               <div class="ly_xxtl">账户信息查询</div>
+               <div class="ly_xxtc">您当前的帐号佘额为：<span>0.00</span> 元       您目前是：会员客户 &nbsp;&nbsp;&nbsp;<a href="#"><img src="images/zh_01.gif" style=" margin-top:5px;" /></a> </div>         
+             </div>
+             <div class="ly_xxc">
+               <div class="ly_xxc_l"><img src="images/zh_02.gif" /></div>
+               <div class="ly_xxc_r">
+                  <div class="ly_xxc_rt">姓名：<span>冰柠檬</span> &nbsp;<a href="#"> <img src="images/zh_03.gif" /></a></div>
+                  <div class="ly_xxc_rt">帐户名：<span>fjfjdijfie-wq@163.com</span> &nbsp;<a href="#">修改</a>｜<a href="#">开启手机登陆</a></div>
+                   <div class="ly_xxc_rt">立云帐户名：<a href="#"><span>uefhif-mefj</span></a></div>
+               </div>
+             </div>
+             <div class="ly_xxm">
+                <div class="ly_xxm_t">帐户的可用佘额</div>
+                <div class="ly_xxm_m"></div>
+                <div class="ly_xxm_c">
+                  <div class="ly_xxm_ct">
+                     <dl>
+                     <dt>预付款佘额：</dt>
+                     <dd>0.00</dd>
+                     <dt>保证金佘额：</dt>
+                     <dd>0.00</dd>
+                     </dl>
+                  </div>
+                  <div class="ly_xxm_ct">
+                     <dl>
+                     <dt>可用返点：</dt>
+                     <dd>0.00</dd>
+                     <dt>包销款佘额：</dt>
+                     <dd>0.00</dd>
+                     </dl>
+                  </div>
+                  <div class="ly_xxm_ct">
+                     <dl>
+                     <dt>可打印发票佘额：</dt>
+                     <dd>0.00</dd>
+                     <dt>未支付单佘额：</dt>
+                     <dd>0.00</dd>
+                     </dl>
+                  </div>
+                  <div class="ly_xxm_ct">
+                     <dl>
+                     <dt>可用积分：</dt>
+                     <dd>0.00</dd>
+                     </dl>
+                  </div>
+                </div>
+                <div class="ly_xxm_d"></div>
+             </div>
+             <div class="ly_xxd">
+               <div class="ly_xxd_l">
+                 <div class="ly_xxd_ll"><img src="images/zh_06.gif" /></div>
+                 <div class="ly_xxd_lr">
+                    <div class="ly_xxd_lrt">手机 （<span>137****6922</span>）</div>
+                    <div class="ly_xxd_lrc">已绑定</div>
+                    <div class="ly_xxd_lrd"><a href="#">修改</a> | <a href="#">其他手机服务</a></div>
+                 </div>
+               </div>
+               <div class="ly_xxd_l">
+                 <div class="ly_xxd_ll"><img src="images/zh_08.gif" /></div>
+                 <div class="ly_xxd_lr">
+                    <div class="ly_xxd_lrt">实名认证</div>
+                    <div class="ly_xxd_lrc">待升级</div>
+                    <div class="ly_xxd_lrd"><a href="bg_smrz.html">查看</a> | <a href="#">升级</a></div>
+                 </div>
+               </div>
+               <div class="ly_xxd_l">
+                 <div class="ly_xxd_ll"><img src="images/zh_07.gif" /></div>
+                 <div class="ly_xxd_lr">
+                    <div class="ly_xxd_lrt">数字证书</div>
+                    <div class="ly_xxd_lrc">已申请，未安装</div>
+                    <div class="ly_xxd_lrd"><a href="#">取消</a> | <a href="#">安装</a></div>
+                 </div>
+               </div>               
+             </div>
+          </div>             
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+ <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

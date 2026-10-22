@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">	 
+
+	 
+
+	<!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!--客户信息 -->
+	<bean id="customerDao" class="com.fuao.fajxc.dao.impl.basic.CustomerDaoImpl" parent="baseDao">
+    </bean>
+   	<!--客户交接信息 -->
+   	<bean id="customerMoveDao" class="com.fuao.fajxc.dao.impl.basic.CustomerMoveDaoImpl" parent="baseDao">
+    </bean>
+    <!--客户试用信息 -->
+   	<bean id="customerTryoutDao" class="com.fuao.fajxc.dao.impl.basic.CustomerTryoutDaoImpl" parent="baseDao">
+   	</bean>
+	<!-- 供应商Dao -->
+	<bean id="supplierDao" class="com.fuao.fajxc.dao.impl.basic.SupplierDaoImpl" parent="baseDao">
+	</bean>
+	<!-- 仓库Dao -->
+	<bean id="depotDao" class="com.fuao.fajxc.dao.impl.basic.DepotDaoImpl" parent="baseDao"></bean>
+	<!-- 客户跟单信息 -->
+	<bean id="intentFollowUpDao" class="com.fuao.fajxc.dao.impl.basic.IntentFollowUpDaoImpl" parent="baseDao">
+    </bean>
+	<!-- 员工Dao -->
+	<bean id="empDao" class="com.fuao.fajxc.dao.impl.basic.EmployeeDaoImpl" parent="baseDao">
+	</bean>
+	<!-- 部门Dao -->
+	<bean id="departDao" class="com.fuao.fajxc.dao.impl.basic.DepartmentDaoImpl" parent="baseDao">
+	</bean>
+    <!-- 通用附表信息DAO -->
+	<bean id="fbManipulateDao" class="com.fuao.fajxc.dao.impl.FbManipulateDaoImpl" parent="baseDao">
+	</bean>
+    <!-- 通用字段表 DAO -->
+	<bean id="userRelationDao" class="com.fuao.fajxc.dao.impl.UserRelationDaoImpl" parent="baseDao">
+	</bean>
+    <!-- 字段表 -->
+	<bean id="fieldPropertyDao" class="com.fuao.fajxc.dao.impl.FieldPropertyDaoImpl" parent="baseDao">
+	</bean>
+    <!-- 字段属性表 -->
+	<bean id="fieldRemarkDao" class="com.fuao.fajxc.dao.impl.FieldRemarkDaoImpl" parent="baseDao">
+	</bean>
+	<!-- 登录dao注入 -->
+		<bean id="LoginDao" class="com.fuao.fajxc.dao.impl.LoginDaoImpl" parent="baseDao">
+		</bean>
+	<!-- 组Dao -->
+	<bean id="groupSystemDao" class="com.fuao.fajxc.dao.impl.system.GroupSystemDaoImpl" parent="baseDao"></bean>
+	<bean id="commonDao" class="com.fuao.fajxc.dao.common.CommonDaoImpl" parent="baseDao"></bean>
+	
+	<!-- 部门、员工业务dao注入 -->
+	<bean id="operationDao" class="com.fuao.fajxc.dao.operation.OperationDaoImpl" parent="baseDao"></bean>
+	
+	
+	<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+	
+	<bean id="commonBussiness" class="com.fuao.fajxc.bussiness.common.CommonBizImpl">
+        	<property name="commondao" ref="commonDao"></property>
+     	</bean>
+	<!-- 供应商biz -->
+	<bean id="SupplierBussiness" class="com.fuao.fajxc.bussiness.impl.basic.SupplierBussinessImpl">
+		<property name="supplierDao" ref="supplierDao"/>
+	</bean>
+	<!-- 客户信息biz -->
+	<bean id="customerBussiness" class="com.fuao.fajxc.bussiness.impl.basic.CustomerBussinessImpl">
+		<property name="customerDao" ref="customerDao"/>
+	</bean>
+	<!-- 客户交接信息biz -->
+	<bean id="customerMoveBussiness" class="com.fuao.fajxc.bussiness.impl.basic.CustomerMoveBussinessImpl">
+		<property name="customerMoveDao" ref="customerMoveDao"/>
+	</bean>
+	<!--客户跟单信息 -->
+	<bean id="intentFollowUpBussiness" class="com.fuao.fajxc.bussiness.impl.basic.IntentFollowUpBussinessImpl">
+		<property name="intentFollowUpDao" ref="intentFollowUpDao"/>
+	</bean>
+	<!-- 仓库biz -->
+	<bean id="DepotBussiness" class="com.fuao.fajxc.bussiness.impl.basic.DepotBussinessImpl">
+		<property name="depotDao" ref="depotDao"/>
+	</bean>
+	<!-- 员工Bussiness -->
+	<bean id="empBussiness" class="com.fuao.fajxc.bussiness.impl.basic.EmployeeBussinessImpl">
+		<property name="empDao" ref="empDao"></property>
+		<property name="fieldPropertyDao" ref="fieldPropertyDao"></property>
+	</bean>
+	<!-- 部门Bussiness -->
+	<bean id="departBussiness" class="com.fuao.fajxc.bussiness.impl.basic.DepartmentBussinessImpl">
+		<property name="departDao" ref="departDao"></property>
+	</bean>
+	<!-- 试用记录信息 Bussiness -->
+	<bean id="customerTryoutBussiness" class="com.fuao.fajxc.bussiness.impl.basic.CustomerTryoutBussinessImpl">
+		<property name="customerTryoutDao" ref="customerTryoutDao"/>
+	</bean>
+    <!-- 通用附表信息 Bussiness -->
+	<bean id="fbManipulateBussiness" class="com.fuao.fajxc.bussiness.impl.FbManipulateBussinessImpl">
+		<property name="fbManipulateDao" ref="fbManipulateDao"/>
+	</bean>
+    <!-- 通用字段表 Bussiness -->
+	<bean id="userRelationBussiness" class="com.fuao.fajxc.bussiness.impl.UserRelationBussinessImpl">
+		<property name="userRelationDao" ref="userRelationDao"/>
+	</bean>
+    <!-- 字段表 Bussiness -->
+	<bean id="fieldPropertyBussiness" class="com.fuao.fajxc.bussiness.impl.FieldPropertyBussinessImpl">
+		<property name="fieldPropertyDao" ref="fieldPropertyDao"/>
+	</bean>
+    <!-- 字段属性表 Bussiness -->
+	<bean id="fieldRemarkBussiness" class="com.fuao.fajxc.bussiness.impl.FieldRemarkBussinessImpl">
+		<property name="fieldRemarkDao" ref="fieldRemarkDao"/>
+	</bean>
+	<!-- 登录Bussiness注入 -->
+		<bean id="Loginbussiness" class="com.fuao.fajxc.bussiness.impl.LoginBussinessImpl" >
+		<property name="loginDao" ref="LoginDao"></property>
+		</bean>
+	
+	<!-- 组Bussiness -->
+	<bean id="groupSystemBussiness" class="com.fuao.fajxc.bussiness.system.impl.GroupSystemBussinessImpl">
+	  <property name="groupSystemDao" ref="groupSystemDao"></property>
+	</bean>
+		
+	
+	
+	
+	
+	
+	<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!-- 供应商Action -->
+	<bean id="SupplierAction" class="com.fuao.fajxc.action.basic.SupplierrAction">
+		<property name="supplierBussiness" ref="SupplierBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	<!-- 客户Action -->
+    <bean id="customerAction" class="com.fuao.fajxc.action.basic.CustomerAction">
+		<property name="customerBussiness" ref="customerBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	<!-- 新portal系统客户Action -->
+    <bean id="newportalCustomerAction" class="com.fuao.fajxc.action.basic.NewportalCustomerAction">
+		<property name="customerBussiness" ref="customerBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	<!-- 客户Action -->
+    <bean id="customerMove" class="com.fuao.fajxc.action.basic.CustomerMoveAction">
+		<property name="customerMoveBussiness" ref="customerMoveBussiness"></property>
+	</bean>
+	<!-- 仓库Action -->
+	<bean id = "DepotAction" class="com.fuao.fajxc.action.basic.DepotAction">
+		<property name="depotBussiness" ref="DepotBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	<!-- 跟单情况 Action-->
+	<bean id="intentFollowUp" class="com.fuao.fajxc.action.basic.IntentFollowUpAction">
+		<property name="intentFollowUpBussiness" ref="intentFollowUpBussiness"></property>
+		<property name="customerBussiness" ref="customerBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	<!-- 部门Action -->
+	<bean id="DeaprtAction" class="com.fuao.fajxc.action.basic.DepartmentAction">
+		<property name="departBussiness" ref="departBussiness"></property>
+		<property name="empBussiness" ref="empBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		<property name="groupSystemBussiness" ref="groupSystemBussiness"></property>
+		<property name="commonbiz" ref="commonBussiness"></property>
+	</bean>
+	<!--试用记录信息 Action -->
+	<bean id="customerTryout" class="com.fuao.fajxc.action.basic.CustomerTryoutAction">
+		<property name="customerTryoutBussiness" ref="customerTryoutBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	<!-- 部门业务 -->
+	<bean id="missiontypeBussiness" class="com.fuao.fajxc.bussiness.impl.mission.MissiontypeBussinessImpl">
+        	<property name="missiontypeDao" ref="missiontypeDao"></property>
+     </bean>
+	<!-- 员工Action -->
+	<bean id="employeeAction" class="com.fuao.fajxc.action.basic.EmployeeAction" scope="prototype">
+	<property name="loginBussiness" ref="Loginbussiness"></property>
+		<property name="empBussiness" ref="empBussiness"></property>
+		<property name="dembussiness" ref="departBussiness"></property>
+		<property name="uploadbiz" ref="uploadbiz"></property>
+		<property name="fbManipulateBussiness" ref="fbManipulateBussiness"></property>
+		<property name="userRelationBussiness" ref="userRelationBussiness"></property>
+		<property name="fieldRemarkBussiness" ref="fieldRemarkBussiness"></property>
+		<property name="fieldPropertyBussiness" ref="fieldPropertyBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+        <property name="missiontypeBussiness" ref="missiontypeBussiness"></property>
+		<!--  <property name="fieldPropertyBussiness" ref="fieldPropertyBussiness"></property>
+		<property name="fieldRemarkBussiness" ref="fieldRemarkBussiness"></property>-->
+
+	</bean>
+	
+	<!-- 部门、员工业务action -->
+	<bean id="operationempAction" class="com.fuao.fajxc.action.operation.DepartmentOperationAction">
+	  <property name="operationDao" ref="operationDao"></property>
+	</bean>
+	<bean id="operationdeptAction" class="com.fuao.fajxc.action.operation.EmployeeOperationAction">
+	  <property name="operationDao" ref="operationDao"></property>
+	</bean>
+	
+
+
+
+
+	
+</beans>

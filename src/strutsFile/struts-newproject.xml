@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="gbk"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+  <package name="newproject" extends="struts-default" namespace="/">
+
+     <!-- 我的项目action -->
+    <action name="*newProject" class="projectAction" method="{1}">
+         <result name="success">/newproject/startproject/startproject.jsp</result>
+         <result name="lx" type="redirect">listnewProject.do</result>
+         <result name="selectListaa" type="redirect">/listnewProject.do</result>
+         
+         <result name="list">newproject/startproject/projectlist.jsp</result>
+         <result name="dclist">newproject/startproject/projectlist_Down.jsp</result>
+         <result name="upd">newproject/startproject/updateProject.jsp</result>
+         <result name="change">newproject/startproject/changeProject.jsp</result>
+         <result name="change2">newproject/startproject/changeProject2.jsp</result>
+       <!--   <result name="tolist" type="redirect">listnewProject.do</result>  -->
+         <result name="info">newproject/startproject/alldetail.jsp</result>
+         <result name="empOfmessage">newproject/startproject/showmessage.jsp</result>
+         <result name="gtt">/bin-release/gantt.jsp</result>
+    </action>
+     <!-- 办理页面的上传附件 -->
+   <action name="*TaskUpload" class="com.fuao.fajxc.action.newproject.TaskUploadAction" method="{1}">
+         <result name="successfiles">newproject/task/updateTaskPlan.jsp</result>
+         <result name="uploaderror">newproject/task/uploaderror.jsp</result>
+   </action>
+    <!-- 发起项目的上传附件 -->
+   <action name="*ProjectUpload" class="com.fuao.fajxc.action.newproject.ProjectUploadAction" method="{1}">
+         <result name="successfiles"></result>
+   </action>
+  </package>
+
+</struts>

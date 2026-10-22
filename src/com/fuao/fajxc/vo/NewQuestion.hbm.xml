@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.NewQuestion" table="new_question">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="questionname" column="questionname" type="string"/>
+  <property name="pid" column="pid" type="integer"/>
+  <property name="lastdate" column="lastdate" type="string"/>
+  <property name="questioninfo" column="questioninfo" type="string"/>
+  <property name="handlestatus" column="handlestatus" type="integer"/>
+  <property name="indexdemos" column="indexdemos" type="integer"></property>
+  <property name="fj" column="fj" type="string"></property>
+  <property name="temp1" column="temp1" type="string"></property>
+  <property name="temp2" column="temp2" type="string"></property>
+  <property name="temp3" column="temp3" type="string"></property>
+  <many-to-one name="employee" class="com.fuao.fajxc.vo.Employee" fetch="select" lazy="false">
+  	<column name="quizpeople"></column>
+  </many-to-one>
+  <!-- 问题处理人 -->
+  
+  <set name="newproblem" inverse="true">
+  	<key>
+  		<column name="pid"></column>
+  	</key>
+  	<one-to-many class="com.fuao.fajxc.vo.NewProblem"/>
+  </set>
+</class>
+</hibernate-mapping>

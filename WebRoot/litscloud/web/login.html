@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-用户登陆</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+ 	
+	 $('#topdiv').load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+	 $('#lybottom').load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+	 $('#index').css({
+	 "font-family":"Arial, Helvetica, sans-serif",
+	 "color":"#2fafea",
+	 "background-image":"url(images/ly_05.gif)",
+	 "background-repeat":"no-repeat",
+	 "background-position":"center center"	 
+	 })	 
+}); 
+
+
+function aa()
+{
+	document.getElementById("div2").style.display="block";//显示
+	document.getElementById("div1").style.display="none";//影藏
+	
+	}
+function bb()
+{
+	document.getElementById("div1").style.display="block";//显示
+	document.getElementById("div2").style.display="none";//影藏
+	
+	}
+</script>
+</head>
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv"></div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+         <div class="ly_n_login_n">
+            <div class="ly_n_login_l"><img src="images/ly_83.jpg" /></div>
+            <div class="ly_n_login_r">
+                 <div class="ly_n_login_rs"></div>
+                <div class="ly_n_login_rq" style="display:block;" id="div1" >
+                  <div class="ly_n_login_rt" style="height:40px;">
+                     <div class="ly_n_login_rqt"><span class="blue_q"><a onclick="aa()" href="#">手机登陆</a></span></div>
+                    <div class="ly_n_login_rqd">
+                  <p>登录名：</p><span class="blue_q"><a href="#" onclick="bb()">原支付宝快捷登陆</a></span>
+                   </div>
+                  </div>
+                  <div class="ly_n_login_rc"><input type="text" name="name" class="login_name" /></div>
+                  <div class="ly_n_login_rt"><p>登录密码：</p><span style="font-weight:normal;"><a href="bg_zhaopass.html" target="_parent">忘记登录密码？</a></span></div>
+                  <div class="ly_n_login_rc"><input type="password" name="name" class="login_name" /></div>
+                   <div class="ly_n_login_rt"><p>验证码：</p></div>
+                  <div class="ly_n_login_rc"><span>*验证码不正确</span><input type="text" name="name" class="login_yzm" /></div>
+                  <div class="ly_n_login_rl"><img src="images/log_07.gif" /><a href="#">看不清，换一张</a></div>
+                  <div class="ly_n_login_rm"><input name="dl" class="login_dl" type="checkbox" />十天内免登陆</div>
+                  <div class="ly_n_login_rd">
+                        <div class="ly_n_login_rdl"></div>
+                        <div class="ly_n_login_rdc"><a href="bg_data.html" target="_parent">登陆</a></div>
+                        <div class="ly_n_login_rdr"></div></div>
+                  <div class="ly_n_login_rt"><span style="float:left; width:120px; float:left; text-align:left;" class="blue_q"><a href="bg_zhaopass.html" target="_parent">忘记登录名?</a></span><span class="blue_q" style="float:left; width:120px;"><a href="login_zc.html" target="_blank">免费注册</a></span></div>
+                  <div class="ly_n_login_rb">使用合作网站账号登陆：<span class="blue_q"><a href="#"><img src="images/ly_86.jpg" /> 登 陆</a></span></div> 
+                </div>
+                <div class="ly_n_login_ru" style="display:none;"  id="div2">
+                     <div class="ly_n_login_rt" style="height:40px;">
+                     <div class="ly_n_login_rqt"><span class="blue_q"><a onclick="aa()" href="#">手机登陆</a></span></div>
+                    <div class="ly_n_login_rqd">
+                  <p>手机号码：</p><span class="blue_q"><a href="#" onclick="bb()">原支付宝快捷登陆</a></span>
+                   </div>
+                  </div>
+                  <div class="ly_n_login_rc"><input type="text" name="name" class="login_name" /></div>
+                  <div class="ly_n_login_rt"><p>登录密码：</p><span style="font-weight:normal;"><a href="bg_zhaopass.html" target="_parent">忘记登录密码？</a></span></div>
+                  <div class="ly_n_login_rc"><input type="password" name="name" class="login_name" /></div>
+                   <div class="ly_n_login_rt"><p>验证码：</p></div>
+                  <div class="ly_n_login_rc"><span>*验证码不正确</span><input type="text" name="name" class="login_yzm" /></div>
+                  <div class="ly_n_login_rl"><img src="images/log_07.gif" /><a href="#">看不清，换一张</a></div>
+                  <div class="ly_n_login_rm"><input name="dl" class="login_dl" type="checkbox" />十天内免登陆</div>
+                  <div class="ly_n_login_rd">
+                        <div class="ly_n_login_rdl"></div>
+                        <div class="ly_n_login_rdc"><a href="bg_data.html" target="_parent">登陆</a></div>
+                        <div class="ly_n_login_rdr"></div></div>
+                  <div class="ly_n_login_rt"><span style="float:left; width:120px; float:left; text-align:left;" class="blue_q"><a href="bg_zhaopass.html" target="_parent">忘记登录名?</a></span><span class="blue_q" style="float:left; width:120px;"><a href="login_zc.html" target="_blank">免费注册</a></span></div>
+                  <div class="ly_n_login_rb">使用合作网站账号登陆：<span class="blue_q"><a href="#"><img src="images/ly_86.jpg" /> 登 陆</a></span></div> 
+                </div>
+                <div class="ly_n_login_rw"></div>
+            </div>
+         </div>      
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+ 
+    <div id="lybottom" class="ly_bottom">
+  </div>
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

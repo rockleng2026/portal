@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+	<package name="PackagePM" extends="struts-default" namespace="/pdm">
+		<!-- CDN管理 -->
+		<action name="*productManager" class="product_orderAction"
+			method="{1}">
+			<result name="list1">/product_manage/page/commodityList1.jsp</result>
+			<result name="list2">/product_manage/page/commodityList2.jsp</result>
+			<result name="allsale">/product_manage/page/MyOrder.jsp</result>
+			<result name="showorder">/product_manage/page/orderdiv.jsp</result>
+			<result name="success">/product_manage/page/ commodityDetails.jsp</result>
+			<result name="detail">/product_manage/page/commodityDetails.jsp</result>
+			<result name="webdetail">/litscloud/tpl/gd_template.jsp</result>
+			
+			<result name="getprocess">/litscloud/ucenter/bg_process.jsp</result>
+			<result name="alter">/product_manage/page/alterCommodity.jsp</result>
+            <result name="reTest">/product_manage/page/test.jsp</result>
+             <result name="classSelt">/product_manage/page/loadselt.jsp</result>
+		    <result name="addpage">/product_manage/page/addCommodity.jsp</result>
+		    <result name="addpage2">/product_manage/page/addCommodity2.jsp</result>
+		    <result name="viewtitlepic">/litscloud/tpl/view_titlepic.jsp</result>
+		    <result name="error">/litscloud/ucenter/shibai.jsp</result>
+	   </action>
+
+       <!-- 类目管理 -->
+       <action name="*Classprojt" class="classProjectsAction" method="{1}">
+              <result name="showClassList">/product_manage/page/classTypeManage.jsp</result>
+              <result name="showupdates">/product_manage/page/updatedate.jsp</result>
+       </action>            
+	</package>
+	<package name="Package2PM" extends="struts-default" namespace="/litscloud/web">
+		<action name="*productManager" class="product_orderAction"
+				method="{1}">
+				<result name="viewtitlepic">/litscloud/tpl/view_titlepic.jsp</result>
+			    <result name="error">/litscloud/ucenter/shibai.jsp</result>
+		   </action>
+	</package>
+
+
+</struts>

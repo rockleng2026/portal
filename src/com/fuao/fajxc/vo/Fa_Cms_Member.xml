@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_Member" table="fa_cms_member">
+  <id name="userid" column="userid" type="integer">
+    <generator class="native" />
+  </id>
+  <property name="username" column="username" type="string"/>
+  <property name="password" column="password" type="string"/>
+  <property name="rnd" column="rnd" type="string"/>
+  <property name="email" column="email" type="string"/>
+  <property name="registertime" column="registertime" type="date"/>
+  <property name="groupid" column="groupid" type="integer"/>
+  <property name="userfen" column="userfen" type="integer"/>
+  <property name="userdate" column="userdate" type="integer"/>
+  <property name="money" column="money" type="float"/>
+  <property name="havemsg" column="havemsg" type="integer"/>
+  <property name="checked" column="checked" type="integer"/>
+  <property name="salt" column="salt" type="string"/>
+  
+</class>
+</hibernate-mapping>

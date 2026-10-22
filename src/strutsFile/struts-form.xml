@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    
+   <struts>
+    <!-- 单据操作package -->
+   <package name="PackageForm" extends="struts-default">
+	   <!-- 单据模板管理 -->
+	   <action name="*FormTempAction" class="FormTempAction" method="{1}">
+	    <result name="error">/form/adddocmarkl.jsp</result>
+	   	<result name="showadd">/form/addformtemp.jsp</result>
+	    <result name="selectmorelist">/form/formtemplist.jsp</result>
+	    <result name="edit">/form/addformtemp.jsp</result>
+	    <result name="showone">/form/formtempshow.jsp</result>
+	    <result name="no">No.jsp</result>
+	    <result name="selectmore" type="redirect">selectmoreFormTempAction.do</result>
+	    <result name="marksuccess" type="redirect">readaddFormTempAction.do</result>
+	   </action>
+	   
+	   <!-- 详细单据管理 -->
+	   <action name="*FormDetailAction" class="FormDetailAction" method="{1}">
+	   	<result name="addformdetail">/form/addformdetail.jsp</result>
+	   	<result name="showone">/form/formdetailinfo.jsp</result><!--查看/修改单个详细单据 -->
+		<result name="selectmorelist">/form/formdetaillist.jsp</result><!-- // 查看一个单据模板下的所有详细单据 v显示到页面 -->
+		<result name="edit">/form/formdetailinfo.jsp</result><!-- //跳到添加详细单据页面 -->
+		<result name="selectalllist">/form/formdetaillist.jsp</result><!-- //查询所有详细单据，显示到页面 -->
+		<result name="no">No.jsp</result>
+		<result name="selectonelist" type="redirect">selectformmoreFormDetailAction.do</result>
+	   </action>
+   </package>
+   </struts>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    
+    <struts>
+		<!-- 资源核实单struts   -->
+    	<package name="resourceCheck" extends="struts-default" namespace="/">
+    	<action name="*ReCheck" class="resourceCheckAction" method="{1}">
+			<result name="addUI">/resourceCheck/addresoucecheck.jsp</result>
+			<result name="list">/resourceCheck/listRC.jsp</result>
+			<result name="addsuccess" type="redirect">selectReCheck.do</result>
+			<result name="detail">/resourceCheck/detailRC.jsp</result>
+			<result name="updatesuccess" type="redirect">selectReCheck.do</result>
+			<result name="returnUIRC">/resourceCheck/returnRC.jsp</result>
+			<result name="returnsuccess" type="redirect">selectReCheck.do</result>
+		</action>
+    	</package>
+    	
+    </struts>

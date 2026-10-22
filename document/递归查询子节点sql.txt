@@ -1,0 +1,46 @@
+set global log_bin_trust_function_creators=1;
+CREATE FUNCTION `getChildClassesLst`(rootId INT)
+RETURNS varchar(1000)
+BEGIN
+     DECLARE sTemp VARCHAR(1000);
+     DECLARE sTempChd VARCHAR(1000);
+    SET sTemp = '';
+    SET sTempChd =CAST(rootId AS CHAR);
+   WHILE sTempChd IS NOT NULL DO
+  SET sTemp = CONCAT(sTemp,',',sTempChd);
+    SELECT GROUP_CONCAT(classid) INTO sTempChd FROM fa_cms_classes  WHERE delflag = 0 and  FIND_IN_SET(superid,sTempChd)>0;
+    END WHILE;
+  RETURN sTemp;
+END;
+
+CREATE FUNCTION `getChildDeptLst`(rootId INT)
+RETURNS varchar(1000)
+BEGIN
+     DECLARE sTemp VARCHAR(1000);
+     DECLARE sTempChd VARCHAR(1000);
+
+    SET sTemp = '';
+    SET sTempChd =CAST(rootId AS CHAR);
+   WHILE sTempChd IS NOT NULL DO
+  SET sTemp = CONCAT(sTemp,',',sTempChd);
+    SELECT GROUP_CONCAT(id) INTO sTempChd FROM department  WHERE FIND_IN_SET(parentId,sTempChd)>0;
+    END WHILE;
+  RETURN sTemp;
+END
+
+CREATE FUNCTION `getTreeChlid`(rootId INT)
+RETURNS varchar(1000)
+BEGIN
+    DECLARE sTemp VARCHAR(1000);/*定义一个临时字段来存放所有的类别与子类别*/
+    DECLARE sTempChd VARCHAR(1000);/*定义一个临时字段，来得到当前类别的子类别*/
+
+    SET sTemp = '$';
+    SET sTempChd =CAST(rootId as CHAR);
+
+    WHILE sTempChd is not null DO
+        SET sTemp = CONCAT(sTemp,',',sTempChd);/*将以前类别与现在查询类别进行合并*/
+        /*将每次查到的子id形成一个字符组，放到sTempChd里，如果sTempChd为null就停止循环*/
+        SELECT GROUP_CONCAT(id) INTO sTempChd FROM department where FIND_IN_SET(pid,sTempChd)>0;
+    END WHILE;
+    RETURN sTemp;
+END

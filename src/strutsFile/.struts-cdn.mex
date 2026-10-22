@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="PackageCDN" location="0,0" size="0,0">
+    <action name="*CDNsaleOrderAction" location="0,0" size="0,0">
+      <result name="showorderadd">
+        <resourceEdge source="showorderadd" routing="0" target="addCDN.jsp" />
+      </result>
+      <result name="showcdnlist">
+        <resourceEdge source="showcdnlist" routing="0" target="CDNlist.jsp" />
+      </result>
+      <result name="showcdnlist1">
+        <resourceEdge source="showcdnlist1" routing="0" target="CDNlist1.jsp" />
+      </result>
+      <result name="showorder">
+        <resourceEdge source="showorder" routing="0" target="showOrder.jsp" />
+      </result>
+      <result name="filesuccess" />
+      <result name="showorder1" />
+      <result name="update" />
+      <result name="showfile" />
+      <result name="no" />
+    </action>
+    <action name="*CDNRealmAction" location="0,0" size="0,0">
+      <result name="list" />
+      <result name="no" />
+    </action>
+    <action name="*CDNSetMealAction" location="0,0" size="0,0">
+      <result name="no" />
+      <result name="goAllList" />
+      <result name="goAdd" />
+      <result name="goInfo" />
+      <result name="goUpdate" />
+      <result name="success" />
+    </action>
+    <action name="*CDNSetMealPropertyAction" location="0,0" size="0,0">
+      <result name="no" />
+      <result name="success" />
+      <result name="goAllList" />
+      <result name="goAdd" />
+      <result name="goInfo" />
+      <result name="goUpdate" />
+    </action>
+    <action name="*CDNRealmTypeAction" location="0,0" size="0,0">
+      <result name="no" />
+      <result name="success" />
+      <result name="goAllList" />
+      <result name="goAdd" />
+      <result name="goUpdate" />
+    </action>
+  </package>
+  <webResource name="addCDN.jsp" path="cdn/addCDN.jsp" location="0,0" size="0,0" />
+  <webResource name="CDNlist.jsp" path="cdn/CDNlist.jsp" location="0,0" size="0,0" />
+  <webResource name="showOrder.jsp" path="cdn/showOrder.jsp" location="0,0" size="0,0" />
+  <webResource name="No.jsp" path="No.jsp" location="0,0" size="0,0" />
+  <webResource name="setmealList.jsp" path="/cdn/setmealList.jsp" location="0,0" size="0,0" />
+  <webResource name="addSetMeal.jsp" path="/cdn/addSetMeal.jsp" location="0,0" size="0,0" />
+  <webResource name="setMealInfo.jsp" path="/cdn/setMealInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="updateSetMeal.jsp" path="/cdn/updateSetMeal.jsp" location="0,0" size="0,0" />
+  <webResource name="CDNlist1.jsp" path="cdn/CDNlist1.jsp" location="0,0" size="0,0" />
+  <webResource name="cdninfo.jsp" path="cdn/cdninfo.jsp" location="0,0" size="0,0" />
+</Struts2Diagram>
+

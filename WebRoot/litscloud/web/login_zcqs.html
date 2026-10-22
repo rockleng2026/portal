@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-注册</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+ 	
+	 $('#topdiv').load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+	 $('#lybottom').load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+	 $('#index').css({
+	 "font-family":"Arial, Helvetica, sans-serif",
+	 "color":"#2fafea",
+	 "background-image":"url(images/ly_05.gif)",
+	 "background-repeat":"no-repeat",
+	 "background-position":"center center"	 
+	 })	 
+}); 
+</script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv"></div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+       <div class="ly_zc">
+         <div class="ly_zct">
+           <div class="ly_zctl"></div> 
+           <div class="ly_zctc">1</div>
+           <div class="ly_zctm"></div>
+           <div class="ly_zcty">2</div>
+           <div class="ly_zctm"></div>
+           <div class="ly_zcts"></div> 
+           <div class="ly_zctw"></div>           
+         </div>
+        <div class="ly_zcc">
+           <div class="ly_zccl">设置账户信息</div>
+           <div class="ly_zccc">验证账户信息</div>
+           <div class="ly_zccr">注册成功</div>
+        </div>
+        <div class="ly_zcd">
+         <div class="ly_zcm">
+              <div class="ly_zcm_m"></div>
+              <div class="ly_zcm_b"></div>
+              <div class="ly_c">
+                <div class="ly_ct">
+                  <div class="ly_ctl"><span>*</span>用户名称：</div>
+                  <div class="ly_ctr"><input type="text" name="yhmc_ly" class="yhmc_ly" /> <span><img src="images/bg_39.jpg" />不能为空</span></div> 
+                </div>
+                <div class="ly_ct">
+                  <div class="ly_ctl"><span>*</span>用户密码：</div>
+                  <div class="ly_ctr">
+                     <div class="ly_ctr_t"><input type="password" name="dlmm_ly" class="yhmc_ly" /> <span><img src="images/bg_40.jpg" /></span></div>
+                     <div class="ly_ctr_d">
+                       <ul><li style="background-color:#2cabee">弱</li><li>中</li><li style="margin-right:0px;">强</li></ul>
+                     </div> 
+                  </div> 
+                </div>
+                <div class="ly_ct">
+                  <div class="ly_ctl"><span>*</span>确认登录密码：</div>
+                  <div class="ly_ctr"><input type="password" name="dlmm_ly" class="yhmc_ly" /> <span><img src="images/bg_39.jpg" />不能为空</span></div> 
+                </div>
+                <div class="ly_ct">
+                  <div class="ly_ctl"><span>*</span>电子邮件：</div>
+                  <div class="ly_ctr"><input type="text" name="yhmc_ly" class="yhmc_ly" /> <span><img src="images/bg_39.jpg" />不能为空</span></div> 
+                </div>
+                <div class="ly_cc">绑定安全手机（手机号为安全信息，不做登录使用）</div>
+                <div class="ly_ct">
+                  <div class="ly_ctl"><span>*</span>手机号码：</div>
+                  <div class="ly_ctr"><input type="text" name="yhmc_ly" class="yhmc_ly" /> <span><img src="images/bg_39.jpg" />不能为空</span></div> 
+                </div>
+                <div class="ly_ct">
+                  <div class="ly_ctl"><span>*</span>QQ号码：</div>
+                  <div class="ly_ctr"><input type="text" name="yhmc_ly" class="yhmc_ly" /> <span><img src="images/bg_39.jpg" />不能为空</span></div> 
+                </div>
+                <div class="ly_ct">
+                  <div class="ly_ctl"><span>*</span>授权码：</div>
+                  <div class="ly_ctr"><input type="text" name="yhmc_ly" class="yhmc_ly" /> <span><img src="images/bg_39.jpg" />不能为空</span></div> 
+                </div>
+                <div class="ly_ct">
+                  <div class="ly_ctl"><span>*</span>验证码：</div>
+                  <div class="ly_ctr">
+                     <div class="ly_ctrl"><input type="text" name="sqm_ly" class="sqm_ly" /></div>
+                     <div class="ly_ctrr"><a href="#"><img src="images/sf_01.gif" /> </a><a href="#">看不清，换一张</a></div><span><img src="images/bg_39.jpg" />不能为空</span></div> 
+                </div>
+                <div class="ly_ct">
+                  <div class="ly_ctl"><span>*</span>调查：</div>
+                  <div class="ly_ctr"><select name="dc_ly" style="width:200px; float:left; margin-top:5px; *margin-left:10px;  border:solid 1px #CCC;">
+                    <option value="1">您是如何得知本站的？</option>
+                    <option value="2">从网上跳转</option>
+                    <option value="3">别人介绍</option>
+                  </select> <input type="text" name="sqm_ly" class="wb" /></div> 
+                </div>
+                <div class="ly_ct">
+                  <div class="ly_ctl">备注说明：</div>
+                  <div class="ly_ctr">
+                    <textarea name="bzsm_ly" class="bzsm_ly">说明详细内容：</textarea>
+                  </div> 
+                </div>
+                <div class="ly_ct" style="margin-bottom:5px;">
+                  <div class="ly_ctl"></div>
+                  <div class="ly_ctr">
+                    <div class="ly_ctra"><a href="#">同意协议并注册</a></div>
+                  </div> 
+                </div>
+                 <div class="ly_ct">
+                  <div class="ly_ctl" style="height:20px;"></div>
+                  <div class="ly_ctr" style="height:20px; line-height:20px;">
+                    <span class="xieyi" style="line-height:20px;"><a href="#">《立云网站服务协议》</a></span>
+                  </div> 
+                </div>
+              </div>
+         </div>
+        </div> 
+        </div>             
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div id="lybottom" class="ly_bottom">
+  </div>
+  <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

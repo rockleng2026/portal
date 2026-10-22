@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+	
+	<package name="WorkLogPackage" extends="struts-default" >
+	
+	<!-- 日志相关action -->
+		<action name="*WorkLog" class="WorklogAction" method="{1}" >
+			<result name="no">/No.jsp</result>
+			<result name="goAdd">/workLogs/addWorklog.jsp</result>
+			<result name="addSuccess" type="redirect">selectWorkLog.do</result>
+			<result name="goDeal">/workLogs/worklogDeal.jsp</result>
+			<result name="myList">/workLogs/myWorklogList.jsp</result>
+			<result name="otherList">/workLogs/otherWorklogList.jsp</result>
+			<result name="goAddReply">/workLogs/addReply.jsp</result>
+			<result name="addReply" type="redirect">selectOtherWorkLog.do</result>
+			<result name="goSeeReply">/workLogs/seeReply.jsp</result>
+		</action>
+		
+	</package>
+
+</struts>

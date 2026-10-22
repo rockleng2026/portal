@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	 <bean id="classProjectsDao" class="com.fuao.fajxc.product_manageDaoImpl.ClassManageDaoImpl">
+	       <property name="sessionFactory" ref="sessionFactory">
+	       </property>
+	 </bean>
+	 <bean id="classProjectsService" class="com.fuao.fajxc.product_manageServiceImpl.ClassManageServiceImpl">
+	     <property name="classManaDao" ref="classProjectsDao"></property>
+	 </bean>
+	 <bean id="classProjectsAction" class="com.fuao.fajxc.product_manageAction.ClassManageAction">
+	    <property name="classManaServ" ref="classProjectsService"></property>
+	 </bean>
+
+	<!--  dao注入-->
+	 
+	 <bean id="prodect_OrderDao" class="com.fuao.fajxc.product_manageDaoImpl.Product_orderDaoImpl" parent="baseDao"></bean>
+	 	 
+	 <!-- bussinessImpl层的注入注入  -->
+	 
+	 
+	  <bean id="prodect_OrderService" class="com.fuao.fajxc.product_manageServiceImpl.Product_orderServiceImpl" >
+		<property name="prodect_OrderDao" ref="prodect_OrderDao"></property>
+	</bean>
+	 
+	 
+	 <!--  action注入 -->
+	<bean id="product_orderAction" class="com.fuao.fajxc.product_manageAction.product_orderAction">
+	      <property name="product_CommentService" ref="prodect_OrderService"></property>
+	      
+	      <property name="pdao" ref="prodect_OrderDao"></property>
+	</bean>
+	
+	<!-- 新系统3.0portal商品管理 -->
+	<bean id="newportalsaleGoods" class="com.fuao.fajxc.product_manageAction.NewportalSaleGoodsAction">
+		 <property name="product_CommentService" ref="prodect_OrderService"></property>
+	      <property name="pdao" ref="prodect_OrderDao"></property>
+	      <property name="upb" ref="upserverBussiness"></property>
+	     <property name="audBussiness" ref="auditingBussiness"></property>
+	 	<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	
+	</beans>

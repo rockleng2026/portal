@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+   <class name="com.fuao.fajxc.vo.ProjectEmp" table="projectemp">
+     <id name="id" column="id" type="integer">
+       <generator class="native"/>
+     </id>
+     <property name="prjrw" column="prjrw" type="string" />
+     <property name="prjbegintime" column="prjbegintime" type="date" />
+     <property name="prjendtime" column="prjendtime" type="date" />
+     <property name="prjyjendtime" column="prjyjendtime" type="date" />
+     <property name="isinvite" column="isinvite" type="integer" />
+     <property name="invite" column="invite" type="string" />
+     <property name="prjempplan" column="prjempplan" type="integer" />
+     <property name="warn" column="warn" type="java.lang.Integer" />
+     <property name="leadname" column="leadname" type="string" />
+     <property name="leadevaluate" column="leadevaluate" type="string" />
+     <property name="jobdes" column="jobdes" type="string" />
+     <property name="prjuptime" column="prjuptime" type="date" />
+     <property name="prjvitetime" column="prjvitetime" type="date" />
+     <many-to-one name="employee" class="com.fuao.fajxc.vo.Employee" fetch="select">
+           <column name="empid" />
+     </many-to-one>
+     <many-to-one name="prj" class="com.fuao.fajxc.vo.Project" fetch="select">
+           <column name="prjid" />
+     </many-to-one>
+      <set name="emplead" inverse="true">
+            <key>
+                <column name="id" />
+            </key>
+            <one-to-many class="com.fuao.fajxc.vo.ProjectEmpLead"/>
+     </set>
+    </class>
+</hibernate-mapping>

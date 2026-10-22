@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+	<!-- 系统package -->
+	<package name="PackageSystem" extends="struts-default">
+		<!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+		</interceptors>
+	
+		<action name="*System" class="SystemAction"	method="{1}">
+			<!--引用拦截器 -->
+			<interceptor-ref name="system">
+				<param name="name">SystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">selectFunctions</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  	
+			<result name="success">/System/Role.jsp</result>
+			<result name="userlist">/System/userlist.jsp</result>
+			<result name="emplist">/System/emplist.jsp</result>
+			<result name="functionlist">/System/permissionset.jsp</result>
+			<result name="functions">/System/functionlist.jsp</result>
+			<result name="menumanager">/System/menuManager.jsp</result>
+			<result name="edit">/System/EditPassword.jsp</result>
+			<result name="addorupdateuser">/System/addOrEditUser.jsp</result>
+			<result name="safetyexit">/login.jsp</result>
+			<result name="failure" >yes.jsp</result>
+		</action>
+		
+		<action name="*SystemRole" class="RoleSystemAction" method="{1}">
+			<interceptor-ref name="system">
+				<param name="name">RoleSystemAction拦截</param>
+				<param name="includeMethods">roleList</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"/>  
+			<result name="rolelist">/System/Role.jsp</result>
+			<result name="edit">/System/editRole.jsp</result>
+			<result name="rolefunctionlist">/System/rolePermissionset.jsp</result>
+			<result name="failure">yes.jsp</result>
+		</action>
+		
+		<action name="*Group" class="GroupSystemAction" method="{1}">
+			<interceptor-ref name="system">
+				<param name="name">GroupSystemAction拦截</param>
+				<param name="includeMethods">groupList</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"/>  
+			<result name="grouplist">/System/grouplist.jsp</result>
+			<result name="setpermissiongrade">/System/permissionGradeSet.jsp</result>
+			<result name="userpermissiongradelist">/System/userpermissiongradelist.jsp</result>
+			<result name="addgroup">/System/addOrEditGroup.jsp</result>
+			<result name="creategroup">/System/createGroup.jsp</result>
+			<result name="gradepermission">/System/grouppermission.jsp</result>
+			<result name="selectgrouplist">/System/selectgrouplist.jsp</result>
+			<result name="failure">yes.jsp</result>
+		</action>
+		
+		<action name="*Menu" class="MenuManagerSystemAction" method="{1}">
+			<!--引用拦截器 -->
+			<interceptor-ref name="system">
+				<param name="name">MenuManagerSystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">menuManager</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+			<result name="menumanager">/System/menuManager.jsp</result>
+			<result name="editmenufunction">/System/editMenuFunction.jsp</result>
+			<result name="editfunction">/System/addFunction.jsp</result>
+			<result name="failure" >yes.jsp</result>
+		</action>
+		
+		<!-- 提醒设置 -->
+		<action name="*Messageremind" class="MessageremindAction" method="{1}">
+		<!--引用拦截器 -->
+			<interceptor-ref name="system">
+				<param name="name">MenuManagerSystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">get</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/> 
+		<result name="list">/System/msgRemind/remindFunctionList.jsp</result>
+		<result name="succeed" type="redirect">getMessageremind.do</result>
+		<result name="add">/System/msgRemind/addRemindFunction.jsp</result>
+		</action>
+		<action name="*Verify" class="VerifyOrderAction" method="{1}">
+			<result name="success">/System/verifyorder/addVerifyOrder.jsp</result>
+			<result name="pageslist">/System/verifyorder/verifyorderlist.jsp</result>
+			<result name="editverityorder">/System/verifyorder/editVerifyOrder.jsp</result>
+			<result name="selectverifyorder">/System/verifyorder/selectVerifyOrder.jsp</result>
+		</action>
+		<!-- 审核Action -->
+		<action name="*Auditing" class="auditingAction" method="{1}">
+			<result name="success">/System/follow/follow.jsp</result>
+		</action>
+		<action name="*WorkOrderCfigur" class="WorkOrderCfigurAction" method="{1}">
+			<interceptor-ref name="system">
+				<param name="name">MenuManagerSystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">get</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/> 
+		<result name="list">/System/WorkOrderConfiguration/Workorderconfigurationinfo.jsp</result>
+		<result name="updatepage">/System/WorkOrderConfiguration/updateWorkOrderConfigur.jsp</result>
+		<result name="select" type="redirect">getWorkOrderCfigur.do</result>
+		
+		</action>
+		<action name="*upload" class="UploadAction" method="{1}">
+		</action>
+		
+		<!-- 单据流程管理Action -->
+		<action name="*docmark" class="DocmarkAction" method="{1}">
+		<result name="success">/System/docmark/docmarklist.jsp</result>
+		<result name="add">/System/docmark/adddocmark.jsp</result>
+		<result name="select" type="redirect">getpagedocmark.do</result>
+		</action>
+		
+		</package>
+</struts>

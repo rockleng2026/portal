@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	 
+	
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<bean id="StockpileDetailsDao" class="com.fuao.fajxc.dao.impl.stockpile.StockpileDetailsDaoImpl" parent="baseDao"></bean>
+	
+	<!-- 出库dao注入 -->
+	<bean id="outboundDao" class="com.fuao.fajxc.dao.impl.stockpile.OutBoundDaoImpl" parent="baseDao">
+	</bean>
+	<!-- 盘点dao注入 -->
+	<bean id="statDao" class="com.fuao.fajxc.dao.impl.stockpile.StatDaoImpl" parent="baseDao">
+	</bean>
+
+
+	<!-- 入库DAO注入 -->
+	<bean id="warehousingDao" class="com.fuao.fajxc.dao.impl.stockpile.WarehousingDaoImpl" parent="baseDao">
+	</bean>
+	
+	<!-- 报损Dao注入 -->
+	<bean id="profitOrlossDao" class="com.fuao.fajxc.dao.impl.stockpile.ProfitOrlossDaoImpl" parent="baseDao">
+	</bean>
+	
+	<!-- 报溢Dao注入 -->
+	<bean id="incomeDao" class="com.fuao.fajxc.dao.impl.stockpile.IncomeDaoImpl" parent="baseDao">
+	</bean>
+		
+	
+
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+
+		<bean id="StockpileDetailsBussiness" class="com.fuao.fajxc.bussiness.impl.stockpile.StockpileDetailsBussinessImpl">
+			<property name="stockpileDetailsDao" ref="StockpileDetailsDao"></property>
+		</bean>
+
+		<!-- 出库bussiness注入 -->
+		<bean id="outboundBussiness" class="com.fuao.fajxc.bussiness.impl.stockpile.OutboundBussinessImpl">
+		<property name="obd" ref="outboundDao"></property>
+		</bean>
+		
+		<!-- 盘点bussiness注入 -->
+		<bean id="statBussiness" class="com.fuao.fajxc.bussiness.impl.stockpile.StatBussinessImpl">
+		<property name="statdao" ref="statDao"></property>
+		</bean>
+
+
+		<!-- 入库Bussiness注入 -->
+		<bean id="warehousingBussiness" class="com.fuao.fajxc.bussiness.impl.stockpile.WarehousingBussinessImpl">
+		<property name="warehousingDao" ref="warehousingDao"></property>
+		</bean>
+		
+		<!-- 报损Bussiness注入 -->
+		<bean id="profitOrlossBussiness" class="com.fuao.fajxc.bussiness.impl.stockpile.ProfitOrlossBussinessImpl">
+		<property name="prob" ref="profitOrlossDao"></property>
+		<property name="obd" ref="outboundDao"></property>
+		</bean>
+		
+		<!-- 报溢Bussiness注入 -->
+		<bean id="incomeBussiness" class="com.fuao.fajxc.bussiness.impl.stockpile.IncomeInfoBussinessImpl">
+		<property name="incomeDao" ref="incomeDao"></property>
+		</bean>
+		
+		
+
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		
+		<!-- 入库Action注入 -->
+		<bean id="WarehousingAction" class="com.fuao.fajxc.action.stockpile.WarehousingAction">
+		<property name="batchexpBussiness" ref="batchexpBussiness"></property>
+        <property name="empBussiness" ref="empBussiness"></property>
+        <property name="commbizimpl" ref="commodityBiz"></property>
+        <property name="depotBussiness" ref="DepotBussiness"></property>
+        <property name="customerBussiness" ref="customerBussiness"></property>
+        <property name="supplierBussiness" ref="SupplierBussiness"></property>
+        <property name="warehousingBussiness" ref="warehousingBussiness"></property>
+        <property name="productBussiness" ref="productBussiness"></property>
+        <property name="toOrderBussiness" ref="toOrderBussiness"></property>
+        <property name="audBussiness" ref="auditingBussiness"></property>
+        <property name="incomeBussiness" ref="incomeBussiness"></property>
+        <property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		</bean>
+		
+		<!-- 出库Action注入  -->
+        <bean id="OutboundAction" class="com.fuao.fajxc.action.stockpile.OutboundAction">
+        <property name="obb" ref="outboundBussiness"></property>
+        <property name="empBussiness" ref="empBussiness"></property>
+        <property name="commbizimpl" ref="commodityBiz"></property>
+        <property name="depotBussiness" ref="DepotBussiness"></property>
+        <property name="customerBussiness" ref="customerBussiness"></property>
+        <property name="supplierBussiness" ref="SupplierBussiness"></property>
+        <property name="incomeBussiness" ref="incomeBussiness"></property>
+        <property name="audBussiness" ref="auditingBussiness"></property>
+        <property name="productBussiness" ref="productBussiness"></property>
+        <property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+        </bean>
+        
+         <!-- 库存明细Action注入 -->
+        <bean id="StockpileDetailsAction" class="com.fuao.fajxc.action.stockpile.StockpileDetailsAction">
+        	<property name="stockpileDetailsBussiness" ref="StockpileDetailsBussiness"></property>
+        </bean> 
+      
+        <!-- 库存盘点Action注入 -->
+        <bean id="StatAction" class="com.fuao.fajxc.action.stockpile.StatAction">
+        <property name="statbussiness" ref="statBussiness"></property>
+         <property name="empBussiness" ref="empBussiness"></property>
+        <property name="depotBussiness" ref="DepotBussiness"></property>
+        <property name="audBussiness" ref="auditingBussiness"></property>
+        <property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+        </bean>
+        
+         <!-- 报损Action注入 -->
+        <bean id="TheDamageTheGoodAction" class="com.fuao.fajxc.action.stockpile.TheDamageTheGoodAction">
+        <property name="proOrloss" ref="profitOrlossBussiness"></property>
+         <property name="audBussiness" ref="auditingBussiness"></property>
+         <property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+        </bean>
+        
+         <!-- 报益Action注入 -->
+        <bean id="incomeAction" class="com.fuao.fajxc.action.stockpile.IncomeAction">
+        <property name="incomeBussiness" ref="incomeBussiness"></property>
+         <property name="audBussiness" ref="auditingBussiness"></property>
+        </bean>
+        
+        <!-- 客户资产Action注入 -->
+        <bean id="CustomerAssetAction" class="com.fuao.fajxc.action.stockpile.CustomerAssetAction">
+        </bean>
+       
+         <!-- 库存报警Action注入 -->
+        <bean id="WarningAction" class="com.fuao.fajxc.action.stockpile.WarningAction">
+        	<property name="stockpileDetailsBussiness" ref="StockpileDetailsBussiness"></property>
+        </bean>
+        
+	 </beans>

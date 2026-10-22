@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+	<package name="newportalsalegoodmess" extends="struts-default" namespace="/">
+		<!-- CDN管理 -->
+
+
+		<!-- 新系统3.0portal商品管理 -->
+		<action name="*salegoods" class="newportalsaleGoods" method="{1}">
+			  
+			  <result name="selectpurOrder" >/potal/page/inoutproduct/purOrderlist.jsp</result>
+			 <result name="adddepot" type="redirect">/outBoundInfoOutbound.do?potalckd=potal</result>
+			<result name="select">/potal/page/salegoods/sellsalegood.jsp</result>
+			<result name="sgorder">/potal/page/salegoods/sgsaleorder.jsp</result>
+			<result name="selectcus">/potal/page/salegoods/allcus.jsp</result>
+			<result name="selectdepto">/potal/page/inoutproduct/deptolist1.jsp</result>
+			<result name="selectckd">/potal/page/inoutproduct/ckdlist.jsp</result>
+			<result name="newselectcus">/potal/page/inoutproduct/custlist.jsp</result>
+			<result name="selectdepto1">/potal/page/inoutproduct/deptolist.jsp</result>
+			<result name="selectproduct">/potal/page/inoutproduct/productlist.jsp</result>
+			<result name="selectproduct1">/potal/page/inoutproduct/productlist1.jsp</result>
+			<result name="selectcus2">/potal/page/salegoods/allcus2.jsp</result>
+			<result name="selectemp">/potal/page/salegoods/allemp.jsp</result>
+			<result name="selectso" type="redirect">selectsordersalegoods.do</result>
+			<result name="allso">/potal/page/salegoods/soList.jsp</result>
+			<result name="addUS">/potal/page/salegoods/addUpserver.jsp</result>
+			<result name="detail">/potal/page/salegoods/detailRC.jsp</result>
+			<result name="detailsg">/potal/page/salegoods/detailSg.jsp</result>
+			<result name="deptsoList">/potal/page/salegoods/deptsoList.jsp</result>
+			<result name="deptlistrc">/potal/page/salegoods/deptqlistRC.jsp</result>
+			<result name="updaddress">/potal/page/salegoods/updateaddress.jsp</result>
+			<result name="successpage" type="redirect">successsalegoods.do</result>
+			<result name="success">/potal/page/salegoods/successPage.jsp</result>
+			<result name="selectRC">/potal/page/salegoods/qlistRC.jsp</result>
+			<result name="addUI">/potal/page/salegoods/qaddRC.jsp</result>
+			<result name="sodetailSg">/potal/page/salegoods/sodetailSg.jsp</result>
+		</action>
+	</package>
+
+
+</struts>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Operationgroup" table="operationgroup">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="empids" column="empids" type="string"/>
+  <property name="empnames" column="empnames" type="string"/>
+  <property name="creatdate" column="creatdate" type="string"/>
+  <many-to-one name="missiontype" class="com.fuao.fajxc.vo.Missiontype" fetch="select" lazy="false">
+            <column name="operId" />
+  </many-to-one>
+</class>
+</hibernate-mapping>
+

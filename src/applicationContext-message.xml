@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	 
+	
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	 <bean id="executeRecordDao" class="com.fuao.fajxc.dao.impl.executeRecord.ExecuteRecordDaoImpl" parent="baseDao">
+	 </bean>
+	 <bean id="executeRecordBussiness" class="com.fuao.fajxc.bussiness.impl.executeRecord.ExecuteRecordBussinessImpl">
+		<property name="executeRecordDao" ref="executeRecordDao"></property>
+	 </bean>
+	 <bean id="MalfunctionDeclarDaoImpl" class="com.fuao.fajxc.dao.impl.customService.MalfunctionDeclarDaoImpl" parent="baseDao"/>
+	 <!-- 站内消息 -->
+	<bean id="messageDao" class="com.fuao.fajxc.dao.impl.message.MessageDaoImpl" parent="baseDao"></bean>
+	<!-- 站内消息 类型-->
+	<bean id="messagetypeDao" class="com.fuao.fajxc.dao.impl.message.MessagetypeDaoImpl" parent="baseDao"></bean>
+	<!-- 接收人-->
+	<bean id="messagereceiverDao" class="com.fuao.fajxc.dao.impl.message.MessagereceiverDaoImpl" parent="baseDao"></bean>
+	<!-- 员工 -->
+	  <bean id="employeeDao" class="com.fuao.fajxc.dao.impl.basic.EmployeeDaoImpl" parent="baseDao">
+	         <property name="employeeDao" ref="employeeDao"></property>
+	  </bean>
+	<!-- 客户 -->
+	<bean id="customerDao" class="com.fuao.fajxc.dao.impl.basic.CustomerDaoImpl" parent="baseDao">
+	       <property name="customerDao" ref="customerDao"></property>
+	</bean>
+	 <bean id="messageBu" class="com.fuao.fajxc.bussiness.impl.message.MessageBussinessImpl">
+        	<property name="messageDao" ref="messageDao"></property>
+     </bean>
+	<bean id="messagereceiverBussiness" class="com.fuao.fajxc.bussiness.impl.message.MessagereceiverBussinessImpl">
+        	<property name="messagereceiverDao" ref="messagereceiverDao"></property>
+     </bean>
+	<bean id="messagetypeBussiness" class="com.fuao.fajxc.bussiness.impl.message.MessagetypeBussinessImpl">
+        	<property name="messagetypeDao" ref="messagetypeDao"></property>
+     </bean>
+      <bean id="employeeBussiness" class="com.fuao.fajxc.bussiness.impl.basic.EmployeeBussinessImpl">
+        <property name="empDao" ref="employeeDao"></property>
+      </bean>
+      <bean id="customerBussiness" class="com.fuao.fajxc.bussiness.impl.basic.CustomerBussinessImpl">
+        <property name="customerDao" ref="customerDao"></property>
+      </bean>
+         <!-- 消息Action注入 -->
+        <bean id="messageAction" class="com.fuao.fajxc.action.message.MessageAction">
+        	<property name="messageBussiness" ref="messageBu"></property>
+        	<property name="messagetypeBussiness" ref="messagetypeBussiness"></property>
+        	<property name="messagereceiverBussiness" ref="messagereceiverBussiness"></property>
+        	<property name="customerBussiness" ref="customerBussiness"></property>
+        	<property name="employeeBussiness" ref="employeeBussiness"></property>
+        </bean>
+        
+        <bean id="messagetypeAction" class="com.fuao.fajxc.action.message.MessagetypeAction">
+        <property name="messagetypeBussiness" ref="messagetypeBussiness"></property>
+        <property name="messageBussiness" ref="messageBu"></property>
+        </bean>
+        
+    
+
+		<bean id="malmpl" class="com.fuao.fajxc.bussiness.impl.customService.MalfunctionDeclarBussinessImpl">
+		<property name="mddao" ref="MalfunctionDeclarDaoImpl"/>
+		</bean>
+		
+
+       <bean id="auditingDao" class="com.fuao.fajxc.dao.impl.system.AuditingOrderDaoImpl" parent="baseDao"></bean>
+       <bean id="auditingBussiness" class="com.fuao.fajxc.bussiness.system.impl.AuditingBussinessImpl">
+		<property name="audd" ref="auditingDao"></property>
+		</bean>
+        
+        
+        <bean id="noticeDao" class="com.fuao.fajxc.dao.message.NoticeDaoImpl" parent="baseDao"></bean>
+        <!-- 新系统的公告模块 -->
+        <bean id="noticeAction" class="com.fuao.fajxc.action.notice.NoticeAction">
+           <property name="noticeDao" ref="noticeDao"></property>
+           <property name="auditingBussiness" ref="auditingBussiness"></property>
+           <property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+        </bean>
+
+
+</beans>

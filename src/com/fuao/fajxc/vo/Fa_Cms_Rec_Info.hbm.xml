@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_Rec_Info" table="fa_cms_rec_info">
+  <id name="id" column="id" type="integer">
+    <generator class="native" />
+  </id>
+  <property name="info_seq" column="info_seq" type="integer" />
+  <property name="info_vid" column="info_vid" type="integer" insert="false" update="false"/>
+  <property name="info_pid" column="info_pid" type="integer" />
+  <property name="is_img" column="is_img" type="integer" />
+  <property name="info_pname" column="info_pname" type="string" />
+  <property name="info_imgSrc" column="info_imgSrc" type="string" />
+  <property name="info_recdate" column="info_recdate" type="string" />
+  <property name="temp" column="temp" type="string" />
+  <many-to-one name="news" class="com.fuao.fajxc.vo.Fa_Cms_News" column="info_vid" lazy="false"></many-to-one>
+</class>
+</hibernate-mapping>

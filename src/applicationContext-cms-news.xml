@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 <bean id="commonDao" class="com.fuao.fajxc.dao.common.CommonDaoImpl">
+	 	<property name="sessionFactory" ref="sessionFactory"></property>
+	 </bean>
+	 <!-- 注入commonbiz -->
+	 <bean id="commonbizz" class="com.fuao.fajxc.bussiness.common.CommonBizImpl" >
+	 	<property name="commondao" ref="commonDao"></property>
+	 </bean>
+	 <!-- 注入newsdao -->
+	 <bean id="newsDao" class="com.fuao.fajxc.dao.cms_news.NewsDaoImpl">
+	  <property name="sessionFactory" ref="sessionFactory"></property>
+	 </bean>
+	 <bean id="webdao" class="com.fuao.fajxc.dao.cms_website.EnderWebSiteDAOImpl">
+	  <property name="sessionFactory" ref="sessionFactory"></property>
+	 </bean>
+	 <!-- 注入action -->
+	 <bean id="newsAction" class="com.fuao.fajxc.action.cms_news.NewsAction">
+	   <property name="commonbiz" ref="commonbizz"></property>
+	   <property name="newsDao" ref="newsDao"></property>
+	 </bean>
+	 <bean id="cmsWebAction" class="com.fuao.fajxc.action.WebSite">
+	   <property name="commonbiz" ref="commonbizz"></property>
+	   <property name="webdao" ref="webdao"></property>
+	 </bean>
+</beans>

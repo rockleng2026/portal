@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.fuao.fajxc.vo.DeliveryAddress" table="delivery_address" >
+     <id name="addressId" type="java.lang.Integer">
+            <column name="address_id" />
+            <generator class="native" />
+        </id>
+        
+    
+     <many-to-one name="customer" class="com.fuao.fajxc.vo.Customer" fetch="select">
+            <column name="cusid" not-null="true" />
+        </many-to-one>
+        
+        
+   
+        <property name="consignee" type="java.lang.String">
+            <column name="consignee" length="50" />
+        </property>
+        
+        <property name="netherlands" type="java.lang.String">
+            <column name="netherlands" length="200" />
+        </property>
+        
+
+        <property name="particularAddress" type="java.lang.String">
+            <column name="particular_address" length="250" />
+        </property>
+        
+           <property name="phones" type="java.lang.String">
+            <column name="phone" />
+        </property>
+        
+        <property name="mobile" type="java.lang.String">
+            <column name="mobile" length="100" />
+        </property>
+        
+      
+        
+        
+         <property name="postalcode" type="java.lang.String">
+            <column name="postalcode" length="100" />
+        </property>
+        
+        <property name="def" column="def" type="java.lang.String"></property>
+        
+    </class>
+</hibernate-mapping>

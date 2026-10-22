@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+	
+	
+	<package name="addWorkLogPackage" extends="struts-default">
+		<action name="addToWorkLogNewportal" class="NewportalWorklogAction" method="addTo">
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<interceptor-ref name="token"></interceptor-ref>
+			<result name="input">/potal/page/WorkLog/addError.jsp</result>
+			<result name="invalid.token">/potal/page/addrepeat.jsp</result>
+			<result name="successPage">/potal/page/WorkLog/addSuccess.jsp</result><!-- successPage -->
+			<result name="errorPage">/potal/page/WorkLog/addError.jsp</result><!-- errorPage -->
+			<result name="nofind">/potal/page/WorkLog/uploaderror.jsp</result><!-- 404Page -->
+			<result name="logPrompt">/potal/page/WorkLog/logprompt.jsp</result>
+		</action>
+	</package>
+	<package name="WorkLogPackage" extends="struts-default">
+	    <!-- 日志相关action -->
+		<action name="*WorkLog" class="WorklogAction" method="{1}" >
+			<result name="no">/No.jsp</result>
+			<result name="contrast">/workLogs/contrastPage.jsp</result>
+			<result name="goAdd">/workLogs/addWorklog.jsp</result>
+			<result name="goAddWeek">/workLogs/addWeekWorklog.jsp</result>
+			<result name="goAddMonth">/workLogs/addMonthWorklog.jsp</result>
+			<result name="addSuccess" type="redirect">selectWorkLog.do</result>
+			<result name="goDeal">/workLogs/worklogDeal.jsp</result><!-- 废弃 -->
+			<result name="loginfo">/workLogs/WorklogInfo.jsp</result>
+			<result name="myList">/workLogs/myWorklogList.jsp</result>
+			<result name="newallList">/potal/page/WorkLog/newportalallworkloglist.jsp</result>
+			<result name="otherList">/workLogs/otherWorklogList.jsp</result>
+			<result name="goAddReply">/workLogs/addReply.jsp</result>
+			<result name="goAddNewReply">/workLogs/addNewReply.jsp</result>
+			<result name="addNewReply">/workLogs/selectOtherWorkLog.do</result>
+			<result name="addReply" type="redirect">selectOtherWorkLog.do</result>
+			<result name="goSeeReply">/workLogs/seeReply.jsp</result>
+			<result name="goNewSeeReply">/workLogs/seeReply.jsp</result>
+			<result name="allList">/workLogs/allWorklogList.jsp</result>
+			<result name="logrj">/logcount/emplog.jsp</result>
+			<result name="qjinfo">/workLogs/leavesimpleInfo.jsp</result>
+			<result name="yueqjdate">/workLogs/yueDateLog.jsp</result>
+			<result name="detail">/workLogs/detail.jsp </result>
+		</action>
+		<!-- 新系统日志相关action -->
+		<action name="*WorkLogNewportal" class="NewportalWorklogAction" method="{1}" >
+			<result name="input">/potal/page/WorkLog/addError.jsp</result>
+			<result name="no">/No.jsp</result>
+			<result name="contrast">/workLogs/contrastPage.jsp</result>
+			<result name="goAdd">/potal/page/WorkLog/addNewportalWorkLog.jsp</result>
+			<result name="goAddWeek">/workLogs/addWeekWorklog.jsp</result>
+			<result name="goAddMonth">/workLogs/addMonthWorklog.jsp</result>
+			<result name="addSuccess" type="redirect">selectWorkLogNewportal.do</result>
+			<result name="successPage">/potal/page/WorkLog/addSuccess.jsp</result><!-- successPage -->
+			<result name="errorPage">/potal/page/WorkLog/addError.jsp</result><!-- errorPage -->
+			<result name="nofind">/potal/page/WorkLog/uploaderror.jsp</result><!-- 404Page -->
+			<result name="logPrompt">/potal/page/WorkLog/logprompt.jsp</result><!--logPrompt  -->
+			<result name="goDeal">/workLogs/worklogDeal.jsp</result><!-- 废弃 -->
+			<result name="loginfo">/potal/page/WorkLog/seeNewportalReply.jsp</result>
+			<result name="myList">/potal/page/WorkLog/newportalMyWorkloglist.jsp</result>
+			
+			<result name="otherList">/potal/page/WorkLog/newportalworkloglist.jsp</result>
+			
+			 <!-- 
+			<result name="otherList">/potal/page/WorkLog/testhtml.jsp</result>
+			 -->
+			<result name="goAddReply">/workLogs/addReply.jsp</result>
+			<result name="goAddNewReply">/potal/page/WorkLog/addNewportalReply.jsp</result>
+			<result name="addNewReply">/workLogs/selectOtherWorkLog.do</result>
+			<result name="addReply" type="redirect">selectOtherWorkLog.do</result>
+			<result name="goSeeReply">/workLogs/seeReply.jsp</result>
+			<result name="goNewSeeReply">/workLogs/seeReply.jsp</result>
+		
+			<result name="allList">/workLogs/allWorklogList.jsp</result>
+			<result name="logrj">/logcount/emplog.jsp</result>
+			<result name="qjinfo">/workLogs/leavesimpleInfo.jsp</result>
+			<result name="yueqjdate">/workLogs/yueDateLog.jsp</result>
+			<result name="detail">/potal/page/WorkLog/addNewportalReply.jsp </result>
+			<result name="weekOryueLogInfo">/potal/page/WorkLog/showNewportalWeekLog.jsp</result>
+			<result name="addSch" type="redirect">goAddWorkLogNewportal.do</result>
+			<result name="lookSch">/potal/page/WorkLog/addRow.jsp</result>
+			<result name="planemp">/potal/page/message/logmessage.jsp</result>
+			<result name="addweekOryue">/potal/page/WorkLog/addReplyNewportalWeekLog.jsp</result>
+			<result name="batchreply">/potal/page/WorkLog/batchReply.jsp</result>
+		</action>
+		
+	</package>
+	
+</struts>

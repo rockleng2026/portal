@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+   <class name="com.fuao.fajxc.vo.ProjectLead" table="projectlead">
+     <id name="id" column="id" type="integer">
+       <generator class="native"/>
+     </id>
+     <property name="leadname" column="leadname" type="string" />
+     <property name="leadevaluate" column="leadevaluate" type="string" />
+     <property name="pjtime" column="pjtime" type="date" />
+     <many-to-one name="prj" class="com.fuao.fajxc.vo.Project" fetch="select">
+           <column name="prjid" />
+     </many-to-one>
+   </class>
+
+</hibernate-mapping>

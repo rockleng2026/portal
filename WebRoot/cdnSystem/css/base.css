@@ -1,0 +1,9 @@
+body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ol,pre,form,fieldset,legend,button,input,textarea,th,td,ul,li{margin:0;padding:0;word-wrap:break-word}
+ul{ list-style:none;}
+.main{width:1000px; margin:auto; background-color:#FCFCFC}
+#header{ height:72px;}
+#nav div{ background:url('/FAJxc/cdnSystem/images/nav_r.png') no-repeat right; height:27px; padding-right:8px; }
+#nav ul {background:url('/FAJxc/cdnSystem/images/nav_m.png') repeat-x ;height:27px; }
+#nav ul li{float:left; margin-left:30px; line-height:27px;}
+#nav ul li .current{background:url('/FAJxc/cdnSystem/images/nav_current.png') no-repeat; width:96px; height:27px; display:block; text-align:center; color:#ffffff;}
+.xd_z_zi{font-size:12px; color:#626262;}

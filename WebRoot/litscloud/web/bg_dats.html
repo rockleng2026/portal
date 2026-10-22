@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（个人资料修改）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv">
+   </div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" style="background-image:url(images/bg_01.png); color:#ffffff;">我的<br />账户</a></li>
+                <li><a href="bg_indent.html">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                     <li><a href="bg_data.html" style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">个人资料</a></li>
+                    <li><a href="bg_pay.html">在线支付</a></li>
+                    <li><a href="bg_password.html">修改密码</a></li>
+                    <li><a href="bg_zhaopass.html">忘记密码</a></li>
+                    <li><a href="bg_wycz.html">我要充值</a></li>
+                    <li><a href="bg_zhxx.html">账户信息</a></li>
+                    <li><a href="bg_czjl.html">充值记录</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="bg_d">
+             <div class="bg_dt"></div>
+             <div class="bg_dc">
+                <div class="bg_dq">
+                    <div class="bg_dqt"><span class="blue"><a href="bg_data.html">返回个人信息</a></span>修改基本资料</div>
+                    <div class="bg_dqc">
+                      <div class="bg_dqcl"></div>
+                      <div class="bg_dqcr"></div>
+                    </div>
+                    <div class="bg_dqd">
+                       <div class="bg_dqd_l">
+                          <div class="bg_dqd_lt">
+                              <div class="bg_dqd_ltt"><a href="#"><img src="images/bg_12.png" /></a></div>
+                              <div class="bg_dqd_ltd"><span class="blue"><a href="#">修改头像</a></span></div>
+                          </div> 
+                       </div>
+                        <div class="bg_dqd_r">
+                           <div class="bg_dqd_rs">
+                             <dl><dt>登录帐号：</dt>
+                             <dd style="width:305px;">1532265712@qq.com</dd>
+                             <dt>昵 &nbsp; &nbsp; &nbsp; 称：</dt>
+                             <dd><input type="text" name="data_name" class="data_name" value="Mjeiofj" /></dd>
+                             </dl>
+                           </div>
+                           <div class="bg_dqd_rs">
+                             <dl><dt>注册时间：</dt>
+                             <dd style="width:305px;" >2013-03-22 10:12:09</dd>
+                             <dt>性 &nbsp; &nbsp; &nbsp; 别：</dt>
+                             <dd><input name="data_sex"  type="radio" value="男" checked="checked" /> 男 <input name="data_sex" type="radio" value="女" /> 女</dd>
+                             </dl>
+                           </div>
+                           <div class="bg_dqd_rs">
+                             <dl><dt>真实姓名：</dt>
+                             <dd style="width:305px;"><input type="text" name="data_zsname" class="data_name" value="张三" /></dd>
+                             <dt>固定电话：</dt>
+                             <dd><input type="text" name="data_phone" class="data_name" value="1542845218648" /></dd>
+                             </dl>
+                           </div>
+                           <div class="bg_dqd_rs">
+                             <dl><dt>身份证号：</dt>
+                             <dd style="width:305px;"><input type="text" name="data_card" class="data_name" value="43058119930612751x" /></dd>
+                             <dt>QQ号 码：</dt>
+                             <dd><input type="text" name="data_QQ" class="data_name" value="2178963489" /></dd>
+                             </dl>
+                           </div>
+                           <div class="bg_dqd_rs">
+                             <dl><dt>生 &nbsp; &nbsp; &nbsp; 日：</dt>
+                             <dd style="width:305px;"><input type="text" name="data_birthday" class="data_name" value="03-22" /></dd>
+                             <dt>个人邮箱：</dt>
+                             <dd><input type="text" name="data_maile" class="data_name" value="154512644@qq.com" /></dd>
+                             </dl>
+                           </div>
+                           <div class="bg_dqd_rs">
+                             <dl><dt>公司名称：</dt>
+                             <dd style="width:305px;"><input type="text" name="data_TDname" class="data_name" value="重庆福奥科技有限公司" /></dd>
+                             <dt>营业执照：</dt>
+                             <dd><input type="text" name="data_business" class="data_name" value="154512644" /></dd>
+                             </dl> 
+                           </div>
+                           <div class="bg_dqd_rs">
+                             <dl><dt>公司规模：</dt>
+                             <dd style="width:305px;"><input type="text" name="data_scale" class="data_name" value="500~1000" /></dd>
+                             <dt>公司电话：</dt>
+                             <dd><input type="text" name="data_tel" class="data_name" value="020-2178963489" /></dd>
+                             </dl>
+                           </div>
+                           <div class="bg_dqd_rs">
+                             <dl><dt>公司地址：</dt>
+                             <dd style="width:350px;"><input type="text" name="data_address" class="data_address" value="广东省深圳市宝安区F518时尚创意园F7栋201" /></dd>                           </dl>
+                           </div>
+                           <div class="bg_dqd_rs">
+                             <dl><dt>授&nbsp; 权&nbsp; 码：</dt>
+                             <dd style="width:350px;"><input type="text" name="data_code" class="data_name" value="15452156" /></dd>
+                             </dl>                           
+                           </div>
+                           
+                        </div>
+                    </div>
+                    
+                    <div class="bg_an">
+                        <div class="bg_anc"><a href="#">保 &nbsp; 存</a></div>
+                    </div>
+                </div>  
+                
+             </div>
+             <div class="bg_dd"></div>
+          </div>      
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

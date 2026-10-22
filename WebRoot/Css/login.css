@@ -1,0 +1,35 @@
+html, body, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+table { border:0px;border-collapse:collapse;}
+body {line-height: 1; font-size:12px;background:#ebeae9;}
+ol, ul {list-style: none;}
+blockquote, q {quotes: none;}
+
+.Login_BgT{ background:url(../images/htmltpl/Bg_T.gif); width:988px; height:127px; margin:0 auto}
+.Login_BgC{ width:980px; margin:0 auto; background:url(../images/htmltpl/Bg_B.gif) repeat-x;}
+.Login_Box{ width:601px; height:323px; margin-left:168px;}
+.LBox_L{ background:url(../images/htmltpl/Login_Bg_L.gif); float:left; width:257px; height:323px; color:#fff; font-weight:bold; line-height:40px; text-indent:14px;}
+.LBox_M{ background:url(../images/htmltpl/Login_Bg_M.gif); float:left; width:335px; height:216px; padding:107px 0 0 0 }
+.LBox_R{ background:url(../images/htmltpl/Login_Bg_R.gif); float:left; width:9px; height:323px}
+.Copyright{ color:#575d62; width:980px; text-align:center; margin:264px 0 0 8px;}
+.Login_CF{ width:980px;}
+.LBox_M .Tab{ height:32px; font-weight:bold; width:103px; padding-right:14px; text-align:right; line-height:32px;}
+.LB0x_M input {font-family:Verdana; border:1px solid #374248}
+
+a.Login_btn01:link,a.Login_btn01:visited{ display:block; text-align:center; float:left; margin-right:10px;width:61px; padding-top:6px; height:16px; background:url(../images/htmltpl/Login_Btn.gif) no-repeat; color:#fff; text-decoration:none; margin-top:8px;}
+a.Login_btn01:hover{ text-decoration:underline;}

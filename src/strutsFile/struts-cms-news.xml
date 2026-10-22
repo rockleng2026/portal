@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="gbk"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+  <package name="PackageNews" extends="json-default" namespace="/cms">
+
+     <!-- 文章管理action -->
+    <action name="*News" class="newsAction" method="{1}">
+         <result name="update">/cms/papers/paperOut.jsp</result>
+         <result name="show">/cms/papers/paperManage.jsp</result>
+         <result type="json"/>
+         <result name="info">/litscloud/lab/lab_content.jsp</result>
+         <result name="info_no_param">/litscloud/msg/error.jsp</result>
+         <result name="info_no_cid">/litscloud/msg/error.jsp</result>
+    </action>
+    <action name="delnews" class="newsAction" method="del">
+    	<result name="success" type="json">
+		        <param name="del"></param>
+		</result>
+    </action>
+    <action name="changesLogin" class="com.fuao.random.RandomAction">
+         <result name="success" type="stream">        
+                <param name="contentType">image/jpeg</param>        
+                <param name="inputName">inputStream</param>        
+         </result> 
+    </action>
+  </package>
+
+</struts>

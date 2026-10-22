@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（评价成功）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv">
+   </div>
+       <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心>订单管理>评价宝贝</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" >我的<br />账户</a></li>
+                <li><a href="bg_indent.html" style="background-image:url(images/bg_01.png); color:#ffffff;">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_indent.html" style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">订单管理</a></li>
+                    <li><a href="bg_zxgd.html" target="_parent" >在线工单</a></li>
+                    <li><a href="bg_wdgd.html">我的工单</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+           <div class="bg_pjcg">
+               <div class="bg_pjcg_t"><img src="images/log_46.gif" /></div>
+               <div class="bg_pjcg_d">
+                  <div class="bg_pjcg_dl">
+                     <div class="bg_pjcg_dlt"></div>
+                     <div class="bg_pjcg_dlc">
+                        <div class="bg_pjcg_dlcl"><img src="images/log_45.gif" /></div>
+                        <div class="bg_pjcg_dlcr"><span>您的评分成功！信用评价成功1个！</span><br />双方互评后需要等待30分钟才能看到自己评价过的宝贝</div>
+                     </div>
+                     <div class="bg_pjcg_dld"></div>
+                  </div>
+                  <div class="bg_pjcg_dr">
+                    <a href="#"><img src="images/log_44.gif" /> 评价须知</a>
+                  </div>
+               </div>
+           </div>      
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+ <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

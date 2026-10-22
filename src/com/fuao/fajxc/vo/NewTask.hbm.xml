@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.NewTask" table="new_task">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="begintime" column="begintime" type="date"/>
+  <property name="endtime" column="endtime" type="date"/>
+  <property name="schedule" column="schedule" type="int"/>
+  <property name="flag" column="flag" type="int"/>
+  <property name="fj" column="fj" type="string"/>
+  <property name="temp" column="temp" type="string"/>
+  <property name="temp1" column="temp1" type="string"/>
+  <many-to-one name="emp" class="com.fuao.fajxc.vo.Employee" fetch="select" lazy="false">
+            <column name="execute" />
+  </many-to-one>
+  <!-- 任务对功能一对多 -->
+  <many-to-one name="function" class="com.fuao.fajxc.vo.NewFunction" fetch="select" lazy="false">
+            <column name="fid" />
+  </many-to-one>
+  <set name="newprjtresource" inverse="true">
+  	<key>
+  		<column name="fid"></column>
+  	</key>
+  	<one-to-many class="com.fuao.fajxc.vo.NewPrjtresource"/>
+  </set>
+</class>
+</hibernate-mapping>

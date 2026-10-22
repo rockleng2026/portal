@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    
+   <struts>
+   <package name="PackageServer" extends="json-default">
+   <!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			
+			<interceptor-stack name="myInter">
+			<interceptor-ref name="system">
+			<param name="name">SystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">select</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+			</interceptor-stack>
+		</interceptors>
+
+   <!-- 上架管理 -->
+   <action name="*Upserver" class="upserverAction" method="{1}">
+   			<!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>
+
+		    <result name="success">/Server/upserver/upserverInfo.jsp</result>
+		    <result name="detail">/Server/upserver/qqq.jsp</result>
+		    <result name="add">/Server/upserver/addupServer.jsp</result>
+		    <result name="add2">/Server/upserver/addupServer2.jsp</result>
+		    <result name="addright" type="redirect">selectUpserver.do?funid=193</result>
+		    <result name="operate" type="redirect">selectUpserver.do?funid=193</result>
+		    <result name="addoperate">/Server/upserver/operateDetail.jsp</result>
+		    <result name="workorderlist">/Server/upserver/wordorderList.jsp</result>
+		    <result name="uplist">/Server/upserver/upserverlist.jsp</result>
+		    <result name="oplist">/Server/upserver/operatelist.jsp</result>
+		    <result name="showoperate">/Server/upserver/showOperate.jsp</result>
+		    <result name="tolist" type="redirect">selectUpserver.do?funid=193</result>
+		    <result name="wodetail">/Server/upserver/workorderDetail.jsp</result>
+		    <result name="saleorderlist">/Server/upserver/saleOrderDialog.jsp</result>
+		    <result name="jieshou">/Server/upserver/workorderDetail.jsp</result>
+		    <result name="sub">/Server/upserver/workorderDetail.jsp</result>
+   </action>
+   
+   <!-- 下架管理 -->
+   <action name="*Downserver" class="downserverAction" method="{1}">
+  			<!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>
+			<result name="success">/Server/downserver/downserverInfo.jsp</result>
+			<result name="add">/Server/downserver/adddownServer.jsp</result>
+			<result name="detail">/Server/downserver/downserverDetail.jsp</result>
+			<result name="addright" type="redirect">selectDownserver.do?funid=199</result>
+   </action>
+   
+   
+   <!-- 组装服务器记录 -->
+    <action name="*AssemblyServer" class="assemblyserverAction" method="{1}">
+  			 <!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>
+			<result name="success">/Server/assemblyserver/assemblyserverInfo.jsp</result>
+			<result name="add">/Server/assemblyserver/addassemblyServer.jsp</result>
+			<result name="detail">/Server/assemblyserver/assemblyserverDetail.jsp</result>
+   </action>
+   
+   <!-- 服务器状态管理 -->
+   <action name="*ServerState" class="serverstateAction" method="{1}">
+   <result name="success">/Server/serverstate/serverState.jsp</result>
+   </action>
+   
+   <action name="*manager" class="ipmanagerAction" method="{1}">
+  		<!--引用拦截器栈 -->
+		<interceptor-ref name="myInter">
+		</interceptor-ref>
+   		<result name="success">/ipmanager/ipInfo.jsp</result>
+   		<result name="add" type="redirect">selectIpmanager.do</result>
+   		<result name="addUI">/ipmanager/addIpUI.jsp</result>
+   		<result name="update" type="redirect">selectIpmanager.do</result>
+   		<result name="delete"></result>
+   </action>
+   <!-- 服务器统计 -->
+   <action name="onlineCount" class="onlineServCount" method="serverCounts">
+       <result type="json"/>
+   </action>
+   </package>
+   </struts>

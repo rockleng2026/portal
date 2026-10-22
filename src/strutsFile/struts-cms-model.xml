@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="gbk"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+ <package name="model" extends="json-default" namespace="/cms">
+   <action name="*Model" class="com.fuao.fajxc.action.cms_adminmodel.AdminModelAction" method="{1}">
+    <result name="update">/cms/papers/modelToUpdate.jsp</result>
+    <result name="aa">/cms/papers/adminmodel.jsp</result>
+    <result type="json"/>
+	
+	<result name="add">/cms/papers/modeladd.jsp</result>
+	
+   </action>
+   
+   <action name="delsid" class="com.fuao.fajxc.action.cms_adminmodel.AdminModelAction" method="del">
+    	<result name="success" type="json">
+		        <param name="del"></param>
+		</result>
+    </action>
+ 
+ </package>
+</struts>

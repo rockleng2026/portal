@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	 <!-- 商品管理 -->
+	
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	
+	<!-- 商品类型 DAO-->
+	     <bean id="ctdao" class="com.fuao.fajxc.dao.impl.commodity.CommodityTypeDaoImpl" parent="baseDao"/>
+	<!-- 商品型号DAO -->
+		<bean id="cmdao" class="com.fuao.fajxc.dao.impl.commodity.CommodityModelDaoImpl" parent="baseDao"/>
+	<!-- 商品DAO -->	
+	    <bean id="commdao" class="com.fuao.fajxc.dao.impl.commodity.CommodityDaoImpl" parent="baseDao"/>
+	<!-- 产品DAO -->	
+	    <bean id="productDao" class="com.fuao.fajxc.dao.impl.commodity.ProductDaoImpl" parent="baseDao"/>
+	
+	
+	<!-- 批次 -->
+		<bean id="batchDao" class="com.fuao.fajxc.dao.impl.commodity.BatchDaoImpl" parent="baseDao"></bean>
+	<!-- 批次详表 -->
+		<bean id="batchexpDao" class="com.fuao.fajxc.dao.impl.commodity.BatchexpDaoImpl" parent="baseDao"></bean>
+	
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 商品类型BIZ -->
+		<bean id="commodityTypeBussiness" class="com.fuao.fajxc.bussiness.impl.commodity.CommodityTypeBussinessImpl">
+		<property name="ctdao" ref="ctdao"/>
+		</bean>
+		
+		<!-- 商品型号BIZ -->
+		<bean id="commodityModelBussinessImpl" class="com.fuao.fajxc.bussiness.impl.commodity.CommodityModelBussinessImpl">
+		<property name="cmDao" ref="cmdao"/>
+		</bean>
+		
+		<!-- 商品BIZ -->
+		<bean id="commodityBiz" class="com.fuao.fajxc.bussiness.impl.commodity.CommodityBusssinessImpl">
+		<property name="commodityDao" ref="commdao"/>
+		</bean>
+		
+		<!--产品BIZ -->
+		<bean id="productBussiness" class="com.fuao.fajxc.bussiness.impl.commodity.ProductBussinessImpl">
+		<property name="productDao" ref="productDao"/>
+		</bean>
+		
+		<!-- 批次 -->
+		<bean id="batchBusiness" class="com.fuao.fajxc.bussiness.impl.commodity.BatchBusinessImpl">
+			<property name="batchDao" ref="batchDao"></property>
+		</bean>
+		
+		<bean id="batchexpBussiness" class="com.fuao.fajxc.bussiness.impl.commodity.BatchexpBussinessImpl">
+			<property name="batchexpDao" ref="batchexpDao"></property>
+		</bean>
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 商品类型Action注入 -->
+		<bean id="CommodityTpyeAction" class="com.fuao.fajxc.action.commodity.CommodityTpyeAction">
+		<property name="commodityTypeBussinessao" ref="commodityTypeBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		</bean>
+		<!-- 商品型号Action注入 -->
+		<bean id="CommodityModelAction" class="com.fuao.fajxc.action.commodity.CommodityModelAction">
+		<property name="commodityModelBussiness" ref="commodityModelBussinessImpl"></property>
+		</bean>
+		<!-- 商品Action注入 -->
+		<bean id="CommodityAction" class="com.fuao.fajxc.action.commodity.CommodityAction">
+		<property name="commbizimpl" ref="commodityBiz"></property>
+		 <property name="commodityModelBussiness" ref="commodityModelBussinessImpl"></property>
+		 <property name="commodityTypeBussinessao" ref="commodityTypeBussiness"></property>
+		 <property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		 <property name="productbussiness" ref="productBussiness"></property>
+		</bean>
+		<bean id="UploadUtilAction" class="com.fuao.fajxc.action.commodity.UploadUtilAction"></bean>
+	 </beans>

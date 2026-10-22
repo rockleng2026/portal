@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（充值记录）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv">
+   </div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" style="background-image:url(images/bg_01.png); color:#ffffff;">我的<br />账户</a></li>
+                <li><a href="bg_indent.html">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_data.html" >个人资料</a></li>
+                    <li><a href="bg_pay.html">在线支付</a></li>
+                    <li><a href="bg_password.html">修改密码</a></li>
+                    <li><a href="bg_zhaopass.html">忘记密码</a></li>
+                    <li><a href="bg_wycz.html">我要充值</a></li>
+                    <li><a href="bg_zhxx.html" >账户信息</a></li>
+                    <li><a href="bg_czjl.html" style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">充值记录</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="ly_zh">
+             <div class="ly_zht">
+               <div class="ly_zhtl">充值记录查询</div>
+               <div class="ly_zhtr">您当前的可用佘额为：<span>200.00</span>元</div>
+             </div>
+             <div class="ly_zhc">
+                <select name="bg_rqcx" style="margin-right:15px;">
+                  <option value="1">2013-02-01</option>
+                  <option value="2">2013-02-02</option>
+                  <option value="3">2013-02-03</option>
+                  <option value="4">2013-02-04</option>
+                </select>
+                至
+                <select name="bg_rqcx" style="margin-right:15px; margin-left:15px;">
+                  <option value="1">2013-02-01</option>
+                  <option value="2">2013-02-02</option>
+                  <option value="3">2013-02-03</option>
+                  <option value="4">2013-02-04</option>
+                </select>
+                 <a href="#"><img src="images/zf_41.gif" style="margin-right:10px;" /></a>
+                 充值：<span>300.00</span>元
+             </div>
+             <div class="ly_zhm">
+             <div class="ly_zhm_u"><img src="images/zf_40.gif" /> 搜索结果是从2013年02月01日开始，最多<span> 30 </span>天的记录。</div>
+                <div class="ly_zhm_t">
+                  <div class="ly_zhm_tq">流水号</div>
+                  <div class="ly_zhm_tw">充值成功时间</div>
+                  <div class="ly_zhm_te">名称</div>
+                  <div class="ly_zhm_tr">收/支</div>
+                  <div class="ly_zhm_tt">金额(元)资金渠道</div>
+                  <div class="ly_zhm_ty">状态</div>
+                </div>
+                <div class="ly_zhm_d">
+                   <div class="ly_zhm_dt">
+                     <div class="ly_zhm_dtq">1242464894SFDG854465   </div>
+                     <div class="ly_zhm_dtw">2013-02-01   10:26:53 </div>
+                     <div class="ly_zhm_dte">充值</div>
+                     <div class="ly_zhm_dtr"> 收入</div>
+                     <div class="ly_zhm_dtt">1000 .00  中国邮政储蓄银行 </div>
+                     <div class="ly_zhm_dty"> 成功</div>
+                   </div>
+                   <div class="ly_zhm_dt">
+                     <div class="ly_zhm_dtq">1242464894SFDG854465   </div>
+                     <div class="ly_zhm_dtw">2013-02-01   10:26:53 </div>
+                     <div class="ly_zhm_dte">充值</div>
+                     <div class="ly_zhm_dtr"> 收入</div>
+                     <div class="ly_zhm_dtt">1000 .00  中国邮政储蓄银行 </div>
+                     <div class="ly_zhm_dty"> 成功</div>
+                   </div>
+                   <div class="ly_zhm_dt">
+                     <div class="ly_zhm_dtq">1242464894SFDG854465   </div>
+                     <div class="ly_zhm_dtw">2013-02-01   10:26:53 </div>
+                     <div class="ly_zhm_dte">充值</div>
+                     <div class="ly_zhm_dtr"> 收入</div>
+                     <div class="ly_zhm_dtt">1000 .00  中国邮政储蓄银行 </div>
+                     <div class="ly_zhm_dty"> 成功</div>
+                   </div>
+                   <div class="ly_zhm_dt">
+                     <div class="ly_zhm_dtq">1242464894SFDG854465   </div>
+                     <div class="ly_zhm_dtw">2013-02-01   10:26:53 </div>
+                     <div class="ly_zhm_dte">充值</div>
+                     <div class="ly_zhm_dtr"> 收入</div>
+                     <div class="ly_zhm_dtt">1000 .00  中国邮政储蓄银行 </div>
+                     <div class="ly_zhm_dty"> 成功</div>
+                   </div>
+                   <div class="ly_zhm_dt">
+                     <div class="ly_zhm_dtq">1242464894SFDG854465   </div>
+                     <div class="ly_zhm_dtw">2013-02-01   10:26:53 </div>
+                     <div class="ly_zhm_dte">充值</div>
+                     <div class="ly_zhm_dtr"> 收入</div>
+                     <div class="ly_zhm_dtt">1000 .00  中国邮政储蓄银行 </div>
+                     <div class="ly_zhm_dty"> 成功</div>
+                   </div>
+                   <div class="ly_zhm_dt">
+                     <div class="ly_zhm_dtq">1242464894SFDG854465   </div>
+                     <div class="ly_zhm_dtw">2013-02-01   10:26:53 </div>
+                     <div class="ly_zhm_dte">充值</div>
+                     <div class="ly_zhm_dtr"> 收入</div>
+                     <div class="ly_zhm_dtt">1000 .00  中国邮政储蓄银行 </div>
+                     <div class="ly_zhm_dty"> 成功</div>
+                   </div>
+                </div>
+                <div class="ly_zhm_s">
+                  <div class="ly_zhm_sd">打印]</div>
+                  <div class="ly_zhm_sz">转到<input type="text" name="zy" class="zy" /> 页</div>
+                  <div class="ly_zhm_ss">页数：1/15</div>
+                  <div class="ly_zhm_sw"><a href="#">尾页</a></div>
+                  <div class="ly_zhm_sx"><a href="#">下一页</a></div>
+                  <div class="ly_zhm_sx"><a href="#">上一页</a></div>
+                  <div class="ly_zhm_sw"><a href="#">首页</a></div>
+                  <div class="ly_zhm_sd" style="width:90px;">[共96条记录</div>
+                </div>
+             </div>
+          </div>
+                          
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

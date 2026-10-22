@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">	 
+	
+	 <bean id="serDao" class="com.fuao.fajxc.serser.dao.SerajaxDaoImpl" >
+	     <property name="sessionFactory" ref="sessionFactory"></property>
+	 </bean>
+	 
+	 <bean id="opLogeDao" class="com.fuao.fajxc.serser.dao.LoggersDaosImpl">
+	    <property  name="sessionFactory" ref="sessionFactory"></property>
+	 </bean>
+     <bean id="storeCountdaos" class="com.fuao.fajxc.serser.dao.StoreCountDaoImpl">
+         <property name="sessionFactory" ref="sessionFactory"></property>
+     </bean>
+     <bean id="serversDao" class="com.fuao.fajxc.dao.servers.ServerDaoImpl" parent="baseDao">
+     </bean>
+	 <bean id="serService" class="com.fuao.fajxc.serser.service.impl.SerajaxServiceImpl">
+	    <property name="serDao" ref="serDao"></property>
+	 </bean>
+	 <bean id="opLogeService" class="com.fuao.fajxc.serser.service.impl.LoggerServicesImpl">
+	    <property name="cabLogDao" ref="opLogeDao"></property>
+	 </bean>
+	 <bean id="storeCountsers" class="com.fuao.fajxc.serser.service.impl.StoreCountServiceImpl">
+	      <property name="storeDaos" ref="storeCountdaos"></property>
+	 </bean>
+	 <bean id="serAction" class="com.fuao.fajxc.action.ser.room.SerRoom">
+	     <property name="sersevice" ref="serService"></property>
+	     <property name="serversDao" ref="serversDao"></property>
+	     <property name="saleOrdBussiss" ref="saleBussiness"></property>
+	 </bean>
+	 <bean id="storeCountActs" class="com.fuao.fajxc.action.ser.room.StoreCountAction">
+	     <property name="storeSers" ref="storeCountsers"></property>
+	 </bean>
+	 <bean id="numDWR" class="com.fuao.fajxc.serser.service.CabinetContent">
+	     <property name="serAjax" ref="serDao"></property>
+	     <property name="serajaxService" ref="serService"></property>
+	 </bean>
+</beans>

@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-立云公告</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<style type="text/css">
+.lk_bz{display:block; background-image:url(images/lys_76.png); background-repeat:no-repeat; color:#c4e8fa;}
+.newl_cm2{
+	font-family:"宋体";
+	font-size:122px;
+	background-image:url(../images/lys_76.png);
+	background-repeat:no-repeat;
+	color:#c4e8fa;
+	}
+
+	
+
+</style>
+
+
+<script type="text/javascript">
+//加载头部脚步模块     
+ $(document).ready(function(){ 
+ 	
+	 $('#topdiv').load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+	 $('#ly_bottom').load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+	 $('#index').css({
+	 "font-family":"Arial, Helvetica, sans-serif",
+	 "color":"#2fafea",
+	 "background-image":"url(images/ly_05.gif)",
+	 "background-repeat":"no-repeat",
+	 "background-position":"center center"	 
+	 
+	 })
+	 
+	}); 
+
+
+
+
+
+     var request ={QueryString : function(val){
+     var uri = window.location.search;
+     var re = new RegExp("" +val+ "=([^&?]*)", "ig");
+     return ((uri.match(re))?(uri.match(re)[0].substr(val.length+1)):null);
+     }
+   }
+   
+   
+   function lygg(){
+      
+      document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='block';
+      document.getElementById("r2").style.display='none';
+      document.getElementById("r3").style.display='none';
+   }
+   
+   function lygg2(){
+      $("#lygg").attr("class","lk_bz");
+      $("#rdhd").attr("class","");
+      $("#hydt").attr("class","");
+      $("#qyxw").attr("class","");
+   }
+  
+   function rdhd(){
+      document.getElementById("r1").style.display='block';
+      document.getElementById("r0").style.display='none';
+      document.getElementById("r2").style.display='none';
+      document.getElementById("r3").style.display='none';
+   }
+   
+   function rdhd2(){
+      $("#lygg").attr("class","");
+      $("#rdhd").attr("class","lk_bz");
+      $("#hydt").attr("class","");
+      $("#qyxw").attr("class","");
+   }
+   
+   function hydt(){
+      document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='none';
+      document.getElementById("r2").style.display='block';
+      document.getElementById("r3").style.display='none';
+   }
+   
+   function hydt2(){
+      $("#lygg").attr("class","");
+      $("#rdhd").attr("class","");
+      $("#hydt").attr("class","lk_bz");
+      $("#qyxw").attr("class","");
+   }
+   
+   function qyxw(){
+      document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='none';
+      document.getElementById("r2").style.display='none';
+      document.getElementById("r3").style.display='block';
+   }
+   
+   function qyxw2(){
+     $("#lygg").attr("class","");
+      $("#rdhd").attr("class","");
+      $("#hydt").attr("class","");
+      $("#qyxw").attr("class","lk_bz");
+   }
+   
+  
+   
+   
+   
+   $(document).ready(function(){
+     var rt = request.QueryString("flag");
+     if(rt==1){
+        $("#lygg").attr("class","lk_bz");
+        document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='block';
+      document.getElementById("r2").style.display='none';
+      document.getElementById("r3").style.display='none';
+     }
+     if(rt==2){
+        $("#rdhd").attr("class","lk_bz");
+        document.getElementById("r1").style.display='block';
+        document.getElementById("r0").style.display='none';
+        document.getElementById("r2").style.display='none';
+        document.getElementById("r3").style.display='none';
+
+     }
+     if(rt==3){
+        $("#hydt").attr("class","lk_bz");
+        document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='none';
+      document.getElementById("r2").style.display='block';
+      document.getElementById("r3").style.display='none';
+     }
+     if(rt==4){
+        $("#qyxw").attr("class","lk_bz");
+        document.getElementById("r1").style.display='none';
+        document.getElementById("r0").style.display='none';
+        document.getElementById("r2").style.display='none';
+       document.getElementById("r3").style.display='block';
+     }
+  });
+  
+   
+   
+    function lygga(a){
+      window.location.href="news_vew_v"+a+".html?flag=1";
+
+      
+   }
+   
+   function rdhdb(b){
+      window.location.href="news_vew_v"+b+".html?flag=2";
+   }
+   
+   function hydtc(c){
+      window.location.href="news_vew_v"+c+".html?flag=3";
+   }
+   
+   function qyxwd(d){
+      window.location.href="news_vew_v"+d+".html?flag=4";
+   }
+</script>
+</head>
+
+<body>
+<div class="ly_body">
+   <br />
+<div class="ly_top" id="topdiv"></div>
+  <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle">
+ 
+          <div class="ly_dh" style="height:4px; overflow:hidden;">          
+      </div>
+      <div class="ly_dhn" style="background-color:#fff;">
+      当前位置：<a href="index.html">首页</a> > <a href="news.html">新闻动态</a>
+      </div>
+     <div class="news"> 
+      <div class="new">
+         <div class="newl">
+            <div class="newl_t"></div>
+            <div class="newl_c">
+              <div class="newl_cm"><ul>
+                <li><a id="lygg" href="javascript:lygg();" onmousemove="lygg2();">立云公告</a></li>
+                <li><a id="rdhd" href="javascript:rdhd();" onmousemove="rdhd2();">热点活动</a></li>
+                <li><a id="hydt" href="javascript:hydt();" onmousemove="hydt2();">行业动态</a></li>
+                <li><a id="qyxw" href="javascript:qyxw();" onmousemove="qyxw2();">企业新闻</a></li>
+              </ul></div>
+            </div>
+            <div class="newl_d"></div>
+         </div>
+         <div class="newr">
+            <div class="newr_t"></div>
+            <div class="newr_c">
+               <div class="newr_m">
+                  
+                  <div class="newr_mc" id="r0">
+                    <div class="newr_mt">立云公告</div>
+                     <dl><span>1.</span><dt><a href="javascript:lygga(0);">迎接五一节，立云全面推出特价活动</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>2.</span><dt><a href="javascript:lygga(1);">立云开启微信服务</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>3.</span><dt><a href="javascript:lygga(2);">迎接清明节，立云全面推出特价活动</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>4.</span><dt><a href="javascript:lygga(3);">立云云主机全面升级</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     </div>
+                  
+                  
+                  <div class="newr_mc" id="r1">
+                    <div class="newr_mt">热点活动</div>
+                     <dl><span>1.</span><dt><a href="javascript:rdhdb(0);">原价800元每月现在只需466元</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>2.</span><dt><a href="javascript:rdhdb(1);">租用服务器可采用月季年的方式租用</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>3.</span><dt><a href="javascript:rdhdb(2);">速成美站，专业设计师打造精美网站</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>4.</span><dt><a href="javascript:rdhdb(3);">立云推出PORTAL管理系统平台</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                  
+                  </div>
+                  
+                  
+                  <div class="newr_mc" id="r2">
+                    <div class="newr_mt">行业动态</div>
+                     <dl><span>1.</span><dt><a href="javascript:hydtc(0);">IDC如何在网络虚拟化中占据一席之地</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>2.</span><dt><a href="javascript:hydtc(1);">云计算冲击IDC：哪片云"财"能下雨？</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>3.</span><dt><a href="javascript:hydtc(2);">工信部集中打击VoIP非法经营</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>4.</span><dt><a href="javascript:hydtc(3);">CN域名注册管理措施加强 </a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                  
+                  </div>
+                  
+                 
+                  <div class="newr_mc" id="r3">
+                    <div class="newr_mt">企业新闻</div>
+                     <dl><span>1.</span><dt><a href="javascript:qyxwd(0);">公司利用双休日组织员工爬山，锻炼身体</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>2.</span><dt><a href="javascript:qyxwd(1);">清明节，公司给员工发过节费，激励员工</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>3.</span><dt><a href="javascript:qyxwd(2);">公司将要扩大公司规模</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                     <dl><span>4.</span><dt><a href="javascript:qyxwd(3);">公司将搬迁办公地点</a></dt><dd>发布于2013-04-01 15：47：16，793次阅读</dd></dl>
+                  </div>
+                  <div class="newr_md"><a href="javascript:void(0)">查看更多>></a></div>
+               </div>
+            </div>
+            <div class="newr_d"></div>
+         </div>
+      </div>
+      </div>
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div> 
+   </div>
+
+<!--_________________________底部公用代码 _______________________________________________-->
+ <div class="ly_bottom" id="ly_bottom">
+ </div>
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

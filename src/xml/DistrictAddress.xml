@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="GBK"?>
+<Address>
+	<districtName disName="湖南省">
+			<Name>长沙</Name>
+			<Name>株洲</Name>
+			<Name>湘潭</Name>
+			<Name>永州</Name>
+	</districtName>
+	<districtName disName="江苏省">
+			<Name>昆山</Name>
+			<Name>江浦</Name>
+			<Name>南京</Name>
+			<Name>无锡</Name>
+			<Name>徐州</Name>
+	</districtName>
+	<districtName disName="广东省">
+			<Name>广州</Name>
+			<Name>深圳</Name>
+			<Name>东莞</Name>
+			<Name>佛山</Name>
+			<Name>珠海</Name>
+	</districtName>
+	<districtName disName="山东省">
+			<Name>荷泽</Name>
+			<Name>巨野</Name>
+			<Name>定陶</Name>
+			<Name>成武</Name>
+			<Name>单县</Name>
+	</districtName>
+	<districtName disName="安徽省">
+			<Name>合肥</Name>
+			<Name>芜湖</Name>
+			<Name>蚌埠</Name>
+			<Name>淮南</Name>
+			<Name>马鞍山</Name>
+	</districtName>
+</Address>

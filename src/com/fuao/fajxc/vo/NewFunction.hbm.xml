@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+ <class name="com.fuao.fajxc.vo.NewFunction" table="new_function">
+  <id column="id" name="id" type="integer">
+   <generator class="native"/>
+  </id>
+  <property column="functionname" generated="never" lazy="false"
+   name="functionname" type="string"/>
+  <property column="begintime" generated="never" lazy="false"
+   name="begintime" type="date"/>
+  <property column="endtime" generated="never" lazy="false"
+   name="endtime" type="date"/>
+  <property column="functioninfo" generated="never" lazy="false"
+   name="functioninfo" type="string"/>
+  <property generated="never" lazy="false" name="fj" type="string"/>
+  <property column="fstate" generated="never" lazy="false" name="fstate" type="integer"/>
+  <property column="flag" generated="never" lazy="false" name="flag" type="integer"/>
+  <property column="finishtasktype" generated="never" lazy="false"
+   name="finishtasktype" type="integer"/>
+  <property column="parentid" generated="never" lazy="false"
+   name="parentid" type="integer"/>
+  <set inverse="true" name="task" sort="unsorted">
+   <key>
+    <column name="fid"/>
+   </key>
+   <one-to-many class="com.fuao.fajxc.vo.NewTask"/>
+  </set>
+  <set inverse="true" name="schedulplan" sort="unsorted">
+   <key>
+    <column name="taskid"/>
+   </key>
+   <one-to-many class="com.fuao.fajxc.vo.Scheduleplan"/>
+  </set>
+  <set inverse="true" name="functionrecord" sort="unsorted">
+   <key>
+    <column name="fid"/>
+   </key>
+   <one-to-many class="com.fuao.fajxc.vo.NewFunctionRecord"/>
+  </set>
+  <set inverse="true" name="delrecord" sort="unsorted">
+   <key>
+    <column name="fid"/>
+   </key>
+   <one-to-many class="com.fuao.fajxc.vo.NewFunctionDelRecord"/>
+  </set>
+  <many-to-one class="com.fuao.fajxc.vo.NewProject" fetch="select"
+   lazy="false" name="newProject">
+   <column name="pid"/>
+  </many-to-one>
+ </class>
+</hibernate-mapping>

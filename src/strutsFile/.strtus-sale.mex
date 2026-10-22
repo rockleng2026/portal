@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="PackageSale" location="0,0" size="0,0">
+    <action name="*Sale" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="goAdd">
+        <resourceEdge source="goAdd" routing="0" target="addOrder.jsp" />
+      </result>
+      <result name="select" />
+      <result name="orderType">
+        <resourceEdge source="orderType" routing="0" target="orderType.jsp" />
+      </result>
+    </action>
+    <action name="*OrderType" location="0,0" size="0,0">
+      <result name="no">
+        <resourceEdge source="no" routing="0" target="No.jsp" />
+      </result>
+      <result name="success" />
+      <result name="goAdd" />
+      <result name="goList" />
+      <result name="goInfo" />
+      <result name="goUpdate" />
+      <result name="select" />
+    </action>
+    <action name="*saleOrder" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="addOrUp" />
+      <result name="info" />
+      <result name="update" />
+      <result name="dialog" />
+      <result name="renewlist" />
+      <result name="renew" />
+      <result name="select" />
+      <result name="selectrl" />
+      <result name="saleOrderList" />
+      <result name="salrOrderInfo" />
+    </action>
+    <action name="*priceReg" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="history" />
+      <result name="add" />
+    </action>
+  </package>
+  <webResource name="saleroderList.jsp" path="/sale/saleorder/saleroderList.jsp" location="0,0" size="0,0" />
+  <webResource name="addOrder.jsp" path="/orderTemplate/addOrder.jsp" location="0,0" size="0,0" />
+  <webResource name="orderType.jsp" path="/orderTemplate/orderType.jsp" location="0,0" size="0,0" />
+  <webResource name="No.jsp" path="/No.jsp" location="0,0" size="0,0" />
+  <webResource name="addOrderType.jsp" path="/orderTemplate/addOrderType.jsp" location="0,0" size="0,0" />
+  <webResource name="orderTypeinfo.jsp" path="/orderTemplate/orderTypeinfo.jsp" location="0,0" size="0,0" />
+  <webResource name="updateOrderType.jsp" path="/orderTemplate/updateOrderType.jsp" location="0,0" size="0,0" />
+  <webResource name="addOrUpdate.jsp" path="/sale/saleorder/addOrUpdate.jsp" location="0,0" size="0,0" />
+  <webResource name="saleorderInfo.jsp" path="/sale/saleorder/saleorderInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="updateSaleorder.jsp" path="/sale/saleorder/updateSaleorder.jsp" location="0,0" size="0,0" />
+  <webResource name="saleOrderDialog.jsp" path="/showDialog/saleOrderDialog.jsp" location="0,0" size="0,0" />
+  <webResource name="orderRenewList.jsp" path="/sale/saleorder/orderRenewList.jsp" location="0,0" size="0,0" />
+  <webResource name="orderRenew.jsp" path="/sale/saleorder/orderRenew.jsp" location="0,0" size="0,0" />
+</Struts2Diagram>
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="gbk"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+  <package name="position" extends="struts-default" namespace="/">
+	<!-- 自定义拦截器 ，交由spring容器管理 -->
+	<interceptors>
+		<interceptor name="system" class="PositionLoginInterceptor"></interceptor>
+	</interceptors>
+     <!-- 岗位管理 -->
+	<action name="*Position" class="PositionSystemAction" method="{1}">
+			<!--引用拦截器 -->
+			<interceptor-ref name="system">
+				<param name="name">PositionSystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="positionList">positionList</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+		<result name="positionList">/System/position/position.jsp</result>
+		<result name="positionfunctionlist">/System/position/positionPermissionset.jsp</result>
+		<result name="failure">yes.jsp</result>
+		<result name="positionUI">/System/position/addPosition.jsp</result>
+		<result name="add" type="redirect">positionListPosition.do</result>
+		<result name="testpage">/a.jsp</result>
+	</action>
+  </package>
+
+</struts>

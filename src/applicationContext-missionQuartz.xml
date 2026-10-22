@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+<!-- 任务调度  定时器   author：14015 -->
+<!--要调度的对象-->
+    <bean id="job" class="com.fuao.fajxc.action.mission.MissionAction">
+    	<!--   注入所需业务类--> 
+    	<property name="missionBussiness" ref="missionBu"></property>
+        <property name="formbiz" ref="commonBussiness"></property>
+    </bean>
+    <!-- 注入客户消息定时 -->
+    <bean id="job2" class="com.fuao.fajxc.action.message.MessageAction">
+    	<!--   注入所需业务类--> 
+    	<property name="messageBussiness" ref="messageBu"></property>
+        <property name="messagetypeBussiness" ref="messagetypeBussiness"></property>
+        <property name="messagereceiverBussiness" ref="messagereceiverBussiness"></property>
+    </bean>
+<!-- 定义目标bean和bean中的方法 -->
+    <bean id="jobtask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref local="job"/>
+        </property>
+        <!-- 设置调用的方法--> 
+        <property name="targetMethod">
+            <value>timingTask</value>
+        </property>
+    </bean>
+    <!-- 客户到期提醒 -->
+    <bean id="jobtask2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref local="job2"/>
+        </property>
+        <!-- 设置调用的方法-->
+        <property name="targetMethod">
+            <value>addremind</value>
+        </property>
+    </bean>
+<!-- 定义触发的时间 -->
+<!--    <bean id = "cron" class = "org.springframework.scheduling.quartz.CronTriggerBean">-->
+<!--        <property name="jobDetail">-->
+<!--            <ref bean="jobtask"/>-->
+<!--        </property>-->
+<!--        <property name="cronExpression">-->
+<!--            <value>0 0 8 ? * 2-7</value>-->
+<!--        </property>-->
+<!--    </bean>-->
+    
+<!--     客户到期提醒 -->
+     
+<!--    <bean id = "cron2" class = "org.springframework.scheduling.quartz.CronTriggerBean">-->
+<!--        <property name="jobDetail">-->
+<!--            <ref bean="jobtask2"/>-->
+<!--        </property>-->
+<!--        <property name="cronExpression">-->
+<!--            <value>0 0 5 * * ? </value>-->
+
+<!--             0 0 5 * * ?  每天5点执行 -->
+<!--             0 0/2 * * * ?  每2分钟执行一次-->
+             
+             
+<!--        </property>-->
+<!--    </bean>-->
+
+<!-- 总管理 -->
+ 
+<!--    <bean autowire = "no" class = "org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
+<!--        <property name="triggers">-->
+<!--            <list>-->
+<!--                <ref bean ="cron"/>-->
+<!--                <ref bean ="cron2"/>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--    </bean>-->
+</beans>

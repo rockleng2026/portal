@@ -1,0 +1,940 @@
+<%@ page language="java" contentType="text/html; charset=gbk"
+    pageEncoding="gbk"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<meta http-equiv="x-ua-compatible" content="ie=7" />
+
+<link type="text/css" rel="stylesheet" href="css/index.css" />
+
+<title>客户跟进</title>
+
+
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+
+<script type="text/javascript" src="js/new.js"></script>
+
+
+
+
+
+</head>
+
+
+
+<body>
+
+<!--[if IE 6]>
+
+<script type="text/javascript" src="js/pngfix.js"></script>
+
+<script type="text/javascript">
+
+DD_belatedPNG.fix('.rightnr .change i, ..rightnr, ..btn-slide, .change i.cur , .mountainbox, img');
+
+</script>
+
+<![endif]-->
+
+
+
+<div class="body">
+
+<div class="top">
+
+<dl>
+
+<dd>你好，冷志勇!<a href="#">安全退出</a><a href="#">帐号管理</a></dd>
+
+<dt>
+
+<ul>
+
+<li id="dlbj"><a href="#">办公桌面</a></li>
+
+<li><a href="#">进销存管理</a></li>
+
+<li><a href="#">综合管理</a></li>
+
+<li><a href="#">商品管理</a></li>
+
+<li><a href="#">客服中心</a></li>
+
+</ul>
+
+<span><form action="#" name="search">
+
+<table border="0" cellpadding="0" cellspacing="0" class="tab_search">
+
+<tr>
+
+<td>
+
+<input type="text" name="q" title="Search" class="searchinput" id="searchinput" onkeydown="if (event.keyCode==13) {}" onblur="if(this.value=='')value='关键字';" onfocus="if(this.value=='关键字')value='';" value="关键字" size="10"/></td>
+
+<td>
+
+<input type="image" width="21" height="17" class="searchaction" onclick="if(document.forms['search'].searchinput.value=='关键字')document.forms['search'].searchinput.value='';" alt="Search" src="images/ss2.jpg" border="0" hspace="2"/></td>
+
+</tr>
+
+</table>
+
+</form></span></dt>
+
+</dl>
+
+</div>
+
+<div class="topx"></div>
+
+<div class="contentbox">
+
+<div class="content">
+
+<div class="leftbox">
+
+<ul>
+
+<li><a href="#">档案管理</a></li>
+
+<li><a href="#">申报管理</a></li>
+
+<li><a href="#">任务管理</a></li>
+
+<li><a href="#">日程记事</a></li>
+
+<li><a href="#">合同管理</a></li>
+
+<li><a href="#">工作日志</a></li>
+
+<li><a href="#">站内通讯</a></li>
+
+<li><a href="#">系统管理</a></li>
+
+</ul>
+
+
+
+<div class="leftboot">
+
+<img src="images/MM.jpg" />
+
+<p>我是<span>By2</span>,正在<span>创意设计部</span>工作,昨天得到了<img src="images/jiang.jpg" />,好开心<img src="images/xiao.jpg" />.”<span>设计源于生活，细节成就品质</span>“</p>
+
+</div>
+
+</div>
+
+<div class="middlebox">
+
+<div class="middtop">
+
+<span>您的位置<a class="gray" href="#">：首页></a><a href="#" class="gray">办公桌面></a><a href="#" class="gray">档案管理></a><a href="#" class="gray">销售管理></a><a href="#" class="orange">客户跟进记录</a></span>
+
+<dl>
+
+<dd>客户姓名</dd>
+
+<dt><input name="" type="text" class="textbox" /></dt>
+
+</dl>
+
+<dl>
+
+<dd>公司名称</dd>
+
+<dt><input name="" type="text" class="textbox" /></dt>
+
+</dl>
+
+<dl>
+
+<dd>客户类型</dd>
+
+<dt><select name="" class="listbox"></select></dt>
+
+</dl>
+
+<p><a href="#" class="inquiry">查询</a>
+
+<a href="添加意向客户(错误提醒)弹层.jpg.html" class="new">新增</a></p>
+
+</div>
+
+<div class="text">
+
+<table border="0" align="center" cellpadding="0" cellspacing="0" class="bk">
+
+  <tr>
+
+    <td width="39" height="26" align="center" class="hbj ybk zbk">选择</td>
+
+    <td width="79" height="26" align="center" class="hbj ybk">客户姓名</td>
+
+    <td width="85" height="26" align="center" class="hbj ybk">客户类型</td>
+
+    <td width="170" height="26" align="center" class="hbj ybk">跟进日期</td>
+
+    <td width="195" height="26" align="center" class="hbj ybk">跟进内容</td>
+
+    <td width="84" height="26" align="center" class="hbj ybk">业务人员</td>
+
+
+    <td width="121" height="26" align="center" class="hbj">操作</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+   <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+<td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+   <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+  <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+   <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+   <td width="121" height="25" align="center" class="ybk">
+		<a href="#"  align="center" height="25" width="121">修改</a>
+
+	</td>
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+     <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+   <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+  </tr>
+
+  <tr>
+
+    <td width="39" height="25" align="center" class="ybk zbk"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="79" height="25" align="center" class="ybk">冷志勇</td>
+
+    <td width="85" height="25" align="center" class="ybk">正式客户</td>
+
+    <td width="170" height="25" align="center" class="ybk">福奥科技</td>
+
+    <td width="84" height="25" align="center" class="ybk">杨紫</td>
+
+    <td width="100" height="25" align="center" class="ybk">18412164131</td>
+
+   
+
+    <td width="121" height="25" align="center" class="ybk">
+
+	
+
+	<a href="#"  align="center" height="25" width="121">修改</a>
+
+
+
+	
+
+		</td>
+
+  </tr>
+
+  <tr>
+
+    <td colspan="8" class="hbj2"></td>
+
+    </tr>
+
+  <tr>
+
+    <td width="39" height="45" align="center"><input name="" type="checkbox" value=""  class="check"/></td>
+
+    <td width="92" height="45" align="center" ><a href="#">全选</a> <a href="#">反选</a> <a href="#">删除</a></td>
+
+    <td height="45" colspan="6" align="center" class="foot">[ 共 200 条记录    <a href="#">首页</a>    <a href="#">上一页</a>   <a href="#">下一页</a>    <a href="#">尾页</a>    页数：1/30页          <input name="" type="text"  class="textbox3"/> 条记录/页     转到  <input name="" type="text"  class="textbox3"/>        页     打印 ] </td>
+
+    </tr>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="rightbox">
+
+<div class="slide"><a href="#" class="btn-slide"></a></div>
+
+<div id="panel">
+
+<div class="rightnr"  id="test">
+
+<div class="right">
+
+<span class="jstx">即时提醒</span>
+
+<ul>
+
+<li><a href="javascript:void(0)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">短消息</a>(<span><a id="hong" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">2</a>
+
+<div id="light" class="white_content">
+
+		<iframe style="position:absolute; left:-500px;" scrolling="no" frameborder="0" src="tanchu.html" marginheight="0" marginwidth="0" width="766" height="442"></iframe>
+
+<div class="xx">
+
+<a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'"><img src="images/xx.jpg"></a></div>
+
+</div></span>)</li>
+
+<li><a href="javascript:void(0)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">邮件</a>(<span><a id="hong" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">1</a>
+
+<div id="light" class="white_content">
+
+		<iframe scrolling="no" frameborder="0" src="tanchu.html" marginheight="0" marginwidth="0" width="766" height="442"></iframe>
+
+<div class="xx">
+
+<a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'"><img src="images/xx.jpg"></a></div>
+
+</div></span>)</li>
+
+<li><a href="javascript:void(0)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">任务通知</a>(<span><a id="hong" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">1</a>
+
+<div id="light" class="white_content">
+
+		<iframe scrolling="no" frameborder="0" src="tanchu.html" marginheight="0" marginwidth="0" width="766" height="462"></iframe>
+
+<div class="xx">
+
+<a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'"><img src="images/xx.jpg"></a></div>
+
+</div></span>)</li>
+
+<li><a href="#">留言</a>(<span><a href="#" id="hong">0</a></span>)</li>
+
+<li><a href="#">待处理任务</a>(<span><a href="#" id="hong">0</a></span>)</li>
+
+<li>&nbsp;</li>
+
+<li>&nbsp;</li>
+
+<li>&nbsp;</li>
+
+</ul>
+
+<p>常用工具</p>
+
+<div class="right_2">
+
+<dl><dd><img src="images/yun.gif" /></dd>
+
+<dt>20°C 多云 威风</dt></dl>
+
+</div>
+
+<div class="right_2">
+
+<dl>
+
+<dd><img src="images/zhong.gif" /></dd>
+
+<dt>时间:2012-11-13 19:10
+
+<br /><span>星期:星期一</span></dt>
+
+</dl>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="dibu"></div>
+
+</div>
+
+
+
+<script type="text/javascript" src="js/tuodong.js"></script>
+
+<script type="text/javascript" src="js/jquery.js"></script>
+
+
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+
+
+	$(".btn-slide").click(function(){
+
+		$("#panel").slideToggle("slow");
+
+		$(this).toggleClass("active"); return false;
+
+	});
+
+	
+
+	 
+
+});
+
+</script>
+
+</body>
+
+</html>
+

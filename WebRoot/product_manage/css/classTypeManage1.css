@@ -1,0 +1,79 @@
+   table tr td{
+          font-size:14px;
+          text-decoration: none;
+           margin:0 auto;
+       }
+       table tr td table tr td a{
+          font-size:14px;
+          text-decoration: none;
+           margin:0 auto;
+       }
+       #topPage{
+           width:100%;
+           font-size:14px;
+           text-align:center;
+           float:right;
+           text-decoration: none;
+            margin:0 auto;
+       }
+       a{
+        color:#000000;
+        }
+       a:hover{
+          color: #5f0f66;
+       }
+       #addorUpdSuppers{
+           width:700px;
+           height:400px;
+           margin:0 auto;
+        
+       }
+       #superTab{
+         background-color:#F2F2F2;
+         background-repeat:no-repeat;
+       }
+       #addorUpdChilds{
+         width:700px;
+         height:30%;
+       }
+       #childTab{
+         background-color:#F2F2F2;
+         background-repeat:no-repeat;
+       }
+       #setOpertype{
+         float: left;
+       }
+       #setChildOpertype{
+       float: left;
+       }
+       #addFields{
+          width:700px;
+          height:240px;
+          background-color: #F2F2F2;
+          border-bottom-width:1px;
+          border-bottom-style:solid;
+          border-bottom-color:#9fcaea;
+          overflow: auto;
+          display: none;
+       }
+       #Resultpreview{
+         display: none;
+       }
+        #addchildFields{
+          width:700px;
+          height:240px;
+          background-color: #F2F2F2;
+          border-bottom-width:1px;
+          border-bottom-style:solid;
+          border-bottom-color:#9fcaea;
+          overflow: auto;
+          display: none;
+       }
+       #Requirements{
+         width:700px;
+         height:30%;
+         display:none;
+         position: absolute;
+         z-index: 10000;
+       }
+       .ann{background-image:url(../img/classbutton.jpg); width:54px;line-height: 30px;height:24px;font-size: 12px;padding: 0px;background-repeat: no-repeat;text-align: center;display: inline;cursor:pointer;}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+
+	<package name="PackageLogin" extends="struts-default">
+	
+		<interceptors>
+			<interceptor name="loginInterceptor" class="SystemLoginInterceptor"/>
+		</interceptors>
+		<action name="*Login" class="LoginAction" method="{1}">
+			<result name="success">/Main/main.jsp</result>
+			<result name="error">/login.jsp</result>
+			<result name="potalSuccess">/potal/page/main.jsp</result>
+			<result name="retSuccess">/potal/page/bbb.jsp</result>
+			<result name="nullqx">/uploaderror.jsp</result>
+
+		</action>
+
+		<action name="functionAction2" class="FunctionInfoAction"
+			method="getFunctionAction">
+		<!-- 	<result name="success">dtree2.jsp</result>  -->
+			<result name="failure">/login.jsp</result>
+		</action>
+
+	</package>
+
+</struts>

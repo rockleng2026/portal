@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 <!-- 
+	 <import resource="applicationContext-common.xml"/>
+	 <import resource="applicationContext.xml"/>
+	 -->
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	 <!-- 站内消息 -->
+	<bean id="missionDao" class="com.fuao.fajxc.dao.impl.mission.MissionDaoImpl" parent="baseDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 站内消息 类型-->
+	<bean id="missiontypeDao" class="com.fuao.fajxc.dao.impl.mission.MissiontypeDaoImpl" parent="baseDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 接收人-->
+	 <bean id="missionBu" class="com.fuao.fajxc.bussiness.impl.mission.MissionBussinessImpl">
+        	<property name="missionDao" ref="missionDao"></property>
+     </bean>
+	<bean id="missiontypeBussiness" class="com.fuao.fajxc.bussiness.impl.mission.MissiontypeBussinessImpl">
+        	<property name="missiontypeDao" ref="missiontypeDao"></property>
+     </bean>
+       <!-- 消息Action注入 -->
+      <bean id="missionAction" class="com.fuao.fajxc.action.mission.MissionAction">
+      	<property name="missionBussiness" ref="missionBu"></property>
+      	<property name="missiontypeBussiness" ref="missiontypeBussiness"></property>
+      	<property name="formbiz" ref="commonBussiness"></property>
+      	<property name="groupSystemBussiness" ref="GroupSystemBussiness"></property>
+      </bean>
+      
+      <bean id="missiontypeAction" class="com.fuao.fajxc.action.mission.MissiontypeAction">
+      <property name="missiontypeBussiness" ref="missiontypeBussiness"></property>
+      <property name="missionBussiness" ref="missionBu"></property>
+      <property name="formbiz" ref="commonBussiness"></property>
+      </bean>
+      <!-- FJCommon注入bean -->
+      <bean id="FJCommonAction" class="com.fuao.fajxc.action.common.FJCommonAction">
+      <property name="formbiz" ref="commonBussiness"></property>
+     </bean>
+</beans>

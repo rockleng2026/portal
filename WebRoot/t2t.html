@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<title>jquery仿花瓣顶部弹出层特效|jsfoot 网页特效</title>
+<meta name="keywords" content="jquery仿花瓣顶部弹出层特效" />
+<meta name="description" content="jquery特效,js特效,flash特效,div+css教程,html5教程" />
+<script type="text/javascript" src="http://www.jsfoot.com/skin/js/jquery.js"></script>
+</head>
+<body>
+<div class="headeline"></div>
+<!--演示内容开始-->
+<style type="text/css"> 
+*{margin:0;padding:0;list-style-type:none;}
+a,img{border:0;}
+.demo{margin:0 auto 0 auto;padding:200px 0 0 0;width:400px;text-align:center;font-size:18px;}
+.demo .action{color:#3366cc;text-decoration:none;font-family:"微软雅黑","宋体";}
+ 
+#Header{
+	position:fixed;z-index:9999999;top:0;right:0;left:0;height:38px;border-bottom:1px solid #e0dede;width:100%;
+	background-color:#F7F7F7;
+	background-image:linear-gradient(#fff, #f7f6f5);
+	background-image:-moz-linear-gradient(#fff, #f7f6f5);
+	background-image:-o-linear-gradient(#fff, #f7f6f5);
+	background-image:-webkit-linear-gradient(#fff, #f7f6f5);
+	
+	box-shadow:inset 0 1px #fff, 0 1px 3px rgba(34,25,25,0.4);
+	-moz-box-shadow:inset 0 1px #fff, 0 1px 2px rgba(34,25,25,0.4);
+	-webkit-box-shadow:inset 0 1px #fff, 0 1px 3px rgba(34,25,25,0.4);
+}
+*html,*html body{background-image:url(about:blank);background-attachment:fixed;}
+*html #Header{position:absolute;top:expression(eval(document.documentElement.scrollTop));}
+ 
+.overlay{position:fixed;top:0;right:0;bottom:0;left:0;z-index:95;width:100%;height:100%;background:#f6f4f5;display:none;}
+*html,*html body{background-image:url(about:blank);background-attachment:fixed;}
+*html .destroy,*html .overlay{position:absolute;top:expression(eval(document.documentElement.scrollTop));}
+ 
+.destroy{position:fixed;top:0px;left:50%;margin-left:-425px;*margin-left:-718px;_margin-left:-425px;margin-top:-292px;z-index:96;opacity:0;filter:alpha(opacity=0);}
+.sheet{position:relative;width:840px;height:290px;margin:auto;padding:0;background:#fff9e2 url("images/tips_bg.gif");
+	box-shadow:inset 0 -1px 0 #FFF,0 1px 6px rgba(0,0,0,.3);
+	-moz-box-shadow:inset 0 -1px 0 #FFF,0 1px 6px rgba(0,0,0,.3);
+	-webkit-box-shadow:inset 0 -1px 0 #FFF,0 1px 6px rgba(0,0,0,.3);
+	
+	border-bottom:2px solid #efebda;
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
+	-moz-border-bottom-left-radius:5px;
+	-moz-border-bottom-right-radius:5px;
+	-webkit-border-bottom-left-radius:5px;
+	-webkit-border-bottom-right-radius:5px;
+}
+.sheet a.close{display:block;position:absolute;width:20px;height:20px;right:5px;top:5px;background:url("images/sheet_close.gif") no-repeat;}
+.sheet a:hover.close{background-position:0 -30px;}
+.sheet a:active.close{background-position:0 -60px;}
+.sheet .head{padding:20px 15px;border-bottom:1px solid #f6f4ee;}
+.sheet .head h2{padding:0;font-size:18px;font-weight:400;color:#444;text-align:center;}
+.sheet .body{padding:10px 15px;border-top:1px solid #fff;}
+</style>
+ 
+<script type="text/javascript" src="http://www.jsfoot.com/skin/js/jquery.js"></script>
+<script type="text/javascript"> 
+$(document).ready(function(){
+	
+	var h = $(document).height();
+	$(".overlay").css({"height": h });	
+	
+	$(".action").click(function(){
+	
+		$(".overlay").css({'display':'block'}).animate({'opacity':'0.8'});
+		
+		$(".destroy").stop(true).animate({'margin-top':'27px','opacity':'1'},400);
+		
+	});
+	
+	$(".close").click(function(){
+	
+		$(".destroy").stop(true).animate({'margin-top':'-292px','opacity':'0'},800);
+ 
+		$(".overlay").css({'display':'none'}).animate({'opacity':'0'});
+		
+	});
+	
+});
+</script>
+ 
+ 
+<div class="demo"><a class="action" href="javascript:void(0);">jquery float浮动层弹出层页面加载特效</a></div>
+ 
+<div class="overlay"></div>
+ 
+<div class="destroy">
+	<div class="sheet">
+		<div class="head">
+			<h2>jquery顶部动画弹出层</h2>
+		</div>
+		<div class="body"></div>
+		<a class="close" title="关闭" href="#"></a>
+	</div>
+</div><!--sheet end-->
+ 
+ 
+<div style="height:1200px;">
+	
+</div>
+<!--演示内容结束-->
+</body>
+</html>

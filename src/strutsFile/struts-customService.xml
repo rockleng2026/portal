@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+
+	<package name="PackageCustom" extends="struts-default" >
+		<!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+				<interceptor-ref name="system">
+					<param name="name">SystemAction拦截</param>
+					<!-- 指定要拦截的方法名 -->
+					<param name="includeMethods">select,getAllList</param>
+				</interceptor-ref>
+				<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- 故障申报 -->
+		<action name="*MalfunctionDeclare" class="MalfunctionDeclareAction"
+			method="{1}">
+			<result name="success">/customService/malfunctionDeclare.jsp</result>
+			<result name="addsuccess"  type="redirect">/getMalfunctionDeclare.do</result>
+			<result name="myFaultList">/callcenters/myFaultList.jsp
+			</result>
+			<result name="login">/login.jsp</result>
+			<result name="faultList">/customService/faultList.jsp</result>
+			<result name="transactResult">/customService/transactResult.jsp</result>
+			<result name="select" type="redirect">getMalfunctionDeclare.Action</result>
+			<result name="selectcom">/IDCServ/index.jsp
+			</result>
+			<result name="get" type="redirect">selectMalfunctionDeclare.Action</result>
+			
+			<result name="notelist">/foreGroundFolder/customProscenium/notelist.jsp
+			</result>
+			<result name="issueEvaluate">/foreGroundFolder/customProscenium/issueEvaluate.jsp
+			</result>
+			<result name="login" type="redirect">/foreGroundFolder/customProscenium/login.jsp</result>
+			<result name="fauldetail">/callcenters/faultDetial.jsp</result>
+			<result name="gosubnote">/IDCServ/conmentTab.jsp</result>
+			<result name="gosubnote2">/customService/malfunctionDeclare.jsp</result>
+		</action>
+		
+		
+		<!-- 新portal故障单模块   ytl  -->
+		<action name="*Fault" class="FaultAction" method="{1}">
+		  <result name="gosubnote2">/potal/page/customerService/addFault.jsp</result>
+		  <result name="list">/potal/page/customerService/faultList.jsp</result>
+		  <result name="tlist" type="redirect">conkoutListFault.do?zt=1</result>
+		  <result name="tozj">/potal/page/customerService/faultZhuanjie.jsp</result>
+		  <result name="ywlist">/potal/page/customerService/toreceive.jsp</result>
+		  <result name="receive">/potal/page/customerService/receive.jsp</result>
+		  <result name="toywlist" type="redirect">pdm/toreceiveFault.do?flag=1&amp;zt=1</result>
+		  <result name="handle">/potal/page/customerService/handleFault.jsp</result>
+		  <result name="ywcl" type="redirect">pdm/ywclFault.do?zt=2</result>
+		  <result name="feedback">/potal/page/customerService/feedback.jsp</result>
+		  <result name="todfklist" type="redirect">pdm/conkoutList3Fault.do?zt=3</result>
+		  <result name="kfjs" type="redirect">conkoutListFault.do?flag=1</result>
+		  <result name="clxq">/potal/page/customerService/operatDetail.jsp</result>
+		  <result name="kfdetail">/potal/page/customerService/kfDetail.jsp</result><!--
+		  <result name="deleteAll" type="redirect">conkoutList4Fault.do?flag=4&amp;zt=4</result>
+		  --><result name="deleteAll2" type="redirect">toreceiveFault.do?flag=1</result>
+		  <result name="chakan">/potal/page/customerService/kfchakan.jsp</result>
+		  <result name="zj2" type="redirect">pdm/conkoutList2Fault.do?zt=2</result>
+		  <result name="jiedan" type="redirect">pdm/ywclFault.do?flag=2&amp;zt=2</result>
+		  <result name="pf" type="redirect">pdm/conkoutList4Fault.do?flag=4&amp;zt=4</result>
+		  <result name="kfzjsub" type="redirect">pdm/conkoutListFault.do?flag=1&amp;zt=1</result>
+		  <result name="selectcus2">/potal/page/customerService/allcus2.jsp</result>
+		  <result name="editOperate">/potal/page/customerService/editOperate.jsp</result>
+		  <result name="edit" type="redirect">pdm/ywclFault.do?flag=2&amp;zt=2</result>
+		  <result name="customerDetail">/potal/page/customerService/customerdetails.jsp</result>
+		  
+		  <result name="del1" type="redirect">pdm/conkoutListFault.do?flag=1&amp;zt=1</result>
+		  <result name="del2" type="redirect">pdm/conkoutList2Fault.do?flag=2&amp;zt=2</result>
+		  <result name="del3" type="redirect">pdm/conkoutList3Fault.do?flag=3&amp;zt=3</result>
+		  <result name="del4" type="redirect">pdm/conkoutList4Fault.do?flag=4&amp;zt=4</result>
+		  
+		  <result name="dela1" type="redirect">pdm/toreceiveFault.do?flag=1&amp;zt=1</result>
+		  <result name="dela2" type="redirect">pdm/ywclFault.do?flag=2&amp;zt=2</result>
+		  <result name="dela3" type="redirect">pdm/clwcFault.do?flag=3&amp;zt=3</result>
+		</action>
+		
+
+
+		<!--故障处理 -->
+		<action name="*MalfunctionDisposal" class="MalfunctionDisposalAction"
+			method="{1}">
+			<result name="success">/customService/malfunctionDisposal.jsp</result>
+
+		</action>
+
+		<!-- 服务监控记录-->
+		<action name="*ServerMonitoring" class="ServerMonitoringAction"
+			method="{1}">
+			<interceptor-ref name="myInter"></interceptor-ref>
+			<result name="success">/customService/ServerMonitoring.jsp</result>
+			<result name="add">/customService/addServerMonitoring.jsp</result>
+			<result name="serverlist">/showDialog/serverList.jsp</result>
+			<result name="add">/customService/addServerMonitoring.jsp</result>
+
+		</action>
+
+		<action name="*ClientOrder" class="ClientReturnOrderAction"
+			method="{1}">
+			<interceptor-ref name="myInter"></interceptor-ref>
+			<result name="add">/customService/addCustomReturnOrder.jsp</result>
+			<result name="find">/customService/selectClientReturnOrder.jsp
+			</result>
+			<result name="list">/customService/customReturnOrderList.jsp</result>
+			<result name="saleorderlist">/showDialog/saleOrderDialog.jsp</result>
+			<result name="batchHandel">/customService/batchhandle/selectApprove.jsp
+			</result>
+		</action>
+		<action name="*CustomerServer" class="CustomerServiceAction" method="{1}" >
+				<result name="logout_success">/litscloud/ucenter/u_login.jsp</result>
+			<result name="defineorder">IDCServ/orderVerify.jsp</result>
+			<result name="success">IDCServ/index.jsp</result>
+			<!-- <result name="success">/foreGroundFolder/customProscenium/main.jsp</result>--> 
+			<result name="error">IDCServ/loggin.jsp</result>
+			<result name="selorder" >IDCServ/myOrder.jsp</result>
+				<result name="selgrmessange" >/IDCServ/consumer.jsp</result>
+			<result name="registersuccess">IDCServ/registersuccess.jsp</result>
+			<result name="registererror">IDCServ/regist.jsp</result>
+			<result name="editerror">/foreGroundFolder/customProscenium/mydata.jsp</result>
+			<result name="setmibaoerror">/foreGroundFolder/customProscenium/profile.jsp</result>
+			<result name="emailerror" >/IDCServ/sendpass.jsp</result>
+			<result name="emailsuccess" >/IDCServ/sendpass2.jsp</result>
+			<result name="centeremail"  >/IDCServ/sendpass3.jsp</result>
+			<result name="editpassowrd" >/foreGroundFolder/customProscenium/sendpasssuccess.jsp</result>
+			<result name="allcustomer">/Basic/customer/allcustomer.jsp</result>
+			<result name="editdata">/IDCServ/index.jsp</result>
+			<result name="login" type="redirect">/customlogin.jsp</result>
+			<result name="notelist">/foreGroundFolder/customProscenium/notelist.jsp</result>
+			<result name="address">/IDCServ/index.jsp</result>
+			<result name="showaddress">/IDCServ/checkAddress.jsp</result>
+			
+			<result name="emptyaddress">IDCServ/outtime.jsp</result>
+			 
+			<result name="useAddress">/IDCServ/checkAddress.jsp</result>
+			<result name="updateaddr">/IDCServ/index.jsp</result>
+            <result name="outsyst">/IDCServ/loggin.jsp</result>
+			<result name="notelist">/foreGroundFolder/customProscenium/notelist.jsp
+			</result>
+
+			<result name="cusFlows">/IDCServ/orderConfirm.jsp</result>
+		</action>
+		<action name="*CustReg" class="CustomerServiceAction" method="{1}">
+			<interceptor-ref name="token"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="invalid.token">IDCServ/registersuccess.jsp</result>
+			<result name="zhuCeYanZheng">/litscloud/ucenter/u_logonYanZheng.jsp</result>
+			<result name="registererror">IDCServ/regist.jsp</result>
+			<result name="registersuccess">IDCServ/registersuccess.jsp</result>
+			
+		</action>
+		<!-- 消息提醒Action -->
+		<action name="*sendmes" class="sendmesAction" method="{1}">
+		</action>
+
+	</package>
+	<package name="Package2Custom" extends="struts-default"  namespace="/litscloud">
+		<!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+				<interceptor-ref name="system">
+					<param name="name">SystemAction拦截</param>
+					<!-- 指定要拦截的方法名 -->
+					<param name="includeMethods">select,getAllList</param>
+				</interceptor-ref>
+				<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- 故障申报 -->
+		<action name="*CustomerServerC" class="CustomerServiceAction" method="{1}" >
+		 <result name="success">/foreGroundFolder/customProscenium/main.jsp</result>
+			<result name="error">/foreGroundFolder/customProscenium/login.jsp</result>
+			<result name="registersuccess">IDCServ/registersuccess.jsp</result>
+			<result name="registererror">IDCServ/regist.jsp</result>
+			<result name="editerror">/foreGroundFolder/customProscenium/mydata.jsp</result>
+			<result name="setmibaoerror">/foreGroundFolder/customProscenium/profile.jsp</result>
+			<result name="emailerror">IDCServ/sendpass.jsp</result>
+			<result name="emailsuccess" >IDCServ/sendpass2.jsp</result>
+			<result name="centeremail" >IDCServ/sendpass3.jsp</result>
+			<result name="editpassowrd" >/foreGroundFolder/customProscenium/sendpasssuccess.jsp</result>
+			<result name="allcustomer">/Basic/customer/allcustomer.jsp</result>
+			<result name="editdata">/foreGroundFolder/customProscenium/customerservicer.jsp</result>
+			<result name="login" type="redirect">/customlogin.jsp</result>
+			<result name="notelist">/foreGroundFolder/customProscenium/notelist.jsp</result>
+			<result name="ddxq">/litscloud/ucenter/u_order_info.jsp</result>
+			<result name="addoeder">/litscloud/tpl/bg_paymoney.jsp</result>
+			<result name="litscloudgetprodut">/litscloud/tpl/serve_guomai.jsp</result>
+			
+			<result name="productpage">/litscloud/tpl/serve_rentvew.jsp</result>
+			<result name="getOrder">/litscloud/ucenter/my_orderlist.jsp</result>
+			<result name="lits_login_error" type="redirect">/litscloud/ucenter/u_login.jsp</result>
+			<result name="lits_login_success" type="redirect">/index.html</result>
+			<!-- <result name="lits_login_success" type="redirect">ucenterCustomerServerC.Action</result> -->
+			<result name="lits_ucenter">/litscloud/ucenter/index.jsp</result>
+			<result name="customer_no_session">/litscloud/ucenter/u_login.jsp</result>
+			<result name="2d_barcode_page">/litscloud/2D_barcode/2DBarcode.jsp</result>
+			<result name="2d_barcode_noparam">/litscloud/2D_barcode/2DBarcode.jsp</result>
+				<result name="relogin">/litscloud/ucenter/u_login.jsp</result>
+		</action>
+	</package>
+	<package name="Package3Custom" extends="struts-default"  namespace="/litscloud/ucenter">
+		<action name="*CustomerServerC" class="CustomerServiceAction" method="{1}">
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<interceptor-ref name="token"></interceptor-ref>
+			<result name="input">/potal/page/WorkLog/addError.jsp</result>
+			<result name="relogin">/litscloud/ucenter/u_login.jsp</result>
+			<result name="shibai">/litscloud/ucenter/shibai.jsp</result>
+			<result name="invalid.token">/potal/page/addrepeat.jsp</result>
+			<result name="addoeder">/litscloud/tpl/bg_paymoney.jsp</result>
+			
+		</action>
+	</package>
+	<package name="Package4Custom" extends="struts-default"  namespace="/litscloud/web">
+		<!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+				<interceptor-ref name="system">
+					<param name="name">SystemAction拦截</param>
+					<!-- 指定要拦截的方法名 -->
+					<param name="includeMethods">select,getAllList</param>
+				</interceptor-ref>
+				<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- 故障申报 -->
+		<action name="*CustomerServerC" class="CustomerServiceAction" method="{1}" >
+		 	<result name="2d_barcode_page">/litscloud/2D_barcode/2DBarcode.jsp</result>
+			<result name="2d_barcode_noparam">/litscloud/2D_barcode/2DBarcode.jsp</result>
+			<result name="productpage">/litscloud/tpl/serve_rentvew.jsp</result>
+
+			<result name="logout_success">/litscloud/ucenter/u_login.jsp</result>
+			
+			<result name="lits_login_error"  type="redirect">/litscloud/ucenter/u_login.jsp</result>
+			<result name="lits_login_success" type="redirect">ucenterCustomerServerC.Action</result>
+			<result name="lits_ucenter">/litscloud/ucenter/index.jsp</result>
+			<result name="chenggong">/litscloud/ucenter/chenggong.jsp</result>
+			<result name="shibai">/litscloud/ucenter/shibai.jsp</result>
+			<result name="yzmCuoWu">/litscloud/ucenter/bg_smsq.jsp</result>
+			<result name="chenggongSC">/litscloud/ucenter/bg_smsh.jsp</result>
+			<result name="zhuCeYanZheng">/litscloud/ucenter/u_logonYanZheng.jsp</result>
+			<result name="litscloudgetprodut">/litscloud/tpl/serve_guomai.jsp</result>
+			<result name="relogin">/litscloud/ucenter/u_login.jsp</result>
+			<result name="toliyun">/litscloud/web/serve_rentvew.jsp</result>
+			<result name="listPay">/litscloud/ucenter/bg_czjl.jsp</result>
+			<result name="to_sure_address">/litscloud/ucenter/bg_order_confirm.jsp</result>
+			<result name="addoeder">/litscloud/tpl/bg_paymoney.jsp</result>
+		</action>
+	</package>
+	<package name="Package5Custom" extends="struts-default"  namespace="/client">
+		<!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+				<interceptor-ref name="system">
+					<param name="name">SystemAction拦截</param>
+					<!-- 指定要拦截的方法名 -->
+					<param name="includeMethods">select,getAllList</param>
+				</interceptor-ref>
+				<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- 故障申报 -->
+		<action name="*CustomerServerC" class="ClientCustomerServiceAction" method="{1}" >
+		<result name="lits_login_error"  type="redirect">/litscloud/ucenter/u_login.jsp</result>
+		<result name="lits_login_success" type="redirect">ucenterCustomerServerC.Action</result>
+		</action>
+	</package>
+</struts>

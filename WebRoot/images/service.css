@@ -1,0 +1,47 @@
+@charset "utf-8";
+/* CSS Document */
+.lbar{ float:left; width:668px;}
+.rbar{ float:right; width:217px;}
+
+/*bottom box*/
+.hotgame{ display:block; clear:both; zoom:1; overflow:hidden; margin-bottom:15px;}
+.bottom_hotgame{display:block; background:url(../images/bg_mbox.gif) -222px -347px no-repeat; font-size:0; padding-bottom:5px;zoom:1;}
+
+
+/*column*/
+.columnA,.columnB,.columnC,.columnD,.columnE{display:block; clear:both;zoom:1; overflow:hidden; }
+.columnA{background:url(../images/bg_mbox.gif) 0 0 no-repeat; font:bold 14px/40px tahoma,"宋体"; color:#C94700;padding:5px 10px 0 30px;}
+.columnB{background:url(../images/bg_mbox.gif) -222px -87px no-repeat; font:bold 14px/40px tahoma,"宋体"; color:#C94700;padding:5px 10px 0 30px;}
+.columnC{background:url(../images/bg_mbox.gif) 0 -212px no-repeat; font:bold 14px/38px tahoma,"宋体"; color:#C94700;padding:5px 10px 0 30px;}
+.columnD{background:url(../images/bg_mbox.gif) -222px 0 no-repeat; font:bold 14px/36px tahoma,"宋体"; color:#C94700;padding:0 10px 0 15px;}
+.columnE{background:url(../images/bg_mbox.gif) -222px -229px no-repeat;font:bold 14px/38px tahoma,"宋体"; color:#C94700;padding:0 10px 0 30px;}
+	.columnE h6,.columnE h5{ white-space:nowrap;  display:inline; float:left; font-size:15px;}
+	.columnE h5{ float:right; }
+	.columnE div{width:70%; height:100%; background:#003399; display:inline; float:left; position:relative; z-index:1; vertical-align:bottom; }
+	.columnE div h4{ width:100%; height:30px; position:absolute; left:0px; top:8px; z-index:4; }
+		.columnE div h4 a{height:28px; line-height:28px; background:#EEE; border:1px #DEDEDE solid; display:inline-block; font-size:14px; white-space:nowrap; display:inline; float:left; margin-left:10px; }
+			.columnE div h4 a strong{ font-weight:100; padding:0px 30px; color:#949494;}
+		.columnE div h4 .On{ border:1px #DEDEDEsolid; border-bottom:1px #fff solid; background:#fff; height:28px; vertical-align:top;}
+			.columnE div h4 .On strong{ display:inline-block; height:25px; line-height:25px; border-top:1px #FF993D solid; white-space:nowrap; margin:1px; font-weight:bold; color:#545153;}
+
+/*gray box*/
+	.graybox{ display:block; clear:both; background:url(../images/boxbg02_217.gif) 0 0 repeat-y;  margin-bottom:15px;zoom:1; overflow:hidden;}
+	.graybox_m{display:block; clear:both; background: url(../images/boxbg03_217s.gif) top center no-repeat; padding:0 10px; zoom:1; overflow:hidden;}
+	.graybox_bottom{display:block; background:url(../images/bg_mbox.gif) 0 -289px no-repeat;font-size:0; padding:0 0 5px 0;zoom:1;_margin:0 0 -2px 0;+margin:0 0 -2px 0;}
+	/*service*/
+	ul.service{ display:block; list-style:none; padding:10px 15px;}
+	ul.service li a{ margin-right:5px;}
+	
+/*hotgame*/	
+ul.list_qs{display:block; clear:both; list-style:none; padding:8px 0 8px 12px; zoom:1; overflow:hidden;}
+ul.list_qs li{ display:inline; float:left; width:290px; height:30px; background:url(../images/icon_main.gif) 5px -68px no-repeat; line-height:30px; border-bottom:#E6CF87 1px dashed; padding:0 0 0 30px;}
+
+/*tips faq*/
+.tipsfaq{ height:123px; list-style:none; background:url(../images/bg_helppic.gif) 0 0 no-repeat;}
+.tipsfaq li{ display:inline; float:left; width:120px; color:#333; line-height:18px; padding:30px 6px 0 96px;}
+.tipsfaq li strong{ display:block; clear:both;}
+.tipsfaq li a{ color:#f03;}
+.tipsfaq li a:hover{ color:#f60;}
+
+
+

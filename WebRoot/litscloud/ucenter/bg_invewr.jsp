@@ -1,0 +1,266 @@
+<%@ page language="java" import="java.util.*" pageEncoding="GBK"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<base href="<%=basePath%>" />
+<title>立云-后台（自助管理-订单详情）</title>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />    
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+<meta http-equiv="description" content="This is my page" />
+<link href="litscloud/css/style.css" rel="stylesheet" type="text/css" />
+<link href="litscloud/css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript"
+			src="<%=request.getContextPath()%>/js/juqery/lib/jquery1.6.js"></script>
+<script type="text/javascript" src="litscloud/js/user.js"></script>
+<!-- 解决IE6不缓存背景图片的问题-->
+<!--[if IE 6]>
+<script type="text/javascript">
+document.execCommand("BackgroundImageCache", false, true);
+</script>
+<![endif]-->
+
+</head>
+
+<body>
+<div class="ly_body">
+    <!--头部公用代码-->
+ <jsp:include page="/litscloud/ucenter/top.jsp"></jsp:include>
+    <!--内容开始-->
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+   <!--右边浮动开始 -->
+   
+   <div class="fd_right">
+   <div class="fd_rl">
+       <div class="fd_rlt"></div>
+        <div class="fd_rlc">
+          <div class="fd_rlct"><img src="litscloud/images/zf_23.gif" /></div>
+          <div class="fd_rlcc"></div>
+          <div class="fd_rlcd">立云公告</div>
+        </div>
+         <div class="fd_rld"></div>
+   </div>
+      <div class="fd_rt"></div>
+      <div class="fd_rc">
+          <div class="bg_pay_rc">
+                            <div class="bg_pay_rct">立云公告</div>
+                            <div class="bg_pay_rcc"><ul>
+                               <li><a href="#">[通知]<span>OSS服务部分VIP下线通知</span></a></li>
+                               <li><a href="#">[通知]<span>3月19日23:00起OSS服务升级</span></a></li>
+                               <li><a href="#">[通知]<span>3月20日11:00起云服务升级</span></a></li>
+                               <li><a href="#">[通知]3月网站备案信息抽查评估通知</a></li>
+                               <li><a href="#">[通知]3月15日20:00起SLB服务升级</a></li>
+                               <li><a href="#">[通知]3月14日22:00起云监控升级</a></li>
+                            </ul></div>
+                            <div class="bg_pay_rcm">
+                              <a href="#"><img src="litscloud/images/bg_17.png" /></a>
+                            </div>
+                            <div class="bg_pay_rct" style="margin-top:20px;">热点活动</div>
+                            <div class="bg_pay_rcd"><ul>
+                               <li><a href="#"><span>免费备案，还送时间啦</span></a></li>
+                               <li><a href="#"><span>第二波免费数据迁移倒计时</span></a></li>
+                               <li><a href="#">推荐云服务器，送集分宝</a></li>
+                            </ul></div>
+                            <div class="bg_pay_rct" style="margin-top:10px;">热点话题<span class="blue"><a href="#" style="font-size:12px;">去论坛</a></span></div>
+                            <div class="bg_pay_rcb"><ul>
+                              <li><dl><a href="#">简述云服务器对比VPS</a></dl><dt>来自：<span>dreamdoo</span></dt></li>
+                              <li><dl><a href="#">如何提高网站的打开速度</a></dl><dt>来自：<span>wanghaifei</span></dt></li>
+                              <li><dl><a href="#">CPU、内存多少才够用？</a></dl><dt>来自：<span>dreamdoo</span></dt></li>
+                              <li><dl><a href="#">网站访问速度快才是硬道理</a></dl><dt>来自：<span>dreamdoo</span></dt></li>
+                              <li><dl><a href="#">如何节省网站访问流量？</a></dl><dt>来自：<span>dreamdoo</span></dt></li>
+                              <li><dl><a href="#">阿里云弹性计算服务篇</a></dl><dt>来自：<span>dreamdoo</span></dt></li>
+                              <li><dl><a href="#">云服务器配置满意度调查，说出来！</a></dl><dt>来自：<span>dreamdoo</span></dt></li>
+                              <li><dl><a href="#">"尖舌"上的更换操作系统，为啥换？</a></dl><dt>来自：<span>dreamdoo</span></dt></li>
+                              <li><dl><a href="#">云服务器教程征集令，说出你的困惑。</a></dl><dt>来自：<span>dreamdoo</span></dt></li>
+                            </ul></div>
+                         </div>
+      </div>
+      <div class="fd_rd"></div>
+   </div>   
+   
+   <!--右边浮动结束 -->
+     
+   
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="index.html" target="_parent">首页</a>>会员中心>订单管理>订单详情</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" >我的<br />账户</a></li>
+                <li><a href="bg_indent.html" style="background-image:url(litscloud/images/bg_01.png); color:#ffffff;">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_indent.html" style="background-image:url(litscloud/images/bg_06.jpg); color:#000; background-repeat:no-repeat;">订单管理</a></li>
+                    <li><a href="bg_zxgd.html" target="_parent" >在线工单</a></li>
+                    <li><a href="bg_wdgd.html">我的工单</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+         
+            <div class="ind_vew">
+               <div class="ind_vew_t"><span>订单类型：购买订单</span>订单详情</div>
+               <div class="ind_vew_c">
+                  <div class="ind_vew_ct">订单信息</div>
+                  <div class="ind_vew_cc">
+                    <div class="ind_vew_ccl"></div>
+                    <div class="ind_vew_ccr"></div>
+                  </div>
+                  <div class="ind_vew_cm">
+                     <div class="ind_vew_cmt">
+                       <div class="ind_vew_cmtl"><span>订单编号：</span>1412155164986</div>
+                       <div class="ind_vew_cmtr"><span>订单创建时间：</span>2013-03-15  10:50</div>
+                     </div>
+                     <div class="ind_vew_cmd">
+                       <div class="ind_vew_cmdt">
+                          <div class="ind_vew_cmdtq">宝贝</div>
+                          <div class="ind_vew_cmdtw">单位（元）</div>
+                          <div class="ind_vew_cmdte">数量</div>
+                          <div class="ind_vew_cmdtr">售后</div>
+                          <div class="ind_vew_cmdtt">实付款</div>
+                          <div class="ind_vew_cmdty">交易状态</div>
+                          <div class="ind_vew_cmdtu">实际操作</div>
+                       </div>
+                       <div class="ind_vew_cmdd">
+                          <div class="ind_vew_cmddq">
+                            <div class="ind_vew_cmddql"><img src="litscloud/images/bg_29.png" /></div>
+                            <div class="ind_vew_cmddqr">
+                               <div class="ind_vew_cmddqrt"><img src="litscloud/images/bg_30.png" /></div>
+                               <div class="ind_vew_cmddqrd">ip数量：1 宽带总数：10<br />服务器配置：I3  Windows2003</div>
+                            </div>
+                          </div>
+                          <div class="ind_vew_cmddw">￥1200.0</div>
+                          <div class="ind_vew_cmdde">1</div>
+                          <div class="ind_vew_cmddr">无</div>
+                          <div class="ind_vew_cmddt"><p></p>  ￥1200.0<br />
+付费类型：季付</div>
+                          <div class="ind_vew_cmddy">已付款</div>
+                          <div class="ind_vew_cmddu">结束</div> 
+                       </div>
+                     </div>
+                  </div>
+                  <!--上架信息-->
+                  <div class="ind_vew_ct">上架信息</div>
+                  <div class="ind_vew_cc">
+                    <div class="ind_vew_ccl"></div>
+                    <div class="ind_vew_ccr"></div>
+                  </div>
+                  <div class="ind_vew_s">
+                    <dl>
+                      <dt>上架单号：</dt>
+                      <dd>hu-f54149616486</dd>
+                      <dt>销售单号：</dt>
+                      <dd>hu-f54149616486415647894</dd>
+                    </dl>
+                    <dl>
+                      <dt>单位名称：</dt>
+                      <dd>深圳福奥</dd>
+                      <dt>联系人：</dt>
+                      <dd>李四</dd>
+                    </dl>
+                    <dl>
+                      <dt>审核状态：</dt>
+                      <dd>已审核</dd>
+                      <dt>上架状态：</dt>
+                      <dd>未上架</dd>
+                    </dl>
+                    <dl>
+                      <dt>经手人：</dt>
+                      <dd>张三</dd>
+                      <dt>维护口令：</dt>
+                      <dd>5416548</dd>
+                    </dl>
+                    <dl>
+                      <dt>带宽数量：</dt>
+                      <dd>6</dd>
+                      <dt>带宽限制：</dt>
+                      <dd>500</dd>
+                    </dl>
+                    <dl>
+                      <dt>备注：</dt>
+                      <dd style="height:50px; line-height:25px;">朝不是是右埋汰地蛣喜鹊団时候嘲进是是的<Br />地瞳蝇营狗苟烟消云散加进是浊是中 另 </dd>
+                      <dt>工单信息：</dt>
+                      <dd>5416548</dd>
+                    </dl>
+                  </div>
+                  <!--运维信息-->
+                    <div class="ind_vew_ct">运维信息</div>
+                  <div class="ind_vew_cc">
+                    <div class="ind_vew_ccl"></div>
+                    <div class="ind_vew_ccr"></div>
+                  </div>
+                  <div class="ind_vew_s">
+                    <dl>
+                      <dt>上架员工：</dt>
+                      <dd>张三</dd>
+                      <dt>上架时间：</dt>
+                      <dd>2013-02-12  16：36  </dd>
+                    </dl>
+                    <dl>
+                      <dt>下架时间：</dt>
+                      <dd>2013-02-15 11:25</dd>
+                      <dt>所属仓库：</dt>
+                      <dd>深圳电信仓库 </dd>
+                    </dl>
+                    <dl>
+                      <dt>商品名称：</dt>
+                      <dd>IDC</dd>
+                      <dt>IP地址：</dt>
+                      <dd>http://www.195.168.321.com </dd>
+                    </dl>
+                    <dl>
+                      <dt>机房/房间：</dt>
+                      <dd>深圳机房</dd>
+                      <dt>机柜：</dt>
+                      <dd>457416</dd>
+                    </dl>
+                    <dl>
+                      <dt>交换机房名称：</dt>
+                      <dd>深圳机房</dd>
+                      <dt>端口号：</dt>
+                      <dd>457416</dd>
+                    </dl>
+                    <dl>
+                      <dt>备注：</dt>
+                      <dd style="width:500px; ">深圳机房卉不蛣蛣地时候喜鹊煖是地革是法律   </dd>
+                    </dl>
+                  </div>
+                  <!--物流信息 -->
+                  <div class="ind_vew_ct">物流</div>
+                  <div class="ind_vew_cc">
+                    <div class="ind_vew_ccl"></div>
+                    <div class="ind_vew_ccr"></div>
+                  </div>
+                  <div class="ind_vew_h"><ul>
+                    <li><span>收货地址:</span>深圳市宝安区西乡宝源路F518时尚创意园F7-201，李四，51008</li>
+                    <li><span>运送方式:</span>快递</li>
+                    <li><span>物流公司:</span>顺风快递</li>
+                    <li><span>运单号:</span>dgj-5155156412346</li>
+                    <li><span>买家留言:</span>一定要记得带发票</li>
+                  </ul></div>
+               </div>
+               <div class="ind_vew_d"></div>
+               
+                 <div class="bg_process_h"><a href="#" onclick="javascript:history.go(-1)">返回</a></div>
+            </div> 
+
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--底部公用代码 -->
+<jsp:include page="/litscloud/tpl/bottom.jsp"></jsp:include>
+<!-- 底部结束 -->
+</div>
+</body>
+</html>

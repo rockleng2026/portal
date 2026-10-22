@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Auditline" table="Auditline">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="foreignId" column="foreignId" type="integer"/>
+  <property name="Januarymoney" column="Januarymoney" type="double"/>
+  <property name="Februarymoney" column="Februarymoney" type="double"/>
+  <property name="marchmoney" column="marchmoney" type="double"/>
+  <property name="Aprilmoney" column="Aprilmoney" type="double"/>
+  <property name="Maymoney" column="Maymoney" type="double"/>
+  <property name="Junemoney" column="Junemoney" type="double"/>
+  <property name="Julymoney" column="Julymoney" type="double"/>
+  <property name="Augustmoney" column="Augustmoney" type="double"/>
+  <property name="Septembermoney" column="Septembermoney" type="double"/>
+  <property name="Octobermoney" column="Octobermoney" type="double"/>
+  <property name="Novembermoney" column="Novembermoney" type="double"/>
+  <property name="Decembermoney" column="Decembermoney" type="double"/>
+  <property name="Firstquarter" column="Firstquarter" type="double"/>
+  <property name="Twoquarter" column="Twoquarter" type="double"/>
+  <property name="Threequarter" column="Threequarter" type="double"/>
+  <property name="Fourquarter" column="Fourquarter" type="double"/>
+  <property name="Halfyear1" column="Halfyear1" type="double"/>
+  <property name="Halfyear2" column="Halfyear2" type="double"/>
+  <property name="Yearmoney" column="Yearmoney" type="double"/>
+  <property name="temp" column="temp" type="integer"/>
+  <property name="isflag" column="isflag" type="integer"/>
+  <property name="creatTime" column="creatTime" type="string"/>
+  
+</class>
+</hibernate-mapping>
+

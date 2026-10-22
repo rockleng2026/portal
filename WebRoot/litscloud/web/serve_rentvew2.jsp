@@ -1,0 +1,1288 @@
+<%@ page language="java" contentType="text/html; charset=GBK" pageEncoding="GBK"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    <meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+    <title>立云-服务器租用详情</title>
+    <meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+    <link href="<%=request.getContextPath() %>/litscloud/web/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath() %>/litscloud/web/css/css.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="litscloud/web/js/jquery-1.4.4.min.js"></script>
+  <style type="text/css">
+.jgc{
+top:60%;
+left:20%;
+width: 806px;
+height: 500px;
+position: absolute;
+z-index: 10000;
+}
+</style>
+  </head>
+  <script type="text/javascript">
+function gddx()
+{
+	document.getElementById("xx1").style.display="block";//显示
+	document.getElementById("xx2").style.display="none";//影藏
+	document.getElementById("xx3").style.display="none";//影藏
+	document.getElementById("xx4").style.display="none";//影藏
+	
+	}
+function sdlt()
+{
+	document.getElementById("xx1").style.display="none";//显示
+	document.getElementById("xx2").style.display="block";//影藏
+	document.getElementById("xx3").style.display="none";//影藏
+	document.getElementById("xx4").style.display="none";//影藏
+	
+	}
+function sdsx()
+{
+	document.getElementById("xx1").style.display="none";//显示
+	document.getElementById("xx2").style.display="none";//影藏
+	document.getElementById("xx3").style.display="block";//影藏
+	document.getElementById("xx4").style.display="none";//影藏
+	
+	}
+function bjbgp()
+{
+	document.getElementById("xx1").style.display="none";//显示
+	document.getElementById("xx2").style.display="none";//影藏
+	document.getElementById("xx3").style.display="none";//影藏
+	document.getElementById("xx4").style.display="block";//影藏
+	
+	}
+//点击购买
+function shopdiv(sgcode){//gen
+  //sgcode1='SP-2013020200010';
+   var  url="<%=path%>/litscloud/web/litscloudgetprodutCustomerServerC.Action?sgcode="+sgcode+"&tt="+(new Date()).getTime();
+    	 $("#jgc").show();	
+    	 $("#jgc").load(url);
+}
+function colsediv(){
+	 $("#jgc").hide();	
+}
+$(document).ready(function(){
+	$("#topdiv").load("litscloud/tpl/htmltop.jsp?tt="+(new Date()).getTime());
+	$("#ly_bottom").load("litscloud/tpl/bottom.jsp?tt="+(new Date()).getTime());
+});	
+</script>
+  <body>
+    <div class="ly_body">
+ <!-- ----------------------------------------头部公用代码---------------------------------------------------------- -->
+ <div class="ly_top" id="topdiv"></div>
+<!-- --------------------------------------------------------------内容开始--------------------------------------------------- -->
+
+   <div class="ly_imiddle">
+          <div class="ly_dh" style="height:4px; overflow:hidden;">          
+      </div>
+      <div class="ly_dhn">
+      当前位置：<a href="<%=path %>/index.html">首页</a> > <a href="<%=path %>/litscloud/web/LitsCloudServer.html">云服务</a> > 服务器租用详情
+      </div>            
+   <!--指引开始-->   
+      <div class="ly_zy" style="margin-top:10px;">
+        <div class="ly_zyl"></div>
+        <div class="ly_zyc"><ul>
+           <li class="fwq_zy"><a href="javascript:void(0);">购买信息</a></li>
+           <li class="fwq_zy"><a href="javascript:void(0);">累计评价</a></li>
+           <li class="fwq_zy"><a href="javascript:void(0);">月成交量</a></li>
+           <li class="fwq_zy"><a href="javascript:void(0);">服务质量</a></li>
+           <li class="fwq_zy"><a href="javascript:void(0);">给我推荐</a></li>
+           <li class="fwq_zy"><a href="javascript:void(0);">售后服务</a></li>
+        </ul></div>
+        <div class="ly_zyr"></div>
+        </div>
+        <!--详情内容开始--> 
+    <div class="vew">
+       <div class="vew_t">
+          ${sg.sgname}
+          <input type="hidden" id="so"/>   
+       </div>
+       <div class="vew_c">
+          <div class="vew_cl">
+            <div class="vew_clt"><img src="<%=request.getContextPath() %>/litscloud/web/images/zf_25.gif" /></div>
+            <div class="vew_cld"><ul>
+              <c:forEach items="${imgList}" var="img">
+                <li><a href="${img}"><img src="${img}"/></a></li>
+              </c:forEach>
+            </ul></div>
+          </div>
+          <div class="vew_cr">
+            <div class="vew_crt">
+              <div class="vew_crtl">价格 :</div>
+              <div class="vew_crtr"><span>${sg.sgPrice}</span>  元 </div>
+            </div>
+            
+            <div class="vew_crt">
+              <div class="vew_crtl">计费时长:</div>
+              <div class="vew_crtr">
+              <input name="vew_sc" type="radio" value="月" checked="checked" style="margin-right:5px;"/>每月
+              </div>
+            </div>
+            <div class="vew_crt">
+              <div class="vew_crtl">配送 :</div>
+              <div class="vew_crtr">商家承担运费</div>
+            </div>
+           <div class="vew_crt">
+              <div class="vew_crtl">月销量 :</div>
+              <div class="vew_crtr"><span>*</span> 件 </div>
+            </div>
+             <div class="vew_crt">
+              <div class="vew_crtl">评价 :</div>
+              <div class="vew_crtr" style="color:#ff6600; font-weight:bold;"><img src="<%=request.getContextPath() %>/litscloud/web/images/log_40.gif" /><img src="<%=request.getContextPath() %>/litscloud/web/images/log_40.gif" /><img src="<%=request.getContextPath() %>/litscloud/web/images/log_40.gif" /><img src="<%=request.getContextPath() %>/litscloud/web/images/log_40.gif" /><img src="<%=request.getContextPath() %>/litscloud/web/images/log_40.gif" /> 5分</div>
+            </div>
+            <div class="vew_crt">
+              <div class="vew_crtl">数量 :</div>
+              <div class="vew_crtr">
+              <select name="ps" style="border:solid 1px #c9c9c9; color:#7fac4e;">
+                 <option value="1">1</option>
+              </select>
+              件  (库存${sg.sgnumbers}件)</div>
+            </div>
+            
+           <div class="vew_crc">
+             <div class="vew_crcl"></div> 
+             <div class="vew_crcc"><a href="javascript:shopdiv('${sg.sgcode }')" target="_parent">立即购买</a></div> 
+             <div class="vew_crcr"></div> 
+           </div> 
+           <div class="vew_crd">
+               <div class="vew_crdl"></div> 
+               <div class="vew_crdc"><p></p>服务<br />承诺</div> 
+               <div class="vew_crdm">
+                  <div class="vew_crdm_l"><a href="javascript:void(0);">商品保证<br /><img src="<%=request.getContextPath() %>/litscloud/web/images/zf_27.gif" /></a></div> 
+                  <div class="vew_crdm_r"><a href="javascript:void(0);">退款权益<br /><img src="<%=request.getContextPath() %>/litscloud/web/images/zf_28.gif" /></a></div> 
+               </div> 
+               <div class="vew_crdr"></div> 
+           </div>   
+          </div>
+       </div>
+       <div class="vew_m">
+          <div class="vew_mc">
+            <div class="vew_mct"></div>
+            <div class="vew_mcc">
+               <div class="vew_mcc_t">产品参数:</div>
+               <div class="vew_mcc_d"> 
+               
+               <ul>      
+                <c:forEach items="${getpropertys}" var="sgo">        
+                  <li><div class="vew_mcc_dl" align="center">${sgo.key}:</div>&nbsp;&nbsp;<div class="vew_mcc_dr" align="center">${sgo.value}</div></li>
+                </c:forEach> 
+              </ul>
+            
+          
+               </div>
+            </div>
+            <div class="vew_mcd"></div>
+          </div>
+       </div>
+       
+       
+       
+       <div class="vew_d"></div>
+    </div>      
+      <!--详情内容结束-->
+      <div class="qiehuan" id="xx1" style="display:none;">
+     <div class="ly_m_bgp">
+       <div class="ly_m_bgp_t"></div>
+       <div class="ly_m_bgp_c">
+       <div class="ly_m_bgp_cu"></div>
+         <div class="ly_m_bgp_ch"><ul>
+         <a name="tj"></a>
+            <li><a href="javaScript:void(0)" style="color:#fff; background-image:url(<%=request.getContextPath() %>/litscloud/web/images/lys_38.gif); background-repeat:no-repeat;" onclick="gddx()">广东电信</a></li>
+            <li><a href="javaScript:void(0)" onclick="sdlt()">山东联通</a></li>
+            <li><a href="javaScript:void(0)" onclick="sdsx()">山东双线</a></li>
+            <li><a href="javaScript:void(0)" onclick="bjbgp()">北京BGP</a></li>     
+          </ul></div>
+          
+          <div class="ly_m_bgp_ct"><img src="<%=request.getContextPath() %>/litscloud/web/images/ly_91.jpg" style="margin-top:15px;" />服务器热门机型推荐</div>        
+          <div class="ly_m_bgp_cd">
+            <div class="ly_m_bgp_cdt"></div>
+            <div class="ly_m_bgp_cdc">
+            <!-- 广东电信S -->
+               <div class="ly_m_bgp_cdc_n" id="d1"><ul>
+                 <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                                      
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>标准配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>666</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">年付优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：900元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>4GB DDR3 ECC REG</span></dl>
+                          <dl>硬盘: <span>500GB SATA硬盘</span></dl>
+                          <dl>带宽: <span>百兆共享,保证10Mbps</span></dl>
+                          <dl>操作系统: <span>可选windows,linux </span></dl>        
+                           <dl>IP地址 :<span> 一个免费IP</span></dl>
+                           <dl> 机房 : <span>广东电信</span></dl>
+                           <dl>网卡 : <span>双千兆网卡</span></dl>
+                           <dl>防御 :<span>5G-20G</span></dl>                  
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013050300008')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li> 
+                     <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                                
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                       <div class="ly_m_bgp_cdc_nts"><p>推荐配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>999</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">年付优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：1299元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8GB DDR3 ECC REG</span></dl>
+                          <dl>硬盘: <span>64GB固态硬盘 + 500GB SATA硬盘</span></dl>
+                          <dl>带宽: <span>百兆共享,保证10Mbps</span></dl>
+                          <dl>操作系统: <span>可选windows,linux </span></dl>           
+                          <dl>IP地址 :<span> 一个免费IP</span></dl>
+                           <dl> 机房 : <span>广东电信</span></dl>
+                           <dl>网卡 : <span>双千兆网卡</span></dl>
+                           <dl>防御 :<span>5G-20G</span></dl>                
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013050300009')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li>
+          <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                       
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>高级配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>2600</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">年付优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：3100元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>16GB DDR3 ECC REG</span></dl>
+                          <dl>硬盘: <span>256GB固态硬盘 + 1TB SATA硬盘*2</span></dl>
+                          <dl>带宽: <span>百M独享（99%可用）</span></dl>
+                          <dl>操作系统: <span>可选windows,linux </span></dl>   
+                          <dl>IP地址 :<span> 一个免费IP</span></dl>
+                           <dl> 机房 : <span>广东电信</span></dl>
+                           <dl>网卡 : <span>双千兆网卡</span></dl>
+                           <dl>防御 :<span>5G-20G</span></dl>                        
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013050300010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li>               
+               </ul></div>
+               <!-- 广东电信E -->
+               <!-- 山东联通S -->
+               <div class="ly_m_bgp_cdc_n" id="d2" style="display: none"><ul>
+                 <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                                      
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>标准配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>466</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：800元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>系统盘: <span>免费赠送</span></dl>
+                          <dl>数据盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>带宽: <span>2Mbps</span></dl>
+                          <dl>操作系统: <span>windows linux </span></dl>                         
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li> 
+                     <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                                
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>推荐配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>466</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：800元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>系统盘: <span>免费赠送</span></dl>
+                          <dl>数据盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>带宽: <span>2Mbps</span></dl>
+                          <dl>操作系统: <span>windows linux </span></dl>                         
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li>
+          <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                       
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>高级配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>466</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：800元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>系统盘: <span>免费赠送</span></dl>
+                          <dl>数据盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>带宽: <span>2Mbps</span></dl>
+                          <dl>操作系统: <span>windows linux </span></dl>                         
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li>               
+               </ul></div>
+               <!-- 山东联通E -->
+               <!-- 山东双线S -->
+               <div class="ly_m_bgp_cdc_n" id="d3"  style="display: none"><ul>
+                 <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                                      
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>标准配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>466</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：800元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>系统盘: <span>免费赠送</span></dl>
+                          <dl>数据盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>带宽: <span>2Mbps</span></dl>
+                          <dl>操作系统: <span>windows linux </span></dl>                         
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li> 
+                     <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                                
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>推荐配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>466</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：800元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>系统盘: <span>免费赠送</span></dl>
+                          <dl>数据盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>带宽: <span>2Mbps</span></dl>
+                          <dl>操作系统: <span>windows linux </span></dl>                         
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li>
+          <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                       
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>高级配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>466</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：800元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>系统盘: <span>免费赠送</span></dl>
+                          <dl>数据盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>带宽: <span>2Mbps</span></dl>
+                          <dl>操作系统: <span>windows linux </span></dl>                         
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li>               
+               </ul></div>
+               <!-- 山东双线E -->
+               <!-- 北京BGPs -->
+               <div class="ly_m_bgp_cdc_n" id="d4"  style="display: none"><ul>
+                 <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                                      
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>标准配置4</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>466</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：800元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>系统盘: <span>免费赠送</span></dl>
+                          <dl>数据盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>带宽: <span>2Mbps</span></dl>
+                          <dl>操作系统: <span>windows linux </span></dl>                         
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li> 
+                     <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                                
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>推荐配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>466</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：800元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>系统盘: <span>免费赠送</span></dl>
+                          <dl>数据盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>带宽: <span>2Mbps</span></dl>
+                          <dl>操作系统: <span>windows linux </span></dl>                         
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li>
+          <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                       
+                    <div class="ly_m_bgp_cdc_nth"></div>
+                      <div class="ly_m_bgp_cdc_nts"><p>高级配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntm" >
+                         <div class="ly_m_bgp_cdc_ntm_t"><span>466</span> 元/月</div>
+                         <div class="ly_m_bgp_cdc_ntm_c">优惠价</div>
+                         <div class="ly_m_bgp_cdc_ntm_d">原价：800元/月</div>                        
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>系统盘: <span>免费赠送</span></dl>
+                          <dl>数据盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>带宽: <span>2Mbps</span></dl>
+                          <dl>操作系统: <span>windows linux </span></dl>                         
+                      </div>                      
+                      <div class="ly_m_bgp_cdc_ntw"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+               
+                 </li>               
+               </ul></div>
+               <!-- 北京BGPE -->
+               
+            </div>
+            <div class="ly_m_bgp_cdd"></div>
+          </div>
+          
+       </div>
+       <div class="ly_m_bgp_d"></div>
+     </div>
+    <div class="ly_m_jbt"><span>技术优势</span></div>
+    <div class="ly_m_jszc">
+      <div class="ly_m_jszc_t"></div>
+      <div class="ly_m_jszc_d">
+        <div class="ly_m_jszc_dt">深圳立云网络和客户签定标准的《服务品质协议》(Service Level Agreement)，向客户提供7×24全面的技术服务与支持。<br />
+包括：</div>
+        <div class="ly_m_jszc_dd"><ul>
+          <li>高速、可靠的ChinaNet联连，并保证客户网络系统的联通性达到99％以上；</li>
+          <li>7×24的网络联接状况监控、服务器运行状态、流量监测；</li>
+          <li>7×24的系统管理和技术支持服务；</li>
+          <li>紧急情况下第一时间的响应与支持；</li>
+          <li>根据用户需求提供独占的带宽；</li>
+          <li>双路高压供电，提供100％的电力保证；</li>
+          <li>7×24的恒温恒湿环境；</li>
+          <li>智能UPS系统；</li>
+          <li>操作系统和应用程序的安装；</li>
+          <li>根据客户需要提供免费教程;</li>
+          <li>8G硬件防护保证您的服务器避免恶意攻击;</li>
+        </ul></div>
+      </div>
+    </div>   
+    <div class="ly_n_weibu"></div>
+    <div class="ly_m_jbt"><span>机房简介</span></div> 
+    <div class="ly_m_jfjj">
+      <div class="ly_m_jfjj_t"></div>
+      <div class="ly_m_jfjj_c">
+         <div class="ly_m_jfjj_ckh">
+           <dl>典型客户</dl>
+           <dt>伟创力   政府IDC机房</dt>
+         </div>
+         <div class="ly_m_jfjj_ckh">
+           <dl>机房等级</dl>
+           <dt>★★★★★</dt>
+         </div>
+         <div class="ly_m_jfjj_ckh">
+           <dl>机房运营时间</dl>
+           <dt style="color:#000;">70年</dt>
+         </div>
+         <div class="ly_m_jfjj_cgk">
+         <dl>机房概况</dl>
+         <dt><p>　　　信息大厦IDC机房位于新香洲信息大厦８楼，单层建筑面积1600平方米，完全按中国电信集团公司四星级IDC机房标准建设，机房最高等级为五星级。于2006年12月正式投入使用。</dt>
+         </p></div>
+         <div class="ly_m_jfjj_cbz">
+           <dl style="height:300px; line-height:230px;">电力保障</dl>
+           <dt style="height:300px; text-indent:0px;"><p style="text-indent:0px;">1、两路不同路由高压市电接入。<br />
+2、两套UPS冗余保障，UPS主机采取输入谐波抑制措施：保证输入电流谐波分量≤10%。采取过电压保护措施：设备端电压残压< 500V。UPS配套蓄电池组的单机后备时间≥2小时。<br />
+3、配备柴油发电机应急供电，发电机组具有自动启动、自动切换、自动停机和遥测、遥信功能。柴油发电机为两台1620KVA的英国十字军Crusader品牌。<br />
+
+
+4、机柜电源插座采用双路配电插座，每个插座容量10A（16A），每条插排32A（64A）。<br />
+5、IDC机房的核心网络设备优选直流-48V电源供电，其他设备采用双路独立UPS电源供电。</p>
+<table width="730" border="0" cellpadding="1" style="margin:5px auto; border-top:solid 1px #ccc; border-left:solid 1px #ccc;" cellspacing="0">
+<tr><td width="91"  class="bg_td" >地市</td>
+<td width="91" class="bg_td" v >机房名称</td>
+<td width="91" class="bg_td">机房油机占用负荷（KVA）</td>
+<td  width="91" class="bg_td">油机配置（按机组统计）</td>
+<td  width="91" class="bg_td">空调配置（台数×每台制冷功率）</td>
+<td  width="91" class="bg_td">UPS配置（按系统统计，单位：KVA）</td>
+<td  width="93" class="bg_td">UPS在用负荷（按每台机计算，单位KVA）</td>
+<td  width="91" class="bg_td">UPS利用率</td>
+</tr>
+<tr><td width="91"  class="bg_td" >珠海分公司</td>
+<td width="91" class="bg_td" v >信息大厦IDC机房</td>
+<td width="91" class="bg_td">490</td>
+<td  width="91" class="bg_td">1650KVA×2</td>
+<td  width="91" class="bg_td">2×610KW+1×280KW</td>
+<td  width="91" class="bg_td">160KVA 3+1</td>
+<td  width="93" class="bg_td">24KVA×2</td>
+<td  width="91" class="bg_td">30%</td>
+</tr>
+</table>
+</dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>空调系统</dl>
+           <dt><p>标准通讯机房夏季最大实际用冷176W/m２，冬季最小实际用冷66w/m２，珠海信息大厦通信机房总冷量面积指标为250W/m２，大楼总冷量1450RT，选用美国开利Carrier 600RT离心式冷水机组2台+250RT螺杆式冷水机组1台。 </p></dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>门禁系统</dl>
+           <dt><p>　　机房设置电子门禁系统，门禁记录保存时间≥1 年；机房内部配有IP摄像监控系统7*24小时监控录像，监控录像保存时间≥4 周；监控范围可达机架及设备。 </p></dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>防尘防水</dl>
+           <dt><p style="text-indent:0px;">机房建筑耐久年限为70年；防震设防等级为甲级；<br />有完善的直击雷和侧击雷防范和电磁屏蔽措施。</p></dt>
+         </div>
+         <div class="ly_m_jfjj_cys">
+         <dl>机房优势</dl>
+         <dt><p>　　（1）采用MPLS VPN，架构7个功能和安全登记的VPN域，起到流量隔离和访问控制的目的，同时节省了大量的硬件投资。<br />
+　　（2）网络出口为双防火墙，配置VRRP同步热备，一旦其中一台出现故障，另外一台能在几秒钟内快速接管网络，达到无缝平稳过渡。<br />
+　　（3）使用启智通监控互联网流量，确保信息安全。<br />
+　　（4）使用电子签名认证+SSL（128bit加密）+VPN远程接入，达到安全移动办公的目的。<br />
+　　（5）部署IPS（入侵防御系统）对流量进行监控检测；部署病毒服务器，对网内进行全网杀毒，防范于未然。<br />
+　　（6）部署syslog服务器，进行记录，审计等，做到事后问责，强化管理。<br />
+</p></dt>
+         </div>
+      </div>
+      <div class="ly_m_jfjj_d"></div>
+    </div>
+     <div class="ly_m_jbt"><span>机房实景图片</span></div>
+     <div class="ly_m_jft">
+       <div class="ly_m_jft_t"></div>
+       <div class="ly_m_jft_d"><ul>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_06.gif" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_03.gif" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_04.gif" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_05.gif" /></li>
+       </ul></div>
+     </div>
+    <div class="ly_n_weibu" style="margin-bottom:50px; background-image:none;"></div>
+    </div>
+    <div class="qiehuan" id="xx2" style="display:none;">
+     <div class="ly_m_bgp">
+       <div class="ly_m_bgp_t"></div>
+       <div class="ly_m_bgp_c">
+       <div class="ly_m_bgp_cu"></div>
+         <div class="ly_m_bgp_ch"><ul>
+         <a name="lm" ></a>
+            <li><a href="javaScript:void(0)" onclick="gddx()" >广东电信</a></li>
+            <li><a href="javaScript:void(0)" style="color:#fff; background-image:url(<%=request.getContextPath() %>/litscloud/web/images/lys_38.gif); background-repeat:no-repeat;" onclick="sdlt()">山东联通</a></li>
+            <li><a href="javaScript:void(0)" onclick="sdsx()">山东双线</a></li>
+            <li><a href="javaScript:void(0)" onclick="bjbgp()">北京BGP</a></li>    
+          </ul></div>
+          <div class="ly_m_bgp_ct"><img src="<%=request.getContextPath() %>/litscloud/web/images/ly_91.jpg" style="margin-top:15px;" /> 服务器热门机型推荐</div>        
+          <div class="ly_m_bgp_cd">
+            <div class="ly_m_bgp_cdt"></div>
+            <div class="ly_m_bgp_cdc">
+               <div class="ly_m_bgp_cdc_n"><ul>
+                 <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                      <div class="ly_m_bgp_cdc_ntt"><span><a href="#" style="color:#ff6600;">热销中</a></span><p>标准配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>硬盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>操作系统 : <span>windows linux </span></dl>
+                          <dl>带宽: <span>百M共享（最低10M）</span></dl>
+                          <dl>IP地址 : <span>一个免费IP </span></dl>
+                          <dl>机房 : <span>山东联通</span></dl>
+                          <dl>网卡 : <span>双千兆网卡 </span></dl>
+                          <dl>防御 : <span>5G-20G  </span></dl>
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntm" style="height: 110px;">
+                         <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">价格：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>799</span> 元/月<br />
+                            <span>2333</span> 元/季<br />
+                            <span> 5999</span> 元/年
+                            </div>
+                         </div>
+                          <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">含税价：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>6478</span> 元/年</div>
+                         </div>   
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+                   <div class="ly_m_bgp_cdc_nd">
+                    <div class="ly_m_bgp_cdc_ndl"></div>
+                    <div class="ly_m_bgp_cdc_ndc"><a href="javascript:shopdiv('SP-2013050300011')">立即购买</a></div>
+                    <div class="ly_m_bgp_cdc_ndr"></div>
+                   </div>
+                 </li> 
+                      <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                      <div class="ly_m_bgp_cdc_ntt"><span><a href="#" style="color:#ff6600;">热销中</a></span><p>推荐配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G</span></dl>
+                          <dl>硬盘 : <span>256G </span></dl>
+                          <dl>操作系统 : <span>windows linux</span></dl>
+                          <dl>带宽 : <span>百M独享（99%可用）</span></dl>
+                          <dl>IP地址 : <span>一个免费IP </span></dl>
+                          <dl>机房 : <span>山东联通 </span></dl>
+                          <dl>网卡 : <span>双千兆网卡 </span></dl>
+                          <dl>防御 : <span>5G-20G </span></dl>
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntm" style="height: 110px;">
+                         <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">价格：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>1500</span> 元/月<br />
+                            <span>4500</span> 元/季<br />
+                            <span> 15000</span> 元/年
+                            </div>
+                         </div>
+                          <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">含税价：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>16200</span> 元/年</div>
+                         </div>   
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+                   <div class="ly_m_bgp_cdc_nd">
+                    <div class="ly_m_bgp_cdc_ndl"></div>
+                    <div class="ly_m_bgp_cdc_ndc"><a href="javascript:shopdiv('SP-2013050300012')">立即购买</a></div>
+                    <div class="ly_m_bgp_cdc_ndr"></div>
+                   </div>
+                 </li> 
+                      <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                      <div class="ly_m_bgp_cdc_ntt"><span><a href="#" style="color:#ff6600;">热销中</a></span><p>高级配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>16G </span></dl>
+                          <dl>硬盘: <span>256G*2 SSD 硬盘</span></dl>
+                          <dl>操作系统 : <span>windows linux </span></dl>
+                          <dl>带宽 : <span>千M共享（最低200M）</span></dl>
+                          <dl>IP地址 : <span>一个免费IP </span></dl>
+                          <dl>机房 : <span>山东联通 </span></dl>
+                          <dl>网卡 : <span>双千兆网卡</span></dl>
+                          <dl>防御 : <span>5G-20G </span></dl>
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntm" style="height: 110px;">
+                         <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">价格：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>4599</span> 元/月<br />
+                            <span>13800</span> 元/季<br />
+                            <span>39999</span> 元/年
+                            </div>
+                         </div>
+                          <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">含税价：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>43198</span> 元/年</div>
+                         </div>   
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+                   <div class="ly_m_bgp_cdc_nd">
+                    <div class="ly_m_bgp_cdc_ndl"></div>
+                    <div class="ly_m_bgp_cdc_ndc"><a href="javascript:shopdiv('SP-2013050300013')">立即购买</a></div>
+                    <div class="ly_m_bgp_cdc_ndr"></div>
+                   </div>
+                 </li>               
+               </ul></div>
+            </div>
+            <div class="ly_m_bgp_cdd"></div>
+          </div>
+       </div>
+       <div class="ly_m_bgp_d"></div>
+     </div>
+    <div class="ly_m_jbt"><span>技术优势</span></div>
+    <div class="ly_m_jszc">
+      <div class="ly_m_jszc_t"></div>
+      <div class="ly_m_jszc_d">
+        <div class="ly_m_jszc_dt">深圳立云网络和客户签定标准的《服务品质协议》(Service Level Agreement)，向客户提供7×24全面的技术服务与支持。<br />
+包括：</div>
+        <div class="ly_m_jszc_dd"><ul>
+          <li>高速、可靠的ChinaNet联连，并保证客户网络系统的联通性达到99％以上；</li>
+          <li>7×24的网络联接状况监控、服务器运行状态、流量监测；</li>
+          <li>7×24的系统管理和技术支持服务；</li>
+          <li>紧急情况下第一时间的响应与支持；</li>
+          <li>根据用户需求提供独占的带宽；</li>
+          <li>双路高压供电，提供100％的电力保证；</li>
+          <li>7×24的恒温恒湿环境；</li>
+          <li>智能UPS系统；</li>
+          <li>操作系统和应用程序的安装；</li>
+          <li>根据客户需要提供免费教程;</li>
+          <li>8G硬件防护保证您的服务器避免恶意攻击;</li>
+        </ul></div>
+      </div>
+    </div>   
+    <div class="ly_n_weibu"></div>
+    <div class="ly_m_jbt"><span>机房简介</span></div> 
+    <div class="ly_m_jfjj">
+      <div class="ly_m_jfjj_t"></div>
+      <div class="ly_m_jfjj_c">
+         <div class="ly_m_jfjj_ckh">
+           <dl>典型客户</dl>
+           <dt>网易大话西游   天空下载站  迅雷  奇虎  博远宽频等</dt>
+         </div>
+         <div class="ly_m_jfjj_ckh">
+           <dl>机房等级</dl>
+           <dt>★★★★★</dt>
+         </div>
+         <div class="ly_m_jfjj_ckh">
+           <dl>机房运营时间</dl>
+           <dt style="color:#000;">70年</dt>
+         </div>
+         <div class="ly_m_jfjj_cgk">
+         <dl>机房概况</dl>
+         <dt><p>　山东德州网通畅想数据中心坐落于山东省德州市德城区湖滨南路11号，总面积约为3000m;目前共安装了300余个机架。房环境一流，设施先进，管理高效，适合各种类型IDC业务需求。</dt>
+         </p></div>
+         <div class="ly_m_jfjj_cbz">
+           <dl style="height:80px; line-height:80px;">电力保障</dl>
+           <dt style="height:80px; text-indent:0px;"><p style="text-indent:0px;">
+           山东德州网通机房业务网络全部采用CICSO设备，布线采用ACS六类屏蔽，对于增值服务方面配备CISCO和NETSCREEN两类防火墙，安氏IDS，RADWARE应用交换机等，增强网络稳定性。
+           </p>
+</dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>空调系统</dl>
+           <dt><p>标准通讯机房夏季最大实际用冷176W/m２，冬季最小实际用冷66w/m２，珠海信息大厦通信机房总冷量面积指标为250W/m２，大楼总冷量1450RT，选用美国开利Carrier 600RT离心式冷水机组2台+250RT螺杆式冷水机组1台。 </p></dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>门禁系统</dl>
+           <dt><p>　　机房设置电子门禁系统，门禁记录保存时间≥1 年；机房内部配有IP摄像监控系统7*24小时监控录像，监控录像保存时间≥4 周；监控范围可达机架及设备。 </p></dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>防尘防水</dl>
+           <dt><p style="text-indent:0px;">机房建筑耐久年限为70年；防震设防等级为甲级；<br />有完善的直击雷和侧击雷防范和电磁屏蔽措施。</p></dt>
+         </div>
+         <div class="ly_m_jfjj_cys">
+         <dl>机房优势</dl>
+         <dt><p>　　（1）采用MPLS VPN，架构7个功能和安全登记的VPN域，起到流量隔离和访问控制的目的，同时节省了大量的硬件投资。<br />
+　　（2）网络出口为双防火墙，配置VRRP同步热备，一旦其中一台出现故障，另外一台能在几秒钟内快速接管网络，达到无缝平稳过渡。<br />
+　　（3）使用启智通监控互联网流量，确保信息安全。<br />
+　　（4）使用电子签名认证+SSL（128bit加密）+VPN远程接入，达到安全移动办公的目的。<br />
+　　（5）部署IPS（入侵防御系统）对流量进行监控检测；部署病毒服务器，对网内进行全网杀毒，防范于未然。<br />
+　　（6）部署syslog服务器，进行记录，审计等，做到事后问责，强化管理。<br />
+</p></dt>
+         </div>
+      </div>
+      <div class="ly_m_jfjj_d"></div>
+    </div>
+     <div class="ly_m_jbt"><span>机房实景图片</span></div>
+     <div class="ly_m_jft">
+       <div class="ly_m_jft_t"></div>
+       <div class="ly_m_jft_d"><ul>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_06.gif" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_03.gif" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_04.gif" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_05.gif" /></li>
+       </ul></div>
+     </div>
+    <div class="ly_n_weibu" style="margin-bottom:50px; background-image:none;"></div>
+    </div>
+    
+    <div class="qiehuan" id="xx3" style="display:none;">
+     <div class="ly_m_bgp">
+       <div class="ly_m_bgp_t"></div>
+       <div class="ly_m_bgp_c">
+       <div class="ly_m_bgp_cu"></div>
+         <div class="ly_m_bgp_ch"><ul>
+         <a name="lm" ></a>
+           <li><a href="javaScript:void(0)" onclick="gddx()" >广东电信</a></li>
+            <li><a href="javaScript:void(0)"  onclick="sdlt()">山东联通</a></li>
+            <li><a href="javaScript:void(0)" onclick="sdsx()" style="color:#fff; background-image:url(<%=request.getContextPath() %>/litscloud/web/images/lys_38.gif); background-repeat:no-repeat;" >山东双线</a></li>
+            <li><a href="javaScript:void(0)" onclick="bjbgp()">北京BGP</a></li>     
+          </ul></div>
+          <div class="ly_m_bgp_ct"><img src="<%=request.getContextPath() %>/litscloud/web/images/ly_91.jpg" style="margin-top:15px;" /> 服务器热门机型推荐</div>        
+          <div class="ly_m_bgp_cd">
+            <div class="ly_m_bgp_cdt"></div>
+            <div class="ly_m_bgp_cdc">
+               <div class="ly_m_bgp_cdc_n"><ul>
+                 <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                      <div class="ly_m_bgp_cdc_ntt"><span><a href="#" style="color:#ff6600;">热销中</a></span><p>标准配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>硬盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>操作系统 : <span>windows linux </span></dl>
+                          <dl>带宽: <span>百M共享（最低10M）</span></dl>
+                          <dl>IP地址 : <span>一个免费IP </span></dl>
+                          <dl>机房 : <span>山东双线</span></dl>
+                          <dl>网卡 : <span>双千兆网卡 </span></dl>
+                          <dl>防御 : <span>5G-20G  </span></dl>
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntm" style="height: 110px;">
+                         <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">价格：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>799</span> 元/月<br />
+                            <span>2333</span> 元/季<br />
+                            <span> 5999</span> 元/年
+                            </div>
+                         </div>
+                          <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">含税价：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>6999</span> 元/年</div>
+                         </div>   
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+                   <div class="ly_m_bgp_cdc_nd">
+                    <div class="ly_m_bgp_cdc_ndl"></div>
+                    <div class="ly_m_bgp_cdc_ndc"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                    <div class="ly_m_bgp_cdc_ndr"></div>
+                   </div>
+                 </li> 
+                      <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                      <div class="ly_m_bgp_cdc_ntt"><span><a href="#" style="color:#ff6600;">热销中</a></span><p>推荐配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G</span></dl>
+                          <dl>硬盘 : <span>256G </span></dl>
+                          <dl>操作系统 : <span>windows linux</span></dl>
+                          <dl>带宽 : <span>百M独享（99%可用）</span></dl>
+                          <dl>IP地址 : <span>一个免费IP </span></dl>
+                          <dl>机房 : <span>山东双线 </span></dl>
+                          <dl>网卡 : <span>双千兆网卡 </span></dl>
+                          <dl>防御 : <span>5G-20G </span></dl>
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntm" style="height: 110px;">
+                         <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">价格：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>2399</span> 元/月<br />
+                            <span>7000</span> 元/季<br />
+                            <span> 19999</span> 元/年
+                            </div>
+                         </div>
+                          <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">含税价：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>23999</span> 元/年</div>
+                         </div>   
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+                   <div class="ly_m_bgp_cdc_nd">
+                    <div class="ly_m_bgp_cdc_ndl"></div>
+                    <div class="ly_m_bgp_cdc_ndc"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                    <div class="ly_m_bgp_cdc_ndr"></div>
+                   </div>
+                 </li> 
+                      <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                      <div class="ly_m_bgp_cdc_ntt"><span><a href="#" style="color:#ff6600;">热销中</a></span><p>高级配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>16G </span></dl>
+                          <dl>硬盘: <span>256G*2 SSD 硬盘</span></dl>
+                          <dl>操作系统 : <span>windows linux </span></dl>
+                          <dl>带宽 : <span>千M共享（最低200M）</span></dl>
+                          <dl>IP地址 : <span>一个免费IP </span></dl>
+                          <dl>机房 : <span>山东双线 </span></dl>
+                          <dl>网卡 : <span>双千兆网卡</span></dl>
+                          <dl>防御 : <span>5G-20G </span></dl>
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntm" style="height: 110px;">
+                         <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">价格：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>4599</span> 元/月<br />
+                            <span>13800</span> 元/季<br />
+                            <span>39999</span> 元/年
+                            </div>
+                         </div>
+                          <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">含税价：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>49999</span> 元/年</div>
+                         </div>   
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+                   <div class="ly_m_bgp_cdc_nd">
+                    <div class="ly_m_bgp_cdc_ndl"></div>
+                    <div class="ly_m_bgp_cdc_ndc"><a href="javascript:shopdiv('SP-2013020200010')">立即购买</a></div>
+                    <div class="ly_m_bgp_cdc_ndr"></div>
+                   </div>
+                 </li>               
+               </ul></div>
+            </div>
+            <div class="ly_m_bgp_cdd"></div>
+          </div>
+       </div>
+       <div class="ly_m_bgp_d"></div>
+     </div>
+    <div class="ly_m_jbt"><span>技术优势</span></div>
+    <div class="ly_m_jszc">
+      <div class="ly_m_jszc_t"></div>
+      <div class="ly_m_jszc_d">
+        <div class="ly_m_jszc_dt">深圳立云网络和客户签定标准的《服务品质协议》(Service Level Agreement)，向客户提供7×24全面的技术服务与支持。<br />
+包括：</div>
+        <div class="ly_m_jszc_dd"><ul>
+          <li>高速、可靠的ChinaNet联连，并保证客户网络系统的联通性达到99％以上；</li>
+          <li>7×24的网络联接状况监控、服务器运行状态、流量监测；</li>
+          <li>7×24的系统管理和技术支持服务；</li>
+          <li>紧急情况下第一时间的响应与支持；</li>
+          <li>根据用户需求提供独占的带宽；</li>
+          <li>双路高压供电，提供100％的电力保证；</li>
+          <li>7×24的恒温恒湿环境；</li>
+          <li>智能UPS系统；</li>
+          <li>操作系统和应用程序的安装；</li>
+          <li>根据客户需要提供免费教程;</li>
+          <li>8G硬件防护保证您的服务器避免恶意攻击;</li>
+        </ul></div>
+      </div>
+    </div>   
+    <div class="ly_n_weibu"></div>
+    <div class="ly_m_jbt"><span>机房简介</span></div> 
+    <div class="ly_m_jfjj">
+      <div class="ly_m_jfjj_t"></div>
+      <div class="ly_m_jfjj_c">
+         <div class="ly_m_jfjj_ckh">
+           <dl>典型客户</dl>
+           <dt>游戏网   华军软件园 中央电视台网络直播中心等</dt>
+         </div>
+         <div class="ly_m_jfjj_ckh">
+           <dl>机房等级</dl>
+           <dt>★★★★★</dt>
+         </div>
+         <div class="ly_m_jfjj_ckh">
+           <dl>机房运营时间</dl>
+           <dt style="color:#000;">70年</dt>
+         </div>
+         <div class="ly_m_jfjj_cgk">
+         <dl>机房概况</dl>
+         <dt><p>　是国际一流标准的网络数据中心，拥有丰富的网络资源、先进的机房设施和专业化的服务队伍。</dt>
+         </p></div>
+         <div class="ly_m_jfjj_cbz">
+           <dl style="height:80px; line-height:80px;">电力保障</dl>
+           <dt style="height:80px; text-indent:0px;"><p style="text-indent:0px;">
+            "主配电为双路供电，供电总容量满负荷约为1000KVA ，- v* \& C$ q) v, O不间断电源为三台UPS设备( 两用一备 )，容量共计400KVA。
+           </p>
+</dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>空调系统</dl>
+           <dt><p> - c* b) v5 @0 L' g两台机房专用空调+4台冷风机，保证IDC机房常年恒温23± 2°C ，恒湿 45%。 </p></dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>门禁系统</dl>
+           <dt><p>　　机房设置电子门禁系统，门禁记录保存时间≥1 年；机房内部配有IP摄像监控系统7*24小时监控录像，监控录像保存时间≥4 周；监控范围可达机架及设备。 </p></dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>防尘防水</dl>
+           <dt><p style="text-indent:0px;">机房建筑耐久年限为70年；防震设防等级为甲级；<br />有完善的直击雷和侧击雷防范和电磁屏蔽措施。</p></dt>
+         </div>
+         <div class="ly_m_jfjj_cys">
+         <dl>机房优势</dl>
+         <dt><p>　　（1）采用MPLS VPN，架构7个功能和安全登记的VPN域，起到流量隔离和访问控制的目的，同时节省了大量的硬件投资。<br />
+　　（2）网络出口为双防火墙，配置VRRP同步热备，一旦其中一台出现故障，另外一台能在几秒钟内快速接管网络，达到无缝平稳过渡。<br />
+　　（3）使用启智通监控互联网流量，确保信息安全。<br />
+　　（4）使用电子签名认证+SSL（128bit加密）+VPN远程接入，达到安全移动办公的目的。<br />
+　　（5）部署IPS（入侵防御系统）对流量进行监控检测；部署病毒服务器，对网内进行全网杀毒，防范于未然。<br />
+　　（6）部署syslog服务器，进行记录，审计等，做到事后问责，强化管理。<br />
+</p></dt>
+         </div>
+      </div>
+      <div class="ly_m_jfjj_d"></div>
+    </div>
+     <div class="ly_m_jbt"><span>机房实景图片</span></div>
+     <div class="ly_m_jft">
+       <div class="ly_m_jft_t"></div>
+       <div class="ly_m_jft_d"><ul>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_06.gif" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_03.gif" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_04.gif" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/xl_05.gif" /></li>
+       </ul></div>
+     </div>
+    <div class="ly_n_weibu" style="margin-bottom:50px; background-image:none;"></div>
+    </div>
+    
+    
+    
+    <div class="qiehuan" id="xx4" style="display:block;">
+     <div class="ly_m_bgp">
+       <div class="ly_m_bgp_t"></div>
+       <div class="ly_m_bgp_c">
+       <div class="ly_m_bgp_cu"></div>
+         <div class="ly_m_bgp_ch"><ul>
+           <a name="lm" ></a>
+           <li><a href="javaScript:void(0)" onclick="gddx()" >广东电信</a></li>
+            <li><a href="javaScript:void(0)"  onclick="sdlt()">山东联通</a></li>
+            <li><a href="javaScript:void(0)" onclick="sdsx()" >山东双线</a></li>
+            <li><a href="javaScript:void(0)" onclick="bjbgp()" style="color:#fff; background-image:url(<%=request.getContextPath() %>/litscloud/web/images/lys_38.gif); background-repeat:no-repeat;" >北京BGP</a></li>        
+          </ul></div>
+          <div class="ly_m_bgp_ct"><img src="<%=request.getContextPath() %>/litscloud/web/images/ly_91.jpg" style="margin-top:15px;" /> 服务器热门机型推荐</div>        
+          <div class="ly_m_bgp_cd">
+            <div class="ly_m_bgp_cdt"></div>
+            <div class="ly_m_bgp_cdc">
+               <div class="ly_m_bgp_cdc_n"><ul>
+                 <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                      <div class="ly_m_bgp_cdc_ntt"><span><a href="#" style="color:#ff6600;">热销中</a></span><p>标准配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G </span></dl>
+                          <dl>硬盘: <span>64G SSD + 1T SATA硬盘</span></dl>
+                          <dl>操作系统 : <span>windows linux </span></dl>
+                          <dl>带宽: <span>百M共享</span></dl>
+                          <dl>IP地址 : <span>一个免费IP </span></dl>
+                          <dl>机房 : <span>北京</span></dl>
+                          <dl>网卡 : <span>双千兆网卡 </span></dl>
+                          <dl>防御 : <span>5G-20G  </span></dl>
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntm" style="height: 110px;">
+                         <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">价格：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>650</span> 元/月<br />
+                            <span>1950</span> 元/季<br />
+                            <span> 6500</span> 元/年
+                            </div>
+                         </div>
+                          <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">含税价：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>7020</span> 元/年</div>
+                         </div>   
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+                   <div class="ly_m_bgp_cdc_nd">
+                    <div class="ly_m_bgp_cdc_ndl"></div>
+                    <div class="ly_m_bgp_cdc_ndc"><a href="javascript:shopdiv('SP-2013050300014')">立即购买</a></div>
+                    <div class="ly_m_bgp_cdc_ndr"></div>
+                   </div>
+                 </li> 
+                      <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                      <div class="ly_m_bgp_cdc_ntt"><span><a href="#" style="color:#ff6600;">热销中</a></span><p>推荐配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>8G</span></dl>
+                          <dl>硬盘 : <span>256G </span></dl>
+                          <dl>操作系统 : <span>windows linux</span></dl>
+                          <dl>带宽 : <span>百M共享</span></dl>
+                          <dl>IP地址 : <span>一个免费IP </span></dl>
+                          <dl>机房 : <span>北京 </span></dl>
+                          <dl>网卡 : <span>双千兆网卡 </span></dl>
+                          <dl>防御 : <span>5G-20G </span></dl>
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntm" style="height: 110px;">
+                         <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">价格：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>799</span> 元/月<br />
+                            <span>2397</span> 元/季<br />
+                            <span> 7990</span> 元/年
+                            </div>
+                         </div>
+                          <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">含税价：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>8629</span> 元/年</div>
+                         </div>   
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+                   <div class="ly_m_bgp_cdc_nd">
+                    <div class="ly_m_bgp_cdc_ndl"></div>
+                    <div class="ly_m_bgp_cdc_ndc"><a href="javascript:shopdiv('SP-2013050300015')">立即购买</a></div>
+                    <div class="ly_m_bgp_cdc_ndr"></div>
+                   </div>
+                 </li> 
+                      <li>
+                   <div class="ly_m_bgp_cdc_nt">
+                      <div class="ly_m_bgp_cdc_ntt"><span><a href="#" style="color:#ff6600;">热销中</a></span><p>高级配置</p></div>
+                      <div class="ly_m_bgp_cdc_ntc" style="color: white;">
+                          <dl>CPU: <span>至强5520 </span></dl>
+                          <dl>内存: <span>16G </span></dl>
+                          <dl>硬盘: <span>256G*2 SSD 硬盘</span></dl>
+                          <dl>操作系统 : <span>windows linux </span></dl>
+                          <dl>带宽 : <span>百M共享</span></dl>
+                          <dl>IP地址 : <span>一个免费IP </span></dl>
+                          <dl>机房 : <span>北京</span></dl>
+                          <dl>网卡 : <span>双千兆网卡</span></dl>
+                          <dl>防御 : <span>5G-20G </span></dl>
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntm" style="height: 110px;">
+                         <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">价格：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>849</span> 元/月<br />
+                            <span>2547</span> 元/季<br />
+                            <span>8490</span> 元/年
+                            </div>
+                         </div>
+                          <div class="ly_m_bgp_cdc_ntm_h">
+                            <div class="ly_m_bgp_cdc_ntm_hl">含税价：</div>
+                            <div class="ly_m_bgp_cdc_ntm_hr"><span>9169</span> 元/年</div>
+                         </div>   
+                      </div>
+                      <div class="ly_m_bgp_cdc_ntd"></div>
+                   </div>
+                   <div class="ly_m_bgp_cdc_nd">
+                    <div class="ly_m_bgp_cdc_ndl"></div>
+                    <div class="ly_m_bgp_cdc_ndc"><a href="javascript:shopdiv('SP-2013050300016')">立即购买</a></div>
+                    <div class="ly_m_bgp_cdc_ndr"></div>
+                   </div>
+                 </li>               
+               </ul></div>
+            </div>
+            <div class="ly_m_bgp_cdd"></div>
+          </div>
+       </div>
+       <div class="ly_m_bgp_d"></div>
+     </div>
+    <div class="ly_m_jbt"><span>技术优势</span></div>
+    <div class="ly_m_jszc">
+      <div class="ly_m_jszc_t"></div>
+      <div class="ly_m_jszc_d">
+        <div class="ly_m_jszc_dt">深圳立云网络和客户签定标准的《服务品质协议》(Service Level Agreement)，向客户提供7×24全面的技术服务与支持。<br />
+包括：</div>
+        <div class="ly_m_jszc_dd"><ul>
+          <li>高速、可靠的ChinaNet联连，并保证客户网络系统的联通性达到99％以上；</li>
+          <li>7×24的网络联接状况监控、服务器运行状态、流量监测；</li>
+          <li>7×24的系统管理和技术支持服务；</li>
+          <li>紧急情况下第一时间的响应与支持；</li>
+          <li>根据用户需求提供独占的带宽；</li>
+          <li>双路高压供电，提供100％的电力保证；</li>
+          <li>7×24的恒温恒湿环境；</li>
+          <li>智能UPS系统；</li>
+          <li>操作系统和应用程序的安装；</li>
+          <li>根据客户需要提供免费教程;</li>
+          <li>8G硬件防护保证您的服务器避免恶意攻击;</li>
+        </ul></div>
+      </div>
+    </div>   
+    <div class="ly_n_weibu"></div>
+    <div class="ly_m_jbt"><span>机房简介</span></div> 
+    <div class="ly_m_jfjj">
+      <div class="ly_m_jfjj_t"></div>
+      <div class="ly_m_jfjj_c">
+         <div class="ly_m_jfjj_ckh">
+           <dl>典型客户</dl>
+           <dt>3366  企业网站用户  中央电视台网络直播中心等</dt>
+         </div>
+         <div class="ly_m_jfjj_ckh">
+           <dl>机房等级</dl>
+           <dt>★★★★★</dt>
+         </div>
+         <div class="ly_m_jfjj_ckh">
+           <dl>机房运营时间</dl>
+           <dt style="color:#000;">70年</dt>
+         </div>
+         <div class="ly_m_jfjj_cgk">
+         <dl>机房概况</dl>
+         <dt><p>IDC机房主要设备（核心交换机、用户交换机）均采用Cisco设备，可以为用户提供高可靠性的网络接入服务。</dt>
+         </p></div>
+         <div class="ly_m_jfjj_cbz">
+           <dl style="height:80px; line-height:80px;">电力保障</dl>
+           <dt style="height:80px; text-indent:0px;"><p >
+           采用双路供电 + 油机备份的方式 + 专用UPS不间断电源。
+           </p>
+</dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>空调系统</dl>
+           <dt><p>温度及湿度调控装置,二十四时小时全天候运作的计算机操控空调装置，中心内温度固定在22°C的水平，恒温操控环境可防止服务器过热而出现故障，确保客户的服务器免受高温影响。  </p></dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>门禁系统</dl>
+           <dt><p>　机房采用先进的电子门禁系统，实行出入双向刷卡，严格控制进出机房的人员，确保互联网数据中心安全可靠。机房的电子监视系统的布署在机房的设备托管区、VIP区、机房的各出入口，并进行24小时录像监控。 </p></dt>
+         </div>
+         <div class="ly_m_jfjj_cbz">
+           <dl>防尘防火</dl>
+           <dt><p style="text-indent:0px;">两套防火装置：FM 200气体灭火系统和预警式洒水系统。 FM 200气体灭火系统所使用的气体为符合环保标准，安全且不会腐蚀电力设备的七丙烷气体。预警式洒水系统，在火势不受控制时可发挥其后备作用，防止火势蔓延。   </div>
+         <div class="ly_m_jfjj_cys">
+         <dl>机房优势</dl>
+         <dt><p>　　（1）采用MPLS VPN，架构7个功能和安全登记的VPN域，起到流量隔离和访问控制的目的，同时节省了大量的硬件投资。<br />
+　　（2）网络出口为双防火墙，配置VRRP同步热备，一旦其中一台出现故障，另外一台能在几秒钟内快速接管网络，达到无缝平稳过渡。<br />
+　　（3）使用启智通监控互联网流量，确保信息安全。<br />
+　　（4）使用电子签名认证+SSL（128bit加密）+VPN远程接入，达到安全移动办公的目的。<br />
+　　（5）部署IPS（入侵防御系统）对流量进行监控检测；部署病毒服务器，对网内进行全网杀毒，防范于未然。<br />
+　　（6）部署syslog服务器，进行记录，审计等，做到事后问责，强化管理。<br />
+</p></dt>
+         </div>
+      </div>
+      <div class="ly_m_jfjj_d"></div>
+    </div>
+     <div class="ly_m_jbt"><span>机房实景图片</span></div>
+     <div class="ly_m_jft">
+       <div class="ly_m_jft_t"></div>
+       <div class="ly_m_jft_d"><ul>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/jf-01.jpg" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/jf-02.jpg" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/jf-03.jpg" /></li>
+         <li><img src="<%=request.getContextPath() %>/litscloud/web/images/jf-04.jpg" /></li>
+       </ul></div>
+     </div>
+    <div class="ly_n_weibu" style="margin-bottom:50px; background-image:none;"></div>
+    </div>
+   </div>
+      <!-- 确定层S -->
+<div id="jgc" class="jgc" style="display: none">
+</div>
+<!-- 确定层E -->
+<!-- _________________________底部公用代码 _______________________________________ -->
+ <div class="ly_bottom" id="ly_bottom">
+ </div>
+</div>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+@charset "gb2312";
+/* CSS Document */
+/*body{ background:url(../images/bg.gif) 0 0 repeat-x; color:#666;font:normal 12px/24px "ËÎÌו"; padding:0; margin:0;}*/
+body{ color:#666;font:normal 12px/24px "ËÎÌו"; padding:0; margin:0;}
+*{ padding:0; margin:0;}
+a{ color:#333; text-decoration:none;}
+a:hover{ color:#f60; text-decoration:none;}
+img{ border:none;}
+
+/*guo qing*/
+.youxi_bg{ display:block; clear:both; background:#ffffff url(../images/gq/bg.gif) 0 0 repeat-x; width:1004px; margin:0 auto;}
+.yxgq_bg{ display:block; clear:both; background:url(../images/yd/youxi_ydbg.jpg) top center no-repeat; margin:0 auto; overflow:hidden;}
+.top_bq{ display:block; clear:both; height:108px; margin:0 auto; width:1004px;}
+.top_bq img{ float:right; padding-top:40px; padding-right:10px;}
+
+/*layout*/
+.page{ display:block; clear:both; width:900px; zoom:1; margin:0 auto;}
+
+/*mod*/
+.modbox{ display:block; clear:both; zoom:1; margin-bottom:15px;}
+.modmbox{display:block; clear:both; border:#DEDEDE 1px solid; border-top:none; border-bottom:none; zoom:1; overflow:hidden;}
+.modmboxB{display:block; clear:both; border:#FFCC7B 1px solid; border-top:none; border-bottom:none; zoom:1; overflow:hidden;}
+
+/*other*/
+.cent{ display:block; clear:both; text-align:center;}
+
+.f_l{ float:left;}
+.f_r{ float:right;}
+
+.more{ float:right; color:#999; font-family:tahoma,"ËÎÌו"; font-weight:normal; font-size:12px;}
+
+/*font*/
+.font01{ color:#f00; font-weight:bold;}
+.font02{ color:#EA5D03;}
+.font03{ color:#f60; text-decoration:underline;}
+.font03:hover{ color:#f60; text-decoration:none;}
+.font04{color:#999;}
+.font05{ color:#AA7A00; font-size:14px;}
+.font06{ color:#f00;}
+.font07{ color:#1B7100;}
+.font08{ color:#f60; font-weight:bold;}
+.font09{ color:#AB7300; font-weight:bold;}
+.font10{ color:#AB7300; text-decoration:underline;}
+.font10:hover{ color:#AB7300; text-decoration:none;}
+.font11{ color:#333;}
+.font_s14b{ font-size:14px; font-weight:bold;}
+.font12{ color:#f60; text-decoration:none;}
+.font12:hover{ color:#f60; text-decoration:underline;}
+.font13{ color:#666; text-decoration:underline;}
+.font13:hover{ color:#666; text-decoration:none;}

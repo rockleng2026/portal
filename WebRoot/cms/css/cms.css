@@ -1,0 +1,68 @@
+@charset "utf-8";
+/* CSS Document */
+
+body, ul, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, h7, input, p, form {
+	margin:0;
+	padding:0;
+	font-size: 12px;
+}
+body {
+	font-size: 12px;
+	line-height:150%;
+	color:#444;
+	font-family:"微软雅黑";
+	background-color:#CCC;
+}
+img {
+	vertical-align:top;
+	border: none;
+}
+ul {
+	list-style:none;
+}
+a {
+	text-decoration:none;
+}
+a:hover{
+	text-decoration:underline;
+}
+.clear {
+	clear:both;
+	height:0px;
+	font-size:0px;
+	overflow:hidden;
+}
+
+.left{
+	float:left;
+}
+.right{
+	float:right;
+}
+/*头部*/
+#header{ height:90px; width:100%; background-color:#7bbd28;}
+#header2{height:90px; width:645px; float:left; background:url(../images/head.jpg);color:#FFF; font-size:14px;text-align:center; line-height:90px;}
+#header3{ height:90px; width:300px; float:right;}
+#header3 ul{list-style-type:none; height:40px; width:300px;}
+#header3 ul li{display:inline; float:left; height:40px; width:100px; margin-top:45px;color:#FFF; font-size:14px;text-align:center; line-height:40px;}
+.shuaxin{ background-image:url(../images/shuaxin.jpg); background-repeat:no-repeat; background-position: left;cursor:pointer;}
+.bangzhu{background-image:url(../images/bangzhu.jpg); background-repeat:no-repeat; background-position: left;cursor:pointer;}
+.tuichu{background-image:url(../images/tuichu.jpg); background-repeat:no-repeat; background-position: left;cursor:pointer;}
+#header-nav{height:40px;float:left;}
+#header-nav ul{list-style-type:none; height:40px; width:780px; margin-left:208px;}
+#outDiv{
+	     height:40px; width:100%;background-image:url(../images/head2-bg.jpg); background-repeat:repeat-x;
+	}
+#middleDiv{
+	    with:210px; float: left;margin-left:20px;line-height: 40px;
+	}
+#lastDiv{
+	  height:40px;float:right;line-height: 40px;margin-right:40px;
+	}
+#header-nav ul li{display:inline; float:left; height:40px; width:130px;cursor:pointer;color:#333; font-size:14px;text-align:center; line-height:40px;cursor:pointer;}
+#header-nav ul li a{color:#333;text-decoration: none;height:40px; width:130px;}
+#header-nav ul li a:hover{ background:url(../images/head2-button.jpg);color:#fff;}
+/* 左边导航 */
+#left{with:210px; height:800px; background:url(../images/left-bg.jpg); background-repeat:repeat-y;}
+#nav-title{background-image:url(../images/left-title.jpg); background-repeat:no-repeat; height:41px; with:193px; margin-left:5px;}
+#left-nav{margin-left:5px;height:759px; with:193px; }

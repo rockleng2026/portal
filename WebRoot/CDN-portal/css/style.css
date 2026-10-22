@@ -1,0 +1,363 @@
+@charset "utf-8";
+html, body, div, span,applet, object, iframe, h1, h2, h3,      
+
+h4, h5, h6, p,blockquote, pre, a, abbr, acronym,      
+
+address, big, cite, code,del, dfn, em, font, img, ins,      
+
+kbd, q, s, samp, small,strike, strong, sub, sup, tt,      
+
+var, dl, dt, dd, ol, ul,li, fieldset, form, label, legend,      
+
+table, caption, tbody,tfoot, thead, tr, th, td {      
+
+margin: 0;      
+
+padding: 0;      
+
+border: 0;      
+
+outline: 0;
+font-size:12px;      
+
+font-weight:inherit;      
+
+font-style: inherit;      
+
+font-size: 100%;      
+
+font-family:inherit;      
+
+vertical-align:baselinebaseline;      
+
+}      
+
+:focus { outline:0;}      
+
+a, a:link, a:visited,a:hover, a:active{text-decoration:none}      
+
+table { border-collapse:separate;border-spacing: 0;}      
+
+th, td {text-align: left;font-weight: normal;}      
+
+img, iframe {border:none; text-decoration:none;}      
+
+ol, ul {list-style:none;}      
+
+input, textarea, select,button {font-size: 100%;font-family: inherit;}      
+
+select {margin:inherit;}      
+
+hr {margin: 0;padding:0;border: 0;color: #000;background-color: #000;height: 1px}
+body{
+	background-color:#060;	
+	}
+.bodyer{
+	width:810px;
+	height:auto;
+	overflow:hidden;
+	background-color:#FFF;
+	margin:20px auto;
+	box-shadow:5px 7px 6px #000;
+	border-radius:3px;	
+	}
+/* 整个框架的定义 */	
+.seactioner{
+	width:794px;
+	height:auto;
+	overflow:hidden;
+	margin:10px auto;	
+	}		
+.dcn_t{
+	width:794px;
+	height:25px;
+	line-height:25px;
+	font-size:12px;
+	color:#666;	
+	}
+.dcn_t span{
+	color:#3c8801;	
+	}	
+.dcn_t a{
+	color:#666;
+	font-size:12px;	
+	}
+.dcn_t a:hover{
+	color:#3c8801;
+	text-decoration:underline;	
+	}
+.dcn_tab{
+	width:794px;
+	height:34px;
+	}
+.dcn_tab ul li{
+	width:120px;
+	height:14px;
+	float:left;
+	margin-right:1px;
+	text-align:center;
+	line-height:25px;	
+	}
+.dcn_tab a{
+	font-size:12px;
+	color:#393939;
+	width:120px;
+	height:34px;
+	display:block;
+	font-family:"宋体";
+	background-repeat:no-repeat;
+	background-position:bottom center;
+
+	}
+.dcn_tab a:hover{
+	background-image:url(../images/cdn_01.jpg);
+	background-repeat:no-repeat;
+	background-position:bottom center;
+	color:#fff;
+	}
+.dcn_tabl{
+	width:120px;
+	height:27px;
+	display:block;
+	background-color:#e5e5e5;
+	color:#393939;	
+	}			
+.dcn_tabl:hover{
+	background-color:#a4c606;
+	color:#fff;
+	display:block;	
+	}
+.dcn_m{
+	width:794px;
+	height:auto;
+	overflow:hidden;
+	padding-top:5px;
+	padding-bottom:5px;
+	border-bottom:dotted 1px #547a33;
+	margin-top:5px;	
+	}
+.dcn_m dl{
+	width:794px;
+	height:auto;
+	overflow:hidden;	
+	}	
+.dcn_m dt{
+	width:120px;
+	float:left;
+	height:26px;
+	line-height:26px;
+	text-align:right;
+	font-size:12px;
+	color:#333333;
+	margin:0px;
+	padding:0px;
+	margin-bottom:10px;	
+	}		
+.dcn_m dd{
+	width:270px;
+	float:left;
+	height:auto;
+	overflow:hidden;
+	line-height:20px;
+	font-size:12px;
+	color:#ff6600;
+	margin-left:5px;
+	margin-bottom:10px;	
+	}
+.dcn_m span{
+	float:left;
+	height:auto;
+	overflow:hidden;
+	line-height:14px;
+	margin-left:5px;
+	font-size:12px;
+	color:#f60;
+	width:100px;	
+	}	
+.dcn_yz{
+	width:130px;
+	float:left;
+	height:23px;
+	border:solid 1px #c8c7c7;
+	text-indent:5px;
+	font-size:12px;
+	color:#666;
+	margin:0px;
+	padding:0px;
+	line-height:23px;	
+	}
+.dcn_fwq{
+	width:130px;
+	height:25px;
+	float:left;
+	margin-left:0px;
+	margin:0px;
+	padding:0px;
+	padding-left:0px;
+	font-size:12px;
+	line-height:25px;
+	vertical-align:middle;
+	}	
+/* 控制text表单样式 */								
+.dcn_c{
+	width:794px;
+	height:auto;
+	overflow:hidden;
+	padding-bottom:5px;
+	padding-top:5px;
+	border-bottom:dotted 1px #547a33;	
+	}
+.dcn_cl{
+	width:120px;
+	float:left;
+	height:26px;
+	line-height:26px;
+	text-align:right;
+	font-size:12px;
+	color:#333333;
+
+	margin:0px;
+	padding:0px;
+	overflow:hidden;	
+	}
+.dcn_cr{
+	float:left;
+	height:28px;
+	overflow:hidden;
+	width:660px;
+	margin-left:5px;
+	line-height:26px;
+	font-size:12px;
+	color:#333;
+	}
+.dcn_ct{
+	width:794px;
+	height:auto;
+	overflow:hidden;
+	margin-bottom:8px;	
+	}		
+.dcn_xib{
+	color:#f60;
+	
+	font-size:12px;	
+	}
+.dcn_xib span{
+	color:#f00;
+	font-size:12px;	
+	}	
+.dcn_an a{
+	padding-top:3px;
+	padding-bottom:3px;
+	padding-left:15px;
+	padding-right:15px;
+	display:block;
+	background-color:#dadada;
+	color:#333;
+	text-align:center;
+	font-size:12px;
+	overflow:hidden;
+	float:right;
+	margin-right:10px;	
+	}
+.dcn_an a:hover{
+	background-color:#a4c606;
+	color:#fff;	
+	}
+.dcn_table{
+	width:793px;
+	font-size:12px;
+	height:auto;
+	overflow:hidden;
+	border-top:solid 1px #d2d2d2;
+	border-left:solid 1px #d2d2d2;	
+	}	
+.dcn_tr{
+	width:793px;
+	height:26px;	
+	}	
+.dcn_tcen{
+	text-align:center;
+	color:#000;			
+	}
+.dcn_th{
+	border-right:1px solid #d2d2d2;
+	border-bottom:solid 1px #d2d2d2;	
+	font-weight:bold;
+	height:26px;	
+	}
+.dcn_td{
+	border-right:1px solid #d2d2d2;
+	border-bottom:solid 1px #d2d2d2;
+	height:26px;
+	background-color:#fff;	
+	}							
+.dcn_hb{
+	background-color:#ececec;	
+	}	
+.dcn_top{
+	margin-top:10px;	
+	}
+.dcn_bottom{
+	padding-bottom:10px;	
+	}	
+.dcn_d{
+	width:794px;
+	height:30px;
+	margin-top:20px;
+	margin-bottom:20px;
+	text-align:center;	
+	}
+.dcn_submit{
+	padding-left:20px;
+	padding-top:4px;
+	padding-bottom:4px;
+	border-radius:2px;
+	background-color:#dadada;
+	font-size:14px;
+	color:#333;
+	margin-right:20px;
+	font-family:"微软雅黑";
+	padding-right:20px;
+	border:none;	
+	}
+.dcn_submit:Hover{
+	background-color:#a4c606;
+	color:#fff;	
+	}
+.div_ts{
+	padding:8px;
+	width:778px;
+	line-height:25px;
+	font-size:14px;color:#f00;
+	background-color:#fffdd9;	
+	}
+.div_ts span{
+	font-size:12px;
+	line-hegiht:20px;	
+	}	
+.dcn_gz{
+	width:776px;
+	border:solid 1px #f8ca4d;
+	padding:8px;
+	background-color:#fff;
+	color:#f60;
+	line-height:18px;
+	font-size:12px;	
+	}
+.dcn_gz h3{
+	font-size:14px;
+	color:#f60;	
+	}
+.dcn_pf{
+	position:absolute;
+	height:auto;
+	overflow:hidden;
+	width:280px;
+	margin-top:30px;
+	margin-left:500px;	
+	}
+.dcn_zc{
+	width:794px;
+	height:auto;
+	overflow:hidden;	
+	}	

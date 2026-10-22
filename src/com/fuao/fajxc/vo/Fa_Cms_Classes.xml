@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_Classes" table="fa_cms_classes">
+  <id name="classid" column="classid" type="integer">
+    <generator class="native"/>
+  </id>
+  <property name="userid" column="userid" type="integer" />
+  <property name="superid" column="superid" type="integer" />
+  <property name="isout" column="isout" type="integer" />
+  <property name="showflag" column="showflag" type="integer" />
+  <property name="classname" column="classname" type="string" />
+  <property name="outpath" column="outpath" type="string" />
+  <property name="engname" column="engname" type="string" />
+  <property name="sonclass" column="sonclass" type="string" />
+  <property name="namedrules" column="namedrules" type="string" />
+  <property name="fatherclass" column="fatherclass" type="string" />
+  <property name="fatherpath" column="fatherpath" type="string" />
+  <property name="regdate" column="regdate" type="string" />
+  <property name="editdate" column="editdate" type="string" />
+  <property name="islastest" column="islastest" type="integer" />
+  <property name="delflag" column="delflag" type="integer" />
+  <property name="ismember" column="ismember" type="integer" />
+  <!-- 类别对文章 一对多 -->
+  <set name="news" cascade="none" lazy="false">
+    <key column="classid"/>
+    <one-to-many class="com.fuao.fajxc.vo.Fa_Cms_News"/>
+  </set>
+  <!-- 类别对template 一对多 -->
+  <set name="template" cascade="all" lazy="false">
+    <key column="classid"/>
+    <one-to-many class="com.fuao.fajxc.vo.Fa_Cms_Template"/>
+  </set>
+  <!-- classes对part 一对多 -->
+  <set name="parts" cascade="all" lazy="false">
+    <key column="typeid"/>
+    <one-to-many class="com.fuao.fajxc.vo.Fa_Cms_Rec_Part"/>
+  </set>
+</class>
+
+</hibernate-mapping>

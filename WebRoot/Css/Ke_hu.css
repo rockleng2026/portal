@@ -1,0 +1,30 @@
+
+
+
+body{margin:0 0 0 0; font-size:12px; font-family:"宋体";}
+img{ border:0;}
+txt{ width:100%; height:20px; border:1px #F6F6F6 solid; background:#FFFFFF;}
+.radio{height:13px; width:12px;}
+a{text-decoration:none;}
+select{line-height:24px;  border:1px #CCCCCC solid; background:#FFFFFF;}
+textarea{width:100%; height:42px;}
+
+.con{margin:0 auto; width:100%;}
+.header{ float:left;margin:auto 0;width:1440px; height:125px; clear:both;}
+.lefter{ float:left;margin:auto 0px;width:23%; margin-top:10px;}
+.righter{ float:right;margin:auto 0; width:77%;margin-top:10px;}
+
+/*客户列表*/
+.main_leirong_title{float:left; text-align:center; font-family:"黑体"; font-size:18px; color:#408080; background:#F6F6F6; width:100%; clear:both;padding-top:8px;padding-bottom:8px;}
+.ziduan_title{float:left; text-align:left; font-family:"黑体"; font-size:15px; background-color:#FFFFF0;clear:both; width:98.5%; height:25px; padding-top:8px; padding-left:20px;}
+.line{float:left; margin:auto;width:100%; margin-bottom:1px; clear:both;}
+.ziduan_ming{ float:left; text-align:right; width:100px; height:18px; padding-top:5px; color:#000066;font-family:"黑体"; background:#F6F6F6; margin-bottom:2px;}
+.ziduan_ming_leirong{float:left; text-align:left;margin-left:5px; height:22px; padding-top:1px; padding-right:5px;margin-bottom:2px;}
+
+/*员工列表*/
+.yuangongrenwu_line{ float:left; margin:20px 0px 10px 20px; width:100%; clear:both;}
+.yuangongrenwu_left_img{float:left; margin:auto 0px; width:10%;}
+.yuangongrenwu_left_img img{ width:100%; height:100px;}
+.yuangongrenwu_right{float:left; margin-left:5px; width:80%;}
+.yuangongrenwu_right_idName{float:left; margin:auto 0; width:97%; height:15px;clear:right; padding:5px 0 0 9px; border:1px  #CCCCCC solid;}
+.yuangongrenwu_right_leirong{ float:left; margin:auto 0; width:98%;border:1px  #CCCCCC solid;}

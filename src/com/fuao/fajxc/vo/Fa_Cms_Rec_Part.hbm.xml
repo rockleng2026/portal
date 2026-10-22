@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_Rec_Part" table="fa_cms_rec_part">
+  <id name="pid" column="pid" type="integer">
+    <generator class="native" />
+  </id>
+  <property name="part_name" column="part_name" type="string"/>
+  <property name="part_num" column="part_num" type="integer"/>
+  <property name="part_desc" column="part_desc" type="string"/>
+  <property name="temp" column="temp" type="string"/>
+  <property name="typeid" column="typeid" type="integer" insert="false" update="false"/>
+  <property name="mid" column="mid" type="integer"/>
+  <property name="eng_name" column="eng_name" type="string"/>
+  <!-- part对classes 多对一 -->
+  <many-to-one name="classes" class="com.fuao.fajxc.vo.Fa_Cms_Classes" column="typeid" lazy="false"></many-to-one>
+</class>
+</hibernate-mapping>

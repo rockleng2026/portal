@@ -1,0 +1,663 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云</title>
+<link href="litscloud/web/css/style.css" rel="stylesheet" type="text/css" />
+<link href="litscloud/web/css/css.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="litscloud/web/css/main.css" />
+<script type="text/javascript" src="litscloud/web/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="litscloud/web/js/slides.jquery.js"></script>
+<script type="text/javascript" src="litscloud/web/js/js1.js"></script>
+<script type="text/javascript" src="litscloud/web/js/index.js"></script>
+<!-- 解决IE6不缓存背景图片的问题-->
+<!--[if IE 6]>
+<script type="text/javascript">
+document.execCommand("BackgroundImageCache", false, true);
+</script>
+<![endif]-->
+<style type="text/css">
+.msc{
+top:0%;
+left:0%;
+background-color:#0C9;
+width: 100%;
+height: 500%;
+position: absolute;
+z-index: 1000;
+
+}
+.jgc{
+top:70%;
+left:30%;
+width: 806px;
+height: 500px;
+position: absolute;
+z-index: 10001;
+}
+</style>
+<script type="text/javascript">
+	$(document).ready(function(){	
+		$("#topdiv").load("litscloud/tpl/htmltop.jsp?tt="+(new Date()).getTime());
+		$("#ly_bottom").load("litscloud/tpl/bottom.jsp?tt="+(new Date()).getTime());
+		$('.boxgrid.captionfull').hover(function(){
+			$(".cover", this).stop().animate({top:'136px'},{queue:false,duration:160});
+		}, function() {
+			$(".cover", this).stop().animate({top:'166px'},{queue:false,duration:160});
+		});
+		
+	});
+</script>
+<script type="text/javascript">
+function shopdiv(sgcode){//gen
+  //sgcode1='SP-2013020200010';
+   var  url="litscloud/web/litscloudgetprodutCustomerServerC.Action?sgcode="+sgcode+"&tt="+(new Date()).getTime();
+    	 $("#jgc").show();	
+    	 $("#jgc").load(url);
+}
+var num,index=0,value,len,adTimer,boxTimer;
+var curN=0,leng;
+$(function(){
+	settab($("#lyglt>a"),$("#lyglb>div"),'mouseover');
+	$("img").each(function(){
+		if($(this).attr("src")==""){
+			$(this).attr("src","/style/nophoto.gif");
+		}
+	});
+	len=$('.num>li').length;
+	$(".num li").mouseover(function(){
+		index=$(".num li").index(this);
+		showImg(index);
+	}).eq(0).mouseover();
+	$('#slide').hover(function(){
+		clearInterval(adTimer);
+	},function(){
+		 adTimer=setInterval(function(){
+			showImg(index)
+			index++;
+			if(index==len){index=0;}
+		},4000);
+	});
+	leng=$("ul.tehuitop>li").length;
+	adTimer=setInterval(function(){
+		showImg(index)
+		index++;
+		if(index==len){index=0;}
+	},4000);
+});
+function tehuichange(index){
+};
+
+function settab(arra,arrb,mothed){
+	if (mothed=='') mothed='click';
+	arra.live(mothed,function(){
+		$(this).siblings().removeClass("on");
+		$(this).addClass("on");
+		arrb.eq(arra.index($(this))).show().siblings().hide();
+	});
+}
+function showImg(index){
+	var adHeight = 400;
+	$("#slide").stop(true,false).animate({top : -adHeight*index},500);
+	$(".num a").removeClass("current").eq(index).addClass("current");
+}
+</script>   
+</head>
+<body>
+<div class="ly_body" id="mainbody">
+<!-- 客服代码 -->
+
+
+<!-- 头部公用代码 -->  
+ <div class="ly_top" id="topdiv">
+ </div>
+   <!--------------------------------------------------------------头部结束------------------------------------------------------------ -->
+   <!--------------------------------------------------------------banner------------------------------------------------------------ -->
+<!-- 代码 开始 -->
+<script type=text/javascript src="litscloud/web/js/jquery.js"></script>
+<div id="slide-index">
+	<div class=slides>
+	<div class="slide autoMaxWidth">
+			<div id=bi_0 class=image><A href="#"><img src="litscloud/web/images/Banner4.jpg"></A></div>
+			<div id=bt_0 class=text></div>
+			<div id=bb_0 class=button></div>
+		</div>
+		<div class="slide autoMaxWidth">
+			<div id=bi_0 class=image><A href="#"><img src="litscloud/web/images/Banner5.jpg"></A></div>
+			<div id=bt_0 class=text></div>
+			<div id=bb_0 class=button></div>
+		</div>
+		<div class="slide autoMaxWidth">
+			<div id=bi_0 class=image><A href="#"><img src="litscloud/web/images/Banner1.jpg"></A></div>
+			<div id=bt_0 class=text></div>
+			<div id=bb_0 class=button></div>
+		</div>
+		<div class="slide autoMaxWidth">
+			<div id=bi_0 class=image><A href="#"><img src="litscloud/web/images/Banner2.jpg"></A></div>
+			<div id=bt_0 class=text></div>
+			<div id=bb_0 class=button></div>
+		</div>
+		<div class="slide autoMaxWidth">
+			<div id=bi_0 class=image><A href="#" ><img src="litscloud/web/images/Banner3.jpg"></A></div>
+			<div id=bt_0 class=text></div>
+			<div id=bb_0 class=button></div>
+		</div>
+
+	</div>
+	<div class=control><A href="#"></A><A href="#"></A><A href="#"></A><A href="#"></A><A href="#"></A></div>
+</div>
+
+<script type=text/javascript>
+$(function(){	
+indexSlides.ini();
+});
+var indexSlides={};
+indexSlides.timer=false;
+indexSlides.total=$('#slide-index .control a').length;
+indexSlides.current=-1;
+indexSlides.offScreenLeft=2000;
+indexSlides.leaveScreenLeft=4000;
+indexSlides.animating=false;
+indexSlides.obj=$('#slide-index .slide');
+indexSlides.style=[];
+indexSlides.style[0]={
+	text:{left:'30px',top:'81px'},
+	button:{left:'30px',top:'244px'},
+	direction:'tb'
+};
+	
+indexSlides.style[1]={
+	text:{left:'30px',top:'81px'},
+	button:{left:'30px',top:'244px'},
+	direction:'tb'
+};
+	
+indexSlides.style[2]={
+	text:{left:'30px',top:'81px'},
+	button:{left:'30px',top:'244px'},
+	direction:'tb'
+};
+indexSlides.style[3]={
+	text:{left:'30px',top:'81px'},
+	button:{left:'30px',top:'244px'},
+	direction:'tb'
+};
+indexSlides.style[4]={
+	text:{left:'30px',top:'81px'},
+	button:{left:'30px',top:'244px'},
+	direction:'tb'
+};
+</script>
+<script type=text/javascript src="litscloud/web/js/jsss.js"></script>
+<!-- 滚动图片 -->
+<!----------------------------------------------------------------内容开始------------------------------------------------------>
+   <div class="ly_imiddle">
+     <div class="ly_m">
+   <!--  <div class="gg" onclick="wenti()"><img src="images/lys_59.gif" /></div>-->
+      <div class="ly_m_mt"></div>
+      <div class="ly_m_mys">
+        
+          <div class="home_l">
+            <div class="home_ll"><img src="litscloud/web/images/lys_05.gif" /></div>
+            <div class="home_lr">
+             <div class="ly_m_mysn">   <ul>
+            <li class="ly_anquan">
+              
+             <dl>   <dt><a href="#" onmouseover="mouseOver1('1')" onmouseout="mouseOut1('5')" ><img src="litscloud/web/images/ly_32.gif" id="yg8" />
+             <div class="tcs" id="tc1" style="display:none;">
+              <div class="tcsc">故障自动迁移，数据多重副本，有效抵御各种网络攻击，免费提供端口、漏洞、挂马等扫描服务。。。。</div>
+             </div>
+               </a>           
+             </dt>
+                <dd>安全稳定<br />数据可靠</dd></dl>
+            </li>
+            <li class="ly_anquan" style="margin-left:59px;">            
+               <dl>  <dt><a href="#" onmouseover="mouseOver1('2')" onmouseout="mouseOut1('6')"><img src="litscloud/web/images/ly_33.gif" id="yg9" />
+                 <div class="tcs" id="tc2" style="display:none;">
+              <div class="tcsc">BGP多线独享带宽，可按天扩容，按需付费，超高性价比，让您的网站访问速度“飞”起来。。。。</div>
+             </div>
+               </a></dt>
+                <dd >BGP独享带宽<br />高速访问</dd></dl>
+            </li>
+                <li class="ly_anquan" style="margin-left:59px;">
+                <dl> <dt><a href="#" onmouseover="mouseOver1('3')" onmouseout="mouseOut1('7')"><img src="litscloud/web/images/ly_34.gif" id="yg10" />
+                 <div class="tcs" id="tc3" style="display:none;">
+              <div class="tcsc">     从创建到运行只需数分钟，快速部署，拥有完整管理权限，高度弹性，可自助快速增减弹性资源。。。。
+</div>
+             </div>
+                </a></dt>
+                <dd >简单易用<br />弹性伸缩</dd></dl>
+            </li>
+                 <li class="ly_anquan" style="margin-left:59px;" >
+                <dl>  <dt style="text-align:right;"><a href="#" onmouseover="mouseOver1('4')" onmouseout="mouseOut1('8')"><img src="litscloud/web/images/ly_35.gif" id="yg11" />
+                <div class="tcs" id="tc4" style="display:none; margin-left:0px;">
+              <div class="tcsc">支持多种主流操作系统，自主安装软件，自定义配置资源，按需付费，投入成本降低30%-80%。。。。
+</div>
+             </div>
+                </a></dt>
+                <dd style="text-align:center;" >按需购买<br />节约成本</dd></dl>
+            </li>            
+        </ul> </div>
+            </div>
+          </div>
+          <div class="home_r">
+             <div class="home_rt"></div>
+<div class="home_rc">
+<div class="boxc2 mt10 bbms">
+        <dl>
+          <dt class="bhead bgwhite">
+            <p class="lh20 l tc gltab mt9" id="lyglt"> 
+              <a class="icon_eat hand" style="margin-left:5px;" href="javascript:lygg1();" id="lygg1"   onmousemove="lygg()">立云公告</a> 
+              <a class="icon_live hand" href="javascript:lygg2();" id="lygg2" onmousemove="rdhd()">热点活动</a> 
+              <a class="icon_travel hand" href="javascript:lygg3();" id="lygg3"  onmousemove="hydt()">行业动态</a> 
+              <a class="icon_car hand" href="javascript:lygg4();" id="lygg4" onmousemove="qyxw()">企业新闻</a> 
+            </p>
+            </dt>
+          <dd class="bcont" >
+            <div class="p10 lh20" id="lyglb">              
+              <div style="display:block;"  class="home_rcd" >
+                 <ul  id="ceng1"  style="display:block;">
+                 <li ><a href="javascript:lygga(0);" style="color:#C03;"><span>【特价】</span>迎接五一节，立云全面推出特价活动</a></li>
+                 <li ><a href="javascript:lygga(1);" style="color:#C03;"><span>【升级】</span>立云开启微信服务</a></li>
+                 <li><a href="javascript:lygga(2);"><span>【特价】</span>迎接清明节，立云全面推出特价活动</a></li>
+                 <li><a href="javascript:lygga(3);"><span>【升级】</span>立云云主机全面升级</a></li>
+               </ul>              
+              </div>
+              <div style="display:none;"  class="home_rcd" >
+                 <ul  id="ceng2"  style="display:block;">
+                 <li ><a href="javascript:rdhdb(0);" style="color:#C03;"><span>【升级】</span>原价800元每月现在只需466元</a></li>
+                 <li ><a href="javascript:rdhdb(1);" style="color:#C03;"><span>【升级】</span>租用服务器可采用月季年的方式租用</a></li>
+                 <li><a href="javascript:rdhdb(2);"><span>【升级】</span>速成美站，专业设计师打造精美网站</a></li>
+                 <li><a href="javascript:rdhdb(3);"><span>【升级】</span>立云推出PORTAL管理系统平台</a></li>
+               </ul>              
+              </div>
+               <div style="display:none;"  class="home_rcd" >
+                 <ul  id="ceng3"  style="display:block;">
+                 <li ><a href="javascript:hydtc(0);" style="color:#C03;"><span>【升级】</span>IDC如何在网络虚拟化中占据一席之地</a></li>
+                 <li ><a href="javascript:hydtc(1);" style="color:#C03;"><span>【升级】</span>云计算冲击IDC：哪片云"财"能下雨？</a></li>
+                 <li><a href="javascript:hydtc(2);"><span>【升级】</span>工信部集中打击VoIP非法经营</a></li>
+                 <li><a href="javascript:hydtc(3);"><span>【升级】</span>CN域名注册管理措施加强 </a></li>
+               </ul>              
+              </div>
+               <div style="display:none;"  class="home_rcd" >
+                 <ul  id="ceng4"  style="display:block;">
+                 <li ><a href="javascript:qyxwd(0);" style="color:#C03;"><span>【升级】</span>公司利用双休日组织员工爬山，锻炼身体</a></li>
+                 <li ><a href="javascript:qyxwd(1);" style="color:#C03;"><span>【升级】</span>清明节，公司给员工发过节费，激励员工</a></li>
+                 <li><a href="javascript:qyxwd(2);"><span>【升级】</span>公司将要扩大公司规模</a></li>
+                 <li><a href="javascript:qyxwd(3);"><span>【升级】</span>公司将搬迁办公地点</a></li>
+               </ul>              
+              </div>
+             </div>           
+          </dd>      
+        </dl>
+      </div></div>
+    <div class="home_rd"></div> 
+          </div>
+       
+      </div>    
+     </div>
+   <div class="ly_m_mbt">
+      <div class="ly_m_mbtc"><a href="litscloud/web/LitsCloudServer.html"><p></p>云<br />服务</a></div>
+   </div>       
+ 
+    <div class="fwq">
+       <div class="fwq_l">
+           <DIV class="fwq_g"><a href="litscloud/web/LitsCloudServer.html">更多</a></DIV>
+          <div class="fwq_lt"></div>
+          <div class="fwq_lc">推荐配置</div>
+          <div class="fwq_lm">
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">原价：</div>
+               <div class="fwq_lmt_r"><span>3100</span> 元/月</div>
+            </div>
+            <div class="fwq_lmc">
+              <div class="fwq_lmc_l">现价：</div>
+              <div class="fwq_lmc_r"><span>2600</span> 元/月</div> 
+            </div>
+            <div class="fwq_lmd">(一个月内已有<span>100</span>人购买)</div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">CPU：</div>
+               <div class="fwq_lmt_r">至强5520</div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">内存：</div>
+               <div class="fwq_lmt_r">8G</div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">硬盘：</div>
+               <div class="fwq_lmt_r">256G</div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">带宽：</div>
+               <div class="fwq_lmt_r">百M独享（99%可用） </div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">网卡：</div>
+               <div class="fwq_lmt_r">双千兆网卡 </div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">机房：</div>
+               <div class="fwq_lmt_r">广东电信 </div>
+            </div>
+          </div>
+          <div class="fwq_lh"><a href="javascript:shopdiv('SP-2013061900018')">立即购买</a><a  href="litscloud/web/detailOfGoods2CustomerServerC.Action?sgcode='SP-2013061900018'" target="_parent">查看详情</a></div>
+          <div class="fwq_ld"></div>
+       </div>
+       
+       
+       <div class="fwq_l">
+           <DIV class="fwq_g"><a href="litscloud/web/LitsCloudServer.html">更多</a></DIV>
+          <div class="fwq_lt"></div>
+          <div class="fwq_lc">推荐配置</div>
+          <div class="fwq_lm">
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">原价：</div>
+               <div class="fwq_lmt_r"><span>1900</span> 元/月</div>
+            </div>
+            <div class="fwq_lmc">
+              <div class="fwq_lmc_l">现价：</div>
+              <div class="fwq_lmc_r"><span>1500</span> 元/月</div> 
+            </div>
+            <div class="fwq_lmd">(一个月内已有<span>100</span>人购买)</div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">CPU：</div>
+               <div class="fwq_lmt_r">至强5520</div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">内存：</div>
+               <div class="fwq_lmt_r">8G</div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">硬盘：</div>
+               <div class="fwq_lmt_r">256G</div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">带宽：</div>
+               <div class="fwq_lmt_r">百M独享（99%可用） </div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">网卡：</div>
+               <div class="fwq_lmt_r">双千兆网卡 </div>
+            </div>
+            <div class="fwq_lmt">
+               <div class="fwq_lmt_l">机房：</div>
+               <div class="fwq_lmt_r">山东联通 </div>
+            </div>
+          </div>
+          <div class="fwq_lh"><a href="javascript:shopdiv('SP-2013061900018')">立即购买</a><a  href="litscloud/web/detailOfGoods2CustomerServerC.Action?sgcode='SP-2013061900018'" target="_parent">查看详情</a></div>
+          <div class="fwq_ld"></div>
+       </div>
+       
+       
+       
+       
+       <div class="fwq_l">       
+          <div class="fwq_lt"></div>
+          <div class="fwq_lc"><img src="litscloud/web/images/lys_17.gif" />下载加速</div>
+          <div class="fwq_lm">
+             <div class="fjs">
+               <div class="fjs_t"><img src="litscloud/web/images/lys_18.gif" /></div>
+               <div class="fjs_d">   PowerCDN下载加速是为各类音视频、安装软件及补丁、游戏客户端等需要被下载的网站内容提供加速服务
+的，首先是通过CDN内容分发技术，将源网站大量内容数据快速、安全和稳定的分发到各个CDN节点中，然后利用缓存技术通过......</div>
+             </div>
+          </div>
+          <div class="fwq_lh"><a href="litscloud/web/lmtjs_bjxz.html" target="_parent" style="width:100px; margin:0px 60px;">进一步了解>></a></div>
+          <div class="fwq_ld"></div>
+       </div>
+       
+       
+       <div class="fwq_l" style="margin-right:0px; margin-left:0px;">       
+          <div class="fwq_lt"></div>
+          <div class="fwq_lc"><img src="litscloud/web/images/lys_16.gif" />HTTPS加速</div>
+          <div class="fwq_lm">
+             <div class="fjs">
+               <div class="fjs_t"><img src="litscloud/web/images/lys_19.gif" /></div>
+               <div class="fjs_d">      使用PowerCDN的HTTPS加速可解决这一问题，通过专用的加密、解密设备，在各个PowerCDN节点上提供加速服务，然后对用户请求的内容进行加密后再请求最近的节点，此时节点会根据专门的私钥将用户请求的内容进行解密，减轻源......</div>
+             </div>
+          </div>
+          <div class="fwq_lh"><a href="litscloud/web/lmtjs_https.html" target="_parent" style="width:100px; margin:0px 60px;">进一步了解>></a></div>
+          <div class="fwq_ld"></div>
+       </div>
+       
+       
+       
+    </div>
+ 
+   <div class="ly_m_mbt">
+      <div class="ly_m_mbtc"><a href="litscloud/web/apply.html" target="_parent"> <p></p>云<br />应用</a></div>
+   </div>
+   <div class="ly_m_myy">
+     <div class="ly_m_myy_l">
+        <div class="yy" style="margin-bottom:20px;">
+          <div class="yy_m"><span>立云推荐</span></div>
+          <div class="yy_t"></div>
+          <div class="yy_c">
+             <div class="yy_cl"><img src="litscloud/web/images/lys_54.gif" /></div>
+             <div class="yy_cr">
+                <div class="yy_crt">【企业级】PROTAL管理平台</div>
+                <div class="yy_crc">业务实时入账,单据个性化打印,采购一步式完成,往来核销精细化处理,支持多部门多人员异地实时办公,让财务决策及时响应老板需求,提升企业管理效率5倍以上!</div>
+                <div class="yy_crd">
+                    <div class="yy_crd_r">
+                       <div class="yy_crd_rl"></div>
+                       <div class="yy_crd_rc"><a href="tencent://message/?uin=296064621&Site=&Menu=yes" >后台试用</a></div>
+                       <div class="yy_crd_rr"></div>
+                    </div>
+                    
+                    <div class="yy_crd_r">
+                       <div class="yy_crd_rl"></div>
+                       <div class="yy_crd_rc"><a href="tencent://message/?uin=296064621&Site=&Menu=yes">在线咨询</a></div>
+                       <div class="yy_crd_rr"></div>
+                    </div>
+                    
+                </div>
+             </div>
+          </div>
+          <div class="yy_d"></div>
+        </div>
+        
+        <div class="yy">
+          <div class="yy_m"><span>立云推荐</span></div>
+          <div class="yy_t"></div>
+          <div class="yy_c">
+             <div class="yy_cl"><img src="litscloud/web/images/lys_24.gif" /></div>
+             <div class="yy_cr">
+                <div class="yy_crt">【政府级】内外网数据交换系统</div>
+                <div class="yy_crc">实用的“追踪管理”功能，让您知道谁在您网站上下了订单； 方便的“自动竞价”功能，解除你手动调价的痛苦； “跨引擎管理”功能，一个后台轻松管理百度、谷歌、必应三大账户； 《AFS万网版》可使您的网络推广事半功倍；</div>
+                <div class="yy_crd">
+                    <div class="yy_crd_r">
+                       <div class="yy_crd_rl"></div>
+                       <div class="yy_crd_rc"><a href="tencent://message/?uin=296064621&Site=&Menu=yes">后台试用</a></div>
+                       <div class="yy_crd_rr"></div>
+                    </div>
+                    
+                    <div class="yy_crd_r">
+                       <div class="yy_crd_rl"></div>
+                       <div class="yy_crd_rc"><a href="tencent://message/?uin=296064621&Site=&Menu=yes">在线咨询</a></div>
+                       <div class="yy_crd_rr"></div>
+                    </div>
+                    
+                </div>
+             </div>
+          </div>
+          <div class="yy_d"></div>
+        </div>
+        
+     </div>
+     <div class="ly_m_myy_r"><ul>
+       <li><a href="#" onmouseover="mouseOver1('55')" onmouseout="mouseOut1('59')"  onclick="javascripy:alert('此功能暂未开通');"><img src="litscloud/web/images/bg_55.jpg" id="yg1"  /></a></li>
+       <li><a href="#" onmouseover="mouseOver1('56')" onmouseout="mouseOut1('60')"  onclick="javascripy:alert('此功能暂未开通');"><img src="litscloud/web/images/bg_56.jpg" id="yg2" /></a></li>
+       <li><a href="#" onmouseover="mouseOver1('57')" onmouseout="mouseOut1('61')"  onclick="javascripy:alert('此功能暂未开通');"><img src="litscloud/web/images/bg_57.jpg" id="yg3" /></a></li>
+       <li><a href="#" onmouseover="mouseOver1('58')" onmouseout="mouseOut1('62')"  onclick="javascripy:alert('此功能暂未开通');"><img src="litscloud/web/images/bg_58.jpg" id="yg4" /></a></li>
+     </ul></div>
+   </div>
+  <div class="ly_m_mal">
+    <div class="sc_t">速成美站，专业设计师打造精美网站</div>
+    <div class="sc_m"><img src="litscloud/web/images/lys_28.gif" /></div>
+    <div class="sc_c">
+       <div class="sc_cm"><span>限时促销</span></div>
+       <div class="sc_ci"><a href="tencent://message/?uin=296064621&Site=&Menu=yes"><img src="litscloud/web/images/lys_51_zx.gif" /></a></div>
+       <div class="sc_ct"></div> 
+       <div class="sc_cc">
+          <div class="sc_ccl"><img src="litscloud/web/images/lys_52.gif" /></div>
+          <div class="sc_ccr">
+             <div class="sc_ccr_t">企业展示网站，建站利器，可满足不同规模的建站需求</div>
+             <div class="sc_ccr_c"><ul>
+               <li>支持500人同时访问网站</li>
+               <li>拥有150G空间存储</li>
+               <li>后台操作简单易用</li>
+               <li>每月上传下载流量无限制</li>
+               <li>满足不同规模的建站需求</li>
+               <li>每月上传下载流量无限制</li>
+               <li>网速高达5M带宽</li>
+             </ul></div>
+             <!-- <div class="sc_ccr_d"><img src="litscloud/web/images/lys_34.gif" /></div>-->
+          </div>
+       </div> 
+       <div class="sc_cd"></div> 
+    </div>  
+    
+    <div class="sc_c">
+       <div class="sc_cm"><span>限时促销</span></div>
+       <div class="sc_ci"><a href="tencent://message/?uin=296064621&Site=&Menu=yes"><img src="litscloud/web/images/lys_51_zx.gif" /></a></div>
+       <div class="sc_ct"></div> 
+       <div class="sc_cc">
+          <div class="sc_ccl"><img src="litscloud/web/images/lys_32.gif" /></div>
+          <div class="sc_ccr">
+             <div class="sc_ccr_t">立云商城标准版 ，快速打造中小企业电子商务</div>
+             <div class="sc_ccr_c"><ul>
+               <li>支持500人同时访问网站</li>
+               <li>拥有150G空间存储</li>
+               <li>后台操作简单易用</li>
+               <li>每月上传下载流量无限制</li>
+               <li>满足不同规模的建站需求</li>
+               <li>每月上传下载流量无限制</li>
+               <li>网速高达5M带宽</li>
+             </ul></div>
+            <!--  <div class="sc_ccr_d"><img src="litscloud/web/images/lys_53.gif" /></div>-->
+          </div>
+       </div> 
+       <div class="sc_cd"></div> 
+    </div>
+     
+      <div class="sc_t">更多成功案例</div>
+     <div class="sc_c">
+     <div class="sc_ct"></div>
+     <div class="sc_cc">
+        <div class="sc_ccm"><ul>
+          <li class="boxgrid captionfull"><a href ="http://www.guestcard.org/"  target="blank"><img src="litscloud/web/images/guestcard.jpg" /></a>
+            <div class="cover boxcaption">酒店行业网站</div>
+          </li>
+          <li class="boxgrid captionfull"><a href ="http://www.gytwater.com/"  target="blank"><img src="litscloud/web/images/gytwater.jpg" /></a>
+            <div class="cover boxcaption">饮用水企业网站</div>
+          </li>
+          <li class="boxgrid captionfull"><a href ="http://www.globalmayorsforum.org/"  target="blank"><img src="litscloud/web/images/globa.jpg" />
+           <div class="cover boxcaption">全球市长论坛</div>
+          </li>
+          <li class="boxgrid captionfull"><img src="litscloud/web/images/lys_37.gif" />
+           <div class="cover boxcaption">网站模板服务平台</div>
+          </li>
+        </ul></div>
+     </div>
+     <div class="sc_cd"></div>
+     </div> 
+  </div> 
+   
+
+   
+   </div>
+   <div id="msc" class="msc" style="display: none">
+
+</div>
+<div id="jgc" class="jgc" style="display: none">
+<div class="zf_xy">
+   <div class="zf_xyt"><span><a href="#">关闭</a></span>确认订单</div>
+   <div class="zf_xyc"> 
+      <div class="zf_gm">
+         <div class="zf_gmt">
+           <div class="zf_gmt_t">
+              <div class="zf_gmt_tq">配置</div>
+              <div class="zf_gmt_tw"><select name="fw_lx" style="margin:5px auto;">
+                <option value="1">电信</option>
+                <option value="2">网通</option>
+                <option value="3">移动</option>
+             </select></div>
+              <div class="zf_gmt_te"><select name="fw_sc" style="margin:5px auto;">
+                <option value="1">时长</option>
+                <option value="2">年</option>
+                <option value="3">月</option>
+                <option value="4">日</option>
+             </select></div>
+              <div class="zf_gmt_tr"><select name="fw_lx" style="margin:5px auto;">
+                <option value="1">数量</option>
+                <option value="2">1</option>
+                <option value="3">2</option>
+             </select><strong></strong></div>
+              <div class="zf_gmt_tt">价格</div>
+           </div>
+
+           <div class="zf_gmt_c">
+               <div class="zf_gmt_cq">
+                  <div class="zf_gmt_cqt">
+                    <div class="zf_gmt_cqtl">:</div>
+                    <div class="zf_gmt_cqtr">至强5520</div>
+                  </div>
+                  <div class="zf_gmt_cqt">
+                    <div class="zf_gmt_cqtl">内存:</div>
+                    <div class="zf_gmt_cqtr">8G</div>
+                  </div>
+                  <div class="zf_gmt_cqt">
+                    <div class="zf_gmt_cqtl">硬盘:</div>
+                    <div class="zf_gmt_cqtr">256G</div>
+                  </div>
+                   <div class="zf_gmt_cqt">
+                    <div class="zf_gmt_cqtl">操作系统:</div>
+                    <div class="zf_gmt_cqtr">windows linux </div>
+                  </div>
+                  <div class="zf_gmt_cqt">
+                    <div class="zf_gmt_cqtl">带宽:</div>
+                    <div class="zf_gmt_cqtr">百M独享（99%可用） </div>
+                  </div>
+                  <div class="zf_gmt_cqt">
+                    <div class="zf_gmt_cqtl">IP地址:</div>
+                    <div class="zf_gmt_cqtr"> 一个免费IP   </div>
+                  </div>
+                  <div class="zf_gmt_cqt">
+                    <div class="zf_gmt_cqtl">机房:</div>
+                    <div class="zf_gmt_cqtr"> 广东电信，山东联通     </div>
+                  </div>
+                  <div class="zf_gmt_cqt">
+                    <div class="zf_gmt_cqtl">网卡:</div>
+                    <div class="zf_gmt_cqtr"> 双千兆网卡     </div>
+                  </div>    
+               </div>
+               <div class="zf_gmt_cw">电信</div>
+               <div class="zf_gmt_ce">1年</div>
+               <div class="zf_gmt_cr">1</div>
+               <div class="zf_gmt_ct">19999元</div>
+           </div>
+           <div class="zf_gmt_d">总费用：<span>19999</span>元</div>
+         </div>
+         <div class="zf_gmd">
+           <div class="zf_gmdl"><a href="#">确 &nbsp; 认</a></div>
+           <div class="zf_gmdr"><a href="#">取 &nbsp; 消</a></div>
+         </div>
+      </div>
+   </div>
+   <div class="zf_xyd"></div>
+   </div></div>
+<!-- 确定层E -->
+<!--_________________________底部公用代码 _______________________________________________-->
+  <div class="ly_bottom" id="ly_bottom">
+ </div>
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+<div id="code"><div id="code_img"></div></div>
+
+<a id="gotop" href="javascript:void(0)"></a>
+
+
+
+
+
+</body>
+</html>

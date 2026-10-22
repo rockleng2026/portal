@@ -1,0 +1,21 @@
+﻿.warning-normal {
+	border: 1px solid #ccc;
+}
+
+.warning {
+	border: 1px solid red;
+	background-color: Orange;
+}
+
+.errors {
+	border-right: deepskyblue thin solid;
+	display: none;
+	margin: 0;
+	padding: 0;
+	border-top: deepskyblue thin solid;
+	border-left: deepskyblue thin solid;
+	width: 452px;
+	color: #3300ff;
+	border-bottom: deepskyblue thin solid;
+	height: 27px
+}

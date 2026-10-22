@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    <struts>
+    <constant name="struts.i18n.encoding" value="GBK"></constant>
+    <constant name="struts.ui.theme" value="simple"/>
+    <include file="strutsFile/struts-login.xml" />
+    <include file="strutsFile/struts-basic.xml"></include>
+    <include file="strutsFile/struts-financial.xml"></include>
+    <include file="strutsFile/struts-system.xml"></include>
+    <include file="strutsFile/struts-purchasing.xml" />
+    <include file="strutsFile/struts-stock.xml"/>
+    <include file="strutsFile/struts-customService.xml"/>
+    <include file="strutsFile/struts-stat.xml"/>
+    <include file="strutsFile/strtus-commodity.xml"/>
+    <include file="strutsFile/strtus-sale.xml"/>
+    <include file="strutsFile/struts-server.xml"/>
+    <include file="strutsFile/strtus-message.xml"></include>
+    <include file="strutsFile/struts-json.xml"></include>
+    <include file="strutsFile/struts-contract.xml"></include>
+    <include file="strutsFile/struts-mission.xml"></include>
+    <include file="strutsFile/struts-schedulePlan.xml"></include>
+    <include file="strutsFile/struts-common.xml"></include>
+    <include file="strutsFile/struts-executeRecord.xml"></include>
+    <include file="strutsFile/struts-workLog.xml"></include>
+    <include file="strutsFile/struts-form.xml"></include>
+    <include file="strutsFile/struts-cdn.xml"></include>
+    <include file="strutsFile/strtus-orderTemplate.xml"></include>
+    <include file="strutsFile/struts-romenu.xml"></include>
+    <include file="strutsFile/product_manage.xml"></include>
+    
+    
+    
+    <include file="strutsFile/struts-cms-classes.xml"></include>
+    <include file="strutsFile/struts-cms-comments.xml"></include>
+    <include file="strutsFile/struts-cms-member.xml"></include>
+    <include file="strutsFile/struts-cms-news.xml"></include>
+    <include file="strutsFile/struts-cms-rec_info.xml"></include>
+    <include file="strutsFile/struts-cms-rec_part.xml"></include>
+    <include file="strutsFile/struts-cms-template.xml"></include>
+    <include file="strutsFile/struts-cms-model.xml"></include>
+    <include file="strutsFile/struts-cms-right.xml"></include>
+    <include file="strutsFile/struts-cms-enter.xml"></include>
+    <include file="strutsFile/struts-project.xml"></include>
+    <include file="strutsFile/struts-cms-admin.xml"></include>
+    <include file="strutsFile/strtus-servers.xml"></include>
+    <include file="strutsFile/struts-approvalproject.xml"></include>
+    <include file="strutsFile/struts-questionproject.xml"></include>
+    <include file="strutsFile/struts-startproject.xml"></include>
+    <include file="strutsFile/struts-taskproject.xml"></include>
+    <include file="strutsFile/struts-talkproject.xml"></include>
+    <include file="strutsFile/struts-position.xml"></include>
+    <include file="strutsFile/struts-newproject.xml"></include>
+<!--     <include file="examXml/examPapers.xml"></include>  -->
+    <include file="strutsFile/struts-resourceCheck.xml"></include>
+    <include file="strutsFile/struts-pagefunction.xml"></include>
+    <include file="strutsFile/struts-cdnSystem.xml"></include>
+    <include file="strutsFile/struts-product_manage.xml"></include>
+    <include file="strutsFile/struts-cms-web.xml"></include>
+
+<constant name="struts.mapper.alwaysSelectFullNamespace" value="true" />
+<!-- 配置上传文件的大小问xxxxx字节 -->
+    <constant name="struts.multipart.maxSize" value="9000000"/>
+    <constant name="struts.multipart.saveDir" value="/userfiles"/>
+    
+</struts>

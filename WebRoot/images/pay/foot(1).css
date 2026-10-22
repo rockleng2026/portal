@@ -1,0 +1,15 @@
+.footer {
+	CLEAR: both; PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 15px auto; OVERFLOW: hidden; WIDTH: 960px; PADDING-TOP: 0px; TEXT-ALIGN: center
+}
+* HTML .footer {
+	HEIGHT: 1%
+}
+.footmenu {
+	CLEAR: both; DISPLAY: block; MARGIN-BOTTOM: 10px; COLOR: #c94700
+}
+.footmenu A {
+	COLOR: #c94700
+}
+.footCR {
+	FONT: 12px/22px Verdana, "ËÎÌו"
+}

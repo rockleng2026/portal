@@ -1,0 +1,145 @@
+上个星期已经输出页面：
+
+此功能即将开放（develop.html）
+后台（订单流程） (bg_process.html)
+订单详情  （bg_indentvew.html）
+订单成功    (bg_pjcg.html)
+订单失败    (bg_pjsb.html)
+投诉-立云介入处理    (bg_tousu2.html)
+投诉-处理完成    (bg_tousu3.html)
+投诉-申请    (bg_tousu1.html)
+客户评价    (bg_pingjia.html)
+物流详情     (bg_wlxq.html)
+支付失败      (bg_zfsb.html)
+支付成功      (bg_zfcg.html)
+支付输入错误   (bg_zfsr.html)
+支付到收银台    (bg_zfsy.html)
+支付协议         (bg_zfxy.html)
+支付信息    (bg_zfxx.html)
+订单详情右边   (bg_invewr.html)
+
+
+未输出页面，已经需要修改：
+
+服务器租用详情页面（03-29改）   OK  ------|
+立即购买（确认订单）  OK                  |
+云服务(改)03-29                           |
+后台（帮助中心）                          |
+后台（充值记录）                          | 
+后台（帐户信息）                          |
+后台（自助管理‘工单详情’）              | 
+后台（自助管理‘删除我的工单’）           >输出完毕    
+后台（自助管理‘我的工单’）              |    / 
+后台（自助管理‘追加评价’）        ------|    /
+  js浮动导航调整 。                            /
+s右边浮动新闻。                                /
+                                               /    对
+                                               /
+                                               /    应
+立即购买     （serve_guomai.html）             / 
+服务器租用详情  (server_rentvew.html)          /    文
+帮助中心    (help_center.html)                 /    
+账户信息    (bg_zhxx.html)                     /
+充值记录    (bg_czjl.html)                     /    件
+我的工单    （bg_wdgd.html#）                  /
+工单详情    （ bg_wdgdvew.html）               / 
+工单删除     (bg_wdgdsc.html)                  /
+追加评价     (bg_gdpj.html)                    / 
+
+
+
+
+  立云-云应用  (yun_apply.html )
+   大带宽      (yun_band.html) 
+   机柜        (yun_jigui.html)
+   在线进销存详情  (yun)zcx.html)
+   云服务   ( serve_vear.html)
+   云主机详情   (rent_vear.html)
+ 
+   云主机自定义配置  (rent_deploy.html)
+    云主机热门机型推荐  (main.html) 
+     注册---=立云错误提示       (login_zcq.html)
+
+   立云注册   (login_zc.html)
+   
+    验证账户信息 login_yz.html 
+    流媒体加速   lmtjs_zb.html
+   立云-CDN网页加速_静态   lmtjs_jt.html
+
+ 立云-CDN网页加速_HTTPS      lmtjs_https.html
+     立云-CDN网页加速_动态    lmtjs_dt.html
+    立云-CDN流媒体点播加速     lmtjs_db.html
+    立云-CDN网页加速_标准下载   lmtjs_bjxz.html
+     
+      机柜详情     jigui.vew.html
+      帮助中心     help_center.html
+      功能开发中    develop.html
+      联系我们     contact.html  
+      BGP+CDN      bgpcdn.html
+      在线工单     bg_zxgd.html
+      账户信息     bg_zhxx.html
+   （找回密码-密码设置完成）   bg_zhaopass05.html 
+
+     （找回密码-重置密码 ）      bg_zhaopass04.html 
+     找回密码-验证身份       bg_zhaopass03.html
+     找回密码-身份验证      bg_zhaopass02.html
+   找回密码      bg_zhaopass.html
+   支付协议    bg_zfxy.html 
+   支付到收银台    bg_zfsy.html
+    支付输入错误    bg_zfsr.html
+   支付成功      bg_zfcg.html
+  我要充值     bg_wycz.html
+   自助管理-工单详情     bg_wdgdvew.html
+   自助管理-我的工单删除    bg_wdgdsc.html
+  自助管理-我的工单       bg_wdgd.html
+   追加评价       bg_gdpj.html
+  自助管理-订单管理     bg_indent.html
+   自助管理-订单详情     bg_indentvew.html
+  自助管理-订单详情右边  bg_invewr.html     少一个关闭图标按钮
+  密码修改      bg_password.html
+   在线支付     bg_pay.html
+  评价宝贝    bg_pingjia.html
+  评价成功     bg_pjcg.html
+评价失败    bg_pjsb.html
+自助管理-订单流程   bg_process.html
+投诉3申请投诉      bg_tousu1.html
+投诉2-立云介入处理    bg_tousu2.html
+投诉3-投诉完成    bg_tousu3.html
+充值记录     bg_czjl.html
+云应用       apply.html
+云应用子页面    apply_vear.html
+ 大带宽详细      band_vew.html
+个人资料       bg_data.html
+  个人资料修改   bg_dats.html
+
+公司资质     about_zz.html
+支付方式     about_zf.html
+LOGO释义     about_logo.html
+关于我们      about.html
+法律顾问     about_gw.html
+商务合作    about_hz.html
+加入我们      about_jr.html
+立云客户     about_kh.html
+法律声明     about_sm.html
+常见问题     about_wt.html
+注册    login_zcqs.html
+后台（个人实名认证）  bg_smrz.html
+后台（认证1、提交申请）  bg_smsq.html
+后台（认证2、认证审核） bg_smsh.html
+后台（认证3、成功完成认证）   bg_smcg.html
+后台（认证失败）   bg_smsb.html
+后台（认证失败-证件上传要求）   bg_szyq.html
+CMS    cms_vew.html
+
+
+  橡塑助剂网   纸业行业   钢铁超市     脂肪在线    
+   电力工程网
+  墙上优秀员工栏目
+
+1、首页修改 问题
+
+
+
+http://kj1303250001.web.xinyour.net/
+
+ 

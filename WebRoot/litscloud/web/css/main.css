@@ -1,0 +1,97 @@
+BODY {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px;
+}
+img {border:0 none;}
+ul,li{ list-style-type:none;}
+
+.index_bg01 {
+	BACKGROUND: url(../images/ly_214.gif) repeat-x 0px 144px
+}
+.index_bg02 {
+	BACKGROUND: url(../images/bj_1.jpg) repeat-x 0px 144px;
+}
+.index_bg03 {
+	BACKGROUND: url(../images/bj_2.jpg) repeat-x 0px 144px
+}
+.index_bg04 {
+	BACKGROUND: url(../images/banner_bg04.gif) repeat-x 0px 144px
+}
+.index_bg05 {
+	BACKGROUND: url(../images/banner_bg05.gif) repeat-x 0px 144px
+}
+#warp {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 100%; PADDING-RIGHT: 0px; HEIGHT: 230px;; PADDING-TOP: 0px;
+	margin-bottom:0px;
+	position:inherit;
+	z-index:-1;
+	margin-bottom:0px;
+	padding-bottom:0px;
+}
+.banner {
+	Z-INDEX: 99; MARGIN: 0px auto; WIDTH: 1130px; HEIGHT: 230px; _width: 1130px;	
+}
+.banner_l {
+	MARGIN-TOP: 95px; WIDTH: 85px; FLOAT: left;
+}
+.banner_r {
+	 MARGIN-TOP: 95px; WIDTH: 85px; FLOAT: left; text-align:right;
+}
+.bannerImg {
+	 POSITION: relative; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 960px; PADDING-RIGHT: 0px; FLOAT: left; PADDING-TOP: 0px; height:230px;
+}
+.bannerImg .bannerPage {
+	 POSITION: absolute; TOP: 180px; LEFT: 850px
+}
+.bannerImg .bannerPage A {
+	 MARGIN-RIGHT: 2px
+}
+.bannerImg .bannerPage A IMG {
+
+	 VERTICAL-ALIGN: middle
+}
+.slides_container {
+	 POSITION: relative; WIDTH: 960px; OVERFLOW: hidden
+}
+.slides_container img{
+	width:960px; height:230px;
+	}
+.pagination {
+	MARGIN: 26px auto 0px
+}
+.pagination LI {
+	MARGIN: 0px 1px; FLOAT: left
+}
+.pagination LI A {
+	 BACKGROUND-IMAGE: url(../images/ly_215.png); WIDTH: 11px; DISPLAY: block; BACKGROUND-POSITION:13px; 0px; FLOAT: left; HEIGHT: 0px; OVERFLOW: hidden; PADDING-TOP: 18px; margin-left:5px;
+}
+.pagination LI.current A {
+	BACKGROUND-POSITION: 0px 0px
+}
+
+
+
+*{ padding:0px; margin:0px;}
+*html{background-image:url(about:blank);background-attachment:fixed;}/*解决IE6下滚动抖动的问题*/
+/*解决IE6下不兼容 position:fixed 的问题*/
+#code,#code_hover,#gotop{ width:60px; height:66px; background:url(../images/icon.png) no-repeat; position:fixed; right:50px; cursor:pointer;
+_position:absolute;_bottom:auto;_top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,10)||0)-(parseInt(this.currentStyle.marginBottom,10)||0)));
+}
+#code{ background-position:-275px -241px; bottom:120px; _margin-bottom:120px;}
+#code_hover{ background-position:-275px -171px; bottom:120px; _margin-bottom:120px;}
+#gotop{ background-position:-276px -310px; bottom:60px; _margin-bottom:60px; right:60px; width:36px; height:48px;} 
+
+#code_img{ width:270px; height:355px; background:url(../images/icon.png) -4px -3px no-repeat; position:fixed; right:110px; bottom:80px; cursor:pointer; display:none;
+_position:absolute;_bottom:auto;_top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,10)||0)-(parseInt(this.currentStyle.marginBottom,10)||0))); _margin-bottom:45px;}
+
+
+
+#slide-index {position: relative; min-width: 1000px; width: auto; height:230px; overflow: hidden}
+#slide-index .slides {min-width: 1000px; width: auto; height:230px}
+#slide-index .slide {position: relative; min-width: 1000px; float: left; height:230px}
+#slide-index .image {z-index: 0; position: absolute}
+#slide-index .button {width: 138px; display: none}
+#slide-index .control {z-index:40; position: absolute; text-align: center; width: 100%; bottom:0; height: 19px; cursor: pointer}
+#slide-index .control a{background-image: url(../images/hw_000505.gif); filter: alpha(opacity=60); width: 11px; display: inline-block; background-repeat: no-repeat; height: 11px; cursor: pointer; margin-right: 6px; opacity: 0.6}
+#slide-index .control a:hover {background-image: url(../images/hw_000506.gif); filter: alpha(opacity=100); opacity: 1}
+#slide-index .control a.active {background-image: url(../images/hw_000506.gif); filter: alpha(opacity=100); opacity: 1}
+.autoMaxWidth {position: relative; height: 232px; overflow: hidden}

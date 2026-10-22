@@ -1,0 +1,102 @@
+BODY {
+	FONT: 12px/20px Tahoma,Verdana,sans-serif; COLOR: #1a438e
+}
+TD {
+	FONT: 12px/20px Tahoma,Verdana,sans-serif; COLOR: #1a438e
+}
+DIV {
+	FONT: 12px/20px Tahoma,Verdana,sans-serif; COLOR: #1a438e
+}
+P {
+	FONT: 12px/20px Tahoma,Verdana,sans-serif; COLOR: #1a438e
+}
+P {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+BODY {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: #73a3d4; PADDING-BOTTOM: 0px; MARGIN: 5px; PADDING-TOP: 0px
+}
+BODY {
+	SCROLLBAR-FACE-COLOR: #ecf3fb; FONT-SIZE: 9pt; SCROLLBAR-HIGHLIGHT-COLOR: #ffffff; SCROLLBAR-SHADOW-COLOR: #cccccc; COLOR: #000000; SCROLLBAR-3DLIGHT-COLOR: buttonface; SCROLLBAR-ARROW-COLOR: #000000; SCROLLBAR-TRACK-COLOR: #eaf0f5; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; SCROLLBAR-DARKSHADOW-COLOR: #ffffff; TEXT-DECORATION: none
+}
+UL {
+	PADDING-LEFT: 10px; MARGIN-BOTTOM: 0px; PADDING-BOTTOM: 0px; MARGIN-LEFT: 10px
+}
+INPUT {
+	FONT: 12px/120% Tahoma,Verdana,sans-serif; COLOR: navy; HEIGHT: 19px
+}
+SELECT {
+	FONT: 12px/120% Tahoma,Verdana,sans-serif; COLOR: navy; HEIGHT: 19px
+}
+INPUT {
+	BORDER-RIGHT: #8ab3db 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #8ab3db 1px solid; PADDING-LEFT: 2px; FONT: 12px/120% Verdana,sans-serif; BORDER-LEFT: #8ab3db 1px solid; COLOR: navy; BORDER-BOTTOM: #8ab3db 1px solid
+}
+TEXTAREA {
+	BORDER-RIGHT: #8ab3db 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #8ab3db 1px solid; PADDING-LEFT: 2px; FONT: 12px/120% Verdana,sans-serif; BORDER-LEFT: #8ab3db 1px solid; COLOR: navy; BORDER-BOTTOM: #8ab3db 1px solid
+}
+HR {
+	BORDER-RIGHT: #8ab3db 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #8ab3db 1px solid; PADDING-LEFT: 2px; FONT: 12px/120% Verdana,sans-serif; BORDER-LEFT: #8ab3db 1px solid; COLOR: navy; BORDER-BOTTOM: #8ab3db 1px solid
+}
+.otherinput {
+	BORDER-RIGHT: #8ab3db 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #8ab3db 1px solid; PADDING-LEFT: 2px; FONT: 12px/120% Verdana,sans-serif; BORDER-LEFT: #8ab3db 1px solid; COLOR: navy; BORDER-BOTTOM: #8ab3db 1px solid
+}
+.noinput INPUT {
+	BORDER-RIGHT: medium none; BORDER-TOP: medium none; BORDER-LEFT: medium none; BORDER-BOTTOM: medium none
+}
+TD {
+	BORDER-LEFT-COLOR: #c9dbef; BORDER-BOTTOM-COLOR: #c9dbef; BORDER-TOP-COLOR: #c9dbef; BORDER-RIGHT-COLOR: #c9dbef
+}
+A {
+	COLOR: #1a438e; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #000000; TEXT-DECORATION: none
+}
+FORM {
+	MARGIN: 0px
+}
+.grid {
+	BORDER-RIGHT: #b3cde8 1px solid; BORDER-TOP: #b3cde8 1px solid; BORDER-LEFT: #b3cde8 1px solid; BORDER-BOTTOM: #b3cde8 1px solid; BORDER-COLLAPSE: collapse
+}
+.nogrid {
+	BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px
+}
+.fixed {
+	TABLE-LAYOUT: fixed; OVERFLOW: hidden
+}
+.toptable {
+	BACKGROUND: #eef7fd; WIDTH: 100%
+}
+.category {
+	FONT-WEIGHT: bold; BACKGROUND: #ffffff; COLOR: #003373
+}
+.highlight {
+	BACKGROUND: #ffffff
+}
+.smallbox {
+	BORDER-RIGHT: 0px; BORDER-TOP: 0px; VERTICAL-ALIGN: middle; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px; HEIGHT: 16px
+}
+.hand {
+	BACKGROUND: url(../images/menu_2.gif) no-repeat; WIDTH: 176px; CURSOR: hand; PADDING-TOP: 2px; HEIGHT: 33px; TEXT-ALIGN: center
+}
+.button {
+	BORDER-RIGHT: #888888 1px solid; BORDER-TOP: #ced4e2 1px solid; BACKGROUND: #dddddd; FONT: 12px/120% Verdana,'ËÎÌו'; BORDER-LEFT: #ced4e2 1px solid; BORDER-BOTTOM: #888888 1px solid; HEIGHT: 18px
+}
+.t1 {
+	COLOR: #ff6600
+}
+.t2 {
+	COLOR: red
+}
+.t3 {
+	COLOR: gray
+}
+.t4 {
+	COLOR: #000000
+}
+.small {
+	FONT: 12px/180% Verdana,'ËÎÌו'
+}
+BR {
+	FONT: 12px/5px Verdana,'ËÎÌו'
+}

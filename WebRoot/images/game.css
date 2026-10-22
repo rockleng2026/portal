@@ -1,0 +1,63 @@
+﻿@charset "utf-8";
+/* CSS Document */
+.lbar{ float:left; width:217px;}
+.rbar{ float:right; width:668px;}
+
+.top_game{ float:left; width:443px; background:url(../images/bg_mbox_443.gif) 0 bottom no-repeat; padding:0 0 5px 0; margin-bottom:15px;}
+.kaifu{ float:right; width:210px;}
+.hotgame{ display:block; clear:both; zoom:1; overflow:hidden;}
+
+/*left box-bottom*/
+.bottom_lboxA{ display:block; background:url(../images/bg_mbox.gif) 0 -72px no-repeat; font-size:0; padding-bottom:5px;zoom:1;}
+.top_gamebox{ display:block; background:url(../images/bg_m_r_box.gif) 0 0 no-repeat; border:#e3e3e3 1px solid; border-top:none; border-bottom:none; padding:10px 10px 5px 10px; zoom:1; overflow:hidden;}
+.bottom_kaifu{display:block; background:url(../images/bg_mbox.gif) -222px -77px no-repeat; font-size:0; padding-bottom:5px;zoom:1;}
+.bottom_hotgame{display:block; background:url(../images/bg_mbox.gif) -222px -347px no-repeat; font-size:0; padding-bottom:5px;zoom:1;}
+
+/*column*/
+.columnA,.columnB,.columnC,.columnD,.columnE{display:block; clear:both;zoom:1; overflow:hidden; }
+.columnA{background:url(../images/bg_mbox.gif) 0 0 no-repeat; font:bold 14px/40px tahoma,"宋体"; color:#C94700;padding:5px 10px 0 30px;}
+.columnB{background:url(../images/bg_mbox.gif) -222px -87px no-repeat; font:bold 14px/40px tahoma,"宋体"; color:#C94700;padding:5px 10px 0 30px;}
+.columnC{background:url(../images/bg_mbox.gif) 0 -212px no-repeat; font:bold 14px/38px tahoma,"宋体"; color:#C94700;padding:5px 10px 0 30px;}
+.columnD{background:url(../images/bg_mbox.gif) -222px 0 no-repeat; font:bold 14px/36px tahoma,"宋体"; color:#C94700;padding:0 10px 0 15px;}
+.columnE{background:url(../images/bg_mbox.gif) -222px -229px no-repeat;font:bold 14px/38px tahoma,"宋体"; color:#C94700;padding:0 10px 0 30px;}
+
+/*left gameclass*/
+.gm_lmenu{display:block; clear:both; overflow:hidden; padding:0; margin:5px 0;}
+.gm_lmenu dt{ display:block; clear:both;background:url(../images/bg_mbox.gif) 0 -82px no-repeat; line-height:32px;color:#333; font-weight:bold; margin:0 6px; padding:0 10px; overflow:hidden; cursor:pointer; }
+.gm_lmenu dt span{padding-left:10px; }
+.gm_lmenu dt em{ font-style:normal; font-size:11px; float:right;}
+
+.gm_lmenu dd{ display:block; clear:both; width:205px; margin:5px 6px;_margin:5px auto 10px auto; padding:0; overflow:hidden;}
+.gm_lmenu dd a{ display:block; clear:both; background:url(../images/bg_mbox.gif) 0 -299px no-repeat; color:#333; height:30px; line-height:30px;padding:2px 0 0 60px;overflow:hidden;}
+.gm_lmenu dd a:hover,.gm_lmenu .anow{ display:block; clear:both;color:#f60; }
+
+/*gray box*/
+	.graybox{ display:block; clear:both; background:url(../images/boxbg02_217.gif) 0 0 repeat-y;  margin-bottom:15px;zoom:1; overflow:hidden;}
+	.graybox_m{display:block; clear:both; background: url(../images/boxbg03_217s.gif) top center no-repeat; padding:0 10px; zoom:1; overflow:hidden;}
+	.graybox_bottom{display:block; background:url(../images/bg_mbox.gif) 0 -289px no-repeat;font-size:0; padding:0 0 5px 0;zoom:1;_margin:0 0 -2px 0;+margin:0 0 -2px 0;}
+	/*service*/
+	ul.service{ display:block; list-style:none; padding:10px 15px;}
+	ul.service li a{ margin-right:5px;}
+	
+/*top game*/
+.top_gamebox img{ margin-right:10px;}
+.btn_enter{ background:url(../images/btn.gif) 0 -177px no-repeat; width:124px; height:39px; border:none; margin:10px 0 0 15px;}
+
+.link_top_tg{ float:right; background:url(../images/btn.gif) 0 -226px no-repeat;  width:71px; height:21px; font:normal 12px/21px "宋体"; color:#AC5C00; text-decoration:underline; text-align:center; margin:10px 0 0 10px;}
+
+/*kaifu*/
+.list_kaifu{ list-style:none; padding-bottom:7px;}
+.list_kaifu li{ display:block; clear:both; height:50px; border-bottom:#ccc 1px dashed; font:normal 12px/20px arial,"宋体";color:#f60; margin:0 10px;_margin:0 10px -3px 10px;+margin:0 10px -3px 10px;padding:6px 0 7px 0; zoom:1; overflow:hidden;}
+.list_kaifu li div{ float:left; padding:10px 0 0 0;}
+.list_kaifu li img{ display:inline; margin-right:7px; }
+
+/*hot game*/
+.list_hotgame{ display:inline; float:left; width:205px; margin:10px 0 0 13px; padding:0 0 10px 0;zoom:1;}
+.list_hotgame dt{ position:relative;}
+.list_hotgame dt img{ display:block;}
+.list_hotgame .btn_xf{ position:absolute; top:6px; left:135px;}
+.list_hotgame dd{ line-height:22px;}
+.list_hotgame .modmbox{ height:110px; padding:5px 10px 0 10px;}
+.list_hotgame dd.bottom{display:block;background:url(../images/bg_mbox.gif) -442px -10px no-repeat; text-align:center; color:#BAE565; padding-bottom:5px;}
+.list_hotgame a{ color:#690; text-decoration:underline; margin:0 5px;}
+.list_hotgame a:hover{ text-decoration:none;}

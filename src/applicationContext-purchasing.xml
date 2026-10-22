@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	
+	    <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	    <bean id="purOrderDao" class="com.fuao.fajxc.dao.impl.purchase.PurOrderDaoImpl" parent="baseDao">
+	    </bean>
+		<!-- 到货单 -->
+		<bean id="toOrderDao" class="com.fuao.fajxc.dao.impl.purchase.ToOrderDaoImpl" parent="baseDao">
+	    </bean>
+
+	    
+	    <!-- 请购单DAO -->
+	     <bean id="requisitioningDao" class="com.fuao.fajxc.dao.impl.purchase.RequisitioningDaoImpl" parent="baseDao"/>
+		
+		<bean id="purReturnOrderDao" class="com.fuao.fajxc.dao.impl.purchase.PurReturnOrderDaoImpl" parent="baseDao"></bean>
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+		<bean id="purOrderBussiness" class="com.fuao.fajxc.bussiness.impl.purchase.PurOrderBussinessImpl">
+		<property name="purOrderDao" ref="purOrderDao"></property>
+		</bean>
+		<!-- 请购单BIZ -->
+		<bean id="requisitioningBusssiness" class="com.fuao.fajxc.bussiness.impl.purchase.RequisitioningBusssinessImpl">
+		<property name="requisitioningDao" ref="requisitioningDao"></property>
+		</bean>
+
+		<bean id="purReturnOrderBussiness" class="com.fuao.fajxc.bussiness.impl.purchase.PurReturnOrderBussinessImpl">
+			<property name="purReturnOrderDao" ref="purReturnOrderDao"></property>
+		</bean>
+
+		<!--到货单bu  -->
+		<bean id="toOrderBussiness" class="com.fuao.fajxc.bussiness.impl.purchase.ToOrderBussinessImpl">
+		<property name="toOrderDao" ref="toOrderDao"></property>
+		</bean>
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 采购合同Action注入 -->
+		<bean id="ContractAction" class="com.fuao.fajxc.action.purchasing.ContractAction">
+		</bean>
+		
+		<!-- 请购单Action注入  -->
+        <bean id="RequisitioningAction" class="com.fuao.fajxc.action.purchasing.RequisitioningAction">
+	        <property name="requisitioningBusssiness" ref="requisitioningBusssiness"></property>
+	        <property name="chargeBussiness" ref="chargeBussiness"></property>
+	        <property name="audBussiness" ref="auditingBussiness"></property>
+	        <property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+        </bean> 
+        
+        <!-- 采购订单Action注入 -->
+         <bean id="PurchaseOrderAction" class="com.fuao.fajxc.action.purchasing.PurchaseOrderAction">
+         <property name="purBussiness" ref="purOrderBussiness"></property>
+         <property name="empBussiness" ref="empBussiness"></property>
+         <property name="supplierBussiness" ref="SupplierBussiness"></property>
+         <property name="requisitioningBusssiness" ref="requisitioningBusssiness"></property>
+         <property name="toOrderBussiness" ref="toOrderBussiness"></property>
+         <property name="audBussiness" ref="auditingBussiness"></property>
+         <property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+        </bean> 
+        
+        <!-- 采购退还商品Action注入 -->
+        <bean id="RejectionAction" class="com.fuao.fajxc.action.purchasing.RejectionAction">
+        	<property name="supplierBussiness" ref="SupplierBussiness"></property>
+        	<property name="purReturnOrderBussiness" ref="purReturnOrderBussiness"></property>
+        	<property name="empBussiness" ref="empBussiness"></property>
+        	<property name="departBussiness" ref="departBussiness"></property>
+        	<property name="toOrderBussiness" ref="toOrderBussiness"></property>
+        	<property name="purOrderBussiness" ref="purOrderBussiness"></property>
+        	<property name="batchBusiness" ref="batchBusiness"></property>
+        	<property name="audBussiness" ref="auditingBussiness"></property>
+        	<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+        </bean>
+        
+        <!-- 采购价格一览表Action注入 -->
+        <bean id="ScheduleOfValuesAction" class="com.fuao.fajxc.action.purchasing.ScheduleOfValuesAction">
+        	<property name="purBussiness" ref="purOrderBussiness"></property>
+        </bean>
+        
+     
+        <!-- 到货单 -->
+        <bean id="ToOrderAction" class="com.fuao.fajxc.action.purchasing.ToOrderAction">
+	        <property name="toOrderBussiness" ref="toOrderBussiness"></property>
+	        <property name="purOrderBussiness" ref="purOrderBussiness"></property>
+			<property name="commodityModelBussiness" ref="commodityModelBussinessImpl"></property>
+			<property name="batchBusiness" ref="batchBusiness"></property>
+			<property name="audBussiness" ref="auditingBussiness"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+        </bean>
+
+</beans>

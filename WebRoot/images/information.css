@@ -1,0 +1,72 @@
+/* CSS Document */
+h1,h2,h3,h4,h5,h6{ margin:0px; font:12px;}
+*{ font-size:12px;}
+.IbTop{width:900px; height:12px;  background:url(../images/icon_do.gif) 0px 0px no-repeat; margin:0px auto;}
+	.IbTop em{width:2px; height:12px; display:inline-block; float:right;  background:url(../images/icon_do.gif) right -31px no-repeat; }
+.IbBtm{width:900px; height:12px; background:#666 url(../images/icon_do.gif) 0px -16px no-repeat;  margin:0px auto;}
+	.IbBtm  em{width:2px; height:12px; display:inline-block; background:url(../images/icon_do.gif) right -50px no-repeat; float:right;}
+
+.Ib{width:898px; overflow-x:hidden; padding:5px 0px; border-left:1px #DEDEDE solid; border-right:1px #DEDEDE solid; margin:0px auto; }
+	.Ib .Ih{width:868px; height:65px; border-bottom:1px #DEDEDE solid; margin:0px auto; position:relative; z-index:1;}
+	.Ib .Ih div{width:868px; height:66px; position:absolute; left:0px; top:0px; z-index:2;}
+		.Ib .Ih div h5{width:59px; height:59px; background:url(../images/icon_do.gif) no-repeat 0px -229px; display:inline; float:left;}
+			.Ib .Ih div h5 img{width:51px; height:51px; display:block; padding:4px;}
+		.Ib .Ih div h6{width:753px; height:30px; margin-top:36px; display:inline; float:right;}
+			.Ib .Ih div h6 a{height:28px; line-height:28px; background:#EEE; border:1px #DEDEDE solid; display:inline-block;  white-space:nowrap; vertical-align:top;}
+				.Ib .Ih div h6 a strong{font-weight:100; padding:0px 25px; color:#949494;}
+			.Ib .Ih div h6 .On{ border:1px #DEDEDEsolid; border-bottom:1px #fff solid; background:#fff; height:28px; vertical-align:top;}
+				.Ib .Ih div h6 .On strong{ display:inline-block; height:25px; line-height:25px; border-top:1px #FF993D solid; white-space:nowrap; margin:1px; font-weight:bold; color:#545153;}
+
+
+	.Ib .WarnOk,.Ib .WarnNo,.Ib .Loading{width:824px; padding:0px 10px; height:41px; line-height:41px; color:#12C000; font-size:16px; background:#FFF8E7; border:1px #E6CF87 dashed; margin:20px auto;}
+		.Ib .WarnOk a,.Ib .WarnNo a{ font-size:16px;}
+	.Ib .WarnNo{ color:#FF0000;}
+	.Ib .Loading{ width:800px; padding-left:44px; background:url(../images/loading.gif) no-repeat 10px center; color:#333; display:none;}
+
+	.Ib .Input{width:824px; margin:0px auto; padding-top:20px; }
+		
+		.Ib .Input h6{width:100%; height:25px; padding:8px 0px;}
+			.Ib .Input h6 span{ display:inline-block; width:80px; padding-right:5px; text-align:right; height:25px; vertical-align:middle; line-height:25px; color:#333;}
+			.Ib .Input h6 .txt{width:175px; height:23px; padding:0px 3px; line-height:22px; border-top:1px #7C7C7C solid; border-right:1px #ccc solid; border-bottom:1px #ddd solid; border-left:1px #ccc solid; vertical-align:middle;}
+			.Ib .Input h6 select{ vertical-align:middle; height:22px; background:#fff;}
+			.Ib .Input h6 strong{ font-weight:100; color:#ff0000; padding-left:6px; }
+			.Ib .Input h6 em{ font-style:normal; padding-left:6px; font-weight:100; }
+			.Ib .Input h6 img{padding-left:6px; display:inline-block; vertical-align:middle; }
+			.Ib .Input .No{white-space:nowrap; display:inline; float:left; height:30px; line-height:30px; margin-left:5px; vertical-align:middle; width:215px; padding-left:20px; background:url(../images/reg_wrong_bg.gif) no-repeat left center; color:#801B1B; font-style:normal; margin-left:0; }
+			.Ib .Input .Tips{white-space:nowrap; display:inline; float:left; height:30px; line-height:30px; margin-left:5px; vertical-align:middle; width:215px; padding-left:20px; background:url(../images/reg_tips_bg.gif) no-repeat left center; color:#999; font-style:normal; margin-left:0; display:none;}
+			.Ib .Input .txta,.Ib .Input .txtb{width:220px; height:28px; border-top:1px #7C7C7C solid; border-right:1px #ccc solid; border-bottom:1px #ddd solid; border-left:1px #ccc solid; padding:0px 3px; line-height:27px; font-family:Verdana; color:#000; font-size:13px; display:inline; float:left; vertical-align:middle;}
+			.Ib .Input .txtb{border:1px #999 solid;}
+			.Ib .Input .span1{ width:90px; padding-right:10px; text-align:right; height:30px; display:inline; float:left; line-height:30px; font-size:16px; font-weight:bold; color:#333; white-space:nowrap; vertical-align:middle;}
+			.Ib .Input .em1{ white-space:nowrap; width:20px;  display:inline; float:left; height:30px; line-height:30px; margin-left:5px; vertical-align:middle; background:url(../images/right.gif) no-repeat left center; visibility:hidden;}
+			 
+		.Ib .Input h1{width:100%; height:25px; padding:8px 0px; border:1px #DEDEDE solid; background:#F8F8F8;}
+			.Ib .Input h1 span{ display:inline-block; white-space:nowrap; padding-left:10px; padding-right:5px; text-align:right; height:25px; vertical-align:middle; line-height:25px; color:#333;}
+			.Ib .Input h1 .txt{width:175px; height:23px; padding:0px 3px; line-height:22px; border-top:1px #7C7C7C solid; border-right:1px #ccc solid; border-bottom:1px #ddd solid; border-left:1px #ccc solid; vertical-align:middle;}
+			.Ib .Input h1 select{ vertical-align:middle; height:22px; background:#fff;}
+			.Ib .Input h1 strong{ font-weight:100; color:#ff0000; padding-left:6px; }
+			.Ib .Input h1 em{ font-style:normal; padding-left:6px; font-weight:100; }
+			.Ib .Input h1 img{padding-left:6px; display:inline-block; vertical-align:middle; }
+
+		.Ib .Input h5{width:100%; height:33px; padding:10px 0px;}
+			.btn_edit{width:106px; height:33px; border:none; background:url(../images/icon_do.gif) no-repeat 0px -399px; margin-left:100px; cursor:pointer;}
+			.btn_submit{width:106px; height:33px; border:none; background:url(../images/icon_do.gif) no-repeat 0px -438px; margin-left:100px; cursor:pointer;}
+		
+		.Ib .Input h4{width:100%; height:38px; line-height:38px; font-size:24px; font-family:Arial; color:#EA5D03; font-weight:bold; padding:10px 0px 10px 60px;}
+		
+		.Ib .Input h3{width:100%; height:148px; padding:10px 0px; font-family:Arial; }
+			.Ib .Input h3 a{ vertical-align:bottom; text-align:center; display:inline-block; margin-right:20px; font-size:10px;}
+				.Ib .Input h3 a img{ display:block; margin-bottom:5px; padding:1px; border:1px #ccc solid;}
+		.Ib .Input h2{width:844px; font-family:Arial; border:1px #DEDEDE solid; background:#F8F8F8; margin:20px auto 10px auto; }
+			.Ib .Input h2 strong{width:806px; background:#E6E6E6 url(../images/icon_do.gif) 16px -477px no-repeat; padding-left:38px; color:#333; font-weight:bold; line-height:29px; height:29px; display:block;}
+			.Ib .Input h2 em{ display:block; width:806px; margin:10px auto; font-weight:100; font-style:normal; line-height:150%;}
+		.btn_Create{width:122px; height:33px; border:none; background:url(../images/Create.gif) no-repeat 0px 0px; margin-left:100px; cursor:pointer;}
+		.btn_Create1{width:122px; height:33px; border:none; background:url(../images/btn_act_game.gif) no-repeat 0px 0px; margin-left:100px; cursor:pointer;}
+		
+		.Smile{width:80%; height:300px; margin:30px auto 0px auto; background:url(../images/smile.gif) no-repeat 0px center; display:none;}
+			.Smile h1,.Smile h2{ height:42px; padding-left:50px; margin-left:350px; font-weight:100;}
+			.Smile h1 span,.Smile h2 span{height:20px; display:block; line-height:20px; font-size:20px; font-style:normal; color:#F26521; font-weight:bold; cursor:pointer;}
+			.Smile h1 em,.Smile h2 em{ font-size:12px; font-weight:100; padding-left:5px; font-style:normal;}
+			.Smile h1{ background:url(../images/icon_uchome.gif) no-repeat left center; margin-bottom:20px;}
+			.Smile h2{ background:url(../images/icon_bbs.gif) no-repeat left center;}
+			.Smile .h3{ padding-top:50px; padding-left:320px; padding-bottom:30px; font-size:14px; color:#0D0402;}
+			.Smile h3{ border-bottom:1px #B7B7B7 solid; height:30px; }

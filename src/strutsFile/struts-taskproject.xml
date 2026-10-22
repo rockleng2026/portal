@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="gbk"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+  <package name="taskproject" extends="struts-default" namespace="/">
+
+     <!-- 项目任务action -->
+    <action name="*TaskProject" class="taskAction" method="{1}">
+         <result name="listsuccess">/newproject/task/tasklist.jsp</result>
+         <result name="handletask">/newproject/task/updateTaskPlan.jsp</result>
+         <result name="updatejd">/newproject/task/skip.jsp</result>
+         <result name="publish">/newproject/task/publishTask.jsp</result>
+         <result name="dcpublish">/newproject/task/publishTask_Down.jsp</result>
+         <result name="functinrecord">/newproject/task/functionrecord.jsp</result>
+         <result name="dctask">/newproject/task/tasklist_Down.jsp</result>
+         <result name="dcfunctinrecord">/newproject/task/functionrecord_Down.jsp</result>
+         <result name="toupdateTaskPlan">/newproject/task/updateTaskPlan.jsp</result>
+         <result name="waitapptask">/newproject/task/waitapptasklist.jsp</result>
+         <result name="app" type="redirect">waitapptaskTaskProject.do</result>
+         <result name="dcwaitapptask">/newproject/task/waitapptasklist_Down.jsp</result>
+         <result name="selTaskInfo">/newproject/task/selTaskInfo.jsp</result>
+         <result name="delRecord">/newproject/task/delRecord.jsp</result>
+         <result name="DCdelRecord">/newproject/task/delRecord_Down.jsp</result>
+    </action>
+    
+    <!-- 查看日志 -->
+    <action name="*worklog" class="SchedulePlaningAction" method="{1}">
+    	<result name="show">/schedule/detailScheduleInfo.jsp</result>
+		<result name="goUpdate">/schedule/updateScheduleInfo.jsp</result>
+		<result name="showRemind">/schedule/detailRemind.jsp</result>
+		<result name="goUpdateRemind">/schedule/updateRemind.jsp</result>
+		<result name="showPlan">/schedule/detailPlanInfo.jsp</result>
+		<result name="goUpdatePlan">/schedule/updatePlanInfo.jsp</result>
+		<result name="goAdd">/schedule/addSchedule.jsp</result>
+    </action>
+
+    <!-- 系统中的发布任务连接 -->
+    
+    <action name="*mission" class="missionAction" method="{1}" >
+         <result name="add">/mission/buildmission.jsp</result>
+	     <result name="addsuccess" type="redirect">getmybuildmission.do</result>
+	     <result name="handout">/mission/handoutmission.jsp</result>
+	     <result name="myhandout">/mission/myhandoutmission.jsp</result>
+	     <result name="logdetail">/mission/logdetail.jsp</result>
+	     <result name="completesucss" type="redirect">getmyreceivemission.do</result>
+	     <result name="clearCacheSuccess">/cdn/clearresult.jsp</result>
+	     <result name="error">/No.jsp</result>
+	     <result name="alldept">/mission/dept.jsp</result>
+	     <result name="messshow">/mission/missionshow.jsp</result>
+	     <result name="customermissionshow">/foreGroundFolder/mission/customer/notreceivemission.jsp</result>
+	     <result name="receivemissionshow">/foreGroundFolder/mission/customer/receivemission.jsp</result>
+	     <result name="readmissionBycustomer">/foreGroundFolder/mission/customer/customerreadmission.jsp</result>
+	     <result name="sendshow">/mission/sendmission.jsp</result>
+	     <result name="sendshow">/mission/sendmission.jsp</result>
+	     <result name="listmybuildmission">/mission/mybuildmission.jsp</result>
+	     <result name="listmyrecemission">/mission/myrecevmission.jsp</result>
+	     <result name="missionlist">/mission/missionlist.jsp</result>
+	     <result name="req" type="redirect">messendmission.do</result>
+	      <result name="addCache111">/cdn/updatecache1.jsp</result>
+	      <result name="addCacheQianDuan">/litscloud/ucenter/cdnCache.jsp</result>
+    </action>
+
+  </package>
+
+</struts>

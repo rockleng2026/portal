@@ -1,0 +1,44 @@
+body {
+	font: 12px "宋体";
+	margin: 0px;
+	padding: 0px;
+	color:#333;
+	background:url(../img/bg_03.jpg) repeat;
+	*text-align:center;	
+}
+div,h3,th,td{margin: 0px;padding: 0px;}
+form,input,button,option,textarea,select{ margin: 0px;padding: 0px;}
+input,button,textarea,select{font-family:"Tahoma"; vertical-align:middle;}
+a {text-decoration: none;color:#0166d4;}
+a:link {text-decoration: none;color:#0166d4;}
+a:visited {text-decoration: none;color:#0166d4;}
+a:hover{text-decoration: none;color:#0166d4;}
+a:active {text-decoration: none;color:#0166d4;}
+table {font-size:inherit;font:100%;}
+th { font-weight:normal;}
+img { border: 0;}
+h3 { font-size: 14px;}
+.left{ float:left; }
+.right{ float:right; }
+
+
+/*增加订单*/
+.dt01{ background:url(../img/hdr.gif) repeat-x left center; height:35px;}
+.dt01 h3{ color:#fff; line-height:35px; padding-left:4px; text-align:center;}
+.dt02{ background:url(../img/bhead.gif) repeat-x left center; height:28px;}
+.dt02 h3{ line-height:28px; padding-left:4px;}
+.dt03{ color:#f2f2f2; background:#999; text-align:center; font-size:14px;}
+
+/*添加CDN套餐*/
+.dt04{background:#FFF;}
+.dt05{ font-size:14px; font-weight:bold; height:35px; line-height:35px; text-align:center; background:#0166D4; color:#fff; border-bottom:1px dashed #ccc;}
+.dt05 span{ color:#ff0000;}
+.dt06{ margin-top:10px;}
+
+/*套餐详细信息*/
+.dt07{ background:#bbdcff; height:35px; line-height:35px; font-size:14px; color:#000;}
+
+/*增加订单-套餐*/
+.dt08{color:#fff; background:#999;font-size:14px;}
+
+

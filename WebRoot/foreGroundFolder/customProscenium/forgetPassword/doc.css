@@ -1,0 +1,120 @@
+BODY {
+	LINE-HEIGHT: 140%; FONT-FAMILY: "Arial", "Helvetica", "sans-serif"; COLOR: #787878; FONT-SIZE: 9pt
+}
+P {
+	LINE-HEIGHT: 140%; FONT-FAMILY: "Arial", "Helvetica", "sans-serif"; COLOR: #787878; FONT-SIZE: 9pt
+}
+TD {
+	LINE-HEIGHT: 140%; FONT-FAMILY: "Arial", "Helvetica", "sans-serif"; COLOR: #787878; FONT-SIZE: 9pt
+}
+BODY {
+	SCROLLBAR-ARROW-COLOR: #0066cc; SCROLLBAR-FACE-COLOR: #f7f7f7; LINE-HEIGHT: 140%; BACKGROUND-COLOR: #ffffff; MARGIN: 0px; SCROLLBAR-DARKSHADOW-COLOR: #f7f7f7; SCROLLBAR-BASE-COLOR: #999797; FONT-FAMILY: "Arial", "Helvetica", "sans-serif"; SCROLLBAR-HIGHLIGHT-COLOR: #f7f7f7; COLOR: #787878; SCROLLBAR-SHADOW-COLOR: #999797; FONT-SIZE: 12px; SCROLLBAR-TRACK-COLOR: #f7f7f7
+}
+TEXTAREA {
+	BORDER-BOTTOM-COLOR: #c0c0c0; BORDER-RIGHT-WIDTH: 1px; BACKGROUND-COLOR: #ffffff; BORDER-TOP-COLOR: #c0c0c0; FONT-FAMILY: "Verdana","ËÎÌו"; BORDER-TOP-WIDTH: 1px; BORDER-BOTTOM-WIDTH: 1px; COLOR: #000000; BORDER-RIGHT-COLOR: #c0c0c0; FONT-SIZE: 9pt; BORDER-LEFT-COLOR: #c0c0c0; BORDER-LEFT-WIDTH: 1px
+}
+SELECT {
+	BORDER-BOTTOM-COLOR: #c0c0c0; BORDER-RIGHT-WIDTH: 1px; BACKGROUND-COLOR: #ffffff; BORDER-TOP-COLOR: #c0c0c0; FONT-FAMILY: "Verdana", "ËÎÌו"; BORDER-TOP-WIDTH: 1px; BORDER-BOTTOM-WIDTH: 1px; COLOR: #000000; BORDER-RIGHT-COLOR: #c0c0c0; FONT-SIZE: 9pt; BORDER-LEFT-COLOR: #c0c0c0; BORDER-LEFT-WIDTH: 1px
+}
+A {
+	LINE-HEIGHT: 140%; FONT-FAMILY: "Arial", "Helvetica", "sans-serif"; COLOR: #787878; TEXT-DECORATION: none
+}
+A:hover {
+	LINE-HEIGHT: 140%; FONT-FAMILY: "Arial", "Helvetica", "sans-serif"; COLOR: #0066cc; TEXT-DECORATION: underline
+}
+A.menu {
+	COLOR: #ededed; TEXT-DECORATION: none
+}
+A.menu:hover {
+	COLOR: #ffffff; TEXT-DECORATION: underline
+}
+.top1 {
+	FILTER: DropShadow(Color=#c0c0c0, OffX=0, OffY=1, Positive=1); COLOR: #006699; FONT-SIZE: 9pt
+}
+.inputText {
+	BORDER-BOTTOM: #c0c0c0 1px solid; BORDER-LEFT: #c0c0c0 1px solid; BACKGROUND: #ffffff; HEIGHT: 16px; FONT-SIZE: 9pt; BORDER-TOP: #c0c0c0 1px solid; BORDER-RIGHT: #c0c0c0 1px solid
+}
+.top_menu {
+	FILTER: DropShadow(Color=#006699, OffX=0, OffY=1, Positive=1); COLOR: #c0c0c0; FONT-SIZE: 9pt
+}
+.white {
+	BORDER-BOTTOM: #666666 1px solid; BORDER-LEFT: #666666 1px solid; PADDING-BOTTOM: 1px; BACKGROUND-COLOR: #f7f7f7; PADDING-LEFT: 1px; PADDING-RIGHT: 1px; FONT-FAMILY: "Verdana","ËÎÌו"; HEIGHT: 16px; COLOR: #000000; FONT-SIZE: 9pt; BORDER-TOP: #666666 1px solid; BORDER-RIGHT: #666666 1px solid; PADDING-TOP: 1px
+}
+.red {
+	COLOR: #ff0000
+}
+.red_1 {
+	COLOR: #990000
+}
+.blue_1 {
+	COLOR: #0066cc
+}
+.gray {
+	FONT-FAMILY: "Arial"; COLOR: #808080
+}
+.bt {
+	BACKGROUND-IMAGE: url(../images/bt.gif); BORDER-BOTTOM: #888888 0px outset; BORDER-LEFT: #eeeeee 0px outset; WIDTH: 67px; BACKGROUND-REPEAT: repeat-x; BACKGROUND-POSITION: center center; HEIGHT: 20px; FONT-SIZE: 9pt; BORDER-TOP: #eeeeee 0px outset; CURSOR: hand; BORDER-RIGHT: #888888 0px outset; PADDING-TOP: 4px
+}
+.btf {
+	BACKGROUND-IMAGE: url(../images/btf.gif); BORDER-BOTTOM: #888888 0px outset; BORDER-LEFT: #eeeeee 0px outset; WIDTH: 46px; BACKGROUND-REPEAT: repeat-x; BACKGROUND-POSITION: center center; HEIGHT: 20px; FONT-SIZE: 9pt; BORDER-TOP: #eeeeee 0px outset; CURSOR: hand; BORDER-RIGHT: #888888 0px outset; PADDING-TOP: 4px
+}
+.bt1 {
+	BACKGROUND-IMAGE: url(../images/bt2.gif); BORDER-BOTTOM: #888888 0px outset; BORDER-LEFT: #eeeeee 0px outset; WIDTH: 98px; BACKGROUND-REPEAT: repeat-x; BACKGROUND-POSITION: center center; HEIGHT: 20px; FONT-SIZE: 9pt; BORDER-TOP: #eeeeee 0px outset; CURSOR: hand; BORDER-RIGHT: #888888 0px outset; PADDING-TOP: 4px
+}
+.btd {
+	BACKGROUND-IMAGE: url(../images/bt1.gif); BORDER-BOTTOM: #888888 0px outset; BORDER-LEFT: #eeeeee 0px outset; WIDTH: 35px; BACKGROUND-REPEAT: repeat-x; BACKGROUND-POSITION: center center; HEIGHT: 19px; FONT-SIZE: 9pt; BORDER-TOP: #eeeeee 0px outset; CURSOR: hand; BORDER-RIGHT: #888888 0px outset; PADDING-TOP: 4px
+}
+.bt2 {
+	BACKGROUND-IMAGE: url(../images/bt2.gif); BORDER-BOTTOM: #888888 0px outset; BORDER-LEFT: #eeeeee 0px outset; WIDTH: 98px; BACKGROUND-REPEAT: repeat-x; BACKGROUND-POSITION: center center; HEIGHT: 20px; FONT-SIZE: 9pt; BORDER-TOP: #eeeeee 0px outset; CURSOR: hand; BORDER-RIGHT: #888888 0px outset; PADDING-TOP: 4px
+}
+.bt3 {
+	BACKGROUND-IMAGE: url(../images/bt2.gif); BORDER-BOTTOM: #888888 0px outset; BORDER-LEFT: #eeeeee 0px outset; WIDTH: 98px; BACKGROUND-REPEAT: repeat-x; BACKGROUND-POSITION: center center; HEIGHT: 20px; FONT-SIZE: 9pt; BORDER-TOP: #eeeeee 0px outset; CURSOR: hand; BORDER-RIGHT: #888888 0px outset; PADDING-TOP: 4px
+}
+.bt4 {
+	BACKGROUND-IMAGE: url(../images/bt4.gif); BORDER-BOTTOM: #888888 0px outset; BORDER-LEFT: #eeeeee 0px outset; WIDTH: 20px; BACKGROUND-REPEAT: repeat-x; BACKGROUND-POSITION: center center; HEIGHT: 19px; FONT-SIZE: 9pt; BORDER-TOP: #eeeeee 0px outset; CURSOR: hand; BORDER-RIGHT: #888888 0px outset; PADDING-TOP: 4px
+}
+.bto {
+	BACKGROUND-IMAGE: url(../images/bto.gif); BORDER-BOTTOM: #888888 0px outset; BORDER-LEFT: #eeeeee 0px outset; WIDTH: 33px; BACKGROUND-REPEAT: repeat-x; BACKGROUND-POSITION: center center; HEIGHT: 18px; FONT-SIZE: 9pt; BORDER-TOP: #eeeeee 0px outset; CURSOR: hand; BORDER-RIGHT: #888888 0px outset; PADDING-TOP: 4px
+}
+ooo {
+	LINE-HEIGHT: 140%; FONT-FAMILY: "Arial", "Helvetica", "sans-serif"; COLOR: #787878; TEXT-DECORATION: none
+}
+.mytable {
+	BORDER-BOTTOM: #cccccc 1px; BORDER-LEFT: #cccccc 1px; BACKGROUND-COLOR: white; BORDER-COLLAPSE: collapse; FONT-SIZE: 12px; BORDER-TOP: #cccccc 1px; BORDER-RIGHT: #cccccc 1px
+}
+TH {
+	TEXT-ALIGN: right; WIDTH: 155px; BACKGROUND: #fffffa
+}
+.left {
+	TEXT-ALIGN: right; WIDTH: 155px; BACKGROUND: #fffffa; FONT-WEIGHT: bold
+}
+.tp {
+	TEXT-ALIGN: right; WIDTH: 85px; BACKGROUND: #fffffa
+}
+.btn {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 45px; PADDING-RIGHT: 0px; HEIGHT: 22px; COLOR: #003366; FONT-SIZE: 12px; PADDING-TOP: 0px
+}
+.divSearch {
+	BORDER-BOTTOM: olive 3px; BORDER-LEFT: olive 3px; WIDTH: 99%; HEIGHT: 30px; FONT-SIZE: 12px; BORDER-TOP: olive 3px; BORDER-RIGHT: olive 3px
+}
+.divBar {
+	WIDTH: 99%; HEIGHT: 20px; FONT-SIZE: 12px
+}
+.divBody {
+	WIDTH: 99%; FONT-SIZE: 12px
+}
+.divBtn {
+	WIDTH: 99%; HEIGHT: 20px; FONT-SIZE: 12px
+}
+.suff {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; WIDTH: 13px; HEIGHT: 13px; BORDER-TOP: 0px; BORDER-RIGHT: 0px
+}
+.imga {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: 0px
+}
+#divForm {
+	BORDER-BOTTOM: #ddd 2px solid; TEXT-ALIGN: center; BORDER-LEFT: #ddd 2px solid; PADDING-BOTTOM: 5px; MARGIN: 0px 0px 5px; WIDTH: 100%; BACKGROUND: #fffffa; FONT-SIZE: 14px; BORDER-TOP: #ddd 2px solid; FONT-WEIGHT: bold; BORDER-RIGHT: #ddd 2px solid; PADDING-TOP: 5px
+}
+#divMessage {
+	FONT-SIZE: 12px
+}

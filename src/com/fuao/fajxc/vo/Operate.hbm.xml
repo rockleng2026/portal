@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Operate" table="operate">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="operateNo" column="operateNo" type="string"/>
+  <many-to-one name="upserver" class="com.fuao.fajxc.vo.UpServer" column="upserverId" fetch="select"></many-to-one>
+  <many-to-one name="saleorder" class="com.fuao.fajxc.vo.SaleOrder" column="saleorderId" fetch="select"></many-to-one>
+  <many-to-one name="product" class="com.fuao.fajxc.vo.Product" column="serverId" fetch="select"></many-to-one>
+  <many-to-one name="employee" class="com.fuao.fajxc.vo.Employee" column="upEmp" fetch="select"></many-to-one>
+  <many-to-one name="depot" class="com.fuao.fajxc.vo.Depot" column="depotId" fetch="select"></many-to-one>
+  
+  <many-to-one name="cabinet" class="com.fuao.fajxc.vo.Cabinet" column="cabinet" fetch="select"></many-to-one>
+  <many-to-one name="saleOrders" class="com.fuao.fajxc.vo.Sale_orders" column="saleorder" fetch="select"></many-to-one>
+  <property name="ipAddress" column="ipAddress" type="string"></property>
+  <property name="uptime" column="uptime" type="date"></property>
+  <property name="downtime" column="downtime" type="date"></property>
+  <property name="jhj" column="jhj" type="string"></property>
+  <property name="port" column="port" type="string"></property>
+  <property name="markNum" column="markNum" type="string"></property>
+  <property name="temp" column="temp" type="string"></property>
+  <property name="jgh" column="jgh" type="string"></property>
+  <property name="housesAndRooms" column="housesAndRooms" type="string"></property>
+</class>
+</hibernate-mapping>

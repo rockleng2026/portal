@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_News" table="fa_cms_news" lazy="false">
+  <id name="cid" column="cid" type="integer">
+    <generator class="native" />
+  </id>
+  <property name="classid" column="classid" type="integer" insert="false" update="false" />
+  <property name="sequence" column="sequence" type="integer" />
+  <property name="readnum" column="readnum" type="string" />
+  <property name="keyboard" column="keyboard" type="string" />
+  <property name="userid" column="userid" type="integer" />
+  <property name="username" column="username" type="string" />
+  <property name="status" column="status" type="integer" />
+  <property name="author" column="author" type="string" />
+  <property name="title" column="title" type="string" />
+  <property name="titlepic" column="titlepic" type="string" />
+  <property name="titlepicThumb" column="titlepic_thumb" type="string" />
+  <property name="istop" column="istop" type="integer" />
+  <property name="ismember" column="ismember" type="integer" />
+  <property name="ftitle" column="ftitle" type="string" />
+  <property name="smalltext" column="smalltext" type="string" />
+  <property name="contents" column="contents" type="string" />
+  <property name="source" column="source" type="string" />
+  <property name="delflag" column="delflag" type="integer" />
+  <property name="showflag" column="showflag" type="integer" />
+  <property name="senddate" column="senddate" type="string" />
+  <property name="newsdate" column="newsdate" type="string" />
+  <property name="editdate" column="editdate" type="string" />
+  <property name="hasFile" column="hasFile" type="integer" />
+  <property name="tmp" column="temp" type="string" />
+  <property name="tmp1" column="temp1" type="string" />
+  <property name="tmp2" column="temp2" type="string" />
+  <!-- 文章对类别  多对一 -->
+  <many-to-one name="classes" class="com.fuao.fajxc.vo.Fa_Cms_Classes" column="classid" lazy="false"></many-to-one>
+  <set name="recinfo" cascade="all" lazy="false">
+    <key column="info_vid"/>
+    <one-to-many class="com.fuao.fajxc.vo.Fa_Cms_Rec_Info"/>
+   </set>
+  <!-- 文章对评论(content_comments)一对多 -->
+    <!-- 
+  <set name="comments" cascade="all" lazy="false">
+    <key column="cid"/>
+    <one-to-many class="com.fuao.fajxc.vo.Fa_Cms_Content_Comments"/>
+  </set>
+   -->
+</class>
+</hibernate-mapping>

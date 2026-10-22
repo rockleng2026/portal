@@ -1,0 +1,53 @@
+$(function(){
+
+	$(".txtSty").focus(function(){
+		$(this).addClass("txtSty2");
+	});
+	$(".txtSty").blur(function(){
+		$(this).removeClass("txtSty2");
+	});
+	$("#dgimg").toggle(
+		function(){
+			$(parent.document).find("#frame-body").attr("cols","0,7,*")
+			$(this).attr("src","./images/drag2.gif");
+		},
+		function(){
+			$(parent.document).find("#frame-body").attr("cols","186,7,*")
+			$(this).attr("src","./images/drag1.gif");
+		}
+	);
+
+	$(".li1").toggle(
+		function(){
+			$(this).addClass("li1_m");
+			$(this).removeClass("li1");
+			$(this).next().slideDown("slow");
+		},
+		function(){
+			$(this).removeClass("li1_m");
+			$(this).addClass("li1");
+			$(this).next().slideUp("slow");
+		}
+	);
+
+	$(".tabCon:first").show();
+
+	$(".myTab>li").each(function(i){
+		$(this).click(function(){
+			$(".tabCon:visible").hide();
+			$(".tab1").attr("class","tab2");
+			$(this).attr("class","tab1");
+			$(".tabCon").eq(i).show();
+		});
+	});
+	$(".searForm>li:odd").addClass("oddColor");
+	$(".table1>tbody>tr:odd").addClass("oddColor");
+	$(".table1>tbody>tr").hover(
+		function(){
+			$(this).addClass("overColor");
+		},
+		function(){
+			$(this).removeClass("overColor");
+		}
+	);
+})

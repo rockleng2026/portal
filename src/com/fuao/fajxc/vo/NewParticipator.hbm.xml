@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.NewParticipator" table="new_participator">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+
+  <property name="invitetime" column="invitetime" type="string"/>
+  <property name="content" column="content" type="string"/>
+  <property name="isagree" column="isagree" type="integer"/>
+  <many-to-one name="employee" class="com.fuao.fajxc.vo.Employee" fetch="select">
+  	<column name="inviteemp"></column>
+  </many-to-one>
+  <!-- 项目 -->
+  <many-to-one name="project" class="com.fuao.fajxc.vo.NewProject" fetch="select" column="pid" insert="false" update="false"></many-to-one>
+  <set name="newquestion" inverse="true">
+  	<key>
+  		<column name="quizpeople"></column>
+  	</key>
+  	<one-to-many class="com.fuao.fajxc.vo.NewQuestion"/>
+  </set>
+  <many-to-one name="newProject" class="com.fuao.fajxc.vo.NewProject" fetch="select">
+  	<column name="pid"></column>
+  </many-to-one>
+</class>
+</hibernate-mapping>

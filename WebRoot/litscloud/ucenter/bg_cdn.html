@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>立云-后台（自助管理-我的工单）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+function div1(){
+	document.getElementById("bsic").style.display="block";
+	document.getElementById("cache").style.display="none";
+	document.getElementById("back").style.display="none";
+	document.getElementById("details").style.display="none";
+	document.getElementById("door").style.display="none";	
+	}
+function div2(){
+	document.getElementById("bsic").style.display="none";
+	document.getElementById("cache").style.display="block";
+	document.getElementById("back").style.display="none";
+	document.getElementById("details").style.display="none";
+	document.getElementById("door").style.display="none";	
+	}	
+function div3(){
+	document.getElementById("bsic").style.display="none";
+	document.getElementById("cache").style.display="none";
+	document.getElementById("back").style.display="block";
+	document.getElementById("details").style.display="none";
+	document.getElementById("door").style.display="none";	
+	}
+function div4(){
+	document.getElementById("bsic").style.display="none";
+	document.getElementById("cache").style.display="none";
+	document.getElementById("back").style.display="none";
+	document.getElementById("details").style.display="block";
+	document.getElementById("door").style.display="none";	
+	}
+function div5(){
+	document.getElementById("bsic").style.display="none";
+	document.getElementById("cache").style.display="none";
+	document.getElementById("back").style.display="none";
+	document.getElementById("details").style.display="none";
+	document.getElementById("door").style.display="block";	
+	}				
+</script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+ <iframe src="top1.html"  width="100%" scrolling="no" frameborder="0" height="144"> </iframe>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="index.html" target="_parent">首页</a>>会员中心</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" >我的<br />账户</a></li>
+                <li><a href="bg_indent.html" style="background-image:url(images/bg_01.png); color:#ffffff;">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_indent.html" target="_parent">订单管理</a></li>
+                    <li><a href="bg_zxgd.html">在线工单</a></li>
+                     <li><a href="bg_wdgd.html" >我的工单</a></li>
+                      <li><a href="bg_cdn.html"  style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">CDN订单</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="bg_wd">
+             <div id="bsic">
+             <div class="cdn_t"><ul>
+               <li><a  onclick="div1()" style="background-image:url(images/cdn_01.gif); color:#fff;">基本配置</a></li>
+               <li><a onclick="div2()"  >缓存配置（可选）</a></li>
+                <li><a onclick="div3()" >回源配置（可选）</a></li>
+               <li><a  onclick="div4()">细节功能（可选）</a></li>
+               <li><a  onclick="div5()">防盗链配置（可选）</a></li>
+             </ul></div>             
+             <div class="cdn_c">
+                 
+               
+               
+                <div class="dcn_m"> <!-- 头部第一个横列 -->
+         <dl>
+           <dt>源站域名：</dt><dd><input name="yzym" type="text" class="dcn_yz" value="" /></dd><dt>CDN服务开启状态：</dt><dd><select id="dcn_fwq" class="dcn_fwq">
+             <option selected="selected">请选择</option>
+             <option value="开启">开启</option>
+             <option value="不开启">不开启</option>
+           </select></dd>
+         </dl>
+       </div>
+       <div class="dcn_c">  <!-- 第三个表单输入列表 -->
+         <div class="dcn_ct"> <div class="dcn_cl">请 输 入 源 站 IP：</div>
+          <div class="dcn_cr dcn_an"><input type="text" value="" name="yzip" class="dcn_yz" style="margin-right:10px;" /> 端口： <input type="text" name="dk" value="" class="dcn_yz" style="width:80px; float:none;" /> <sub class="dcn_xib">(有多个IP请点击后面增加按钮)</sub> <a href="#" style="margin-right:90px;">增加</a> <a href="#">减少</a></div></div>
+          <div class="dcn_ct">
+          <div class="dcn_cl">源站服务器机房位置：</div>
+          <div class="dcn_cr"><input type="text" value="" name="jfwz" class="dcn_yz" style="margin-right:10px;" /> <sub class="dcn_xib" style="float:left; margin-right:10px;">(地址有误请右边选择修正)</sub> <select id="dcn_fwq" class="dcn_fwq">
+             <option selected="selected">请选择</option>
+             <option value="运营商">运营商</option>
+             <option value="开发商">不开启</option>
+           </select> </div>
+           </div>
+       </div>
+       <div class="dcn_m"> <!-- 第三个表单输入列表 -->
+       <dl>
+         <dt>月均IP区间数：</dt><dd><input type="text" class="dcn_yz" value="如：1-1.5万" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}"  name="ipqjs"/></dd><dt>月均PV区间数：</dt><dd><input type="text" class="dcn_yz" value="如：1-1.5万" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}"   name="pvqjs"/></dd></dl><dl>
+         <dt>附件大小（可选）：</dt><dd><input type="text" class="dcn_yz" value="如：1-4M，5-20M等，论坛博客" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" style="width:190px;"  name="fjdx"/></dd><dt>文件大小(可选)：</dt><dd><input type="text" class="dcn_yz" value="如：1-4M，5-20M等，下载类" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" style="width:190px;"  name="wjdx"/></dd>
+         </dl><dl>
+         <dt>加速地区：</dt><dd><select id="dcn_jsdq" class="dcn_fwq" name="jsdq" style="width:190px;">
+             <option selected="selected">请选择</option>
+             <option value="国内加速">国内加速</option>
+             <option value="国外加速">国外加速</option>
+           </select></dd><dt>备案号：</dt><dd style="height:30px;"><input type="text" class="dcn_yz" value="" name="bah" /><span>*国内请输入备案</span></dd></dl><dl>
+         <dt>CDN加速需求类型：</dt><dd><select id="dcn_xql" name="dcn_xql" class="dcn_fwq" style="width:100px;">
+             <option selected="selected">请选择</option>
+             <option value="类型1">类型1</option>
+             <option value="类型2">类型2</option>
+           </select><span>仅"纯静态"类型可选"免费"套餐。 </span></dd><dt>套餐选择：</dt><dd><select id="dcn_xql" name="dcn_tc" class="dcn_fwq" >
+             <option selected="selected">请选择</option>
+             <option value="套餐1">套餐1</option>
+             <option value="套餐2">套餐2</option>
+           </select></dd>
+       </dl>
+       </div>
+       <div class="dcn_ct dcn_top">  <!-- 表格输出 -->
+           <table width="100%" border="0" cellpadding="0" cellspacing="0" class="dcn_table" >
+           <tr class="dcn_tr  dcn_hb"><th class="dcn_tcen dcn_th">套餐名称</th><th class="dcn_tcen dcn_th">加速类型</th><th class="dcn_tcen dcn_th">开始时间</th><th class="dcn_tcen dcn_th">结束时间</th><th class="dcn_tcen dcn_th">套餐描述</th><th class="dcn_tcen dcn_th">套餐时长</th><th class="dcn_tcen dcn_th">实际价格</th><th class="dcn_tcen dcn_th">原价</th></tr>  
+           <tr><td class="dcn_td dcn_tcen">免费</td><td class="dcn_td dcn_tcen">纯静态</td><td class="dcn_td dcn_tcen">2013-06-12</td><td class="dcn_td dcn_tcen">2013-08-15</td><td class="dcn_td dcn_tcen">暖气进睦人日常工作是不进行朝野....</td><td class="dcn_td dcn_tcen">1年</td><td class="dcn_td dcn_tcen">656</td><td class="dcn_td dcn_tcen">950</td></tr> 
+           <tr><td class="dcn_td dcn_tcen">免费</td><td class="dcn_td dcn_tcen">纯静态</td><td class="dcn_td dcn_tcen">2013-06-12</td><td class="dcn_td dcn_tcen">2013-08-15</td><td class="dcn_td dcn_tcen">暖气进睦人日常工作是不进行朝野....</td><td class="dcn_td dcn_tcen">1年</td><td class="dcn_td dcn_tcen">656</td><td class="dcn_td dcn_tcen">950</td></tr>  
+           <tr><td class="dcn_td dcn_tcen">免费</td><td class="dcn_td dcn_tcen">纯静态</td><td class="dcn_td dcn_tcen">2013-06-12</td><td class="dcn_td dcn_tcen">2013-08-15</td><td class="dcn_td dcn_tcen">暖气进睦人日常工作是不进行朝野....</td><td class="dcn_td dcn_tcen">1年</td><td class="dcn_td dcn_tcen">656</td><td class="dcn_td dcn_tcen">950</td></tr>  
+           <tr><td class="dcn_td dcn_tcen">免费</td><td class="dcn_td dcn_tcen">纯静态</td><td class="dcn_td dcn_tcen">2013-06-12</td><td class="dcn_td dcn_tcen">2013-08-15</td><td class="dcn_td dcn_tcen">暖气进睦人日常工作是不进行朝野....</td><td class="dcn_td dcn_tcen">1年</td><td class="dcn_td dcn_tcen">656</td><td class="dcn_td dcn_tcen">950</td></tr>  
+           <tr><td class="dcn_td dcn_tcen">免费</td><td class="dcn_td dcn_tcen">纯静态</td><td class="dcn_td dcn_tcen">2013-06-12</td><td class="dcn_td dcn_tcen">2013-08-15</td><td class="dcn_td dcn_tcen">暖气进睦人日常工作是不进行朝野....</td><td class="dcn_td dcn_tcen">1年</td><td class="dcn_td dcn_tcen">656</td><td class="dcn_td dcn_tcen">950</td></tr>          
+           </table>        
+       </div>                    
+                              
+             </div>
+             </div>
+             
+             
+             <div id="cache" style="display:none;">
+             <div class="cdn_t"><ul>
+               <li><a  onclick="div1()">基本配置</a></li>
+               <li><a onclick="div2()" style="background-image:url(images/cdn_01.gif); color:#fff;">缓存配置（可选）</a></li>
+               <li><a onclick="div3()" >回源配置（可选）</a></li>
+               <li><a  onclick="div4()">细节功能（可选）</a></li>
+               <li><a  onclick="div5()">防盗链配置（可选）</a></li>
+             </ul></div>             
+             <div class="cdn_c">             
+       <p class="dcn_ct div_ts"><span>提示：</span><br />&nbsp;&nbsp;&nbsp;&nbsp;以下输入缓存规则，(如果不懂操作可以不填写,让我司技术人员为你后台分析填写) </p> <!-- 提示 -->
+    <div class="dcn_gz"> <!-- 增加缓存规则 -->
+    <span class="dcn_pf dcn_an"> <!-- 按钮浮动 -->
+      <a href="#">增加一行</a><a href="#">减少一行</a>
+    </span>
+     <h3>填写缓存规则：</h3>
+      &nbsp;&nbsp;&nbsp;&nbsp;操作说明：按照是否缓存——缓存内容(URL/目录/文件类型等)<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;缓存时间顺序输入;如果有很多具体需求，请点击"增加一行"功能添加
+    </div>
+   <div class="dcn_zc dcn_top dcn_ct"> <!-- 增加行表格 -->
+       <table width="100%" border="0" cellpadding="0" cellspacing="0">
+       <tr class="dcn_tr">
+         <td width="14%"  class="dcn_bottom" ><select id="dcn_fwq" class="dcn_fwq" style="width:120px;"><option selected="selected">是否缓存</option><option value="是">是</option><option value="否">否</option></select></td>
+         <td width="58%" class="dcn_bottom"><input type="text" name="text_srgz" value="输入缓存规则，文件类型：[任意字符].(bmq\jpg\png\gif\css\js)" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" class="dcn_yz" style="width:530px;" /></td>
+         <td width="14%" class="dcn_bottom" ><input type="text" name="text_srgz" value="输入数字" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" class="dcn_yz" style="width:120px;" /> </td>
+         <td width="14%" class="dcn_bottom" ><select id="dcn_fwq" class="dcn_fwq" style="width:120px;"><option selected="selected">时间单位</option><option value="月">月</option><option value="年">年</option></select></td>
+       </tr>
+             <tr class="dcn_tr">
+         <td width="14%"  class="dcn_bottom" ><select id="dcn_fwq" class="dcn_fwq" style="width:120px;"><option selected="selected">是否缓存</option><option value="是">是</option><option value="否">否</option></select></td>
+         <td width="58%" class="dcn_bottom"><input type="text" name="text_srgz" value="输入缓存规则，文件类型：[任意字符].(bmq\jpg\png\gif\css\js)" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" class="dcn_yz" style="width:530px;" /></td>
+         <td width="14%" class="dcn_bottom" ><input type="text" name="text_srgz" value="输入数字" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" class="dcn_yz" style="width:120px;" /> </td>
+         <td width="14%" class="dcn_bottom" ><select id="dcn_fwq" class="dcn_fwq" style="width:120px;"><option selected="selected">时间单位</option><option value="月">月</option><option value="年">年</option></select></td>
+       </tr>
+             <tr class="dcn_tr">
+         <td width="14%"  class="dcn_bottom" ><select id="dcn_fwq" class="dcn_fwq" style="width:120px;"><option selected="selected">是否缓存</option><option value="是">是</option><option value="否">否</option></select></td>
+         <td width="58%" class="dcn_bottom"><input type="text" name="text_srgz" value="输入缓存规则，文件类型：[任意字符].(bmq\jpg\png\gif\css\js)" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" class="dcn_yz" style="width:530px;" /></td>
+         <td width="14%" class="dcn_bottom" ><input type="text" name="text_srgz" value="输入数字" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" class="dcn_yz" style="width:120px;" /> </td>
+         <td width="14%" class="dcn_bottom" ><select id="dcn_fwq" class="dcn_fwq" style="width:120px;"><option selected="selected">时间单位</option><option value="月">月</option><option value="年">年</option></select></td>
+       </tr>
+            <tr class="dcn_tr">
+         <td width="14%"  class="dcn_bottom" ><select id="dcn_fwq" class="dcn_fwq" style="width:120px;"><option selected="selected">是否缓存</option><option value="是">是</option><option value="否">否</option></select></td>
+         <td width="58%" class="dcn_bottom"><input type="text" name="text_srgz" value="输入缓存规则，文件类型：[任意字符].(bmq\jpg\png\gif\css\js)" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" class="dcn_yz" style="width:530px;" /></td>
+         <td width="14%" class="dcn_bottom" ><input type="text" name="text_srgz" value="输入数字" onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" class="dcn_yz" style="width:120px;" /> </td>
+         <td width="14%" class="dcn_bottom" ><select id="dcn_fwq" class="dcn_fwq" style="width:120px;"><option selected="selected">时间单位</option><option value="月">月</option><option value="年">年</option></select></td>
+       </tr>
+       </table>
+   </div>                     
+             </div>
+             </div>
+             
+             
+             
+             <div id="back" style="display:none;">
+             <div class="cdn_t"><ul>
+               <li><a  onclick="div1()">基本配置</a></li>
+               <li><a onclick="div2()" >缓存配置（可选）</a></li>
+               <li><a onclick="div3()"  style="background-image:url(images/cdn_01.gif); color:#fff;">回源配置（可选）</a></li>
+               <li><a  onclick="div4()">细节功能（可选）</a></li>
+               <li><a  onclick="div5()">防盗链配置（可选）</a></li>
+             </ul></div>             
+             <div class="cdn_c">             
+       <div class="dcn_gz dcn_top"> <!-- 增加缓存规则 -->
+    <span class="dcn_pf dcn_an" style="margin-top:15px;"> <!-- 按钮浮动 -->
+      <a href="#">增加一行</a><a href="#">减少一行</a>
+    </span>
+     <h3>请选择地区：</h3>
+      &nbsp;&nbsp;&nbsp;&nbsp;(按照运营商,大地区,回源Ip顺序输入)——（可选择输入）<br />
+    </div>
+   <div class="dcn_zc dcn_top dcn_ct"> <!-- 增加行表格 -->
+       <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr class="dcn_tr"><td width="20%" class="dcn_bottom"><select id="dcn_fwq" class="dcn_fwq" style="width:180px;">
+             <option selected="selected">请选择运营商</option>
+             <option value="电信">电信</option>
+             <option value="联通">联通</option>
+           </select> </td><td width="20%" class="dcn_bottom">
+           <select id="dcn_fwq" class="dcn_fwq" style="width:180px;">
+             <option selected="selected">请选择地区</option>
+             <option value="广州">广州</option>
+             <option value="湖南">湖南</option>
+           </select>
+           </td><td width="35%" class="dcn_bottom"><input type="text" value="" name="text_sr" class="dcn_yz" style="width:330px;" /></td><td width="20%" class="dcn_xib dcn_bottom">回源IP<span>(多个IP请用/分割)</span></td></tr>
+          <tr class="dcn_tr"><td width="20%" class="dcn_bottom"><select id="dcn_fwq" class="dcn_fwq" style="width:180px;">
+             <option selected="selected">请选择运营商</option>
+             <option value="电信">电信</option>
+             <option value="联通">联通</option>
+           </select> </td><td width="20%" class="dcn_bottom">
+           <select id="dcn_fwq" class="dcn_fwq" style="width:180px;">
+             <option selected="selected">请选择地区</option>
+             <option value="广州">广州</option>
+             <option value="湖南">湖南</option>
+           </select>
+           </td><td width="35%" class="dcn_bottom"><input type="text" value="" name="text_sr" class="dcn_yz" style="width:330px;" /></td><td width="20%" class="dcn_xib dcn_bottom">回源IP<span>(多个IP请用/分割)</span></td></tr>
+          <tr class="dcn_tr"><td width="20%" class="dcn_bottom"><select id="dcn_fwq" class="dcn_fwq" style="width:180px;">
+             <option selected="selected">请选择运营商</option>
+             <option value="电信">电信</option>
+             <option value="联通">联通</option>
+           </select> </td><td width="20%" class="dcn_bottom">
+           <select id="dcn_fwq" class="dcn_fwq" style="width:180px;">
+             <option selected="selected">请选择地区</option>
+             <option value="广州">广州</option>
+             <option value="湖南">湖南</option>
+           </select>
+           </td><td width="35%" class="dcn_bottom"><input type="text" value="" name="text_sr" class="dcn_yz" style="width:330px;" /></td><td width="20%" class="dcn_xib dcn_bottom">回源IP<span>(多个IP请用/分割)</span></td></tr>
+       </table>
+   </div>  
+             </div>
+             </div>
+             
+             
+             <div id="details" style="display:none;">
+             <div class="cdn_t"><ul>
+               <li><a  onclick="div1()">基本配置</a></li>
+               <li><a onclick="div2()" >缓存配置（可选）</a></li>
+               <li><a onclick="div3()" >回源配置（可选）</a></li>
+               <li><a  onclick="div4()"  style="background-image:url(images/cdn_01.gif); color:#fff;">细节功能（可选）</a></li>
+               <li><a  onclick="div5()">防盗链配置（可选）</a></li>
+             </ul></div>             
+             <div class="cdn_c">             
+      <div class="dcn_gz dcn_top"> <!-- 增加缓存规则 -->
+     <h3>功能测试中：</h3>
+      &nbsp;&nbsp;&nbsp;&nbsp; 商业用户请直接提交客服后台配置.<br />
+    </div>
+             </div>
+             </div>
+             
+             
+             
+                 <div id="door" style="display:none;">
+             <div class="cdn_t"><ul>
+               <li><a  onclick="div1()">基本配置</a></li>
+               <li><a onclick="div2()" >缓存配置（可选）</a></li>
+               <li><a onclick="div3()" >回源配置（可选）</a></li>
+               <li><a  onclick="div4()" >细节功能（可选）</a></li>
+               <li><a  onclick="div5()"  style="background-image:url(images/cdn_01.gif); color:#fff;">防盗链配置（可选）</a></li>
+             </ul></div>             
+             <div class="cdn_c">             
+      <div class="dcn_gz dcn_top"> <!-- 增加缓存规则 -->
+     <h3>功能测试中：</h3>
+      &nbsp;&nbsp;&nbsp;&nbsp; 商业用户请直接提交客服后台配置.<br />
+    </div>
+             </div>
+             </div>
+             
+             
+             
+             
+             <div class="cdn_d"> 
+                <input type="submit" value="提 交" class="cdn_sub" />
+                <input type="reset" value="重 置" class="cdn_sub" />
+             </div>
+             
+          
+          </div>         
+               
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+  <iframe src="bottom.html"  scrolling="auto" frameborder="0" height="279" width="100%"> </iframe><!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

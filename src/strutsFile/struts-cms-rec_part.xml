@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+  <package name="PackageRec_part" extends="json-default" namespace="/cms">
+    <global-results>
+        <result name="load" type="json">
+               <param name="allval"></param>
+        </result>
+    </global-results>
+    <action name="*Rec_part" class="rec_partAction" method="{1}">
+       <result name="a">/cms/papers/infomationOut.jsp</result>
+       <result type="json"/>
+
+       <result name="addDate">/cms/papers/upddeploy.jsp</result>
+       <result name="update">/cms/papers/upddeploy.jsp</result>
+       <result type="json" />
+    </action>
+  </package>
+</struts>

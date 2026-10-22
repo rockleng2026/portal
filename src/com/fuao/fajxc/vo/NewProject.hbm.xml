@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.NewProject" table="new_project">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="projectname" column="projectname" type="string"/>
+  <property name="schedule" column="schedule" type="integer"/>
+  <property name="launcher" column="launcher" type="string"/>
+  <property name="begintime" column="begintime" type="date"/>
+  <property name="endtime" column="endtime" type="date"/>
+  <property name="projectinfo" column="projectinfo" type="string"/>
+  <property name="approver" column="approver" type="integer" insert="false" update="false"/>
+  <property name="projectstatus" column="projectstatus" type="integer"/>
+  <property name="money" column="money" type="double"/>
+  <property name="isdel" column="isdel" type="integer"></property>
+  <set name="newfunction" inverse="true" lazy="false">
+  	<key>
+  		<column name="pid"></column>
+  	</key>
+  	<one-to-many class="com.fuao.fajxc.vo.NewFunction"/>
+  </set>
+  <!-- 项目类型 -->
+  <many-to-one name="missiontype" class="com.fuao.fajxc.vo.Missiontype" fetch="select">
+	<column name="projecttype"></column>  	
+  </many-to-one>
+  <!-- 审批人 -->
+  <many-to-one name="employee" class="com.fuao.fajxc.vo.Employee">
+    <column name="approver"></column>
+  </many-to-one>
+   <set name="approveprj" inverse="true">
+            <key>
+                <column name="pid" />
+            </key>
+            <one-to-many class="com.fuao.fajxc.vo.NewApprove" />
+        </set>
+  
+  <!-- 项目对部门  一对多 -->
+  <set name="depts" cascade="all" lazy="false">
+    <key column="pid"/>
+    <one-to-many class="com.fuao.fajxc.vo.NewPrjdept"/>
+  </set>
+  <!-- 项目对参与人员 一对多 -->
+  <set name="cyr" cascade="all" lazy="false">
+    <key column="pid"/>
+    <one-to-many class="com.fuao.fajxc.vo.NewParticipator"/>
+  </set>
+  <!-- 项目对查看者  一对多 -->
+   <set name="watch" cascade="all" lazy="false">
+    <key column="pid"/>
+    <one-to-many class="com.fuao.fajxc.vo.NewWatch"/>
+  </set>
+  <!-- 项目对文档  一对多 -->
+  <set name="documents" cascade="all" lazy="false">
+    <key column="pid"/>
+    <one-to-many class="com.fuao.fajxc.vo.NewDocument"/>
+  </set>
+  
+  <!-- 项目关联参与部门对象 -->
+  
+  <!-- 项目对功能  一对多 -->
+  <set name="function" cascade="all" lazy="false">
+    <key column="pid"/>
+    <one-to-many class="com.fuao.fajxc.vo.NewFunction"/>
+  </set>
+  <!-- 参与人 -->
+  <set name="newparticipator" inverse="true">
+  	<key>
+  		<column name="pid"></column>
+  	</key>
+  	<one-to-many class="com.fuao.fajxc.vo.NewParticipator"/>
+  </set>
+  <property name="temp1" column="temp1" type="string"></property>
+  <property name="temp2" column="temp2" type="string"></property>
+  <property name="temp3" column="temp3" type="string"></property>
+  <property name="temp4" column="temp4" type="string"></property>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+
+	<!-- 商品package -->
+	<package name="PackageCommodit" extends="struts-default">
+		<!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+				<interceptor-ref name="system">
+					<param name="name">SystemAction拦截</param>
+					<!-- 指定要拦截的方法名 -->
+					<param name="includeMethods">selectPage,select</param>
+				</interceptor-ref>
+				<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- 商品Action -->
+		<action name="*Commodity" class="CommodityAction" method="{1}">
+			<interceptor-ref name="myInter"></interceptor-ref>
+			<result name="add">/commodity/addProduct.jsp</result>
+			<result name="success">/commodity/CommodityList.jsp</result>
+			<result name="info">/commodity/commdeityInfo.jsp</result>
+			<result name="select" type="redirect">selectCommodity.do</result>
+			<result name="showcommodity">/showDialog/commodityinfoDialog.jsp</result>
+			<result name="propertyInfo">/commodity/propertyInfo.jsp</result>
+		</action>
+
+		<!-- 商品类型Action -->
+		<action name="*commodityTpye" class="CommodityTpyeAction"
+			method="{1}">
+			<interceptor-ref name="myInter"></interceptor-ref>
+			<result name="info">/commodity/commdeityTypeInfo.jsp</result>
+			<result name="success">/commodity/commodityTypeList.jsp</result>
+			<result name="add">/commodity/addCommodityType.jsp</result>
+			<result name="select" type="redirect">selectPagecommodityTpye.do</result>
+
+		</action>
+		<!-- 商品型号Action -->
+
+		<action name="*commodityModel" class="CommodityModelAction"
+			method="{1}">
+			<result name="success">/Basic/employee/EmployeeMessage.jsp</result>
+			<result name="add">/Basic/employee/addEmployee.jsp</result>
+			<result name="CabinetList">/showDialog/CabinetList.jsp</result>
+			<result name="select" type="redirect">selectcommodityModel.do</result>
+		</action>
+		<!-- 上传图片 -->
+		<action name="*uploadAction" class="UploadUtilAction" method="{1}">
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Approverecord" table="approverecord">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="projectname" column="projectname" type="string"/>
+  <property name="approveemp" column="approveemp" type="string"/>
+  <property name="applypeople" column="applypeople" type="string"/>
+  <property name="approveinfo" column="approveinfo" type="string"/>
+  <property name="apptime" column="apptime" type="string"/>
+  <property name="ispass" column="ispass" type="int"/>
+</class>
+</hibernate-mapping>

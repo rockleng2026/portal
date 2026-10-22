@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Freeze" table="freeze">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="upNo" column="upNo" type="string"></property>
+  <property name="freezeFlag" column="freezeFlag" type="integer"></property>
+  <many-to-one name="product" class="com.fuao.fajxc.vo.Product" column="productId" fetch="select"></many-to-one>
+</class>
+</hibernate-mapping>

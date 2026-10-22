@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-CN" />
+  <title> new document </title>
+  <meta name="generator" content="editplus" />
+  <meta name="author" content="" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+<style type="text/css">
+/*<![CDATA[*/
+* { width:100%; margin:0; padding:0;}
+body { font-family: "宋体", Arial, Helvetica, sans-serif; font-size: 12px; color: #444; text-align:center;}
+ul { list-style-type: none; margin:0; padding:0;}
+a { color:#4e4e4e; text-decoration: none; vertical-align: middle;}
+a:hover {color: #990000;}
+a:visited {color: #4e4e4e;}
+
+#login {width:500px;height:24px; margin:100px auto;}
+#login .top {margin-top:6px; margin-left:6px; width:60px; float:left; height:24px;}
+#login h2 { font-size:12px; line-height:26px;text-align:left;text-indent: 21px;}
+#moveico { margin-top:8px; background:url(images/ly_243.jpg) no-repeat; width:408px; height:24px; float:left;}
+#moveico div {position: relative;float:left;left:13px; top:-4px;background:url(images/ly_244.png) no-repeat; width:17px; height:25px;}
+
+#login input { height:16px; color:#666;}
+#login .userchk { width:16px;}
+#login .userinput { width:92px; border:1px #cbdca8 solid;}
+#login .usersub { width:52px;height:18px; background:url(images/12446171100.gif) no-repeat; border:0;  line-height:22px; color:#454545; font-size:12px;}
+#login span { margin-left:8px;}
+#login ul {width:160px;margin:0 auto;}
+#login li { clear:left; height:21px; line-height:21px; text-align:left;overflow:hidden;}
+#login li.other {border-top:2px #e0ecc8 solid;  margin-top:3px;text-indent: 6px;}
+#login a#loginhelp {position: relative; top:-18px;left:145px;display:block; width:12px; height:12px; background:#f7fcfc url(images/12446171100.gif) no-repeat -60px 0; }
+
+
+
+#login1 {width:500px;height:24px; margin:100px auto;}
+#login1 .top1 {margin-top:6px; margin-left:6px; width:60px; float:left; height:24px;}
+#login1 h2 { font-size:12px; line-height:26px;text-align:left;text-indent: 21px;}
+#moveico1 { margin-top:8px; background:url(images/ly_243.jpg) no-repeat; width:408px; height:24px; float:left;}
+#moveico1 div {position: relative;float:left;left:13px; top:-4px;background:url(images/ly_244.png) no-repeat; width:17px; height:25px;}
+
+#login1 input { height:16px; color:#666;}
+#login11 .userchk { width:16px;}
+#login1 .userinput { width:92px; border:1px #cbdca8 solid;}
+#login1 .usersub { width:52px;height:18px; background:url(images/12446171100.gif) no-repeat; border:0;  line-height:22px; color:#454545; font-size:12px;}
+#login1 span { margin-left:8px;}
+#login1 ul {width:160px;margin:0 auto;}
+#login1 li { clear:left; height:21px; line-height:21px; text-align:left;overflow:hidden;}
+#login1 li.other {border-top:2px #e0ecc8 solid;  margin-top:3px;text-indent: 6px;}
+#login1 a#login1help {position: relative; top:-18px;left:145px;display:block; width:12px; height:12px; background:#f7fcfc url(images/12446171100.gif) no-repeat -60px 0; }
+
+
+
+
+/*]]>*/
+</style>
+<script type="text/ecmascript" src="js/em.js">
+</script>
+<script type="text/javascript">
+<!--
+//Moveobj
+function bind(o,ev,fn){
+if (document.all)o.attachEvent('on'+ev,fn);
+else o.addEventListener(ev,fn,false);
+}
+function setCookie(name,value,time){
+var exp = new Date();
+exp.setTime(exp.getTime() + 30*24*60*60*1000);
+document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+}
+function getCookie(name){
+var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+if(arr=document.cookie.match(reg)) return unescape(arr[2]);
+else return null;
+}
+
+function Move_autosetdef(moveobj){
+var logintit = new Array("0","500","1000","2000");
+var bNum =5 ,mNum =127 , iNum = 4 , icolength = 6;
+//分别 bNum 起始距离距moveobj内侧左部的长度 ，mNum 单位长度，iNum 单位数 0-1-2-3，icolength 图标距离的1/2。
+
+var eNum = bNum + mNum * (iNum-1);
+var $D = new Function('str','return document.getElementById(str);');
+var $event = new Function('e','return (!e)?window.event:e;');
+var checknowleft = function(z){return ((z<bNum)?bNum:((z>eNum)?eNum:(((z-bNum)%mNum>11)?z+mNum-(z-bNum)%mNum:z-(z-bNum)%mNum)));}
+var nowseat = 0,drag_=false;
+var Move_autoset = function(iNum){
+$D(moveobj).getElementsByTagName("div")[0].style.left = iNum*mNum+bNum+"px";
+$D("login-tit").innerHTML = logintit[iNum];
+$D("login-type").value = iNum;//向hidden的login-type里添加参数值
+} 
+
+nowseat = (getCookie("nowseat")==null)?0:getCookie("nowseat");
+Move_autoset(nowseat);
+$D(moveobj).getElementsByTagName("div")[0].onmouseover = function(){
+var x,y,z;
+this.onmousedown=function(e){
+drag_=true;
+with(this){
+var temp0=style.left.replace("px","")*1,temp1=offsetLeft,temp2=offsetTop;
+x=$event(e).clientX;
+y=$event(e).clientY;
+z=temp0;
+document.onmousemove=function(e){
+//this.selection.empty();
+if(!drag_)return false;
+with(this){
+z = temp0 + $event(e).clientX-x;
+z = (z<bNum)?bNum:((z>eNum)?eNum:z);
+style.left=z+"px";
+}
+}
+document.onmouseup=function(e){
+drag_ = false;
+var nowleft = checknowleft(z);
+nowseat = (nowleft-bNum)/mNum;
+Move_autoset(nowseat);
+setCookie('nowseat',(nowleft-bNum)/mNum);
+}
+}
+}
+}
+$D(moveobj).onmouseover = function(){
+this.onmousedown=function(e){
+if(drag_)return false;
+with(this){
+var icoobj = getElementsByTagName("div")[0];
+var temp0 = icoobj.offsetLeft;
+var x=$event(e).clientX;
+var nowleft = checknowleft(bNum+mNum*nowseat+(x-temp0)-icolength);
+document.onmouseup=function(e){
+nowseat = (nowleft-bNum)/mNum;
+Move_autoset(nowseat);
+setCookie('nowseat',(nowleft-bNum)/mNum);
+}
+}
+}
+}
+}
+
+bind(window,"load",new Function('Move_autosetdef("moveico")'));
+
+//-->
+</script>
+
+ </head>
+
+ <body>
+<div id="login" class="Box">
+   <form action="" method="post">
+<div id="moveico"><div></div></div>
+<div class="top"><h2 class="active" id="login-tit"></h2></div>
+<input type="hidden" id="login-type" name="stype" value="0" />
+</form>
+</div>
+
+
+<div id="login1" class="Box1">
+   <form action="" method="post">
+<div id="moveico1"><div></div></div>
+<div class="top1"><h2 class="active1" id="login1-tit1"></h2></div>
+<input type="hidden" id="login1-type1" name="stype" value="0" />
+</form>
+</div>
+
+ </body>
+</html>

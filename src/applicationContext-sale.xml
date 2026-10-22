@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	
+	  <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	 	<!-- 价格调整Dao注入 -->
+		<bean id="priceRegDao" class="com.fuao.fajxc.dao.impl.sale.PriceRegulationDaoImpl">
+		   <property name="sessionFactory" ref="sessionFactory">
+		   </property>
+		</bean>
+		<!--<bean id="SaleorderDaoImpl" class="com.fuao.fajxc.dao.impl.sale.SaleorderDaoImpl" parent="baseDao"></bean>-->
+		<!-- 2012-02-20 15:37:03新版订单 -->
+		<bean id="saleDao" class="com.fuao.fajxc.dao.impl.sale.SaleorderDaoImpl" parent="baseDao"></bean>
+		<bean id="yjDao" class="com.fuao.fajxc.dao.cwtj_ygyj.YgyjDaoImpl" parent="baseDao"></bean>
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 价格调整Bussiness注入 -->
+		<bean id="priceRegBussiness" class="com.fuao.fajxc.bussiness.impl.sale.PriceRegulationBussinessImpl">
+			<property name="priceRegDao" ref="priceRegDao"></property>
+		</bean>
+		<!-- 
+		<bean id="SaleOrderBussinessImpl" class="com.fuao.fajxc.bussiness.impl.sale.SaleOrderBussinessImpl">
+			<property name="sodao" ref="saleDao"></property>
+		</bean>
+		 -->
+		<!-- 2012-02-20 15:37:03新版订单 -->
+		<bean id="saleBussiness" class="com.fuao.fajxc.bussiness.impl.sale.SaleOrderBussinessImpl">
+			<property name="sodao" ref="saleDao"></property>
+		</bean>
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 订单Action注入 -->
+		<bean id="SaleOrderAction"  class="com.fuao.fajxc.action.sale.SaleOrderAction">
+			<property name="sobiz" ref="saleBussiness"></property>
+			<property name="audBussiness" ref="auditingBussiness"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+			<property name="yjDao" ref="yjDao"></property>
+		</bean>		
+		<!-- 2012-02-20 15:44:36新版订单Action注入 -->
+		<!-- 
+		<bean id="SaleAction" class="com.fuao.fajxc.action.sale.SaleAction">
+			<property name="saleOrderBussiness" ref="saleBussiness"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		</bean>
+		 
+		<bean id="OrderTypeAction" class="com.fuao.fajxc.action.sale.OrderTypeAction">
+			<property name="saleOrderBussiness" ref="saleBussiness"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		</bean>
+		 -->
+		
+		<!-- 价格调整Acton注入 -->
+		<bean id="priceRegAction" class="com.fuao.fajxc.action.sale.PriceRegulationAction">
+		<property name="priceRegBussiness" ref="priceRegBussiness"></property>
+		<property name="purBussiness" ref="purOrderBussiness"></property>
+		<property name="audBussiness" ref="auditingBussiness"></property>
+		</bean>
+        
+	 </beans>

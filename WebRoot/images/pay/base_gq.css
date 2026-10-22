@@ -1,0 +1,105 @@
+BODY {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; FONT: 12px/24px "ËÎÌו"; COLOR: #666; PADDING-TOP: 0px
+}
+* {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+A {
+	COLOR: #333; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #f60; TEXT-DECORATION: none
+}
+IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+.youxi_bg {
+	CLEAR: both; DISPLAY: block; BACKGROUND: url(http://www.youxi.com/images/gq/bg.gif) #ffffff repeat-x 0px 0px; MARGIN: 0px auto; WIDTH: 1004px
+}
+.yxgq_bg {
+	CLEAR: both; DISPLAY: block; BACKGROUND: url(http://www.youxi.com/images/yd/youxi_ydbg.jpg) no-repeat center top; MARGIN: 0px auto; OVERFLOW: hidden
+}
+.top_bq {
+	CLEAR: both; DISPLAY: block; MARGIN: 0px auto; WIDTH: 1004px; HEIGHT: 108px
+}
+.top_bq IMG {
+	PADDING-RIGHT: 10px; FLOAT: right; PADDING-TOP: 40px
+}
+.page {
+	CLEAR: both; DISPLAY: block; MARGIN: 0px auto; WIDTH: 900px; ZOOM: 1
+}
+.modbox {
+	CLEAR: both; DISPLAY: block; MARGIN-BOTTOM: 15px; ZOOM: 1
+}
+.modmbox {
+	CLEAR: both; BORDER-RIGHT: #dedede 1px solid; BORDER-TOP: #dedede 1px; DISPLAY: block; OVERFLOW: hidden; BORDER-LEFT: #dedede 1px solid; BORDER-BOTTOM: #dedede 1px; ZOOM: 1
+}
+.modmboxB {
+	CLEAR: both; BORDER-RIGHT: #ffcc7b 1px solid; BORDER-TOP: #ffcc7b 1px; DISPLAY: block; OVERFLOW: hidden; BORDER-LEFT: #ffcc7b 1px solid; BORDER-BOTTOM: #ffcc7b 1px; ZOOM: 1
+}
+.cent {
+	CLEAR: both; DISPLAY: block; TEXT-ALIGN: center
+}
+.f_l {
+	FLOAT: left
+}
+.f_r {
+	FLOAT: right
+}
+.more {
+	FONT-WEIGHT: normal; FONT-SIZE: 12px; FLOAT: right; COLOR: #999; FONT-FAMILY: tahoma,"ËÎÌו"
+}
+.font01 {
+	FONT-WEIGHT: bold; COLOR: #f00
+}
+.font02 {
+	COLOR: #ea5d03
+}
+.font03 {
+	COLOR: #f60; TEXT-DECORATION: underline
+}
+.font03:hover {
+	COLOR: #f60; TEXT-DECORATION: none
+}
+.font04 {
+	COLOR: #999
+}
+.font05 {
+	FONT-SIZE: 14px; COLOR: #aa7a00
+}
+.font06 {
+	COLOR: #f00
+}
+.font07 {
+	COLOR: #1b7100
+}
+.font08 {
+	FONT-WEIGHT: bold; COLOR: #f60
+}
+.font09 {
+	FONT-WEIGHT: bold; COLOR: #ab7300
+}
+.font10 {
+	COLOR: #ab7300; TEXT-DECORATION: underline
+}
+.font10:hover {
+	COLOR: #ab7300; TEXT-DECORATION: none
+}
+.font11 {
+	COLOR: #333
+}
+.font_s14b {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px
+}
+.font12 {
+	COLOR: #f60; TEXT-DECORATION: none
+}
+.font12:hover {
+	COLOR: #f60; TEXT-DECORATION: underline
+}
+.font13 {
+	COLOR: #666; TEXT-DECORATION: underline
+}
+.font13:hover {
+	COLOR: #666; TEXT-DECORATION: none
+}

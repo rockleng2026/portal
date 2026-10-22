@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    
+    <struts>
+    <!-- 基础信息package -->
+    <package name="PackageBasic" extends="struts-default" >
+    <!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="PositionLoginInterceptor"></interceptor>
+			
+			<interceptor-stack name="myInter">
+			<interceptor-ref name="system">
+			<param name="name">SystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">select,getpage,select2</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+			</interceptor-stack>
+		</interceptors>
+    <!-- 员工信息操作Action -->
+    <global-results>
+    	<result name="error">/No.jsp</result>
+    </global-results>
+    <global-exception-mappings>   
+   		<exception-mapping result="error" exception="java.lang.Exception"/>   
+  	</global-exception-mappings> 
+    
+    <action name="*emp" class="employeeAction" method="{1}">
+    <!--引用拦截器栈 -->
+	<interceptor-ref name="myInter"></interceptor-ref>
+	<result name="chuseposition">/Basic/employee/seloption.jsp</result>
+	<result name="detail2">/potal/page/employee/edit1Employee.jsp</result>
+		<result name="addload">/potal/page/employee/addEmployee.jsp</result>
+		<result name="detail1">/potal/page/employee/employeeDetail.jsp</result>
+		<result name="deptemplist">/potal/page/employee/deptemployeeInfo.jsp</result>
+		<result name="deptallemplist">/potal/page/employee/employeeInfo.jsp</result>
+	<result name="selwpbd">/Basic/employee/seloption.jsp</result>
+	<result name="chengposition">/Basic/employee/empchengedeptment.jsp</result>
+	<result name="yqsuccess">/Basic/employee/EmployeeMessage.jsp</result>
+    <result name="success">/Basic/employee/HBLEmployeeMessage.jsp</result>
+    <result name="dcsuccess">/Basic/employee/HBLEmployeeMessage_down.jsp</result>
+    <result name="invalid.token">/Basic/employee/EmployeeMessage.jsp</result>
+    <result name="add">/Basic/employee/addEmployee.jsp</result>
+    <result name="detail">/Basic/employee/employeeDetail.jsp</result>
+    <result name="select" type="redirect">selectemp.do</result>
+    <result name="selectempbydept">/Basic/employee/EmployeeMessage.jsp</result>
+    <result name="department">Basic/employee/departmentList.jsp</result>
+    <result name="leave" type="redirect">select2emp.do</result>
+    <result name="changeCus">/Basic/employee/changeCustomer.jsp</result>
+    <result name="movelist">/Basic/customer/customerMoveList.jsp</result>
+    <result name="zysuccess">/Basic/employee/yjsuccess.jsp</result>
+    <result name="addOperation">/Basic/employee/addEmployeeOperation.jsp</result>
+    <result name="addOperation2" type="redirect">selectemp.do</result>
+    </action>
+    <!-- 供应商信息操作Action -->
+    
+    
+    <action name="*supplierr" class="SupplierAction" method="{1}" >
+    <interceptor-ref name="myInter"></interceptor-ref>
+    <result name="goadd">/Basic/supplier/addSupplier.jsp</result>
+    <result name="success">/Basic/supplier/SupplierMessage.jsp</result>
+    <result name="upSupplier">/Basic/supplier/upSupplier.jsp</result>
+    <result name="supplierInfo">/Basic/supplier/supperInfo.jsp</result>
+    <result name="select" type="redirect">selectsupplierr.do</result>
+    <result name="error">/No.jsp</result>
+    </action>
+    <!-- 仓库信息操作Action -->
+    <action name="*depot" class="DepotAction" method="{1}">  
+    <interceptor-ref name="myInter"></interceptor-ref>
+  <result name="invalid.token" >/error/yourError.jsp</result>
+    <result name="success">/Basic/depot/DepotMessage.jsp</result>
+     <result name="upDepot">/Basic/depot/upDepot.jsp</result>
+    <result name="add">/Basic/depot/addDepot.jsp</result>
+    <result name="find">/Basic/depot/selectDepot.jsp</result>
+    <result name="select" type="redirect">selectdepot.do</result>
+
+    </action>
+    <!-- 客户信息操作Action -->
+    <action name="*Customer" class="com.fuao.fajxc.action.basic.CustomerAction" method="{1}" >
+    <interceptor-ref name="myInter"></interceptor-ref>
+    <result name="addCustomer">/Basic/customer/ClientwillMessage.jsp</result>
+    <result name="listCustomer">/Basic/customer/customerList.jsp</result>
+    <result name="formal">/Basic/FormalMessageClient.jsp</result>
+    <result name="waitAuditing">/Basic/WaitAuditingClientMessage.jsp</result>
+    <result name="tryout">/Basic/TryoutClient.jsp</result>
+    <result name="select" type="redirect">getpageCustomer.do</result>
+    <result name="login">/login.jsp</result>
+    <result name="messageCustomer">/message/customermessage.jsp</result>
+    <result name="all">/Basic/customer/customer.jsp</result>
+    <result name="deal">/Basic/customer/dealcustomer.jsp</result>
+    <result name="move">/Basic/customer/customerMove.jsp</result>
+
+    </action>
+    
+        <!-- 新portal系统的客户信息操作Action -->
+    <action name="*NewportalCustomer1" class="newportalCustomerAction" method="{1}">
+	    <result name="addCustomer">/Basic/customer/ClientwillMessage.jsp</result>
+	    <result name="newportallistCustomer">/potal/page/customer/newcustomerlist.jsp</result>
+	    <result name="formal">/Basic/FormalMessageClient.jsp</result>
+	    <result name="waitAuditing">/Basic/WaitAuditingClientMessage.jsp</result>
+	    <result name="tryout">/Basic/TryoutClient.jsp</result>
+	    <result name="select" type="redirect">mycustomerlistNewportalCustomer1.do</result>
+	    <result name="login">/login.jsp</result>
+	    <result name="messageCustomer">/message/customermessage.jsp</result>
+	    <result name="all">/Basic/customer/customer.jsp</result>
+	    <result name="deal">/Basic/customer/dealcustomer.jsp</result>
+	    <result name="move">/Basic/customer/customerMove.jsp</result>
+	    <result name="customerjj">/potal/page/customer/seecustomerjj.jsp</result>    
+	     <result name="seefollow">/potal/page/customer/seefollow.jsp</result>
+	    <result name="newportalempName">/potal/page/customer/addCustomerDetails.jsp</result>
+	    <result name="mycustomerlists">/potal/page/customer/newcustomerlist.jsp</result>
+	    <result name="updatacustomers">/potal/page/customer/updatacustomer.jsp</result>
+	    <result name="updatacustomers1">/potal/page/customer/updatacustomertype3.jsp</result>
+	    <result name="updatatocustomer" type="redirect">mycustomerlistNewportalCustomer1.do</result>
+	    <result name="customerdes">/potal/page/customer/customerdetails.jsp</result>
+	    <result name="deptcustomerdes">/potal/page/customer/deptcustomerdetails.jsp</result>
+	    <result name="customerdes2">/potal/page/customer/customerdetails2.jsp</result>
+	    <result name="deptcustomerlist">/potal/page/customer/deptcustomerlist.jsp</result>
+	    
+    </action>
+    
+
+    
+    <!-- 客户的跟单Action -->
+    <action name="*IntentFollowUp" class="com.fuao.fajxc.action.basic.IntentFollowUpAction" method="{1}" >
+    <result name="listIntentFollowUp">/Basic/customer/followupList.jsp</result>
+     <result name="intentFollowUp">/Basic/customer/followup.jsp</result>
+    </action>
+    
+	 <!-- 客户的交接Action -->
+    <action name="*CustomerMove" class="com.fuao.fajxc.action.basic.CustomerMoveAction" method="{1}" >
+    <result name="listCustomerMove">/Basic/customer/customerMoveList.jsp</result>
+     <result name="addCustomerMove">/Basic/customer/followup.jsp</result>
+     <result name="showMove">/Basic/customer/customerMove.jsp</result>
+    </action>
+    
+    <!-- 客户试用Action -->
+    <action name="*CustomerTryout" class="com.fuao.fajxc.action.basic.CustomerTryoutAction" method="{1}" >
+     <result name="listCustomerTryout">/Basic/customer/customerTryoutList.jsp</result>
+     <result name="addCustomerTryout">/Basic/customer/customerTryout.jsp</result>
+    </action>
+
+    <!-- 部门信息操作Action -->
+    <action name="*Department" class="DeaprtAction" method="{1}">
+    <!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>
+    <result name="success">/Basic/Department/DepartmentMessage.jsp</result>
+    <result name="depShow">/Basic/Department/addDepartment.jsp</result>
+    <result name="select" type="redirect">getAllstatisticsDepartment.do</result>
+    <result name="alldept">/Basic/Department/dept.jsp</result>
+    <result name="dtreelist">Basic/Department/DepartmentMessage.jsp</result>
+    </action>
+    <action name="*Position" class="DeaprtAction" method="{1}">
+    <!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>
+    <result name="positionlist">/System/position.jsp</result>
+    <result name="deptposition">/Basic/Department/position.jsp</result>
+    <result name="mypositionlist">/System/workpositionlist.jsp</result>
+    <result name="error">/No.jsp</result>
+    
+    </action>
+    
+    <!-- DWR 测试 -->
+    <action name="dwrdept_*" class="dwrdeptAction" method="{1}">
+        <result name="success">/Basic/customer/DWRTest.jsp</result>
+    </action>
+    <!-- 部门业务管理 -->
+    <action name="*DepartmentOperation" class="com.fuao.fajxc.action.operation.DepartmentOperationAction" method="{1}">
+        <result name="list">/operation/operationdeptlist.jsp</result>
+        <result name="adddept">/operation/addDept.jsp</result>
+        <result name="tolist" type="redirect">listDepartmentOperation.do</result>
+    </action>
+     <!-- 员工业务管理 -->
+    <action name="*EmployeeOperation" class="com.fuao.fajxc.action.operation.EmployeeOperationAction" method="{1}">
+        <result name="list">/operation/operationemplist.jsp</result>
+        <result name="addEmp">/operation/addEmp.jsp</result>
+        <result name="tolist" type="redirect">listEmployeeOperation.do</result>
+    </action>
+    <action name="*allsposition" class="DeaprtAction" method="{1}">
+    <result name="positionlist">/System/position.jsp</result>
+    <result name="deptposition">/Basic/Department/position.jsp</result>
+    <result name="mypositionlist">/System/workpositionlist.jsp</result>
+    <result name="error">/No.jsp</result>
+    </action>
+    </package>
+    </struts>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.NewApprove" table="new_approve">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="begintime" column="begintime" type="date"/>
+  <property name="endtime" column="endtime" type="date"/>
+  <property name="appstatus" column="appstatus" type="integer"/>
+  <property name="approveinfo" column="approveinfo" type="string"/>
+  <property name="temp" column="temp" type="string"/>
+  <property name="appLD" column="appLD" type="string"/>
+  <!-- 申请人 -->
+  <many-to-one name="applypeople" class="com.fuao.fajxc.vo.Employee" fetch="select">
+            <column name="applypeople" />
+  </many-to-one>
+  <!-- 申请人 -->
+  <many-to-one name="approveemp" class="com.fuao.fajxc.vo.Employee" fetch="select">
+            <column name="approveemp" />
+  </many-to-one>
+  <!-- 审批项目 -->
+  <many-to-one name="newproject" class="com.fuao.fajxc.vo.NewProject" fetch="select">
+            <column name="pid" />
+  </many-to-one>
+</class>
+</hibernate-mapping>

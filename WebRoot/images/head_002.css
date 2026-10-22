@@ -1,0 +1,28 @@
+@charset "utf-8";
+/* CSS Document */
+.header{ display:block; clear:both; width:900px; zoom:1; margin:0 auto;}
+
+.logo{ float:left;display:inline;}
+.header_r{ display:inline; float:right; height:95px; background:url(../images/ph_service.gif) right bottom no-repeat; margin:10px 0 10px 0;}
+.h_top{ color:#ddd; text-align:right;}
+.h_login{ color:#656565;}
+.h_login img{ vertical-align:middle; margin:0 5px 0 0;}
+.h_login .h_username{ color:#f00; margin:0 5px 0 0;}
+.h_login .mes{ color:#f00; background:url(../images/icon_mes.gif) 0 0 no-repeat; padding:0 0 0 18px; margin:0 5px;}
+.h_tlink{ color:#F78431; margin:0 5px;}
+
+.menu{ display:block; clear:both; width:900px; height:63px; zoom:1; padding:5px 0 0 0; margin:0 auto 15px auto;}
+.menuli{ float:left; list-style:none;}
+.menuli li{ float:left; font:bold 14px/34px "宋体"; position:relative;}
+.menuli li a.AA_m{ display:block; background:url(../images/bg_menu.gif) 0 0 no-repeat;color:#fff; padding:0 0 0 16px;}
+.menuli li a.AA_m span{background:url(../images/bg_menu.gif) 0 0 no-repeat; padding:0 16px 0 0;font:bold 14px/34px "宋体"; cursor:pointer}
+.menuli li a.Anow_m,.menuli li a.AA_m:hover{ display:block;float:left; background:url(../images/bg_menu.gif) 0 -44px no-repeat;color:#333; padding:0 0 0 16px;}
+.menuli li a.Anow_m span,.menuli li a.AA_m:hover span{display:block;background:url(../images/bg_menu.gif) right -88px no-repeat; padding:0 16px 0 0;cursor:pointer}
+*html .menuli li a.Anow_m span{ float:left;}
+
+.menu .btn_ql{ float:right; padding:3px 0 0 0;}
+
+.sub_menu{ position:absolute; left:0; top:34px; width:350px; font:normal 12px/28px "宋体"; color:#ECE2E7;}
+.sub_menu a{ color:#656565; margin:0 10px;}
+.sub_menu a:hover{ text-decoration:underline;}
+.sub_menu a.Anow_subm,.sub_menu a.Anow_subm:hover{font:bold 12px/28px "宋体"; text-decoration:none;}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-body>
+<!-- 通过手动/程序自动从数据库中读取栏目来生成xml树  模板调用根据此树来生成相关列表页面 -->
+<template-config>
+	<walkthrough id="4" cname="walkthrough" typename="游戏攻略">
+	<lanmu id="58" cname="qdgl">强档攻略</lanmu>
+	<lanmu id="59" cname="yxgl">游戏攻略</lanmu>
+	<lanmu id="60" cname="xdmj">心得秘籍</lanmu>
+	<lanmu id="61" cname="glbd">攻略宝典</lanmu>
+	<lanmu id="62" cname="spgl">视频攻略</lanmu>
+	</walkthrough>
+	<game id="64" cname="game" typename="爱游戏">
+	<lanmu id="65" cname="qdgl">策略</lanmu>
+	<lanmu id="66" cname="yxgl">冒险</lanmu>
+	<lanmu id="67" cname="xdmj">益智</lanmu>
+	<lanmu id="68" cname="glbd">动作</lanmu>
+	</game>
+	<huaqiang id="69"  cname="huaqiang" typename="华强网络科技">
+	</huaqiang>
+</template-config>
+<pic-config>
+	<titlepic>cms/ender/upload/titlepic</titlepic><!-- titlepic -->
+	<contentpic>cms/ender/upload/contentpic</contentpic><!-- titlepic -->
+	<recpic>cms/ender/upload/recpic</recpic><!-- titlepic -->
+</pic-config>
+<web-config><!-- 站点配置 不能随意更改 -->
+    <description>恩德-酒店用品领航者，旗下代理酒店地毯,KTV地毯,S型防滑地毯,3A地毯,花底地毯,坑纹地毯,汽车地毯,3M地毯</description>
+    <sitename>恩德</sitename>
+	<engname>ender</engname>
+	<sitekey>1</sitekey>
+	<contentcheck>0</contentcheck><!-- 0关闭 1开启 -->
+	<homepage>index.html</homepage>
+	<charset>GBK</charset>
+</web-config>
+<comment-config>
+	<ischeck>true</ischeck><!-- 为空/没有/false则不需要审核，true需要审核后才能显示 -->
+</comment-config>
+</xml-body>

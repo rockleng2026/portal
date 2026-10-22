@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Taskplan_saleorder" table="taskplan_saleorder">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="taskid" column="taskid" type="integer"></property>
+  <property name="saleorderid" column="saleorderid" type="integer"></property>
+  <property name="flag" column="flag" type="string"></property>
+  <property name="status" column="status" type="integer"></property>
+</class>
+</hibernate-mapping>

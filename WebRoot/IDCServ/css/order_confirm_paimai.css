@@ -1,0 +1,123 @@
+.disabled A {
+	DISPLAY: none !important
+}
+SPAN.fakelink {
+	DISPLAY: none
+}
+.disabled SPAN.fakelink {
+	DISPLAY: inline-block; BACKGROUND-POSITION: -999px -999px; COLOR: #aaa; CURSOR: pointer; TEXT-DECORATION: none
+}
+.paimai-order-confirm {
+	BORDER-BOTTOM: black 1px solid; POSITION: absolute; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 12px; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; BACKGROUND: white; OVERFLOW: hidden; BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; PADDING-TOP: 12px
+}
+.paimai-order-confirm H3 {
+	BORDER-BOTTOM: #e9e9e9 4px solid; LINE-HEIGHT: 22px; FONT-SIZE: 14px
+}
+.paimai-order-confirm H3 A {
+	FONT-SIZE: 12px; FONT-WEIGHT: normal
+}
+.paimai-order-confirm .ks-ext-close {
+	POSITION: absolute; TEXT-INDENT: -9999em; WIDTH: 9px; DISPLAY: block; BACKGROUND: url(http://img02.taobaocdn.com/tps/i2/T1VAV3XoRGXXXXXXXX-9-9.png) no-repeat; HEIGHT: 9px; TOP: 7px; RIGHT: 7px
+}
+#address {
+	MARGIN-TOP: 10px; COLOR: #404040
+}
+#address UL {
+	PADDING-LEFT: 40px
+}
+#address UL UL {
+	PADDING-LEFT: 0px
+}
+#address LI {
+	BORDER-BOTTOM: #fff 1px solid; BORDER-LEFT: #fff 1px solid; MARGIN-BOTTOM: 5px; BORDER-TOP: #fff 1px solid; BORDER-RIGHT: #fff 1px solid; _zoom: 1
+}
+#address #temp-address {
+	HEIGHT: auto
+}
+#address #temp-address LI {
+	HEIGHT: auto
+}
+#address LI.selected {
+	BORDER-BOTTOM: #fbebad 1px solid; BORDER-LEFT: #fbebad 1px solid; BACKGROUND-COLOR: #fdf2c9; BORDER-TOP: #fbebad 1px solid; BORDER-RIGHT: #fbebad 1px solid
+}
+#address .go {
+	MARGIN-LEFT: 95px; _margin-left: 98px
+}
+#address .go .skin-gray {
+	MARGIN-LEFT: 5px
+}
+#address .msg {
+	MARGIN-TOP: 5px; DISPLAY: inline-block; MARGIN-BOTTOM: 15px; MARGIN-LEFT: 15px; VERTICAL-ALIGN: middle
+}
+#address .msg P {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 23px; PADDING-RIGHT: 10px; PADDING-TOP: 2px
+}
+.msg .loading {
+	PADDING-BOTTOM: 2px; LINE-HEIGHT: 16px; PADDING-LEFT: 23px; PADDING-RIGHT: 10px; BACKGROUND: url(http://img03.taobaocdn.com/tps/i3/T1NAdGXb0FXXXXXXXX-16-16.gif) no-repeat 0px 3px; FLOAT: left; COLOR: #404040; PADDING-TOP: 2px
+}
+#address LI .set-default {
+	DISPLAY: none
+}
+#address LI.hover .set-default {
+	DISPLAY: inline; MARGIN-LEFT: 15px
+}
+#address LABEL {
+	PADDING-LEFT: 8px
+}
+#address .manage-address {
+	MARGIN-LEFT: 10px; FONT-SIZE: 12px; FONT-WEIGHT: 400
+}
+#address .manage-address A:link {
+	COLOR: #04d; TEXT-DECORATION: none
+}
+#address .manage-address A:visited {
+	COLOR: #04d; TEXT-DECORATION: none
+}
+.order-go {
+	PADDING-BOTTOM: 20px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 20px
+}
+.order-go BUTTON {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; TEXT-INDENT: -200px; WIDTH: 138px; DISPLAY: block; BACKGROUND: url(http://a.tbcdn.cn/app/tc/img/order_go.png) no-repeat; HEIGHT: 29px; OVERFLOW: hidden; BORDER-TOP: 0px; CURSOR: pointer; BORDER-RIGHT: 0px; _position: relative; _zoom: 1
+}
+.paimai-temp-address {
+	PADDING-BOTTOM: 10px; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; BACKGROUND: #f1f8ff; PADDING-TOP: 10px
+}
+.paimai-temp-address LEGEND {
+	BACKGROUND: #f1f8ff
+}
+.paimai-temp-address .field {
+	LINE-HEIGHT: 30px; MARGIN-TOP: 5px; PADDING-LEFT: 100px; WIDTH: 580px; DISPLAY: block; CLEAR: both
+}
+.paimai-temp-address .field LABEL {
+	TEXT-ALIGN: right; WIDTH: 90px; DISPLAY: inline; FLOAT: left; MARGIN-LEFT: -110px; _line-height: 20px
+}
+.paimai-temp-address .field UL {
+	_zoom: 1
+}
+.paimai-temp-address .field SPAN {
+	DISPLAY: block; OVERFLOW: visible; _zoom: 1
+}
+.paimai-temp-address .field EM {
+	POSITION: absolute; WIDTH: 10px; DISPLAY: inline; FLOAT: left; COLOR: red; MARGIN-LEFT: -13px; OVERFLOW: hidden
+}
+.paimai-temp-address .addr-dist LI {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; FLOAT: left; HEIGHT: auto; CLEAR: none; MARGIN-RIGHT: 10px; PADDING-TOP: 0px
+}
+.paimai-temp-address .addr-dist LI LABEL {
+	TEXT-ALIGN: left; MARGIN: 0px; WIDTH: 70px; FLOAT: left
+}
+#addrProv {
+	WIDTH: 90px
+}
+#addrCity {
+	WIDTH: 120px
+}
+#addrDist {
+	WIDTH: 80px
+}
+#addrZip {
+	WIDTH: 50px
+}
+#addrMail {
+	MARGIN-TOP: 5px
+}

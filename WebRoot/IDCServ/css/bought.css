@@ -1,0 +1,1149 @@
+.ks-overlay {
+	Z-INDEX: 9999; POSITION: absolute; TOP: -9999px; LEFT: -9999px
+}
+.ks-ext-mask {
+	FILTER: alpha(opacity=25); BACKGROUND-COLOR: black; opacity: .25; -moz-opacity: .25; -webkit-opacity: .25
+}
+#content .stage-list {
+	POSITION: relative; PADDING-BOTTOM: 8px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; COLOR: #808080; PADDING-TOP: 10px
+}
+#content .stage-list TABLE {
+	WIDTH: 100%; BORDER-COLLAPSE: collapse; TABLE-LAYOUT: fixed
+}
+#content .stage-list TD {
+	BORDER-BOTTOM: #e8f2ff 1px solid; TEXT-ALIGN: center; BORDER-LEFT: medium none; PADDING-BOTTOM: 16px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; BACKGROUND: #fafcff; VERTICAL-ALIGN: middle; OVERFLOW: hidden; BORDER-TOP: #e8f2ff 1px solid; BORDER-RIGHT: #fff 1px solid; PADDING-TOP: 16px
+}
+#content .stage-list .current TD {
+	BACKGROUND: #f2f7ff; COLOR: #404040
+}
+#content .stage-list .current .stress {
+	FONT-WEIGHT: bold
+}
+#content .stage-list .done TD {
+	COLOR: #404040
+}
+#content .stage-list .triangle {
+	POSITION: absolute; WIDTH: 14px; BACKGROUND: url(http://img03.taobaocdn.com/tps/i3/T1fCuCXnN3XXXcoUw.-13-8.png) no-repeat; HEIGHT: 8px; OVERFLOW: hidden; TOP: 3px; LEFT: 126px
+}
+#content .stage-list .base-info {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+#content .stage-list UL {
+	DISPLAY: table-row
+}
+#content .stage-list LI {
+	DISPLAY: table-cell; WORD-WRAP: break-word; VERTICAL-ALIGN: middle
+}
+#content .stage-list .stage LI {
+	PADDING-BOTTOM: 16px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 16px
+}
+#content .stage-list .services LI {
+	PADDING-BOTTOM: 5px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 5px
+}
+.tm-bubble {
+	BORDER-BOTTOM: #febe8f 1px solid; POSITION: relative; TEXT-ALIGN: left; BORDER-LEFT: #febe8f 1px solid; PADDING-BOTTOM: 2px; LINE-HEIGHT: 1.5; PADDING-LEFT: 4px; PADDING-RIGHT: 2px; DISPLAY: inline-block; WORD-WRAP: break-word; BACKGROUND: #fff8d9; BORDER-TOP: #febe8f 1px solid; BORDER-RIGHT: #febe8f 1px solid; PADDING-TOP: 1px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px
+}
+.tm-bubble .title {
+	COLOR: #f60
+}
+.tm-bubble .triangle {
+	POSITION: absolute; WIDTH: 6px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T19ZKtXXdhXXXXXXXX-6-6.png) no-repeat; HEIGHT: 6px; OVERFLOW: hidden; TOP: 7px; LEFT: -6px
+}
+.dialog {
+	Z-INDEX: 9998; POSITION: absolute; BORDER-LEFT: #808080 1px solid; BACKGROUND-COLOR: #f2f2f2; VISIBILITY: visible; TOP: 684px; BORDER-RIGHT: #808080 1px solid; LEFT: 430px
+}
+.dialog .dialog-bd {
+	Z-INDEX: 1; BORDER-BOTTOM: #808080 1px solid; POSITION: relative; PADDING-BOTTOM: 20px; BACKGROUND-COLOR: #f2f2f2; MARGIN: -1px 0px; PADDING-LEFT: 20px; PADDING-RIGHT: 20px; OVERFLOW: hidden; BORDER-TOP: #808080 1px solid; PADDING-TOP: 20px
+}
+.dialog .dialog-bd .bd {
+	MARGIN: 10px 0px
+}
+.dialog A.close {
+	Z-INDEX: 9999; POSITION: absolute; TEXT-INDENT: -9999px; WIDTH: 25px; BACKGROUND: url(http://img03.taobaocdn.com/tps/i3/T13A4WXkVgXXXXXXXX-25-15.png) #fff no-repeat; HEIGHT: 15px; FONT-SIZE: 0px; TOP: 5px; RIGHT: 6px
+}
+.dialog .underlay {
+	POSITION: absolute; FILTER: Alpha(opacity=12); BACKGROUND-COLOR: #000; BOTTOM: -3px; TOP: 2px; RIGHT: -3px; LEFT: -3px; opacity: .12
+}
+.mask {
+	Z-INDEX: 10; POSITION: absolute; FILTER: Alpha(opacity=25); BACKGROUND-COLOR: black; WIDTH: 100%; BOTTOM: 0px; DISPLAY: none; TOP: 0px; RIGHT: 0px; LEFT: 0px; opacity: .25
+}
+.tm-dialog-blue {
+	BORDER-BOTTOM: #bde1f1 1px solid; POSITION: absolute; BORDER-LEFT: #bde1f1 1px solid; BACKGROUND: #fff; BORDER-TOP: #bde1f1 1px solid; TOP: -9999px; BORDER-RIGHT: #bde1f1 1px solid; LEFT: -9999px
+}
+.tm-dialog-blue .ks-ext-close {
+	POSITION: absolute; TEXT-INDENT: -9999px; WIDTH: 9px; BACKGROUND: url(http://img04.taobaocdn.com/tps/i4/T1et4VXkduXXXXXXXX-9-9.png) no-repeat 0px 0px; HEIGHT: 9px; OVERFLOW: hidden; TOP: 10px; RIGHT: 10px
+}
+.iframe-dialog {
+	BORDER-BOTTOM: #808080 1px solid; BORDER-LEFT: #808080 1px solid; OVERFLOW: hidden; BORDER-TOP: #808080 1px solid; BORDER-RIGHT: #808080 1px solid
+}
+.iframe-dialog .ks-contentbox {
+	PADDING-BOTTOM: 10px; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; BACKGROUND: #f2f2f2; PADDING-TOP: 10px
+}
+.iframe-dialog .ks-ext-close {
+	POSITION: absolute; TEXT-INDENT: -9999px; WIDTH: 25px; BACKGROUND: url(http://img04.taobaocdn.com/tps/i4/T1qcvcXixXXXalmA_b-25-15.png) no-repeat; HEIGHT: 15px; OVERFLOW: hidden; TOP: 5px; RIGHT: 6px
+}
+.tm-indicator {
+	TEXT-ALIGN: center; COLOR: #f60
+}
+.tm-indicator .loading I {
+	WIDTH: 16px; DISPLAY: inline-block; BACKGROUND: url(http://img02.taobaocdn.com/tps/i2/T1pZtQXX0CXXXXXXXX-16-16.gif) no-repeat 0px -1px; HEIGHT: 16px; VERTICAL-ALIGN: middle; OVERFLOW: hidden; MARGIN-RIGHT: 5px
+}
+.masked-login {
+	Z-INDEX: 10; POSITION: absolute; FILTER: Alpha(opacity=50); BACKGROUND-COLOR: #aaa; WIDTH: 100%; VISIBILITY: hidden; TOP: 0px; LEFT: 0px; opacity: .5
+}
+.masked-shim {
+	Z-INDEX: 9999; POSITION: absolute; WIDTH: 100%; HEIGHT: 100%; TOP: 0px; LEFT: 0px
+}
+.tb-login-unit {
+	Z-INDEX: 10000; BORDER-BOTTOM: #949494 1px solid; POSITION: absolute; BORDER-LEFT: #949494 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: #e7e7e7; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; VISIBILITY: hidden; BORDER-TOP: #949494 1px solid; TOP: 0px; BORDER-RIGHT: #949494 1px solid; PADDING-TOP: 3px; box-shadow: 2px 2px 3px #AAA
+}
+.tb-login-unit .hd {
+	BACKGROUND-COLOR: #fafafa; WIDTH: auto; HEIGHT: 10px; OVERFLOW: hidden
+}
+.tb-login-unit .bd {
+	PADDING-BOTTOM: 15px; BACKGROUND-COLOR: #fafafa; PADDING-LEFT: 15px; PADDING-RIGHT: 15px; FONT-SIZE: 0px; PADDING-TOP: 15px
+}
+.tb-login-unit IFRAME {
+	WIDTH: 360px; HEIGHT: 240px
+}
+.tb-login-unit .container-close {
+	POSITION: absolute; BORDER-RIGHT-WIDTH: 0px; TEXT-INDENT: -200px; WIDTH: 9px; DISPLAY: block; BACKGROUND: url(http://img06.taobaocdn.com/tps/i6/T1QspFXfNJXXXXXXXX-9-9.png) no-repeat 0px 0px; BORDER-TOP-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; HEIGHT: 9px; OVERFLOW: hidden; BORDER-LEFT-WIDTH: 0px; TOP: 6px; CURSOR: pointer; RIGHT: 6px
+}
+.tb-login-unit-full IFRAME {
+	WIDTH: 354px; HEIGHT: 285px
+}
+.tb-login-unit-simple IFRAME {
+	WIDTH: 326px; HEIGHT: 260px
+}
+#main-content {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: 0px !important; PADDING-LEFT: 0px !important; PADDING-RIGHT: 0px !important; BORDER-TOP: medium none; BORDER-RIGHT: medium none; PADDING-TOP: 0px !important
+}
+.mytaobao-v2 #main-content {
+	PADDING-BOTTOM: 10px !important; PADDING-LEFT: 10px !important; PADDING-RIGHT: 10px !important; PADDING-TOP: 10px !important
+}
+.bought-list {
+	POSITION: relative; MARGIN-BOTTOM: 10px
+}
+.g-u {
+	DISPLAY: inline-block
+}
+#mytaobao-panel #main-content .navigation {
+	BORDER-BOTTOM: #c4d5e0 1px solid; POSITION: relative; BORDER-LEFT: #c4d5e0 1px solid; PADDING-BOTTOM: 1px; PADDING-LEFT: 1px; PADDING-RIGHT: 1px; MARGIN-BOTTOM: 10px; BORDER-TOP: #c4d5e0 1px solid; BORDER-RIGHT: #c4d5e0 1px solid; PADDING-TOP: 1px
+}
+#main-content .crumbs {
+	PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #f9fafc; PADDING-LEFT: 12px; PADDING-RIGHT: 12px; HEIGHT: 20px; COLOR: #404040; OVERFLOW: hidden; FONT-WEIGHT: bold; PADDING-TOP: 4px
+}
+#main-content .crumbs A {
+	PADDING-RIGHT: 8px; BACKGROUND: url(http://a.tbcdn.cn/sys/common/img/crumb_bg.gif) no-repeat 100% 50%; FONT-WEIGHT: normal; MARGIN-RIGHT: 4px
+}
+#main-content .crumbs .no-link {
+	PADDING-RIGHT: 8px; BACKGROUND: url(http://a.tbcdn.cn/sys/common/img/crumb_bg.gif) no-repeat 100% 50%; FONT-WEIGHT: normal; MARGIN-RIGHT: 4px
+}
+#main-content .crumbs .no-link {
+	DISPLAY: inline
+}
+#main-content .view-help {
+	POSITION: absolute; LINE-HEIGHT: 25px; HEIGHT: 25px; TOP: 2px; _top: 3px
+}
+#main-content .tip-trigger {
+	POSITION: absolute; LINE-HEIGHT: 25px; HEIGHT: 25px; TOP: 2px; _top: 3px
+}
+#main-content .tip-trigger {
+	RIGHT: 85px
+}
+#main-content .view-help {
+	RIGHT: 0px
+}
+#main-content .view-help .help {
+	PADDING-BOTTOM: 0px; LINE-HEIGHT: 25px; BACKGROUND-POSITION: 3px -1195px; HEIGHT: 25px; PADDING-TOP: 0px
+}
+#main-content .ordertype .trigger {
+	BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1pn1nXXXxXXXXXXXX-20-62.png) no-repeat
+}
+#main-content .ash-bin A {
+	BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1pn1nXXXxXXXXXXXX-20-62.png) no-repeat
+}
+#main-content .tabpanel {
+	BORDER-BOTTOM: #c3d8e5 1px solid; PADDING-BOTTOM: 0px; PADDING-LEFT: 20px; PADDING-RIGHT: 0px; MARGIN-BOTTOM: 10px; CLEAR: both; PADDING-TOP: 0px
+}
+#main-content .tabpanel LI {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 1px; PADDING-LEFT: 3px; WIDTH: auto; PADDING-RIGHT: 3px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FLOAT: left; HEIGHT: 24px; CURSOR: pointer; MARGIN-RIGHT: 15px; PADDING-TOP: 2px
+}
+#main-content .tabpanel A {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; DISPLAY: block; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-TOP: 0px
+}
+#main-content .tabpanel .order-link A {
+	LINE-HEIGHT: 24px; HEIGHT: 24px
+}
+#main-content .tabpanel .back {
+	BORDER-BOTTOM: #fff 1px solid; BORDER-LEFT: #c3d8e5 1px solid; BORDER-TOP: #c3d8e5 1px solid; BORDER-RIGHT: #c3d8e5 1px solid
+}
+#main-content .tabpanel .current {
+	BORDER-BOTTOM: #fff 1px solid; BORDER-LEFT: #c3d8e5 1px solid; BORDER-TOP: #c3d8e5 1px solid; BORDER-RIGHT: #c3d8e5 1px solid
+}
+#main-content .tabpanel .msg {
+	POSITION: absolute; WIDTH: 143px; DISPLAY: none; HEIGHT: 25px; TOP: 30px; RIGHT: 0px
+}
+#main-content .tabpanel .reback {
+	MARGIN-TOP: 2px; WIDTH: auto; LEFT: 0px
+}
+#main-content .tabpanel .ok {
+	PADDING-RIGHT: 5px
+}
+#main-content .ordertype {
+	POSITION: relative; TEXT-ALIGN: left; WIDTH: 80px; BACKGROUND: #fff; HEIGHT: 24px
+}
+#main-content .ordertype A {
+	DISPLAY: block; FLOAT: none
+}
+#main-content .ordertype-default {
+	BORDER-BOTTOM: #fff 1px solid; BORDER-LEFT: #fff 1px solid; LINE-HEIGHT: 22px; TEXT-INDENT: 4px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; OUTLINE-WIDTH: medium; WIDTH: 78px; HEIGHT: 22px; COLOR: #404040; BORDER-TOP: #fff 1px solid; FONT-WEIGHT: bold; BORDER-RIGHT: #fff 1px solid
+}
+#main-content .ordertype-default:hover {
+	BORDER-BOTTOM-COLOR: #ffad33; BORDER-TOP-COLOR: #ffad33; BORDER-RIGHT-COLOR: #ffad33; BORDER-LEFT-COLOR: #ffad33; TEXT-DECORATION: none
+}
+#main-content .ordertype-expand .ordertype-default {
+	BORDER-BOTTOM-COLOR: #ffad33; BORDER-TOP-COLOR: #ffad33; BORDER-RIGHT-COLOR: #ffad33; BORDER-LEFT-COLOR: #ffad33; TEXT-DECORATION: none
+}
+#main-content .ordertype .trigger {
+	POSITION: absolute; WIDTH: 20px; HEIGHT: 20px; TOP: 2px; CURSOR: pointer; RIGHT: 2px
+}
+#main-content .ordertype-expand .trigger {
+	BACKGROUND-POSITION: 0px -20px
+}
+#main-content .ordertype-default:hover .trigger {
+	BACKGROUND-POSITION: 0px -20px
+}
+#main-content .ordertype-whole {
+	BORDER-BOTTOM: #ffad33 1px solid; POSITION: absolute; BORDER-LEFT: #ffad33 1px solid; PADDING-BOTTOM: 2px; PADDING-LEFT: 3px; WIDTH: 72px; PADDING-RIGHT: 3px; DISPLAY: none; BACKGROUND: #fff; BORDER-TOP: medium none; TOP: 24px; BORDER-RIGHT: #ffad33 1px solid; PADDING-TOP: 0px; LEFT: 0px
+}
+#main-content .ordertype-whole A {
+	LINE-HEIGHT: 20px; MARGIN-TOP: 3px; TEXT-INDENT: 5px; WIDTH: 100%; WHITE-SPACE: nowrap; HEIGHT: 20px; COLOR: #808080; OVERFLOW: hidden; FONT-WEIGHT: normal
+}
+#main-content .ordertype-whole A:hover {
+	BACKGROUND: #ffefd6; COLOR: #808080; TEXT-DECORATION: none
+}
+#main-content .ordertype-whole .selected {
+	BACKGROUND: #ffefd6; COLOR: #808080; TEXT-DECORATION: none
+}
+#main-content .ordertype-expand .ordertype-whole {
+	DISPLAY: block
+}
+#main-content .tabpanel .leading-tip {
+	MARGIN-LEFT: -16px; CURSOR: default; PADDING-TOP: 1px
+}
+#main-content .ash-bin {
+	POSITION: absolute; WIDTH: 96px; HEIGHT: 25px; TOP: 4px; RIGHT: 5px
+}
+#main-content .ash-bin .new-flag {
+	POSITION: absolute; TOP: -6px; RIGHT: -4px
+}
+#main-content .ash-bin A {
+	POSITION: absolute; LINE-HEIGHT: 25px; TEXT-INDENT: 25px; WIDTH: 96px; BACKGROUND-POSITION: 0px -44px; HEIGHT: 25px
+}
+#main-content .ash-bin A:hover {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: #c3d8e5 1px solid; BACKGROUND-COLOR: #f9fafc; COLOR: #36c; BORDER-TOP: #c3d8e5 1px solid; TOP: -1px; RIGHT: -1px; BORDER-RIGHT: #c3d8e5 1px solid; TEXT-DECORATION: none
+}
+#main-content .ash-bin .msg {
+	POSITION: absolute; WIDTH: 143px; DISPLAY: none; HEIGHT: 25px; TOP: 30px; RIGHT: 0px
+}
+#main-content .ash-bin S {
+	DISPLAY: none
+}
+#main-content .ash-current {
+	BORDER-BOTTOM: #fff 1px solid; BORDER-LEFT: #c3d8e5 1px solid; BACKGROUND: #fff; BORDER-TOP: #c3d8e5 1px solid; TOP: 3px; BORDER-RIGHT: #c3d8e5 1px solid
+}
+#main-content .ash-current A {
+	BACKGROUND-COLOR: transparent; COLOR: #111; FONT-WEIGHT: bold
+}
+#main-content .ash-current A:hover {
+	BACKGROUND-COLOR: transparent; COLOR: #111; FONT-WEIGHT: bold
+}
+.bought-table .button {
+	BACKGROUND: url(http://img03.taobaocdn.com/tps/i3/T12WeoXbBnXXXXXXXX-84-292.png) no-repeat
+}
+.bought-table .col-name TH {
+	BACKGROUND: url(http://img03.taobaocdn.com/tps/i3/T12WeoXbBnXXXXXXXX-84-292.png) no-repeat
+}
+.bought-table .toolbtn {
+	BACKGROUND: url(http://img03.taobaocdn.com/tps/i3/T12WeoXbBnXXXXXXXX-84-292.png) no-repeat
+}
+.bought-table {
+	WIDTH: 100%; BORDER-COLLAPSE: collapse; TABLE-LAYOUT: fixed
+}
+.bought-table TD {
+	BORDER-BOTTOM: #d4e7ff 1px solid; BORDER-LEFT: #d4e7ff 1px solid; LINE-HEIGHT: 1.5; BORDER-TOP: #d4e7ff 1px solid; BORDER-RIGHT: #d4e7ff 1px solid
+}
+.bought-table TBODY.msg TD {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: 8px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; BORDER-TOP: medium none; BORDER-RIGHT: medium none; PADDING-TOP: 8px
+}
+.bought-table .button {
+	BORDER-BOTTOM: medium none; TEXT-ALIGN: center; BORDER-LEFT: medium none; LINE-HEIGHT: 25px; DISPLAY: inline-block; HEIGHT: 25px; FONT-SIZE: 12px; VERTICAL-ALIGN: middle; BORDER-TOP: medium none; CURSOR: pointer; BORDER-RIGHT: medium none
+}
+.bought-table COL.selector {
+	WIDTH: 25px
+}
+.bought-table COL.baobei {
+	WIDTH: 205px
+}
+.bought-table COL.price {
+	WIDTH: 65px
+}
+.bought-table COL.quantity {
+	WIDTH: 40px
+}
+.bought-table COL.after-service {
+	WIDTH: 68px
+}
+.bought-table COL.amount {
+	WIDTH: 98px
+}
+.bought-table COL.trade-status {
+	WIDTH: 98px
+}
+.bought-table COL.operate {
+	WIDTH: 82px
+}
+.bought-table COL.other {
+	WIDTH: 58px
+}
+.bought-table .sep-row {
+	HEIGHT: 7px
+}
+.bought-table .sep-row TD {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BORDER-TOP: medium none; BORDER-RIGHT: medium none
+}
+.bought-table .col-name TH {
+	BORDER-BOTTOM: #c4d5e0 1px solid; TEXT-ALIGN: center; BACKGROUND-REPEAT: repeat-x; HEIGHT: 33px; COLOR: #000; BORDER-TOP: #c4d5e0 1px solid
+}
+.bought-table .toolbar {
+	BACKGROUND-COLOR: #f3f3f3; HEIGHT: 30px
+}
+.bought-table .toolbar TD {
+	BORDER-BOTTOM: #dedee0 1px solid; BORDER-LEFT: #dedee0 0px solid; BORDER-TOP: #dedee0 1px solid; BORDER-RIGHT: #dedee0 0px solid
+}
+.bought-table .toolbar SPAN {
+	COLOR: gray
+}
+.bought-table .all-selector {
+	LINE-HEIGHT: 20px; MARGIN: 0px 6px 0px 10px; VERTICAL-ALIGN: middle
+}
+.bought-table .toolbtn {
+	TEXT-ALIGN: center; LINE-HEIGHT: 20px; WIDTH: 59px; DISPLAY: inline-block; BACKGROUND-POSITION: 0px -250px; HEIGHT: 20px; MARGIN-LEFT: 5px; VERTICAL-ALIGN: middle
+}
+.bought-table .toolbtn:hover {
+	BACKGROUND-POSITION: 0px -272px
+}
+.bought-table .long-toolbtn {
+	WIDTH: 84px; BACKGROUND-POSITION: 0px -208px
+}
+.bought-table .long-toolbtn:hover {
+	BACKGROUND-POSITION: 0px -229px
+}
+.bought-table .order-hd {
+	BACKGROUND: #e8f2ff; COLOR: #404040
+}
+.bought-table .order-hd .contact {
+	DISPLAY: inline; FLOAT: right; MARGIN-RIGHT: 5px; _margin-top: -17px
+}
+.bought-table .close-order .order-hd {
+	BACKGROUND: #f3f3f3
+}
+.bought-table .success-order .order-hd {
+	BACKGROUND: #f3f3f3
+}
+.bought-table .order-hd TD {
+	PADDING-BOTTOM: 1px; LINE-HEIGHT: 29px; HEIGHT: 29px
+}
+.bought-table .order-hd .no {
+	DISPLAY: inline-block
+}
+.bought-table .order-hd .seller {
+	DISPLAY: inline-block
+}
+.bought-table .order-hd .deal-time {
+	DISPLAY: inline-block
+}
+.bought-table .order-hd .order-num {
+	DISPLAY: inline-block
+}
+.bought-table .order-hd IMG {
+	VERTICAL-ALIGN: middle
+}
+.bought-table .order-hd .order-num {
+	MARGIN-RIGHT: 15px
+}
+.bought-table .order-hd .hd-icon {
+	MARGIN: 0px -2px 0px 2px; WIDTH: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1ofibXc0zXXXXXXXX-16-81.png) no-repeat; HEIGHT: 17px; VERTICAL-ALIGN: middle
+}
+.bought-table .order-hd .tmall-icon {
+	BACKGROUND-POSITION: 0px 2px; MARGIN-BOTTOM: 2px
+}
+.bought-table .order-hd .three-c-icon {
+	BACKGROUND-POSITION: 0px -15px
+}
+.bought-table .order-hd .game-icon {
+	BACKGROUND-POSITION: 0px -31px
+}
+.bought-table .order-hd .travel-icon {
+	BACKGROUND-POSITION: 0px -48px
+}
+.bought-table .order-hd .taohua-icon {
+	BACKGROUND-POSITION: 0px -64px
+}
+.bought-table .order-hd .seller {
+	MARGIN-LEFT: 15px
+}
+.bought-table .order-hd .selector {
+	MARGIN-LEFT: 10px; VERTICAL-ALIGN: middle
+}
+.bought-table .order-bd TD {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 8px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; BORDER-RIGHT-COLOR: #e6e6e6; VERTICAL-ALIGN: top; OVERFLOW: hidden; BORDER-LEFT-COLOR: #e6e6e6; PADDING-TOP: 8px
+}
+.bought-table .order-bd .baobei {
+	BORDER-LEFT-COLOR: #d4e7ff
+}
+.bought-table .order-bd .other {
+	BORDER-RIGHT-COLOR: #d4e7ff
+}
+.bought-table .close-order .sep-row TD {
+	BORDER-BOTTOM-COLOR: #e6e6e6; BORDER-TOP-COLOR: #e6e6e6; BORDER-RIGHT-COLOR: #e6e6e6; BORDER-LEFT-COLOR: #e6e6e6
+}
+.bought-table .close-order .order-hd TD {
+	BORDER-BOTTOM-COLOR: #e6e6e6; BORDER-TOP-COLOR: #e6e6e6; BORDER-RIGHT-COLOR: #e6e6e6; BORDER-LEFT-COLOR: #e6e6e6
+}
+.bought-table .close-order .order-bd TD {
+	BORDER-BOTTOM-COLOR: #e6e6e6; BORDER-TOP-COLOR: #e6e6e6; BORDER-RIGHT-COLOR: #e6e6e6; BORDER-LEFT-COLOR: #e6e6e6
+}
+.bought-table .success-order .sep-row TD {
+	BORDER-BOTTOM-COLOR: #e6e6e6; BORDER-TOP-COLOR: #e6e6e6; BORDER-RIGHT-COLOR: #e6e6e6; BORDER-LEFT-COLOR: #e6e6e6
+}
+.bought-table .success-order .order-hd TD {
+	BORDER-BOTTOM-COLOR: #e6e6e6; BORDER-TOP-COLOR: #e6e6e6; BORDER-RIGHT-COLOR: #e6e6e6; BORDER-LEFT-COLOR: #e6e6e6
+}
+.bought-table .success-order .order-bd TD {
+	BORDER-BOTTOM-COLOR: #e6e6e6; BORDER-TOP-COLOR: #e6e6e6; BORDER-RIGHT-COLOR: #e6e6e6; BORDER-LEFT-COLOR: #e6e6e6
+}
+.bought-table .order-bd TD.baobei {
+	BORDER-RIGHT: medium none
+}
+.bought-table .order-bd TD.price {
+	BORDER-LEFT: medium none; BORDER-RIGHT: medium none
+}
+.bought-table .order-bd TD.quantity {
+	BORDER-LEFT: medium none; BORDER-RIGHT: medium none
+}
+.bought-table .order-bd TD.after-service {
+	BORDER-LEFT: medium none; BORDER-RIGHT: medium none
+}
+.bought-table .operate A {
+	MARGIN-TOP: 2px; DISPLAY: block
+}
+.bought-table .other A {
+	MARGIN-TOP: 2px; DISPLAY: block
+}
+.bought-table .trade-status .status {
+	MARGIN-TOP: 2px; DISPLAY: block
+}
+.bought-table .trade-status SPAN {
+	MARGIN-TOP: 2px; DISPLAY: block
+}
+.bought-table .amount SPAN {
+	MARGIN-TOP: 2px; DISPLAY: block
+}
+.bought-table .after-service A {
+	MARGIN-TOP: 2px; DISPLAY: block
+}
+.bought-table .order-bd .baobei {
+	TEXT-ALIGN: left; PADDING-LEFT: 10px; PADDING-RIGHT: 0px
+}
+.bought-table .baobei .pic {
+	DISPLAY: inline; FLOAT: left
+}
+.bought-table .baobei .desc {
+	DISPLAY: inline; FLOAT: left
+}
+.bought-table .baobei .pic {
+	BORDER-BOTTOM: #e9e9e9 1px solid; BORDER-LEFT: #e9e9e9 1px solid; BORDER-TOP: #e9e9e9 1px solid; MARGIN-RIGHT: 10px; BORDER-RIGHT: #e9e9e9 1px solid
+}
+.bought-table .baobei .pic IMG {
+	WIDTH: 50px; HEIGHT: 50px
+}
+.bought-table .baobei .desc {
+	WIDTH: 180px; WORD-WRAP: break-word; OVERFLOW: hidden
+}
+.bought-table .baobei .baobei-name {
+	LINE-HEIGHT: 18px; MARGIN-TOP: -2px; DISPLAY: block; MAX-HEIGHT: 38px; OVERFLOW: hidden
+}
+.bought-table .jipiao-order .baobei-name {
+	COLOR: #404040; CURSOR: text; TEXT-DECORATION: none
+}
+.bought-table .jipiao-order .baobei-name:hover {
+	COLOR: #404040; CURSOR: text; TEXT-DECORATION: none
+}
+.bought-table .baobei .spec {
+	LINE-HEIGHT: 18px; COLOR: gray; MAX-HEIGHT: 38px; OVERFLOW: hidden
+}
+.bought-table .baobei .spec SPAN {
+	MARGIN-RIGHT: 5px
+}
+.bought-table .baobei .misc {
+	COLOR: #808080
+}
+.bought-table .baobei .good-icons A {
+	DISPLAY: inline-block; HEIGHT: 18px; MARGIN-LEFT: 3px; VERTICAL-ALIGN: middle
+}
+.bought-table .xb-quality {
+	DISPLAY: inline-block; HEIGHT: 18px; MARGIN-LEFT: 3px; VERTICAL-ALIGN: middle
+}
+.bought-table .xb-maintain {
+	DISPLAY: inline-block; HEIGHT: 18px; MARGIN-LEFT: 3px; VERTICAL-ALIGN: middle
+}
+.bought-table .xb-deliver {
+	DISPLAY: inline-block; HEIGHT: 18px; MARGIN-LEFT: 3px; VERTICAL-ALIGN: middle
+}
+.bought-table .xb-return {
+	DISPLAY: inline-block; HEIGHT: 18px; MARGIN-LEFT: 3px; VERTICAL-ALIGN: middle
+}
+.bought-table .xb-description {
+	DISPLAY: inline-block; HEIGHT: 18px; MARGIN-LEFT: 3px; VERTICAL-ALIGN: middle
+}
+.bought-table .xb-aclass {
+	DISPLAY: inline-block; HEIGHT: 18px; MARGIN-LEFT: 3px; VERTICAL-ALIGN: middle
+}
+.bought-table .xb-dbb {
+	DISPLAY: inline-block; HEIGHT: 18px; MARGIN-LEFT: 3px; VERTICAL-ALIGN: middle
+}
+.bought-table .xb-zhijian {
+	DISPLAY: inline-block; HEIGHT: 18px; MARGIN-LEFT: 3px; VERTICAL-ALIGN: middle
+}
+.bought-table .xb-quality {
+	WIDTH: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vSGnXm4SXXXXXXXX-16-152.png) no-repeat
+}
+.bought-table .xb-maintain {
+	WIDTH: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vSGnXm4SXXXXXXXX-16-152.png) no-repeat
+}
+.bought-table .xb-deliver {
+	WIDTH: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vSGnXm4SXXXXXXXX-16-152.png) no-repeat
+}
+.bought-table .xb-return {
+	WIDTH: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vSGnXm4SXXXXXXXX-16-152.png) no-repeat
+}
+.bought-table .xb-description {
+	WIDTH: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vSGnXm4SXXXXXXXX-16-152.png) no-repeat
+}
+.bought-table .xb-aclass {
+	WIDTH: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vSGnXm4SXXXXXXXX-16-152.png) no-repeat
+}
+.bought-table .xb-dbb {
+	WIDTH: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vSGnXm4SXXXXXXXX-16-152.png) no-repeat
+}
+.bought-table .xb-zhijian {
+	WIDTH: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vSGnXm4SXXXXXXXX-16-152.png) no-repeat
+}
+.bought-table .baobei .good-icons IMG {
+	DISPLAY: block
+}
+.bought-table .xb-aclass {
+	BACKGROUND-POSITION: 0px -95px
+}
+.bought-table .xb-quality {
+	BACKGROUND-POSITION: 0px -57px
+}
+.bought-table .xb-maintain {
+	BACKGROUND-POSITION: 0px -19px
+}
+.bought-table .xb-deliver {
+	BACKGROUND-POSITION: 0px -38px
+}
+.bought-table .xb-return {
+	BACKGROUND-POSITION: 0px 0px
+}
+.bought-table .xb-description {
+	BACKGROUND-POSITION: 0px -76px
+}
+.bought-table .xb-zhijian {
+	BACKGROUND-POSITION: 0px -116px
+}
+.bought-table .xb-dbb {
+	BACKGROUND-POSITION: 0px -137px
+}
+.bought-table .order-bd .quantity {
+	FONT-WEIGHT: normal
+}
+.bought-table .more-sell {
+	PADDING-BOTTOM: 0px; LINE-HEIGHT: 15px; MARGIN: 0px auto; PADDING-LEFT: 3px; WIDTH: 24px; PADDING-RIGHT: 3px; DISPLAY: block; BACKGROUND: #f50; HEIGHT: 15px; COLOR: #fff; FONT-WEIGHT: normal; PADDING-TOP: 0px
+}
+.bought-table .after-service .sub-apply {
+	COLOR: #404040
+}
+.bought-table .after-service .refund-doing {
+	PADDING-LEFT: 16px; BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1bw5mXddfXXXXXXXX-16-16.png) no-repeat 0px 1px; COLOR: #d35050
+}
+.bought-table .after-service A {
+	CURSOR: pointer
+}
+.bought-table .after-service .tousu-weiquan {
+	COLOR: #36c
+}
+.bought-table .amount STRONG {
+	FONT-WEIGHT: bold
+}
+.bought-table .amount .post-type {
+	COLOR: gray
+}
+.bought-table .amount .cod-icon {
+	TEXT-INDENT: 18px; BACKGROUND: url(http://a.tbcdn.cn/img/app/logis/cod-icon.png) no-repeat 14px 3px; COLOR: #404040
+}
+.bought-table .trade-status A {
+	DISPLAY: block
+}
+.bought-table .trade-status .closed {
+	COLOR: gray
+}
+.bought-table .trade-status .success {
+	COLOR: #066601
+}
+.bought-table .trade-status .wait {
+	COLOR: black
+}
+.bought-table .trade-status .uinfo-icon {
+	WIDTH: 16px; DISPLAY: inline-block; MARGIN-BOTTOM: -3px; BACKGROUND: url(http://img02.taobaocdn.com/tps/i2/T1A5RWXaNcXXXXXXXX-129-327.png) no-repeat 0px -34px; HEIGHT: 16px
+}
+.bought-table .trade-status .vuinfo-icon {
+	WIDTH: 16px; DISPLAY: inline-block; MARGIN-BOTTOM: -3px; BACKGROUND: url(http://img02.taobaocdn.com/tps/i2/T1A5RWXaNcXXXXXXXX-129-327.png) no-repeat 0px -34px; HEIGHT: 16px
+}
+.bought-table .trade-status .vuinfo-icon {
+	BACKGROUND-POSITION: 0px -18px
+}
+.bought-table .trade-status .todo {
+	COLOR: #f50
+}
+.bought-table .trade-status .handing {
+	COLOR: #f50
+}
+.bought-table .operate .small-btn {
+	DISPLAY: inline-block
+}
+.bought-table .operate .small-long-btn {
+	DISPLAY: inline-block
+}
+.bought-table .operate .skin-blue .button {
+	WIDTH: 67px; BACKGROUND-POSITION: 0px -104px
+}
+.bought-table .operate .skin-blue .button:hover {
+	BACKGROUND-POSITION: 0px -182px
+}
+.bought-table .operate .skin-orange .button {
+	WIDTH: 49px; BACKGROUND-POSITION: 0px -78px
+}
+.bought-table .operate .skin-orange .button:hover {
+	BACKGROUND-POSITION: 0px -156px
+}
+.bought-table .operate .skin-white .small-btn {
+	WIDTH: 51px; BACKGROUND-POSITION: 0px -52px; COLOR: #404040
+}
+.bought-table .operate .skin-white .small-btn:hover {
+	BACKGROUND-POSITION: 0px -130px
+}
+.bought-table .other .J_ShareSNS A {
+	BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vnOnXdd1XXXXXXXX-13-115.png) no-repeat
+}
+.bought-table .other .sns-share A {
+	BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vnOnXdd1XXXXXXXX-13-115.png) no-repeat
+}
+.bought-table .other .memo-flag {
+	BACKGROUND: url(http://img01.taobaocdn.com/tps/i1/T1vnOnXdd1XXXXXXXX-13-115.png) no-repeat
+}
+.bought-table .order-bd .other {
+	TEXT-ALIGN: right; WIDTH: 48px; PADDING-RIGHT: 10px
+}
+.bought-table .other A {
+	WHITE-SPACE: nowrap
+}
+.bought-table .other .J_ShareSNS A {
+	PADDING-LEFT: 16px; DISPLAY: inline-block; BACKGROUND-POSITION: 0px -100px
+}
+.bought-table .other .sns-share A {
+	PADDING-LEFT: 16px; DISPLAY: inline-block; BACKGROUND-POSITION: 0px -100px
+}
+.bought-table .other .memo0 {
+	BACKGROUND-POSITION: 10px 3px
+}
+.bought-table .other .memo1 {
+	BACKGROUND-POSITION: 10px -13px
+}
+.bought-table .other .memo2 {
+	BACKGROUND-POSITION: 10px -30px
+}
+.bought-table .other .memo3 {
+	BACKGROUND-POSITION: 10px -47px
+}
+.bought-table .other .memo4 {
+	BACKGROUND-POSITION: 10px -64px
+}
+.bought-table .other .memo5 {
+	BACKGROUND-POSITION: 10px -81px
+}
+.bought-table .expander TD {
+	TEXT-ALIGN: center; BACKGROUND-COLOR: #f6f6f6
+}
+.bought-table .expander A {
+	PADDING-LEFT: 10px; BACKGROUND: url(http://img02.taobaocdn.com/tps/i8/T1oiJuXfJlXXXXXXXX-7-4.png) no-repeat 0px 5px
+}
+.bought-table .extra {
+	DISPLAY: none
+}
+.bought-table .refund-doing {
+	PADDING-LEFT: 12px; BACKGROUND: url(http://img04.taobaocdn.com/tps/i4/T1.HLnXkRXXXaHNz_X-16-16.gif) no-repeat 2px 0px
+}
+.bought-table .icon-status {
+	PADDING-LEFT: 12px; BACKGROUND: url(http://img04.taobaocdn.com/tps/i4/T1.HLnXkRXXXaHNz_X-16-16.gif) no-repeat 2px 0px
+}
+.bought-table .gray-status {
+	COLOR: #808080
+}
+.bought-table .orange-status {
+	COLOR: #f60
+}
+.bought-table .baobei .good-icons .happy1111 {
+	DISPLAY: inline-block; VERTICAL-ALIGN: bottom
+}
+.bought-table .baobei .good-icons .discount50 {
+	DISPLAY: inline-block; VERTICAL-ALIGN: bottom
+}
+.bought-table .close-order .stage-item {
+	BORDER-BOTTOM: #e6e6e6 1px solid; BORDER-LEFT: #e6e6e6 1px solid; BORDER-TOP: #e6e6e6 1px solid; BORDER-RIGHT: #e6e6e6 1px solid
+}
+.bought-table .success-order .stage-item {
+	BORDER-BOTTOM: #e6e6e6 1px solid; BORDER-LEFT: #e6e6e6 1px solid; BORDER-TOP: #e6e6e6 1px solid; BORDER-RIGHT: #e6e6e6 1px solid
+}
+#content .stage-list COL.base-info {
+	WIDTH: 446px
+}
+#content .stage-list COL.total-price {
+	WIDTH: 109px
+}
+#content .stage-list COL.trade-status {
+	WIDTH: 109px
+}
+#content .stage-list COL.operate {
+	WIDTH: 86px
+}
+#content .stage-list .operate {
+	BORDER-RIGHT: medium none
+}
+#content .stage-list .triangle {
+	LEFT: 289px
+}
+#content .stage-list .post-type {
+	COLOR: #808080
+}
+#content .base-info .services {
+	PADDING-BOTTOM: 5px; COLOR: #808080; BORDER-TOP: #fff 1px solid
+}
+#content .base-info .services LI {
+	PADDING-BOTTOM: 0px
+}
+#content .base-info .stage .name {
+	TEXT-ALIGN: left; PADDING-LEFT: 68px; WIDTH: 187px
+}
+#content .base-info .services .name {
+	TEXT-ALIGN: left; PADDING-LEFT: 68px; WIDTH: 187px
+}
+#content .base-info .price {
+	WIDTH: 72px
+}
+#content .base-info .num {
+	WIDTH: 46px
+}
+.paginator-arrow {
+	BORDER-BOTTOM: transparent 5px solid; POSITION: absolute; BORDER-LEFT: transparent 5px solid; WIDTH: 0px; HEIGHT: 0px; OVERFLOW: hidden; BORDER-TOP: transparent 5px solid; TOP: 5px; CURSOR: pointer; MARGIN-RIGHT: 0px; BORDER-RIGHT: transparent 5px solid; _border-color: #fff
+}
+.paginator-arrow-left-grey {
+	BORDER-RIGHT-COLOR: #c0c1be; LEFT: 1px
+}
+.paginator-arrow-left-orange {
+	BORDER-RIGHT-COLOR: #f60; LEFT: 1px
+}
+.paginator-arrow-right-orange {
+	BORDER-LEFT-COLOR: #f60; RIGHT: 1px
+}
+.paginator-arrow-right-grey {
+	BORDER-LEFT-COLOR: #c0c1be; RIGHT: 1px
+}
+.paginator-arrow-left-grey {
+	CURSOR: default
+}
+.paginator-arrow-right-grey {
+	CURSOR: default
+}
+.paginator-top {
+	TEXT-ALIGN: right; DISPLAY: inline; FLOAT: right
+}
+.paginator-top A {
+	BORDER-BOTTOM: #ccc 1px solid; POSITION: relative; BORDER-LEFT: #ccc 1px solid; PADDING-BOTTOM: 0px; LINE-HEIGHT: 20px; PADDING-LEFT: 6px; PADDING-RIGHT: 6px; HEIGHT: 20px; VERTICAL-ALIGN: middle; BORDER-TOP: #ccc 1px solid; MARGIN-RIGHT: 10px; BORDER-RIGHT: #ccc 1px solid; PADDING-TOP: 0px
+}
+.paginator-top DIV {
+	BORDER-BOTTOM: #ccc 1px solid; POSITION: relative; BORDER-LEFT: #ccc 1px solid; PADDING-BOTTOM: 0px; LINE-HEIGHT: 20px; PADDING-LEFT: 6px; PADDING-RIGHT: 6px; HEIGHT: 20px; VERTICAL-ALIGN: middle; BORDER-TOP: #ccc 1px solid; MARGIN-RIGHT: 10px; BORDER-RIGHT: #ccc 1px solid; PADDING-TOP: 0px
+}
+.paginator-top .g-u {
+	MARGIN: 0px 3px 0px 0px; DISPLAY: inline; BACKGROUND: #fff; FLOAT: left
+}
+.paginator-top .paginator-next {
+	TEXT-ALIGN: left; WIDTH: 45px
+}
+.paginator-top .paginator-previous {
+	TEXT-ALIGN: left; WIDTH: 45px
+}
+.paginator-top DIV.paginator-next {
+	COLOR: #c0c1be; CURSOR: default
+}
+.paginator-top DIV.paginator-previous {
+	COLOR: #c0c1be; CURSOR: default
+}
+.paginator-top .paginator-previous {
+	TEXT-ALIGN: right
+}
+.paginator-top .paginator-previous-grey {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; WIDTH: 20px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.paginator-top .paginator-previous-orange {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; WIDTH: 20px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.paginator-top A.paginator-next:hover {
+	BORDER-BOTTOM-COLOR: #f50; BORDER-TOP-COLOR: #f50; COLOR: #f50; BORDER-RIGHT-COLOR: #f50; BORDER-LEFT-COLOR: #f50; TEXT-DECORATION: none
+}
+.paginator-top A.paginator-previous:hover {
+	BORDER-BOTTOM-COLOR: #f50; BORDER-TOP-COLOR: #f50; COLOR: #f50; BORDER-RIGHT-COLOR: #f50; BORDER-LEFT-COLOR: #f50; TEXT-DECORATION: none
+}
+.paginator-top A.paginator-previous-orange:hover {
+	BORDER-BOTTOM-COLOR: #f50; BORDER-TOP-COLOR: #f50; COLOR: #f50; BORDER-RIGHT-COLOR: #f50; BORDER-LEFT-COLOR: #f50; TEXT-DECORATION: none
+}
+.page-nav-cell {
+	TEXT-ALIGN: right
+}
+.page-nav {
+	DISPLAY: inline; FLOAT: right; MARGIN-RIGHT: 2px
+}
+.page-nav LI {
+	LINE-HEIGHT: 25px; DISPLAY: inline; FLOAT: left; HEIGHT: 25px; COLOR: #aaa; MARGIN-RIGHT: 3px
+}
+.page-nav INPUT {
+	VERTICAL-ALIGN: middle
+}
+.page-nav A {
+	BORDER-BOTTOM: #ccc 1px solid; MIN-WIDTH: 15px; TEXT-ALIGN: center; BORDER-LEFT: #ccc 1px solid; PADDING-BOTTOM: 0px; LINE-HEIGHT: 23px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; DISPLAY: block; WHITE-SPACE: nowrap; BACKGROUND: #fff; HEIGHT: 23px; COLOR: #06c; BORDER-TOP: #ccc 1px solid; BORDER-RIGHT: #ccc 1px solid; TEXT-DECORATION: none; PADDING-TOP: 0px; _width: 15px
+}
+.page-nav A:hover {
+	BORDER-BOTTOM-COLOR: #f50; BORDER-TOP-COLOR: #f50; COLOR: #f00; BORDER-RIGHT-COLOR: #f50; BORDER-LEFT-COLOR: #f50
+}
+.page-nav .first-page A {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; PADDING-TOP: 0px
+}
+.page-nav .curr-page A {
+	BORDER-BOTTOM-COLOR: #f50; BACKGROUND-COLOR: #ffeee5; BORDER-TOP-COLOR: #f50; COLOR: #f00; BORDER-RIGHT-COLOR: #f50; BORDER-LEFT-COLOR: #f50; FONT-WEIGHT: bold
+}
+.page-nav .prev-page A {
+	POSITION: relative; PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; WIDTH: 22px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.page-nav .next-page A {
+	POSITION: relative; PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; WIDTH: 22px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.page-nav .hundreds {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 5px; WIDTH: auto; PADDING-RIGHT: 5px; PADDING-TOP: 0px
+}
+.page-nav .paginator-arrow {
+	TOP: 7px
+}
+.page-nav .prev-page .paginator-previous {
+	POSITION: relative; PADDING-BOTTOM: 0px; PADDING-LEFT: 6px; WIDTH: 45px; PADDING-RIGHT: 6px; PADDING-TOP: 0px
+}
+.page-nav .next-page .paginator-next {
+	POSITION: relative; PADDING-BOTTOM: 0px; PADDING-LEFT: 6px; WIDTH: 45px; PADDING-RIGHT: 6px; PADDING-TOP: 0px
+}
+.page-nav .prev-page .paginator-previous:hover {
+	TEXT-DECORATION: none
+}
+.page-nav .next-page .paginator-next:hover {
+	TEXT-DECORATION: none
+}
+.page-nav .prev-page .paginator-previous {
+	TEXT-ALIGN: right
+}
+.page-nav .next-page .paginator-next {
+	TEXT-ALIGN: left
+}
+#J_PageNum {
+	BORDER-BOTTOM: #999 1px solid; BORDER-LEFT: #999 1px solid; MARGIN: 0px 2px; WIDTH: 32px; HEIGHT: 21px; BORDER-TOP: #999 1px solid; BORDER-RIGHT: #999 1px solid
+}
+#J_JumpTo {
+	PADDING-BOTTOM: 1px; WIDTH: 37px; HEIGHT: 25px
+}
+.page-nav .paginator-arrow-left-orange {
+	BORDER-RIGHT-COLOR: #f60; LEFT: 3px
+}
+.page-nav .paginator-arrow-right-orange {
+	BORDER-LEFT-COLOR: #f60; RIGHT: 3px
+}
+.page-nav .prev-page .disabled {
+	BACKGROUND-POSITION: 7px -35px; CURSOR: default
+}
+.page-nav .next-page .disabled {
+	BACKGROUND-POSITION: 45px -55px; COLOR: #7f7f7f; CURSOR: default; TEXT-DECORATION: none
+}
+.page-nav .selected {
+	BACKGROUND-COLOR: #0196ce; COLOR: #fff
+}
+.bought-list .last-tips {
+	TEXT-ALIGN: right; MARGIN: 10px 0px
+}
+.popup-info-box .user-info H5 {
+	BACKGROUND: url(http://img02.taobaocdn.com/tps/i2/T1HKPsXg8nXXcnhL_c-30-15.png) no-repeat
+}
+.popup-info-box .triangle {
+	BACKGROUND: url(http://img02.taobaocdn.com/tps/i2/T1HKPsXg8nXXcnhL_c-30-15.png) no-repeat
+}
+.popup-info-box {
+	Z-INDEX: 995; BORDER-BOTTOM: #fec500 1px solid; POSITION: absolute; BORDER-LEFT: #fec500 1px solid; PADDING-BOTTOM: 5px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; DISPLAY: none; BACKGROUND: #fff9d4; BORDER-TOP: #fec500 1px solid; TOP: 2px; BORDER-RIGHT: #fec500 1px solid; PADDING-TOP: 5px; LEFT: 80px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px
+}
+.popup-info-box .user-info {
+	TEXT-ALIGN: left; PADDING-BOTTOM: 10px; LINE-HEIGHT: 1.5; PADDING-LEFT: 10px; WIDTH: 230px; PADDING-RIGHT: 10px; BACKGROUND: #fff; COLOR: #666; PADDING-TOP: 10px
+}
+.popup-info-box .user-info H5 {
+	PADDING-LEFT: 23px; BACKGROUND-POSITION: -14px 3px; MARGIN-BOTTOM: 5px; COLOR: #c33700; FONT-SIZE: 12px; FONT-WEIGHT: bold
+}
+.popup-info-box .user-info-table {
+	WIDTH: 100%; TABLE-LAYOUT: fixed
+}
+.popup-info-box .user-info TH {
+	TEXT-ALIGN: left; TEXT-INDENT: 24px; WIDTH: 60px; COLOR: #666; VERTICAL-ALIGN: top; OVERFLOW: hidden
+}
+.popup-info-box .user-info TD {
+	WORD-WRAP: break-word; OVERFLOW: hidden
+}
+.popup-info-box .triangle {
+	POSITION: absolute; WIDTH: 9px; HEIGHT: 15px; OVERFLOW: hidden; TOP: 15px; LEFT: -8px
+}
+.memo-tip {
+	Z-INDEX: 99; BORDER-BOTTOM: #f7e4a5 1px solid; POSITION: absolute; BORDER-LEFT: #f7e4a5 1px solid; PADDING-BOTTOM: 5px; PADDING-LEFT: 10px; WIDTH: 170px; PADDING-RIGHT: 10px; DISPLAY: none; WORD-WRAP: break-word; BACKGROUND: #fffcf3; BORDER-TOP: #f7e4a5 1px solid; BORDER-RIGHT: #f7e4a5 1px solid; PADDING-TOP: 8px
+}
+.memo-tip .security {
+	MARGIN-BOTTOM: 5px; FONT-WEIGHT: bold
+}
+.memo-tip-loading {
+	BACKGROUND: url(http://a.tbcdn.cn/app/trade/img/loading2.gif) #fffcf3 no-repeat 5px 3px; HEIGHT: 13px
+}
+.tconfirm .bd {
+	MARGIN: 10px
+}
+.tconfirm .action SPAN {
+	MARGIN-RIGHT: 10px
+}
+.popup-box {
+	Z-INDEX: 9999; BORDER-BOTTOM: #bde1f1 1px solid; POSITION: absolute; BORDER-LEFT: #bde1f1 1px solid; PADDING-BOTTOM: 0px; WIDTH: 520px; DISPLAY: none; BACKGROUND: #fff; OVERFLOW: hidden; BORDER-TOP: #bde1f1 1px solid; BORDER-RIGHT: #bde1f1 1px solid
+}
+.popup-box .popup-inner {
+	BORDER-BOTTOM: #ecf4ff 3px solid; BORDER-LEFT: #ecf4ff 3px solid; PADDING-BOTTOM: 30px; BORDER-TOP: #ecf4ff 3px solid; BORDER-RIGHT: #ecf4ff 3px solid
+}
+.popup-box I {
+	POSITION: absolute; TEXT-INDENT: -9876px; WIDTH: 50px; BACKGROUND: url(http://a.tbcdn.cn/sys/common/img/msg_bg.png) no-repeat 12px -488px; HEIGHT: 50px; OVERFLOW: hidden; TOP: 10px; LEFT: 0px
+}
+.popup-box B A {
+	POSITION: absolute; TEXT-INDENT: -9876px; WIDTH: 9px; BACKGROUND: url(http://img04.taobaocdn.com/tps/i4/T1et4VXkduXXXXXXXX-9-9.png) no-repeat 0px 0px; HEIGHT: 9px; OVERFLOW: hidden; TOP: 10px; RIGHT: 10px
+}
+.popup-box .detail {
+	PADDING-BOTTOM: 30px; PADDING-LEFT: 60px; PADDING-RIGHT: 30px; PADDING-TOP: 0px
+}
+.popup-box .detail H3 {
+	PADDING-BOTTOM: 10px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; COLOR: #000; PADDING-TOP: 20px
+}
+.popup-box .detail .stat {
+	PADDING-BOTTOM: 5px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; COLOR: #000; PADDING-TOP: 5px
+}
+.popup-box {
+	FILTER: progid:DXImageTransform.Microsoft.Shadow(Strength=4,Direction=135,Color='#808080'); -moz-box-shadow: 2px 2px 2px #808080; -webkit-box-shadow: 2px 2px 2px #808080
+}
+.tips-dialog {
+	Z-INDEX: 10000; POSITION: absolute; PADDING-BOTTOM: 8px; MARGIN: 0px; PADDING-LEFT: 8px; WIDTH: 480px; PADDING-RIGHT: 8px; DISPLAY: none; BACKGROUND: url(http://img08.taobaocdn.com/tps/i8/T1C5xyXmRXXXXXXXXX-38-38.png) 0px 0px; COLOR: #404040; OVERFLOW: hidden; TOP: 97.5px; PADDING-TOP: 8px; LEFT: 290.5px; opacity: 1
+}
+.tips-dialog .wrapper {
+	Z-INDEX: 10001; BORDER-BOTTOM: #818181 1px solid; BORDER-LEFT: #818181 1px solid; BORDER-TOP: #818181 1px solid; BORDER-RIGHT: #818181 1px solid; opacity: 1
+}
+.tips-dialog .hd {
+	PADDING-BOTTOM: 5px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; BACKGROUND: url(http://img07.taobaocdn.com/tps/i7/T1MBVHXjdeXXXXXXXX.png) #fff repeat-x 0px -1267px; HEIGHT: 23px; OVERFLOW: hidden; PADDING-TOP: 5px
+}
+.tips-dialog .hd .close-btn {
+	TEXT-INDENT: -9999px; WIDTH: 22px; DISPLAY: block; BACKGROUND: url(http://img08.taobaocdn.com/tps/i8/T1omRHXmpHXXXXXXXX.png) no-repeat -77px -578px; FLOAT: right; HEIGHT: 22px; MARGIN-RIGHT: 7px
+}
+.tips-dialog .hd .close-btn:hover {
+	BACKGROUND: url(http://img08.taobaocdn.com/tps/i8/T1omRHXmpHXXXXXXXX.png) no-repeat -55px -578px
+}
+.tips-dialog .hd H4 {
+	MARGIN: 0px 20px; DISPLAY: block; FLOAT: left; COLOR: #333; FONT-SIZE: 14px; FONT-WEIGHT: normal
+}
+.tips-dialog .hd .category {
+	LINE-HEIGHT: 21px; FLOAT: left
+}
+.tips-dialog .hd .category LI {
+	MARGIN: 2px 10px; FLOAT: left
+}
+.tips-dialog .hd .category A {
+	COLOR: #404040; TEXT-DECORATION: none
+}
+.tips-dialog .hd .category A:hover {
+	COLOR: #36c; TEXT-DECORATION: underline
+}
+.tips-dialog .hd .category A.active {
+	FONT-WEIGHT: bold
+}
+.tips-dialog .hd .category A.active:hover {
+	COLOR: #404040; TEXT-DECORATION: none
+}
+.tips-dialog .bd {
+	PADDING-BOTTOM: 5px; MIN-HEIGHT: 210px; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; BACKGROUND: #fff 0px 0px; OVERFLOW: hidden; PADDING-TOP: 5px
+}
+.tips-dialog .bd A {
+	COLOR: #36c; CURSOR: pointer; TEXT-DECORATION: none
+}
+.tips-dialog .bd H4 {
+	MARGIN: 10px 0px; COLOR: #f60; FONT-SIZE: 12px
+}
+.tips-dialog .bd OL {
+	MARGIN: 6px 0px 6px 19px
+}
+.tips-dialog .pagination {
+	TEXT-ALIGN: center; MARGIN: 10px
+}
+.tips-dialog .pagination BUTTON {
+	HEIGHT: 24px
+}
+.tips-dialog .pagination EM {
+	LINE-HEIGHT: 24px; FONT-STYLE: normal; MARGIN: 0px 10px; WIDTH: 32px; ZOOM: 1; DISPLAY: inline-block; HEIGHT: 24px; VERTICAL-ALIGN: top
+}
+.tips-dialog .content {
+	PADDING-BOTTOM: 0px; MIN-HEIGHT: 160px; PADDING-LEFT: 10px; WIDTH: 440px; PADDING-RIGHT: 10px; PADDING-TOP: 0px
+}
+.tips-dialog .content OL LI {
+	LIST-STYLE-TYPE: decimal
+}
+.tips-dialog .content EM {
+	FONT-STYLE: normal; COLOR: #f00
+}
+.tips-dialog .content P {
+	PADDING-BOTTOM: 2px; LINE-HEIGHT: 18px; PADDING-LEFT: 0px; PADDING-RIGHT: 10px; PADDING-TOP: 2px
+}
+.tips-dialog .content A.more {
+	BACKGROUND: none transparent scroll repeat 0% 0%
+}
+#main-content .remide-box {
+	BORDER-BOTTOM: #f9dfb2 1px solid; BORDER-LEFT: #f9dfb2 1px solid; PADDING-BOTTOM: 5px; BACKGROUND-COLOR: #ffffe0; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; MARGIN-BOTTOM: 10px; HEIGHT: 18px; OVERFLOW: hidden; BORDER-TOP: #f9dfb2 1px solid; BORDER-RIGHT: #f9dfb2 1px solid; PADDING-TOP: 5px
+}
+#main-content .remide-box H3 {
+	DISPLAY: inline; FLOAT: left
+}
+#main-content .remide-box UL {
+	DISPLAY: inline; FLOAT: left
+}
+#main-content .remide-box LI {
+	DISPLAY: inline; FLOAT: left
+}
+#main-content .remide-box H3 {
+	FONT: 12px/20px normal; _line-height: 18px
+}
+#main-content .remide-box LI {
+	MARGIN: 0px 30px 0px 10px
+}
+#main-content .remide-box .num {
+	COLOR: #c33
+}
+#main-content .remide-box A:hover .num {
+	COLOR: #f60
+}
+#main-content .remide-box .other {
+	TEXT-ALIGN: right; WIDTH: 240px; DISPLAY: inline; WHITE-SPACE: nowrap; FLOAT: right; COLOR: #f60; OVERFLOW: hidden
+}
+.bought-search .more-filter {
+	BACKGROUND: url(http://img02.taobaocdn.com/tps/i2/T1iVCoXk8qXXXXXXXX-85-51.png) no-repeat
+}
+.bought-search .less-filter {
+	BACKGROUND: url(http://img02.taobaocdn.com/tps/i2/T1iVCoXk8qXXXXXXXX-85-51.png) no-repeat
+}
+.bought-search .search-btn {
+	BACKGROUND: url(http://img02.taobaocdn.com/tps/i2/T1iVCoXk8qXXXXXXXX-85-51.png) no-repeat
+}
+.bought-search {
+	PADDING-BOTTOM: 10px; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; PADDING-TOP: 0px
+}
+.bought-search INPUT {
+	BORDER-BOTTOM: #8ab6dd 1px solid; BORDER-LEFT: #8ab6dd 1px solid; LINE-HEIGHT: 20px; HEIGHT: 20px; VERTICAL-ALIGN: middle; BORDER-TOP: #8ab6dd 1px solid; BORDER-RIGHT: #8ab6dd 1px solid; -moz-box-shadow: 1px 1px 1px #E7EFF4 inset; -webkit-box-shadow: 1px 1px 1px #E7EFF4 inset; box-shadow: 1px 1px 1px #E7EFF4 inset
+}
+.bought-search SELECT {
+	FONT-FAMILY: tahoma, arial, "ËÎÌו"
+}
+.bought-search .search-btn {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: 3px; LINE-HEIGHT: 25px; TEXT-INDENT: 8px; MARGIN: 0px 6px; WIDTH: 68px; BACKGROUND-POSITION: -18px 0px; LETTER-SPACING: 8px; HEIGHT: 25px; VERTICAL-ALIGN: middle; BORDER-TOP: medium none; CURSOR: pointer; BORDER-RIGHT: medium none
+}
+.bought-search .search-btn:hover {
+	BACKGROUND-POSITION: -18px -26px
+}
+.bought-search .search-btn:focus {
+	OUTLINE-STYLE: none; OUTLINE-COLOR: invert; OUTLINE-WIDTH: medium
+}
+.bought-search .search-filter {
+	DISPLAY: none
+}
+.bought-search .search-filter LI {
+	MARGIN: 10px 15px 0px 0px; DISPLAY: inline-block
+}
+.bought-search .search-filter .col1 {
+	WIDTH: 260px
+}
+.bought-search .search-filter .col2 {
+	WIDTH: 178px
+}
+.bought-search .search-filter .col3 {
+	WIDTH: 178px
+}
+.bought-search .more-filter {
+	PADDING-RIGHT: 10px; MARGIN-LEFT: 5px
+}
+.bought-search .less-filter {
+	PADDING-RIGHT: 10px; MARGIN-LEFT: 5px
+}
+.bought-search .more-filter {
+	BACKGROUND-POSITION: 75px 6px
+}
+.bought-search .less-filter {
+	DISPLAY: none; BACKGROUND-POSITION: 75px -8px
+}
+.bought-search-more .search-filter {
+	DISPLAY: block
+}
+.bought-search-more .less-filter {
+	DISPLAY: inline
+}
+.bought-search-more .more-filter {
+	DISPLAY: none
+}
+.rebuy-dialog {
+	HEIGHT: 96px; OVERFLOW: hidden
+}
+.rebuy-dialog .msg24 .attention {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BACKGROUND-COLOR: transparent; COLOR: #000; BORDER-TOP: medium none; BORDER-RIGHT: medium none
+}
+.rebuy-dialog .detail {
+	MARGIN-TOP: -5px; PADDING-LEFT: 58px
+}
+.rebuy-dialog .tm-indicator {
+	MARGIN-TOP: 39px
+}
+.no-result {
+	TEXT-ALIGN: left; PADDING-BOTTOM: 0px; MARGIN: 30px 0px 0px 40px; PADDING-LEFT: 120px; PADDING-RIGHT: 0px; BACKGROUND: url(http://img03.taobaocdn.com/tps/i3/T1MQ1cXhtiXXXXXXXX-78-120.png) no-repeat; HEIGHT: 150px; COLOR: #404040; PADDING-TOP: 5px
+}
+.no-result .des {
+	PADDING-BOTTOM: 20px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; DISPLAY: block; FONT-SIZE: 14px; FONT-WEIGHT: bold; PADDING-TOP: 0px
+}
+.no-result .sug LI {
+	PADDING-TOP: 10px
+}

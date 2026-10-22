@@ -1,0 +1,71 @@
+@charset "utf-8";
+/* CSS Document */
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000000;
+	margin: 0px;
+	padding: 0px;
+	height: 29px;
+	backgrgound-color:#eeeeee;
+}
+form {
+	margin: 0px;
+	padding: 0px;
+}
+td {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000000;
+}
+a:link {
+	color: #000000;
+	text-decoration: none;
+}
+a:visited {
+	color: #000000;
+	text-decoration: none;
+}
+a:hover {
+	color: #FF6600;
+	text-decoration: none;
+}
+a:active {
+	color: #000000;
+	text-decoration: none;
+}
+.conSet {
+	clear:both;
+	width:80%;
+	margin:0 auto;
+
+}
+.hdbg{background-color: #e5e5e5;}
+/*位置：……………… */
+#weizhi{
+	height:29px;
+	line-height: 29px;
+	float: left;
+	width: 100%;
+	background:url(../images/weizhi-bg.jpg);
+    background-repeat:repeat-x;
+	font-weight: bold;
+	 }
+	 .bg2 {
+	background-color: #F3FBFC;
+	text-align: center;
+	line-height: 20px;
+	height: 20px;
+}
+.bg1 {
+	background-color: #e2f4cd;
+	line-height: 20px;
+	height: 20px;
+}
+
+.bg0 {
+	background-color: #fafafa;
+	line-height: 20px;
+	height: 20px;
+}
+.save_but,.save_but1,.save_but3{ width:59px; height:25px; background:url(../images/button2.png); background-repeat:no-repeat; border:0px; color:#FFF;}

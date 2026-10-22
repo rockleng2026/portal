@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_Template" table="fa_cms_template">
+  <id name="id" column="id" type="integer">
+    <generator class="native"/>
+  </id>
+  <property name="name" column="name" type="string" />
+  <property name="contents" column="contents" type="string" />
+  <property name="editdate" column="editdate" type="date" />
+  <property name="temp" column="temp" type="string" />
+  <property name="delflag" column="delflag" type="integer" />
+  <property name="fdir" column="fdir" type="string" />
+  <property name="fname" column="fname" type="string" />
+  <property name="do_action" column="do_action" type="string" />
+  <property name="mid" column="mid" type="integer" />
+  <!-- 文章对类别  多对一 -->
+  <many-to-one name="classes" class="com.fuao.fajxc.vo.Fa_Cms_Classes" column="classid" lazy="false"></many-to-one>
+</class>
+</hibernate-mapping>

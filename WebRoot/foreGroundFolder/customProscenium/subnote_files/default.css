@@ -1,0 +1,217 @@
+body {
+	font-size: 12px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	line-height: 22px;
+	color: #828282;
+	}
+td {
+	font-size: 12px;
+	line-height: 22px;
+	}
+.nav a:link {
+	font-size: 12px;
+	text-decoration: none;
+	color: #828282;
+	}
+.nav a:visited {
+	font-size: 12px;
+	text-decoration: none;
+	color: #828282;
+	}
+.nav a:hover {
+	font-size: 12px;
+	text-decoration: underline;
+	color: #FF0000;
+	}
+.top_font {
+	font-size: 16px;
+	font-weight: bold;
+	color: #01567F;
+	padding-right: 20px;
+	padding-bottom: 5px;
+	}
+
+.nav a:active {
+	font-size: 12px;
+	text-decoration: none;
+	color: #FF0000;
+	}
+/*input*/
+.input_on{
+	background-color: transparent;
+	background-image: url(btn_hover.jpg);
+	background-repeat: no-repeat;
+	height:32px;
+	width:206px;
+	padding-top:0px;
+	padding-right:0px;
+	padding-left:6px;
+	line-height: 30px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	padding-bottom: 0px;
+	}
+.input_off{
+	background-color: transparent;
+	background-image: url(btn_bj.jpg);
+	height:32px;
+	width:206px;
+	padding-top:0px;
+	padding-right:0px;
+	padding-left:6px;
+	line-height: 30px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	padding-bottom: 0px;
+	}
+.input_move{
+	background-color: transparent;
+	background-image: url(btn_hover.jpg);
+	background-repeat: no-repeat;
+	height:32px;
+	width:206px;
+	padding-top:0px;
+	padding-right:0px;
+	padding-left:6px;
+	line-height: 30px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	padding-bottom: 0px;
+	}
+.input_out{
+    background-color: transparent;
+	background-image: url(btn_bj.jpg);
+	height:32px;
+	width:206px;
+	padding-top:0px;
+	padding-right:0px;
+	padding-left:6px;
+	line-height: 30px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	padding-bottom: 0px;
+	}
+/*input*/
+.inputcode_on{
+	background-color: transparent;
+	background-image: url(btn_yzhover.jpg);
+	background-repeat: no-repeat;
+	height:32px;
+	width:129px;
+	padding-top:0px;
+	padding-right:0px;
+	padding-left:6px;
+	line-height: 30px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	padding-bottom: 0px;
+	}
+.inputcode_off{
+	background-color: transparent;
+	background-image: url(btn_yz.jpg);
+	height:32px;
+	width:129px;
+	padding-top:0px;
+	padding-right:0px;
+	padding-left:6px;
+	line-height: 30px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	padding-bottom: 0px;
+	}
+.inputcode_move{
+	background-color: transparent;
+	background-image: url(btn_yzhover.jpg);
+	background-repeat: no-repeat;
+	height:32px;
+	width:129px;
+	padding-top:0px;
+	padding-right:0px;
+	padding-left:6px;
+	line-height: 30px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	padding-bottom: 0px;
+	}
+.inputcode_out{
+    background-color: transparent;
+	background-image: url(btn_yz.jpg);
+	height:32px;
+	width:129px;
+	padding-top:0px;
+	padding-right:0px;
+	padding-left:6px;
+	line-height: 30px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	padding-bottom: 0px;
+	}
+.default_dl {
+    cursor: hand;
+	background-image: url(dl.jpg);
+	background-repeat: no-repeat;
+	height: 28px;
+	width: 59px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	}
+.default_zc {
+    cursor: hand;
+	background-image: url(zc.jpg);
+	background-repeat: no-repeat;
+	height: 28px;
+	width: 59px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	}
+.default_sq {
+	cursor: hand;
+	background-image: url(sq.jpg);
+	background-repeat: no-repeat;
+	height: 42px;
+	width: 117px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	}
+.jy {
+	font-size: 12px;
+	color: #025984;
+	}
+.jy a {
+	font-size: 12px;
+	color: #025984;
+	}
+a img{
+	border:0px;
+	}
+#inputForm .wjmm {
+	margin-top: -3px;
+	text-decoration: none;
+	color: #666666;
+	}
+#inputForm a.wjmm:hover{
+	text-decoration:underline;
+	color:#333333;
+	}

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    
+    <struts>
+    <!-- 基础信息package -->
+    <package name="PackageMessage" extends="struts-default">
+    <!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			
+			<interceptor-stack name="myInter">
+			<interceptor-ref name="system">
+			<param name="name">SystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">select,getpage</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+			</interceptor-stack>
+		</interceptors>
+
+	 <!--消息的管理 messageAction -->
+    <action name="*message" class="messageAction" method="{1}" >
+     <result name="add">/message/messagedata.jsp</result>
+     <result name="alldept">/message/dept.jsp</result>
+     <result name="messshow">/message/messageshow.jsp</result>
+     <result name="customermessageshow">/foreGroundFolder/message/customer/notreceivemessage.jsp</result>
+     <result name="receivemessageshow">/foreGroundFolder/message/customer/receivemessage.jsp</result>
+     <result name="readmessageBycustomer">/foreGroundFolder/message/customer/customerreadmessage.jsp</result>
+     <result name="sendshow">/message/sendmessage.jsp</result>
+     <result name="req" type="redirect">messendmessage.do</result>
+     <result name="allNotice">/message/noticeMessageList.jsp</result>
+     <result name="addMessage">/message/noticeMessageInfo.jsp</result>
+     <result name="updateMessage">/message/updateMessage.jsp</result>
+     <result name="messageLists">/message/messageList.jsp</result>
+     <result name="receiveInfo">/message/receivemessageInfo.jsp</result>
+     <result name="messBoards">/message/messageBoard.jsp</result>
+     <result name="messBoradList">/message/messageBoardList.jsp</result>
+     <result name="logdetail">/message/logdetail.jsp</result>
+     <result name="will">No.jsp</result>
+     <result name="noread">/potal/page/newmessage/getMessage.jsp</result>
+      <result name="updatestate" type="redirect">noreadMessagemessage.do</result>
+     <result name="planmessage">/potal/page/message/load.jsp</result>
+     <result name="writelog">/potal/page/newmessage/writeMessage.jsp</result>
+     <result name="successPage">/potal/page/WorkLog/addSuccess.jsp</result><!-- successPage -->
+	 <result name="errorPage">/potal/page/WorkLog/addError.jsp</result><!-- errorPage -->
+	 <result name="history">/potal/page/message/historyMessage.jsp</result>
+	 <result name="receiver">/potal/page/newmessage/messageView.jsp</result>
+	 <result name="delemail">/potal/page/newmessage/deleteMessage.jsp</result>
+	 <result name="del2" type="redirect">delEmailmessage.do</result>
+	 <result name="sendEmail">/potal/page/newmessage/sendMessage.jsp</result>
+	 <result name="messagebymid">/potal/page/newmessage/sendmessageView.jsp</result>
+	 <result name="delSend" type="redirect">sendEmailmessage.do</result>
+	 <result name="caogaoEmail">/potal/page/newmessage/draftMessage.jsp</result>
+	 <result name="draft" type="redirect">caogaoEmailmessage.do</result>
+	 <result name="send" type="redirect">sendEmailmessage.do</result>
+	 
+    </action>
+    
+    <action name="*mess">
+    	
+    </action>
+    
+    <!--消息类型管理 messagetypeAction -->
+    <action name="*messagetype" class="messagetypeAction" method="{1}" >
+     <result name="messagetype">/message/messagetype.jsp</result>
+     <result name="listMessagetype">/message/messagetypelist.jsp</result>
+    </action>
+    
+    
+    <!-- 新系统的公告 -->
+    <action name="*notice" class="com.fuao.fajxc.action.notice.NoticeAction" method="{1}">
+      <result name="tosend">/potal/page/notice/sendNotice.jsp</result>
+      <result name="tolist" type="redirect">listNtnotice.do?flag=0</result>
+      <result name="list">/potal/page/notice/noticeListing.jsp</result>
+      <result name="detail">/potal/page/notice/noticeDetail.jsp</result>
+      <result name="draftlist"></result>
+      <result name="tosh">/potal/page/notice/noticeListing.jsp</result>
+      <result name="noAppDetail">/potal/page/notice/waitNoticeDetail.jsp</result>
+      <result name="reset" type="redirect">noAppnotice.do?flag=1</result>
+      <result name="successDetail">/potal/page/notice/successDetail.jsp</result>
+      <result name="editNotice">/potal/page/notice/editNotice.jsp</result>
+      <result name="reSend">/potal/page/notice/reSend.jsp</result>
+    </action>
+    
+</package>
+</struts>

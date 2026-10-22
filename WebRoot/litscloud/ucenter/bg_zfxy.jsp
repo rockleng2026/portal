@@ -1,0 +1,46 @@
+<%@ page language="java" import="java.util.*" pageEncoding="GBK"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<base href="<%=basePath%>" />
+<title>立云-后台（支付协议）</title>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />    
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+<meta http-equiv="description" content="This is my page" />
+<link href="litscloud/css/style.css" rel="stylesheet" type="text/css" />
+<link href="litscloud/css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript"
+			src="<%=request.getContextPath()%>/js/juqery/lib/jquery1.6.js"></script>
+<script type="text/javascript" src="litscloud/js/user.js"></script>
+<!-- 解决IE6不缓存背景图片的问题-->
+<!--[if IE 6]>
+<script type="text/javascript">
+document.execCommand("BackgroundImageCache", false, true);
+</script>
+<![endif]-->
+
+</head>
+
+<body style="background-color:#060;">
+<div class="zf_xy">
+   <div class="zf_xyt"><span><a href="#">关闭</a></span>支付宝服务协议</div>
+   <div class="zf_xyc">
+     <textarea name="zfb_xy" class="zfb_xy">“支付宝服务”（以下简称本服务）是由支付宝（中国）网络技术有限公司（以下简称本公司）向支付宝用户提供的“支付宝”软件系统（以下简称本系统）及(或)附随的货款代收代付的中介服务。本协议由您和本公司签订。<br /><br />
+
+    一、 声明与承诺<br />
+    （一）本协议已对与您的权益有或可能具有重大关系的条款，及对本公司具有或可能具有免责或限制责任的条款用粗体字予以标注，请您注意。您确认，在您注册成为支付宝用户以接受本服务之前，您已充分阅读、理解并接受本协议的全部内容，一旦您使用本服务，即表示您同意遵循本协议之所有约定。<br />
+    （二）您同意，本公司有权随时对本协议内容进行单方面的变更，并以在本网站公告的方式予以公布，无需另行单独通知您；若您在本协议内容公告变更后继续使用本服务的，表示您已充分阅读、理解并接受修改后的协议内容，也将遵循修改后的协议内容使用本服务；若您不同意修改后的协议内容，您应停止使用本服务。</textarea>
+   </div>
+   <div class="zf_xym"><a href="#">确 &nbsp; 定</a></div>
+   <div class="zf_xyd"></div>
+</div>
+</body>
+</html>

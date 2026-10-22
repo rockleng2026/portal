@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_Admin" table="fa_cms_admin">
+  <id name="user_id" column="user_id" type="integer">
+   <generator class="native"/>
+  </id>
+  <property name="username" column="username" type="string"/>
+  <property name="admin_password" column="admin_password" type="string"/>
+  <property name="flag" column="flag" type="integer"/>
+  <property name="admin_status" column="admin_status" type="integer"/>
+  <property name="righttree" column="righttree" type="string"/>
+  <property name="email" column="email" type="string"/>
+  <property name="regdate" column="regdate" type="date"/>
+  <!-- admin对部门  多对一 -->
+  <many-to-one name="depts" class="com.fuao.fajxc.vo.Department" lazy="false">
+    <column name="deptid" />
+  </many-to-one>
+      <set name="Tadminright" inverse="true" cascade="save-update" lazy="false">
+            <key>
+                <column name="userid" precision="22" scale="0" />
+            </key>
+            <one-to-many class="com.fuao.fajxc.vo.Fa_Cms_AdminRight" />
+        </set>
+</class>
+</hibernate-mapping>

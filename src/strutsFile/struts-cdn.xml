@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    
+   <struts>
+    <!-- CDN操作package -->
+   <package name="PackageCDN" extends="struts-default">
+	   <!-- CDN管理 -->
+	   <action name="*CDNsaleOrderAction" class="CDNsaleOrderAction" method="{1}">
+		 <result name="showorderadd">/cdn/addCDN.jsp</result>
+		 <result name="showcdnlist">cdn/CDNlist.jsp</result>
+		 <result name="showcdnlist1">cdn/CDNlist1.jsp</result>
+		 <result name="showorder">cdn/showOrder.jsp</result>
+		 <result name="filesuccess" type="redirect">showcdnlist1CDNsaleOrderAction.do</result>
+		 <result name="showorder1">cdn/cdninfo.jsp</result>
+		 <result name="update">cdn/UpdateCDN.jsp</result>
+		 <result name="showfile">cdn/showfileDialog.jsp</result>
+		 <result name="myData">/foreGroundFolder/customProscenium/mydata.jsp</result>
+	     <result name="no">No.jsp</result>
+	     <result name="custcdnlist">/cdn/custcdnlist.jsp</result>
+
+	     <result name="cdnTypeList">/cdn/cdnTypeList.jsp</result>
+
+	     <result name="custcdnlist_2">/cdn/custcdnlist_2.jsp</result>
+	     <result name="litsshoworderadd">/litscloud/ucenter/bg_cdn.jsp</result>
+	     <result name="litsshowcdnlist">/litscloud/ucenter/bg_cdnlist.jsp</result>
+	     <result name="litsshoworder">/litscloud/ucenter/bg_cdn_show.jsp</result>
+	     <result name="selectIpAreaType">/cdn/custcdnlist_jd.jsp</result>
+	     <result name="selectIpAreaType1">/cdn/custcdnlist_jd2.jsp</result>
+	     <result name="groupList">/cdn/groupList.jsp</result>
+	     <result name="addAreaType">/cdn/addGroup.jsp</result>
+	     <result name="updateAreaType">/cdn/updateGroup.jsp</result>
+	     <result name="addipAreaType" type="redirect">selectIpAreaTypeCDNsaleOrderAction.do</result>
+	     <result name="addipAreaType1" type="redirect">selectIpdiyuCDNsaleOrderAction.do</result>
+	     <result name="cdnmonitor">/cdn/cdn_monitor.jsp</result>
+	     <result name="cdnmonitor1">/cdn/data_quota.jsp</result>
+	     <result name="cdnmonitor1a">/litscloud/ucenter/cdn_data_quota.jsp</result>
+	     <result name="cdnmonitor2">/cdn/cdn_area_dis.jsp</result>
+	     <result name="cdnmonitor2a">/litscloud/ucenter/cdn_cishu.jsp</result>
+	     
+	   </action>
+	   
+	   <action name="*CDNRealmAction" class="CDNRealmAction" method="{1}">
+	   	<result name="list"></result>
+	   	<result name="no">No.jsp</result>
+	   </action>
+	   
+	   <!-- CDN套餐 -->
+	   <action name="*CDNSetMealAction" class="CDNSetMealAction" method="{1}">
+	     <result name="no">No.jsp</result>
+	     <result name="goAllList">/cdn/setmealList.jsp</result>
+	     <result name="goAdd">/cdn/addSetMeal.jsp</result>
+	     <result name="goInfo">/cdn/setMealInfo.jsp</result>
+	     <result name="goUpdate">/cdn/updateSetMeal.jsp</result>
+	     <result name="success" type="redirect">getAllCDNSetMealAction.do</result>
+	   </action>
+	   
+	   <!-- CDN套餐属性 -->
+	   <action name="*CDNSetMealPropertyAction" class="CDNSetMealPropertyAction" method="{1}">
+	     <result name="no">No.jsp</result>
+	     <result name="success" type="redirect">getAllCDNSetMealPropertyAction.do</result>
+	     <result name="goAllList">/cdn/setMealPropertyList.jsp</result>
+	     <result name="goAdd">/cdn/addSetMealProperty.jsp</result>
+	     <result name="goInfo">/cdn/setMealPropertyInfo.jsp</result>
+	     <result name="goUpdate">/cdn/updateSetMealProperty.jsp</result>
+	   </action>
+	   
+	   <!-- CDN套餐域名类型 -->
+	   <action name="*CDNRealmTypeAction" class="CDNRealmTypeAction" method="{1}">
+	     <result name="no">No.jsp</result>
+	     <result name="success" type="redirect">getAllCDNRealmTypeAction.do</result>
+	     <result name="goAllList">/cdn/realmTypeList.jsp</result>
+	     <result name="goAdd">/cdn/addRealmType.jsp</result>
+	     <result name="goUpdate">/cdn/updateRealmType.jsp</result>
+	   </action>
+   </package>
+   <package name="Package2CDN" extends="struts-default"  namespace="/litscloud">
+		<action name="*CDNsaleOrderAction" class="CDNsaleOrderAction" method="{1}" >
+		 <result name="success">/foreGroundFolder/customProscenium/main.jsp</result> 
+			<result name="error">/foreGroundFolder/customProscenium/login.jsp</result>
+			<result name="registersuccess">IDCServ/registersuccess.jsp</result>
+			<result name="llt">/litscloud/ucenter/bg_llt.jsp</result>
+		</action>
+   </package>
+   </struts>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	 
+	 
+	<!-- 上架单dao的注入 -->
+	<bean id="upserverDao" class="com.fuao.fajxc.dao.impl.server.UpserverDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="serDao" class="com.fuao.fajxc.serser.dao.SerajaxDaoImpl" >
+	     <property name="sessionFactory" ref="sessionFactory"></property>
+	 </bean>
+	<!-- 下架单dao的注入 -->
+	<bean id="downserverDao" class="com.fuao.fajxc.dao.impl.server.DownserverDaoImpl" parent="baseDao">
+	</bean>
+	<!-- 组装服务器dao的注入 -->
+	<bean id="assemblyserverDao" class="com.fuao.fajxc.dao.impl.server.AssemblyServerDaoImpl" parent="baseDao">
+	</bean>
+	
+	<!-- 服务器状态dao的注入 -->
+	<bean id="serverstateDao" class="com.fuao.fajxc.dao.impl.server.ServerStateDaoImpl" parent="baseDao">
+	</bean>
+
+	<!-- model dao的状态 -->
+	<bean id="modelDao" class="com.fuao.fajxc.dao.model.ModelDaoImpl" parent="baseDao"></bean>
+	<bean id="saleDao" class="com.fuao.fajxc.dao.impl.sale.SaleorderDaoImpl" parent="baseDao"></bean>
+	
+	<!-- ip DAO管理 -->
+	<bean id="ipdao" class="com.fuao.fajxc.dao.impl.server.IpManagerDaoImpl" parent="baseDao"></bean>
+	
+	<!-- >>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!-- 上架单bussiness注入 -->
+	<bean id="upserverBussiness" class="com.fuao.fajxc.bussiness.impl.server.UpserverBussinessImpl">
+	<property name="upd" ref="upserverDao"></property>
+	</bean>
+	<!-- 下架单Bussiness注入 -->
+	<bean id="downserverBussiness" class="com.fuao.fajxc.bussiness.impl.server.DownserverBussinessImpl">
+	<property name="dsd" ref="downserverDao"></property>
+	<property name="sod" ref="saleDao"></property>
+	</bean>
+	<!-- 组装服务器bussiness注入 -->
+	<bean id="assemblyserverBussiness" class="com.fuao.fajxc.bussiness.impl.server.AssemblyServerBussinessImpl">
+	<property name="asd" ref="assemblyserverDao"></property>
+	</bean>
+	<!-- 服务器状态Bussiness注入 -->
+	<bean id="serverstateBussiness" class="com.fuao.fajxc.bussiness.impl.server.ServerStateBussinessImpl">
+	<property name="asd" ref="assemblyserverDao"></property>
+	<property name="ssd" ref="serverstateDao"></property>
+	</bean>
+	<!-- model Bussiness注入 -->
+	<bean id="modelBussiness" class="com.fuao.fajxc.bussiness.model.ModelBussinessImpl">
+	  <property name="modelDao" ref="modelDao"></property>
+	</bean>
+	
+	<bean id="ipserver" class="com.fuao.fajxc.bussiness.impl.server.IpServerImpl">
+		<property name="managerDao" ref="ipdao"></property>
+	</bean>
+	
+	<!-- >>>>>>>>>>>>>>>>>>>>>Action层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!-- 上架单action注入 -->
+	<bean id="upserverAction" class="com.fuao.fajxc.action.server.UpserverAction">
+	<property name="upb" ref="upserverBussiness"></property>
+	<property name="commbizimpl" ref="commodityBiz"></property>
+	<!--<property name="sobiz" ref="SaleOrderBussinessImpl"></property>-->
+	<property name="audBussiness" ref="auditingBussiness"></property>
+	<property name="productBussiness" ref="productBussiness"></property>
+	 <property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	 <property  name="modelBussiness" ref="modelBussiness"></property>
+	 <property name="serAjax" ref="serDao"></property>
+	</bean>
+	
+	<!-- 下架单action注入 -->
+	<bean id="downserverAction" class="com.fuao.fajxc.action.server.DownserverAction">
+	<property name="dsb" ref="downserverBussiness"></property>
+	<property name="audBussiness" ref="auditingBussiness"></property>
+	<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	<property name="commbiz" ref="commonBussiness"></property>
+	</bean>
+	
+	<!-- 服务器组装Action注入 -->
+	<bean id="assemblyserverAction" class="com.fuao.fajxc.action.server.AssemblyServerAction">
+	<property name="asb" ref="assemblyserverBussiness"></property>
+	</bean>
+	
+	<!-- 服务器状态Action注入 -->
+	<bean id="serverstateAction" class="com.fuao.fajxc.action.server.ServerStateAction">
+	<property name="ssb" ref="serverstateBussiness"></property>
+	</bean>
+	
+	<!-- Ip管理Action 注入 -->
+	<bean id="ipmanagerAction" class="com.fuao.fajxc.action.server.IpManagerAction">
+		<property name="server" ref="ipserver"></property>
+		<property name="stockpileDetailsBussiness" ref="StockpileDetailsBussiness"></property>
+		<property name="warehousingBussiness" ref="warehousingBussiness"></property>
+	</bean>
+	<!-- 服务器统计 -->
+	<bean id="onlineServCount" class="com.fuao.fajxc.action.server.OnlineServerCount">
+	    <property name="upbbus" ref="upserverBussiness"></property>
+	</bean>
+	 </beans>

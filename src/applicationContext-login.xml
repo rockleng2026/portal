@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	
+	
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 登录dao注入 -->
+		<bean id="LoginDao" class="com.fuao.fajxc.dao.impl.LoginDaoImpl" parent="baseDao">
+		</bean>
+		<bean id="FunctionInfoDao" class="com.fuao.fajxc.dao.impl.FunctionInfoDaoImpl" parent="baseDao"></bean>
+		<bean id="JsonDao" class="com.fuao.fajxc.dao.impl.HandleJsonDaoImpl" parent="baseDao"></bean>
+		<!-- 公告dao -->
+		<bean id="messageDao" class="com.fuao.fajxc.dao.impl.message.MessageDaoImpl" parent="baseDao"></bean>
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 登录Bussiness注入 -->
+		<bean id="Loginbussiness" class="com.fuao.fajxc.bussiness.impl.LoginBussinessImpl" >
+		    <property name="loginDao" ref="LoginDao"></property>
+		</bean>
+		 
+		<bean id="Functioninfobiz" class="com.fuao.fajxc.bussiness.impl.FunctionInfoBussinessImpl">
+			<property name="functionInfoDao" ref="FunctionInfoDao"></property>
+		</bean>
+		
+		<bean id="JsonBiz" class="com.fuao.fajxc.bussiness.impl.HandleJsonBusinessImpl">
+			<property name="jsondao" ref="JsonDao"></property>
+		</bean>
+		<!-- 公告Buss -->
+		<bean id="messageBu" class="com.fuao.fajxc.bussiness.impl.message.MessageBussinessImpl">
+        	<property name="messageDao" ref="messageDao"></property>
+     	</bean>
+		
+		<!-- 注入projectdao -->
+		<bean id="prjdao" class="com.fuao.fajxc.dao.project.ProjectImpl" parent="baseDao"></bean>
+		
+		<!-- 注入新项目管理 porejctdao -->
+		<bean id="projectdao" class="com.fuao.fajxc.dao.impl.newproject.ProjectImpl" parent="baseDao"></bean>
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 登录Action注入 -->
+		<bean id="LoginAction" class="com.fuao.fajxc.action.LoginAction">
+			<property name="loginBussiness" ref="Loginbussiness"></property>
+			<property name="functionInfobiz" ref="Functioninfobiz"></property>
+			<property name="functionInfoSystemBussiness" ref="FunctionInfoSystemBussiness"></property>
+			<property name="roleSystemBussiness" ref="RoleSystemBussiness"></property>
+			<property name="groupSystemBussiness" ref="GroupSystemBussiness"></property>
+			<property name="messageBussiness" ref="messageBu"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+			<property name="prjdao" ref="prjdao"></property>
+			<property name="projectdao" ref="projectdao"></property>
+		</bean>
+		<bean id="FunctionInfoAction" class="com.fuao.fajxc.action.FunctionInfoAction">
+			<property name="functionInfobiz" ref="Functioninfobiz"></property>
+		</bean>
+	
+		<bean id="handleJsonAction" class="com.fuao.fajxc.action.HandleJsonAction">
+			<property name="jsonbiz" ref="JsonBiz"></property>
+		</bean>
+		
+	 </beans>

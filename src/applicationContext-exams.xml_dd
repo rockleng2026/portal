@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 	<!-- 试卷 -->
+	<bean id="paperDaos" class="com.fuao.fajxc.dao.allexamDao.impl.PaperDaoImpl">
+	    <property name="sessionFactory" ref="sessionFactory">
+	    </property>
+	</bean>
+	<bean id="paperServices" class="com.fuao.fajxc.service.allexamService.impl.PaperServiceImpl">
+	     <property name="papManageDao" ref="paperDaos" ></property>
+	</bean>
+	<bean id="paperActions" class="com.fuao.fajxc.action.allexamAction.ShowPapers">
+	     <property name="papManageService" ref="paperServices"></property>
+	</bean>
+					
+	 <!-- 模板管理dao -->
+	 <bean id="ExamModelDao" class="com.fuao.fajxc.dao.allexamDao.impl.ModelDaoImpl" parent="baseDao">
+	</bean>
+	 
+	 	<!--调查 dao -->	
+		<bean id="tbOnlSearchTitDao" class="com.fuao.fajxc.dao.allexamDao.impl.TbOnlSearchTitDaoImpl" parent="baseDao">
+		</bean>
+		
+		<!-- 调查问题dao -->	
+		<bean id="tbOnlSearchTitLDao" class="com.fuao.fajxc.dao.allexamDao.impl.TbOnlSearchTitLDaoImpl" parent="baseDao">
+		</bean>
+<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+	
+		<!-- 调查 Bussiness -->
+		<bean id="tbOnlSearchTitBussiness" class="com.fuao.fajxc.service.allexamService.impl.TbOnlSearchTitBussinessImpl">
+		<property name="itbOnlSearchTitDao" ref="tbOnlSearchTitDao"/>
+		                                        
+		</bean>
+		
+		<!-- 调查问题 Bussiness -->
+		<bean id="tbOnlSearchTitLBussiness" class="com.fuao.fajxc.service.allexamService.impl.TbOnlSearchTitLBussinessImpl">
+		<property name="itbOnlSearchTitLDao" ref="tbOnlSearchTitLDao"/>
+		</bean>
+		
+<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+
+		<!-- 调查 -->
+		<bean id="surveyAction" class="com.fuao.fajxc.action.allexamAction.TbOnlSearchTitLAction">
+			<property name="tbOnlSearchTitBussiness" ref="tbOnlSearchTitBussiness"></property>
+			<property name="tbOnlSearchTitLBussiness" ref="tbOnlSearchTitLBussiness"></property>
+		</bean>
+	 
+	 
+
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!-- 模板管理bussiness注入 -->
+	<bean id="ExamModelService" class="com.fuao.fajxc.service.allexamService.impl.ModelServiceImpl">
+		<property name="md" ref="ExamModelDao"></property>
+	</bean>
+	
+	<!-- >>>>>>>>>>>>>>>>>>>>>Action层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!-- 模板管理action注入 -->
+	<bean id="modelAction" class="com.fuao.fajxc.action.allexamAction.ModelAction">
+		<property name="ms" ref="ExamModelService"></property>
+	</bean>
+
+</beans>

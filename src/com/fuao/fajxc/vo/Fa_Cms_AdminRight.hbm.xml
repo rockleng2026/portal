@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping package="com.fuao.fajxc.vo">
+<class name="Fa_Cms_AdminRight" table="fa_cms_adminright"  dynamic-update="true" >
+  <id name="rightid" column="rightid" type="java.lang.Integer">
+    <generator class="native"/>
+  </id>
+  <property name="menuid" column="menuid" type="java.lang.String"/>
+
+  <property name="editdate" column="editdate" type="java.util.Date"/>
+
+    <many-to-one name="admins" class="Fa_Cms_Admin" >
+            <column name="userid"  />
+    </many-to-one>
+    <many-to-one name="mods" class="Fa_Cms_AdminModel" >
+            <column name="modelid" />
+    </many-to-one>
+</class>
+
+</hibernate-mapping>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_AdminModel" table="fa_cms_adminmodel" >
+  <id name="modelid" column="modelid" type="int">
+    <generator class="native" />
+  </id>
+  <property name="modelname" column="modelname" type="string"/>
+  <property name="modelalias" column="modelalias" type="string"/>
+  <property name="modelico" column="modelico" type="string"/>
+  <property name="modelurl" column="modelurl" type="string"/>
+  <property name="regdate" column="regdate" type="string"/>
+  <property name="editdate" column="editdate" type="date"/>
+  
+  <set name="TadminModel" inverse="true" cascade="save-update" lazy="false">
+     <key>
+          <column name="modelid" precision="22" scale="0" />
+     </key>
+    <one-to-many class="com.fuao.fajxc.vo.Fa_Cms_AdminRight"/>
+   </set>
+</class>
+</hibernate-mapping>

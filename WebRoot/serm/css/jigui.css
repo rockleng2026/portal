@@ -1,0 +1,100 @@
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	border:0px;
+}
+
+td {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+th {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+body, ul, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, h7, input, p, form {
+	margin:0;
+	padding:0;
+	border:0px;
+	font-size: 12px;
+}
+body {
+	font-size: 12px;
+	line-height:150%;
+	color:#444;
+	font-family:"微软雅黑";
+	background-color:#f6f6f6;
+}
+img {
+	vertical-align:top;
+	border: none;
+}
+ul {
+	list-style:none;
+}
+a {
+	text-decoration:none;
+}
+a:hover{
+	text-decoration:underline;
+}
+.clear {
+	clear:both;
+	height:0px;
+	font-size:0px;
+	overflow:hidden;
+}
+
+.left{
+	float:left;
+}
+.right{
+	float:right;
+}
+#jiguibig{ width:232px; background:url(../images/jigui3.jpg); margin-top:30px; margin-left:20px; float:left;}
+#jiguitop{ width:232px; height:41px; background:url(../images/jigui1.jpg); background-repeat:no-repeat; float:left;}
+#jiguimid{ width:232px; height:auto; float:left; font-size:12px;}
+#fuwuqk{ width:157px; height:auto; float:left; border:0px;z-index: 0;}
+#kedu{ width:48px; height:auto; float:right; border:0px;}
+.kedut{ width:48px; height:9px; border-bottom-color:#0F0; border-bottom-width:1px; border-bottom-style: double; border-left:0px; border-right:0px; border-top:0px; color:#FFF; font-size:8px; line-height:8px;}
+#jiguibut{ width:232px; height:49px; background:url(../images/jigui2.jpg); background-repeat:no-repeat; float:left;}
+#jiguixx{ width:218px; height:auto; float:left; margin-left:15px; margin-top:30px;}
+#jiguixx-top{ width:218px; height:31px; background: url(../images/jigui-top.jpg); background-repeat:no-repeat;}
+#jiguixx-mid{ width:218px; height:auto;; background:url(../images/jigui-bg.jpg); background-repeat:repeat-y; }
+#jiguixx-but{width:218px; height:14px; background:url(../images/jigui-button.jpg); background-repeat:no-repeat; }
+#jiguixx-tb{ line-height:20px; color:#666;width:203px; height:209px;}
+.jiguixxtd1{ width:40%; line-height:20px;word-break:break-all;}
+.jiguixxtd2{ width:60%;  line-height:20px;word-break:break-all;}
+
+<!--增加机柜弹出框 --!>
+
+.zjjigui-wz{ height:30px; width:100px; color:#434343; line-height:30px; padding-left:15px; font-size:12px; }
+.zjjigui-tx{height:30px; width:120px; color:#434343; line-height:30px; background:url(../images/zjjigui-bd-bg.jpg); background-position:center; background-repeat:no-repeat; border:0px; font-size:12px; }
+.zjjigui-wzd{ height:30px; width:50px; color:#434343; line-height:30px; text-indent:10px; font-size:12px; }
+.zjjigui-xh{ height:30px; width:50px; color:#F00; line-height:30px; font-size:16px; text-align:center; }
+#zjjigui-but-k{background:url(../images/head2-bg.jpg); background-repeat:repeat-x; height:30px; width:350px;}
+.zjjf-but1{ height:30px; width:120px; line-height:30px; cursor:pointer; background: url(../images/queren-but.jpg); background-position:center; background-repeat:no-repeat; text-align:center; float:left;}
+.zjjf-but2{ height:30px; width:120px; line-height:30px; cursor:pointer; background: url(../images/queren-but.jpg); background-position:center; background-repeat:no-repeat; text-align:center; float:left;}
+
+<!--服务器信息框 --!>
+.fwqxxwz1{ height:30px; width:20%; line-height:30px; border:0px; color:#666; font-size:12px;}
+.fwqxxwz2{ height:30px; width:30%; line-height:30px; border:0px; color:#666; font-size:12px;}
+
+<!--增加机房信息填写框 --!>
+.zjjf-wz{ height:30px; width:100px; color:#434343; line-height:30px; padding-left:15px;font-size:12px;}
+.zjjf-tx{height:30px; width:120px; color:#434343; line-height:30px; background:url(../images/zjjigui-bd-bg.jpg); background-position:center; background-repeat:no-repeat; border:0px;font-size:12px;}
+.zjjf-bz{ height:30px; width:100px; color:#434343; line-height:30px; font-size:12px; }
+.zjjf-xh{ height:30px; width:30px; color:#F00; line-height:30px; font-size:16px; text-align:center; }
+.zjjf-ck{height:30px; width:130px; color:#F00; line-height:30px; font-size:16px; text-align:center; }
+#zjjf-but-k{background:url(../images/head2-bg.jpg); background-repeat:repeat-x; height:30px; width:350px;font-size:12px;}
+.zjjf-but1{ height:30px; width:120px; line-height:30px; cursor:pointer; background: url(../images/queren-but.jpg); background-position:center; background-repeat:no-repeat; text-align:center; float:left;font-size:12px;}
+.zjjf-but2{ height:30px; width:120px; line-height:30px; cursor:pointer; background: url(../images/queren-but.jpg); background-position:center; background-repeat:no-repeat; text-align:center; float:left;font-size:12px;}
+
+<!--上架单信息填写框 --!>
+.xzsjd-wz{ width:20%; height:30px; line-height:30px;}
+.xzsjd-tz{ width:30%; height:30px; line-height:30px;}
+
+<!--上架单信息填写框 --!>
+.xzsjd-wz{ width:125px;; height:40px; line-height:40px; font-size:12px;}
+.xzsjd-tz{ width:120px;; height:40px; line-height:40px; font-size:12px;}
+.xzsjd-xh{ width:30px;; height:40px; line-height:40px;color:#F00;font-size:16px; text-align:left;}
+#xzsjd-but-k{background:url(../images/head2-bg.jpg); background-repeat:repeat-x; height:30px; width:600px;font-size:12px;}

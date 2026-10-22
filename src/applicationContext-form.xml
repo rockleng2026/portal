@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	<!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!-- 单据模板dao的注入 -->
+	<bean id="FormTempDao" class="com.fuao.fajxc.dao.impl.form.FormTempDaoImpl" parent="baseDao">
+	</bean>
+	<!-- 单据详细dao的注入 -->
+	<bean id="FormDetailDao" class="com.fuao.fajxc.dao.impl.form.FormDetailDaoImpl" parent="baseDao">
+	</bean>
+	
+	
+	<!-- >>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!-- 单据模板bussiness注入 -->
+	<bean id="FormTempBussiness" class="com.fuao.fajxc.bussiness.impl.form.FormTempBussinessImpl">
+		<property name="formtempdao" ref="FormTempDao"></property>
+	</bean>
+	<!-- 单据详细Bussiness注入 -->
+	<bean id="FormDetailBussiness" class="com.fuao.fajxc.bussiness.impl.form.FormDetailBussinessImpl">
+		<property name="formdetaildao" ref="FormDetailDao"></property>
+	</bean>
+
+	
+	
+	<!-- >>>>>>>>>>>>>>>>>>>>>Action层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<!-- 单据模板action注入 -->
+	<bean id="FormTempAction" class="com.fuao.fajxc.action.form.FormTempAction">
+		<property name="formtempbussiness" ref="FormTempBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		<property name="docbussiness" ref="DocBussiness"></property>
+	</bean>
+	
+	<!-- 单据详细action注入 -->
+	<bean id="FormDetailAction" class="com.fuao.fajxc.action.form.FormDetailAction">
+		<property name="formdetailbussiness" ref="FormDetailBussiness"></property>
+		<property name="formtempbussiness" ref="FormTempBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		<property name="audBussiness" ref="auditingBussiness"></property>
+	</bean>
+	
+</beans>

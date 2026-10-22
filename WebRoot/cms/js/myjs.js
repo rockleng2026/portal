@@ -1,0 +1,32 @@
+$(function(){
+	$(".li1").toggle(
+		function(){
+			$(this).next().slideDown("slow");
+		},
+		function(){
+			$(this).next().slideUp("slow");
+		}
+	);
+	$(".li1").each(function(){
+	$(this).mouseover(function(){
+		 $(this).removeClass("li1");
+		 $(this).addClass("li1_1");
+	});
+	$(this).mouseout(function(){
+		$(this).removeClass("li1_1");
+		$(this).addClass("li1");
+	});
+	});
+	$(".li1_m").toggle(
+			function(){
+				$(this).removeClass("li1_m");
+				$(this).addClass("li1_n");
+				$(this).next().slideDown("slow");
+			},
+			function(){
+				$(this).removeClass("li1_n");
+				$(this).addClass("li1_m");
+				$(this).next().slideUp("slow");
+			}
+	);
+})

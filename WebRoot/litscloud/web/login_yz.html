@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>立云-验证账户信息</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+	//加载头部模块     
+ $(document).ready(function(){ 
+ 	
+	 $('#topdiv').load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+	 $('#lybottom').load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+	 $('#index').css({
+	 "font-family":"Arial, Helvetica, sans-serif",
+	 "color":"#2fafea",
+	 "background-image":"url(images/ly_05.gif)",
+	 "background-repeat":"no-repeat",
+	 "background-position":"center center"	 
+	 })	 
+}); 
+</script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv"></div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+       <div class="ly_zc">
+         <div class="ly_zct">
+           <div class="ly_zctl"></div> 
+           <div class="ly_zctc">1</div>
+           <div class="ly_zctm" style="background-image:url(images/bg_36.png);"></div>
+           <div class="ly_zcty" style="background-image:url(images/bg_31.jpg);">2</div>
+           <div class="ly_zctm"></div>
+           <div class="ly_zcts"></div> 
+           <div class="ly_zctw"></div>           
+         </div>
+        <div class="ly_zcc">
+           <div class="ly_zccl" style="color:#999;">设置账户信息</div>
+           <div class="ly_zccc" style="color:#666;">验证账户信息</div>
+           <div class="ly_zccr">注册成功</div>
+        </div>
+        <div class="ly_zcd">
+            <div class="ly_zcr">
+                <div class="ly_zcr_t"><img src="images/bg_40.jpg" style="float:left;" /> &nbsp;&nbsp;邮件已经发送到<span>moonship@qq.com</span>，请在48小时内点击邮件中的链接继续完成注册。</div>
+                <div class="ly_zcr_c"><a href="http://mail.qq.com" target="_blank"><img src="images/bg_41.jpg" /></a></div>
+                <div class="ly_zcr_d">
+                   <div class="ly_zcr_dm">
+                     <div class="ly_zcr_dmt">一直没收到邮件？</div>
+                     <div class="ly_zcr_dmd"><ul>
+                        <li>首先检查是否在垃圾邮件中</li>
+                        <li><p>如果还未收到请</p><a href="#"><span>重新发送邮件</span></a></li>
+                        <li>重新发送邮件，还未收到？请试试<a href="login_zc.html">更换其它邮箱</a></li>
+                        <li>一直没收到？您可以<a href="login_zc.html">重新注册</a></li>
+                     </ul></div>
+                   </div>
+                </div>
+            </div>
+        </div> 
+        </div> 
+        </div>             
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div id="lybottom" class="ly_bottom">
+  </div>
+  <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+@charset "utf-8";
+/* CSS Document */
+input,dd,dl,dt{padding:0px; margin:0px;}
+.kh_middlebox{font-size:12px; width:802px; float:left; padding:4px; overflow:hidden}
+.kh_top{width:792px; height:24px; float:left; font-size:12px; line-height:24px; padding-left:10px; background:url(../images/kh_1.jpg) no-repeat; color:#FFFFFF}
+.kh_top span{float:right; padding-right:10px; padding-top:1px;}
+.kh_top img{border:none}
+.kh_top a{font-size:16px; text-decoration:none; color:#FFFFFF;}
+.kh_nr{padding:4px; width:792px; border:1px solid #7d7d7d; border-top:none; float:left}
+.listjs_1{height:24px; line-height:24px; font-size:14px; float:left; border-bottom:6px solid #5ba100; width:792px;}
+.listjs_1 a{text-decoration:none;}
+.listjs_1 ul li{ float:left;}
+.listjs_1 ul li a{ display:block; text-align:center; width:100px; color:#235613}
+.listjs_1 ul li a:hover{color:#FFFFFF}
+.mont1 a{background:url(../images/kh_2.jpg) no-repeat; display:block; width:100px; height:24px; color:#fff!important;}
+.kh_xx_1{width:790px; height:144px; float:left; border:1px solid #d7d7d7; font-size:12px; margin-bottom:4px;}
+.hs{background:#7b7b7b; overflow:hidden; width:29px; height:133px; line-height:20px; color:#FFFFFF; font-size:14px; font-weight:bold}
+.red{font-weight:normal; color:#FF0000}
+.input_bd{width:123px; height:19px; border:1px solid #b3b3b3; background:none; margin-left:10px;}
+.input_bd_2{width:156px; height:19px; border:1px solid #b3b3b3; background:none; overflow:hidden}
+.input_bd_3{width:279px; height:19px; border:1px solid #b3b3b3; background:none; margin-left:10px;}
+.left10{margin-left:10px; float:left}
+.gsdz dl{width:520px; float:left}
+.gsdz dd{width:65px; text-align:right; padding-top:3px; float:left;}
+.gsdz dt{width:455px; float:left; height:33px;}
+.gsdz dt p{width:300px; float:left}
+.gsdz dt span{width:125px; height:30px; line-height:30px; float:left}
+.gengai{background:#7b7b7b; width:46px; height:19px; float:left; color:#FFFFFF; line-height:19px; text-align:center}
+.khxq dl{width:350px; float:left; overflow:hidden}
+.khxq dd{width:65px; float:left; text-align:right; overflow:hidden}
+.khxq dt{width:275px; float:left; padding-left:10px; overflow:hidden}
+.wbk{width:268px; height:73px; border:1px solid #b4b4b4; float:left; overflow:hidden; font-size:14px; }
+.tjfj dl{width:350px; float:left; margin-left:20px;}
+.tjfj dd{width:350px; float:left; color:#3f6721;}
+.tjfj a:hover{color:#ff8f02}
+.tjfj dt{width:350px; float:left; line-height:20px;}
+.tjfj dt span{width:330px; float:left; background:url(../images/xqc.jpg) no-repeat 0px 1px; overflow:hidden; height:33px; padding-left:20px;}
+.tjfj strong{font-weight:normal; padding:0px; margin:0px; padding-left:5px;}
+.hui{color:#767475; font-weight:normal}
+.tjan{width:790px; text-align:center; margin-top:10px; margin-bottom:10px; float:left}
+.Save{background:url(../images/Save.jpg) no-repeat; width:60px; height:22px; border:none;}
+.Cancel{background:url(../images/Cancel.jpg) no-repeat; width:60px; height:22px; border:none; margin-left:72px;}
+.cwxx{background:url(../images/cwxx.jpg) no-repeat 0px 12px; padding-left:20px; color:#FF0000}
+.cwxx_2{background:url(../images/cwxx.jpg) no-repeat 0px 5px;padding-left:20px; color:#FF0000}
+.zqgg{background:url(../images/zqgg.jpg) no-repeat 0px 12px; padding-left:20px;}

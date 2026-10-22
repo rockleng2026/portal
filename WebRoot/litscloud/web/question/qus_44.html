@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-立云公告</title>
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+.lk_bz{display:block; background-image:url(../images/lys_76.png); background-repeat:no-repeat; color:#c4e8fa;}
+</style>
+<script type="text/javascript" src="../js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+	//加载头部模块     
+ $(document).ready(function(){ 
+ 	
+	 $('#topdiv').load("../../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+	 $('#lybottom').load("../../tpl/bottom.jsp?tt="+(new Date()).getTime());
+	  $('#qtt').load("../../web/question/qus_title.html");
+	 $('#index').css({
+	 "font-family":"Arial, Helvetica, sans-serif",
+	 "color":"#2fafea",
+	 "background-image":"url(images/ly_05.gif)",
+	 "background-repeat":"no-repeat",
+	 "background-position":"center center"	 
+	 })	 
+}); 
+
+</script>
+
+</head>
+<body>
+<div class="ly_body">
+   <!------------------------------------------头部公用代码------------------------------------------------------------>
+ <div class="ly_top" id="topdiv"></div>
+   <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle">
+ 
+          <div class="ly_dh" style="height:4px; overflow:hidden;">          
+      </div>
+      <div class="ly_dhn" style="background-color:#fff;">
+      当前位置：<a href="index.html">首页</a> > <a href="../news.html">新闻动态</a> > 正文
+      </div>
+     <div class="news"> 
+      <div class="new">
+          <div class="newl" id="qtt">            
+         </div>
+         <div class="newr">
+            <div class="newr_t"></div>
+            <div class="newr_c">
+               <div class="newr_m">
+                  <div class="newr_mt">立云公告</div>
+                  <div class="newr_mv">主机上传的速度很慢？</div>
+                  <div class="newr_ms">作者：立云&nbsp;&nbsp;&nbsp;&nbsp;    文章来源：立云 &nbsp;&nbsp;&nbsp;&nbsp;   点击数：<span>288</span> &nbsp;&nbsp;&nbsp;&nbsp;   更新时间：2013-4-12</div>
+                  <div class="newr_mu">首先可能是大网络环境，如电信的上传网通的。或者网通的上传电信的
+
+其次就是本地网络连接问题 
+				  </div>
+                 <div class="newr_ms""><a href="#" onclick="history.go(-1);" style="font-size:12px;font-weight:bolder;"> 返回</a></div>
+            	  
+                
+               
+               
+               
+            </div>
+            <div class="newr_d"></div>
+         </div>
+      </div>
+      </div>
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div> 
+   </div>
+
+<!--_________________________底部公用代码 _______________________________________________-->
+  <div id="lybottom" class="ly_bottom">
+  </div>
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

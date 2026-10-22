@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	
+	 	<!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 登录dao注入 -->
+		<bean id="executeRecordDao" class="com.fuao.fajxc.dao.impl.executeRecord.ExecuteRecordDaoImpl" parent="baseDao">
+		</bean>
+
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 登录Bussiness注入 -->
+		<bean id="executeRecordBussiness" class="com.fuao.fajxc.bussiness.impl.executeRecord.ExecuteRecordBussinessImpl">
+			<property name="executeRecordDao" ref="executeRecordDao"></property>
+		</bean>
+
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 登录Action注入 -->
+		<bean id="ExecuteRecordAction" class="com.fuao.fajxc.action.executeRecord.ExecuteRecordAction">
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		</bean>
+		
+		<bean id="TodoAction" class="com.fuao.fajxc.action.executeRecord.TodoAction">
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		</bean>
+		
+		
+	 </beans>

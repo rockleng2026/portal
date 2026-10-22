@@ -1,0 +1,13 @@
+@charset "utf-8";
+/* CSS Document */
+
+.errbox{ display:block; clear:both; width:650px; background:#dadada; border:#f8f8f8 4px solid; padding:1px; margin:6% auto;}
+.errbox p{ padding:0; margin:0;}
+.errbox .mainbox{ background:#fff;display:block; clear:both; padding:15px;}
+.errbox .errtop{ border-bottom:#dadada 1px solid; text-align:right; color:#c30;font:bold 14px/28px Tahoma, "����"; }
+.errbox .errtop a{color:#999; margin:0 5px; text-decoration:none;}
+.errbox .main{ display:block; clear:both; text-align:center; font:normal 12px/24px Tahoma, "����"; color:#666; margin:40px auto 20px auto;}
+.errbox .main a{ color:#06c; text-decoration:underline; margin:0 5px;}
+.errbox .main a:hover{ text-decoration:none;}
+
+h2{display:block; clear:both;color:#333; text-align:center; font:bold 16px/34px Tahoma, "����"; margin:0 0 10px 0;}

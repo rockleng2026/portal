@@ -1,0 +1,12 @@
+.oh-menu {
+	Z-INDEX: 101; BORDER-BOTTOM: #c6c6c6 1px solid; POSITION: absolute; BORDER-LEFT: #c6c6c6 1px solid; PADDING-BOTTOM: 6px; BACKGROUND-COLOR: #e7e7e7; MARGIN-TOP: -4px; PADDING-LEFT: 12px; WIDTH: 90px; PADDING-RIGHT: 12px; DISPLAY: none; TOP: auto; BORDER-RIGHT: #c6c6c6 1px solid; PADDING-TOP: 3px; diplay: table
+}
+.oh-menu TD {
+	PADDING-BOTTOM: 3px; PADDING-TOP: 3px
+}
+.oh-menuctrl {
+	POSITION: relative
+}
+.mmhover .oh-menu {
+	DISPLAY: block
+}

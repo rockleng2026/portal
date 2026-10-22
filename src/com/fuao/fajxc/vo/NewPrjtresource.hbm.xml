@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<!-- 项目消费记录 -->
+	<class name="com.fuao.fajxc.vo.NewPrjtresource" table="new_prjtresource">
+		<id name="id" column="id" type="integer">
+			<generator class="native"></generator>
+		</id>
+		<many-to-one name="task" class="com.fuao.fajxc.vo.NewTask" fetch="select">
+			<column name="fid">
+				<comment>外键任务</comment>
+			</column>
+		</many-to-one>
+		<many-to-one name="empsubmit" class="com.fuao.fajxc.vo.Employee" fetch="select">
+			<column name="empid">
+				<comment>提交人</comment>
+			</column>
+		</many-to-one>
+		<many-to-one name="emp" class="com.fuao.fajxc.vo.Employee" fetch="select">
+			<column name="eid">
+				<comment>审批人</comment>
+			</column>
+		</many-to-one>
+		<property name="tplan" column="tplan" type="integer"></property>
+		<property name="subtime" column="subtime" type="string"></property>
+		<property name="nfj" column="nfj" type="string"></property>
+		<property name="remakes" column="remakes" type="string"></property>
+		<property name="nmoney" column="nmoney" type="double"></property>
+		<property name="appstatus" column="appstatus" type="integer"></property>
+		<property name="temp1" column="temp1" type="string"></property>
+		<property name="temp2" column="temp2" type="string"></property>
+		<property name="temp3" column="temp3" type="string"></property>
+	</class>
+</hibernate-mapping>

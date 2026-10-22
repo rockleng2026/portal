@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    <struts>
+    <!--  产品package -->
+    <package name="PackageProduct" extends="struts-default">
+    <!-- 零配件Action -->
+    <action name="*access" class="com.fuao.fajxc.action.product.AccessoriesAction" method="{1}">
+    <result name="success">/Product/Accessories.jsp</result>
+    </action>
+    <!-- 服务器Action -->
+    <action name="*server" class="com.fuao.fajxc.action.product.ServerAction" method="{1}">
+    <result name="success">/Product/Server.jsp</result>
+    </action>
+    <!-- 机房Action -->
+    <action name="*room" class="com.fuao.fajxc.action.product.ServerRoomAction" method="{1}">
+    <result name="success">/Product/ServerRoom.jsp</result>
+    </action>
+    <!-- 其他产品Action -->
+    <action name="*atherProduct" class="com.fuao.fajxc.action.product.AtherProductAction" method="{1}">
+    <result name="success">/Product/AtherProduct.jsp</result>
+    </action>
+    </package>
+    </struts>

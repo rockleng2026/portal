@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+
+<package name="Packagecontract" extends="struts-default">
+
+<!-- 合同管理 -->
+<action name="*Contracta" class="ContractActiona" method="{1}">
+<result name="list">/contract/contractList.jsp</result> 
+<result name="select" type="redirect">selectContracta.do</result> 
+<result name="add">/contract/addContract.jsp</result>
+<result name="info">/contract/contractInfo.jsp</result>
+</action>
+ </package>
+
+</struts>

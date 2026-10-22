@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.NewHistoryQuestion" table="new_historyquestion">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="qid" column="qid" type="integer"/>
+  <property name="solver" column="solver" type="integer"/>
+  <property name="solveresult" column="solveresult" type="string"/>
+  <property name="fj" column="fj" type="string"/>
+  <property name="solvetime" column="solvetime" type="date"/>
+</class>
+</hibernate-mapping>

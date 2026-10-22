@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC
+    "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN"
+    "http://getahead.ltd.uk/dwr/dwr20.dtd">
+<dwr>
+   <allow>
+       <!-- JAVA类 转化为 JS 连接创建到对应的spring中  -->
+        <create javascript="DwrDept" creator="spring">
+ 			<param name="beanName" value="empdata"></param>
+ 		</create>
+ 	   
+ 	     <create javascript="e" creator="spring">  
+		  <param name="beanName" value="numDWR"/>  
+ 	          <include method="getUpservNumber"/>
+ 	          <include method="getUpsernode"/>
+ 	          <include method="getCabpossition"/>
+ 	          <include method="upsFlags"/>
+ 	          <include method="getAllHouses"/>
+ 	          <include method="getAllCabinets"/>
+ 	          <include method="loadStorage"/>
+ 	          <include method="loadservers"/>
+ 	          <include method="getRoomCode"/>
+ 	          <include method="getCommentHouses"/>
+ 	          <include method="getEleInfos"/>
+ 	          <include method="ReAtRoom"/>
+ 	          <include method="getCityNames"/>
+ 	          <include method="autoAllotSpase"/>
+ 	          <include method="getUpdSize"/>
+ 	          <include method="getChangePosition"/>
+ 	   </create>
+   </allow>
+</dwr>

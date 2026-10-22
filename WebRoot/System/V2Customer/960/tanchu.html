@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css">
+.box{width:766px; height:442px; background:url(images/boxbk.jpg) no-repeat;}
+.top{width:736px; float:left; height:33px; line-height:33px; font-family:"微软雅黑"; font-size:14px; font-weight:bold; padding-left:30px;
+color:#9fe50b}
+.top span{color:#FFFFFF; padding-left:15px; background:url(images/dadian.jpg) no-repeat 4px 7px}
+.top a{color:#FFFFFF; text-decoration:none}
+.content{width:725px; height:379px;  margin:0 auto; font-size:12px; padding:10px 10px 10px 10px;}
+b{font-size:12px; color:#FF0000;}
+.biaodan_1{width:418px; height:21px; border:1px solid #e9ecf1; border-top:1px solid #aaadb2}
+.biaodan_2{width:418px; height:180px; border:1px solid #e9ecf1; border-top:1px solid #aaadb2; overflow:hidden}
+.an{width:53px; height:22px; border:none; background:url(images/an.jpg) no-repeat}
+.blue{background:#f3f7fa}
+.searchinput{ border:0px; margin:0px; padding:0px; padding-left: 3px; width: 100px; height:17px;font-family: arial;
+	float: left;color: #bebebe;margin-left: 4px; font-size: 8pt; line-height:20px; border:1px solid #e9ecf1; border-top:1px solid #aaadb2}
+.searchaction{width: 16px;float: left;height: 18px; background:url(images/fdj.jpg); border:0px;}
+.yui{width:130px; height:20px; border:1px solid #e9ecf1; border-top:1px solid #c3d4e1; background:#f3f7fa; line-height:20px; font-size:12px; margin:0 auto}
+.bk1{border:1px solid #e9ecf1}
+.topbk{border-top:1px solid #e9ecf1}
+rightbk{border-right:1px solid #e9ecf1}
+.da{font-size:16px; font-weight:bold; color:#fe5614; padding-left:5px;}
+.left{width:560px; height:379px; float:left; margin-top:5px;}
+.right{width:150px; float:left; height:360px; margin-left:10px; border:1px solid #e9ecf1; margin-top:5px;}
+</style>
+</head>
+
+<body>
+<div class="box">
+<div class="top">
+发送员工消息
+<span><a href="#">已发短消息</a></span>
+<span><a href="#">已读短信息</a></span>
+<span><a href="#">未读短信息</a></span>
+<span><a href="#">消息草稿箱</a></span>
+</div>
+<div class="content">
+<div class="left">
+<table width="560" height="379" border="0" align="left" cellpadding="0" cellspacing="0" class="bk1">
+  <tr>
+    <td height="31" colspan="2">发件箱中（带<b>*</b>号的为必填项）</td>
+    </tr>
+  <tr>
+    <td width="80" height="31" class="topbk blue rightbk"><b>*</b>消息类型</td>
+    <td width="480" class="topbk rightbk"><select>
+      <option>请选择</option>
+    </select>&nbsp;</td>
+    </tr>
+  <tr>
+    <td width="80" height="31" class="topbk blue rightbk"><b>*</b>接收人</td>
+    <td width="480" class="topbk rightbk"><input name="" type="text"  class="biaodan_1"/></td>
+    </tr>
+  <tr>
+    <td width="80" height="31" class="topbk blue"><b>*</b>标题</td>
+    <td width="480" class="topbk rightbk"><input name="" type="text"  class="biaodan_1"/></td>
+    </tr>
+  
+  <tr>
+    <td width="80" height="180" class="topbk blue rightbk"><br />
+      <b>*</b>消息内容</td>
+    <td width="480" height="180" align="left" valign="top" class="topbk rightbk"><textarea name="" cols="" rows="" class="biaodan_2"></textarea></td>
+    </tr>
+  <tr>
+    <td width="80" height="30" class="topbk blue rightbk">&nbsp;</td>
+    <td width="480" align="left" valign="top" class="topbk rightbk">
+	<input name="" type="submit" value="发送"  class="an"/>
+	<input name="" type="button" value="重置"  class="an"/>
+	<input name="" type="button" value="存草稿" class="an" />
+	<input name="" type="button" value="关闭"  class="an"/>	</td>
+    </tr>
+</table>
+</div>
+<div class="right">
+<table width="150" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td height="31"><span><input type="text" name="q" title="Search" class="searchinput" id="searchinput" onkeydown="if (event.keyCode==13) {}" onblur="if(this.value=='')value='多条件查询请用';" onfocus="if(this.value=='多条件查询请用')value='';" value="多条件查询请用" size="10"/>
+<input type="image" width="20" height="0" class="searchaction" onclick="if(document.forms['search'].searchinput.value=='多条件查询请用')document.forms['search'].searchinput.value='';" alt="Search" border="0" hspace="2"/></span></td>
+  </tr>
+  <tr>
+    <td height="31"><div class="yui"><span class="da">></span>所有人员列表</div></td>
+  </tr>
+  <tr>
+    <td height="31"><div class="yui"><span class="da">></span>选择部门</div></td>
+  </tr>
+  <tr>
+    <td height="31"><div class="yui"><span class="da">></span>按部门选择人员</div></td>
+  </tr>
+</table>
+
+</div>
+</div>
+</div>
+</body>
+</html>

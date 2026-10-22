@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（自助管理-在线工单）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+ <div class="ly_top" id="topdiv">
+   </div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" >我的<br />账户</a></li>
+                <li><a href="bg_indent.html" style="background-image:url(images/bg_01.png); color:#ffffff;">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_indent.html" target="_parent">订单管理</a></li>
+                    <li><a href="bg_zxgd.html" style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">在线工单</a></li>
+                     <li><a href="bg_wdgd.html">我的工单</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="bg_zx">
+             <div class="bg_zxt">
+                <div class="bg_zxtl">产品类型：</div>
+                <div class="bg_zxtr"><select name="zx_cplx" class="zx_cplx">
+                  <option value="1">自由主机</option>
+                  <option value="2">自由主机2</option>
+                  <option value="3">自由主机3</option>
+                </select></div>
+             </div>
+             <div class="bg_zxt">
+                <div class="bg_zxtl">IP或者帐号：</div>
+                <div class="bg_zxtr"><select name="zx_zh" class="zx_cplx">
+                  <option value="1">-----请选择-----</option>
+                  <option value="2">wangtowang</option>
+                  <option value="3">towangto</option>
+                </select></div>
+             </div>
+             <div class="bg_zxt">
+                <div class="bg_zxtl">请勾选确认：</div>
+                <div class="bg_zxtr"><input name="zx_gx" type="radio" value="确认" />请确认您提交的产品类型与问题类别，否则不予受理!</div>
+             </div>
+              <div class="bg_zxt">
+                <div class="bg_zxtl">问题类别：</div>
+                <div class="bg_zxtr"><select name="zx_lb" class="zx_cplx">
+                  <option value="1">-----请选择-----</option>
+                  <option value="2">主机什么的？</option>
+                  <option value="3">什么配置的？</option>
+                </select></div>
+             </div>
+              <div class="bg_zxt">
+                <div class="bg_zxtl">是否支付费用：</div>
+                <div class="bg_zxtr"><input name="zx_zf" type="radio" value="是" />产生费用</div>
+             </div>
+            <div class="bg_zxt">
+                <div class="bg_zxtl">免费声明：</div>
+                <div class="bg_zxtr"><input name="zx_mfsm" type="radio" value="免费" />免费声名对于会员号下所要求的任何操作而引起的任何影响，我公司均不承担任何责任</div>
+             </div> 
+            <div class="bg_zxt">
+                <div class="bg_zxtl">手机号码：</div>
+                <div class="bg_zxtr"><input name="zx_sjhm" type="radio" value="手机号码" />确认手机号码，方便给您短信回复！ <span>48565653266</span></div>
+             </div>
+            <div class="bg_zxt">
+                <div class="bg_zxtl">邮箱号码：</div>
+                <div class="bg_zxtr"><input name="zx_email" type="radio" value="邮箱" />确认邮箱，方便给您短信回复！ <span>48565653@qq.com</span></div>
+             </div>
+             <div class="bg_zxt">
+                <div class="bg_zxtl">网站域名：</div>
+                <div class="bg_zxtr"><input type="text" name="zx_wzym" class="zx_wzym" value="http://" />方便技术人员第一时间处理您的问题。</div>
+             </div> 
+             <div class="bg_zxt">
+                <div class="bg_zxtl">问题描述：</div>
+                <div class="bg_zxtm">
+                  <textarea name="zx_wtms" class="zx_wtms">涉及到相关空间域名的时候，请留下相关的帐号或者域名</textarea>
+                </div>                
+             </div>   
+             <div class="bg_zxt">
+                <div class="bg_zxtl">授权码：</div>
+                <div class="bg_zxtr"><input type="text" name="zx_wzym" class="zx_wzym" value="5485344" />请输入授友码验证唯一性，真实性</div>
+             </div> 
+             <div class="bg_zxd">
+                <div class="bg_zxdl"><a href="#">提交</a></div> 
+                <div class="bg_zxdr"><a href="#">重置</a></div> 
+             </div> 
+          </div>     
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+ <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

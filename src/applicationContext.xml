@@ -1,0 +1,466 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 http://www.springframework.org/schema/tx
+	 http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	 http://www.springframework.org/schema/aop
+	 http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	 <!-- 
+	 <import resource="applicationContext-system.xml"/>
+	  -->
+        <bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver">
+		</property>
+		
+		<!-- <property name="url" value="jdbc:mysql://localhost:3306/portal20191015?characterEncoding=UTF-8"></property> -->
+		<!--  <property name="url" value="jdbc:mysql://127.0.0.1:3306/portal20160513?characterEncoding=UTF-8"></property>-->
+		<property name="url" value="jdbc:mysql://113.45.136.43:18389/portal20160513?characterEncoding=UTF-8"></property>
+		<property name="username" value="root"></property>
+		<!-- <property name="password" value="lengfeng847"></property> -->
+		<property name="password" value="groupDbSys@2024"></property>
+		<property name="validationQuery" value="SELECT COUNT(*) FROM DUAL"></property>
+		
+		<!-- 
+		<property name="url" value="jdbc:mysql://42.51.1.33:3306/liyun?characterEncoding=UTF-8"></property>
+		<property name="username" value="huayan"></property>
+		<property name="password" value="huayan09"></property>
+		<property name="validationQuery" value="SELECT COUNT(*) FROM DUAL"></property>
+		-->
+		</bean>
+
+		
+		<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+				org.hibernate.dialect.MySQL5Dialect
+				<!-- 	com.fuao.fajxc.util.MySQLDialect   -->
+				</prop>
+				<prop key ="hibernate.show_sql">true</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>/com/fuao/fajxc/vo/Customer.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Batchexp.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ConkOut.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Batch.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Groups.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Supplier.hbm.xml</value>
+				<value>
+					com/fuao/fajxc/vo/CustomerCommodity.hbm.xml
+				</value>
+				<value>
+					com/fuao/fajxc/vo/RoleFunctionInfo.hbm.xml
+				</value>
+				<value>com/fuao/fajxc/vo/Charge.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Department.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CustomerAuditing.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Outbound.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Property.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Permission.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/UserGroupInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Product.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Field.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Depot.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/IntentFollowUp.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ProductType.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/RefundmentLog.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ServerMonitor.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Ruin.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/AddServer.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CDNsaleOrder.hbm.xml</value>
+				
+				<value>com/fuao/fajxc/vo/Stat.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CustomerTryout.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/PaymentLog.hbm.xml</value>				
+				<value>com/fuao/fajxc/vo/Roles.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Users.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/FunctionInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CustomerMove.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CommodityTpye.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Employee.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Model.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ApplyBuy.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ApplyBuyInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/PurOrderInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/PurOrder.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ReturnOrder.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ToOrder.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ToOrderprinfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/StatInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/OutboundInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/AllType.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Storage.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/StorageInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/RuinInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Priceregulation.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/DownServer.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/UpServer.hbm.xml</value>
+				<value>/com/fuao/fajxc/vo/RenewLog.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/AssemblyServer.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/VerifyOrder.hbm.xml</value>
+				<value>
+					com/fuao/fajxc/vo/VerifyOrderEmployee.hbm.xml
+				</value>
+				<value>com/fuao/fajxc/vo/AuditingOrderTab.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Income.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/IncomeInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ReturnOrderInfo.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Message.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Messagehistory.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Messagereceiver.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Messagetype.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Sendmessage.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Conkoutask.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Messageremind.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Empassess.hbm.xml</value>
+				<!-- 商品管理 -->
+				 <value>com/fuao/fajxc/vo/Goods_dict.hbm.xml</value>
+				 <value>com/fuao/fajxc/vo/GoodsClass_expand.hbm.xml</value>
+				 <value>com/fuao/fajxc/vo/Sale_goods.hbm.xml</value>
+				 <value>com/fuao/fajxc/vo/Sale_orders.hbm.xml</value>
+				 <value>com/fuao/fajxc/vo/SaleGoods_mids.hbm.xml</value>
+			
+				 
+				<value>
+					com/fuao/fajxc/vo/Questioncategory.hbm.xml
+				</value>
+				<value>com/fuao/fajxc/vo/Plans.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Missiontype.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Mission.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/MissionEmp.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Docmark.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Knowledgelib.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Contract.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/EmployeeFjfb.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Scheduleplan.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CommonScfjb.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/UserRelationfb.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/UserRelation.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/UserRelationtypesb.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/FieldProperty.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/FieldRemark.hbm.xml</value>
+
+				<value>com/fuao/fajxc/vo/Executerecord.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/WorkLog.hbm.xml</value>
+
+				<value>com/fuao/fajxc/vo/FormDetail.hbm.xml</value> 
+				<value>com/fuao/fajxc/vo/FormTemp.hbm.xml</value> 
+				
+				<value>com/fuao/fajxc/vo/Cache.hbm.xml</value> 
+				<value>com/fuao/fajxc/vo/CDNip.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Cdnprice.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/District.hbm.xml</value> 
+				<value>com/fuao/fajxc/vo/Orderdata.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Ordertype.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Productproperty.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/RealmType.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/SaleOrder.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Saleordercenter.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/SetMeal.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/SetMealCenter.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/SetMealProperty.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/State.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Type.hbm.xml</value> 
+				
+				<value>com/fuao/fajxc/vo/Fa_Cms_Classes.xml</value>
+				<value>com/fuao/fajxc/vo/Fa_Cms_Content_Comments.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Fa_Cms_Member.xml</value>
+				<value>com/fuao/fajxc/vo/Fa_Cms_News.xml</value>
+				<value>com/fuao/fajxc/vo/Fa_Cms_Rec_Info.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Fa_Cms_Rec_Part.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Fa_Cms_Template.xml</value>
+				<value>com/fuao/fajxc/vo/Fa_Cms_Admin.hbm.xml</value>
+                <value>com/fuao/fajxc/vo/Fa_Cms_AdminRight.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Fa_Cms_AdminModel.hbm.xml</value>
+                
+                <!-- 考试系统 -->
+				<!-- <value>com/fuao/fajxc/vo/Examtitleclass.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Exampaper.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Titleandpaper.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Exammodel.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Examtabscore.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Examroles.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Examscore.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Examtabchoce.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Examtitle.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/TbOnlSearchTit.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/TbOnlSearchTitL.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/TbOnlSearchTitLitem.hbm.xml</value> -->
+				
+				
+				<!-- 项目管理 -->
+				<value>com/fuao/fajxc/vo/Project.hbm.xml</value> 
+				<value>com/fuao/fajxc/vo/ProjectLead.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ProjectEmp.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/ProjectEmpLead.hbm.xml</value>
+				
+				<value>com/fuao/fajxc/vo/City.hbm.xml</value>
+					<!--///  -->
+				<value>com/fuao/fajxc/vo/ElectHouse.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Cabinet.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/LogTab.hbm.xml</value> 
+				<value>com/fuao/fajxc/vo/IPConfiguration.hbm.xml</value> 
+				<!-- 请假单 -->
+				<value>com/fuao/fajxc/vo/Leavesimple.hbm.xml</value>
+				<!-- jasypt加密使用配置文件  自定义加密类型-->
+				
+
+				<value>com/fuao/fajxc/vo/jasyptHibernateTypes.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Updatecache.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/RechargeLog.hbm.xml</value>
+				<!-- 20120227 by lzyo 订单通用模块 -->
+				<value>com/fuao/fajxc/vo/SetmealComm.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/SetmealPropertyComm.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/SaleorderComm.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Workposition.hbm.xml</value>
+				<value>
+					com/fuao/fajxc/vo/WorkpositionEmployee.hbm.xml
+				</value>
+				<value>com/fuao/fajxc/vo/Workgrade.hbm.xml</value>
+				
+				<!-- 流程 -->
+				<value>com/fuao/fajxc/vo/SaledFlow.hbm.xml</value>
+				<!-- 通用流程 -->
+				<value>com/fuao/fajxc/vo/CurrencyProcess.hbm.xml</value>
+				<!-- 新项目管理 -->
+				<value>com/fuao/fajxc/vo/NewApprove.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewDocument.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewFunction.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewFunctionRecord.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewHistoryQuestion.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewProblem.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewProject.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewQuestion.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewTask.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewParticipator.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewPrjdept.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewWatch.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Approverecord.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NewFunctionDelRecord.hbm.xml</value>
+
+
+				<value>com/fuao/fajxc/vo/Taskplan_saleorder.hbm.xml</value>
+
+
+				<value>com/fuao/fajxc/vo/NewPrjtresource.hbm.xml</value>
+
+				<value>com/fuao/fajxc/vo/DepartmentGrade.hbm.xml</value>
+
+				<value>com/fuao/fajxc/vo/EmployeeGrade.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/DeliveryAddress.hbm.xml</value>
+
+
+				
+				<!-- 资源核实单 -->
+				<value>com/fuao/fajxc/vo/Tresourcecheck.hbm.xml</value>
+
+				<value>com/fuao/fajxc/vo/Operationgroup.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/OperationEmployeematch.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/OperationDepartmentmatch.hbm.xml</value>
+
+				<value>com/fuao/fajxc/vo/pagefunction.hbm.xml</value>
+				<!-- 运维单 -->
+				<value>com/fuao/fajxc/vo/Operate.hbm.xml</value>
+				<!-- 冻结表 -->
+				<value>com/fuao/fajxc/vo/Freeze.hbm.xml</value>
+				<!-- 商品管理模块==>工单 -->
+				<value>com/fuao/fajxc/vo/Workorder.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/VerifyOrderDepartment.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/Auditline.hbm.xml</value>
+	
+				<!-- CDN 模块 -->
+				<value>com/fuao/fajxc/vo/CdnFlowDis.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnVisits.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnReferer.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnIspDis.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnAreaDis.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnFlow.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnUrlRefresh.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnDirRefresh.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnLogs.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnUser.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/CdnDomain.hbm.xml</value>
+				
+				<!-- 新cdn模块 -->
+				<value>com/fuao/fajxc/vo/cdnArea.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/cdnType.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/cdnPanelPoint.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/cdnRealmNameIP.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/cdnGroup.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/cdnLogServer.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/cdnLogTimeStat.hbm.xml</value>
+				<!-- 新系统的公告模块 -->
+				<value>com/fuao/fajxc/vo/Notice.hbm.xml</value>
+				<value>com/fuao/fajxc/vo/NoticeDept.hbm.xml</value>
+
+				</list>
+
+				
+				
+				
+			</property></bean>
+				<!-- 日志 -->
+				<!-- 
+				<bean id="aftlogger" class="com.fuao.fajxc.util.OperratoLoggers">
+					<property name="lotb" ref="opLogeService"></property>
+				</bean>
+				 -->
+				<!-- 定义自动日志代理 -->
+				
+				<!-- <bean id="logPointCutAdvisor" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"> -->
+				  <!-- <property name="beanNames"> -->
+				   <!--  <list> -->
+				    	<!-- 此属性为需要被代理的Bean，即Bean的ID -->
+				    	<!-- <value>*Service</value> -->
+				   <!--  </list> -->
+				 <!--  </property> -->
+				  <!-- 此属性为作用在被代理的类上的切面业务 -->
+				 <!--  <property name="interceptorNames"> -->
+				  <!--   <list> -->
+				  <!--     <value>aftlogger</value> -->
+				 <!--    </list> -->
+				<!--   </property> -->
+				<!-- </bean> -->
+		
+		<!-- 配置事务管理器-->
+	    <bean id="transactionManager"
+        class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory" />
+        </property>
+		
+        </bean>
+        
+
+      
+      
+      
+      
+      
+    <!--  <bean id="strongEncryptor"
+class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+    <property name="algorithm">
+      <value>PBEWithMD5AndDES</value>
+    </property>
+    <property name="password">   
+      <value>roots</value>
+    </property>
+  </bean>
+  <bean id="hibernateStringEncryptor"
+  class="org.jasypt.hibernate.encryptor.HibernatePBEStringEncryptor">
+    <property name="registeredName">
+      <value>strongHibernateStringEncryptor</value>
+    </property>
+    <property name="encryptor">
+      <ref bean="strongEncryptor" />
+    </property>
+  </bean>
+      
+      
+      <bean id="stringDigester" class="org.jasypt.digest.PooledStringDigester">
+   
+    <property name="poolSize" value="2"/>
+    <property name="algorithm" value="SHA-256"/>
+    <property name="iterations" value="100000"/>
+    <property name="saltGenerator">
+      <bean class="org.jasypt.salt.RandomSaltGenerator"/>
+    </property>
+    <property name="saltSizeBytes" value="16"/>
+  </bean>
+
+  
+  <bean id="passwordEncryptor" class="com.myproject.util.StringPasswordEncryptor">
+    <property name="stringDigester" ref="stringDigester"/>
+  </bean>
+      -->  
+      <bean id="saltGenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+      <property name="salt" value="justAnotherSalt"></property>
+      
+      </bean>
+      <bean id="simpleStringConfiguration" class="org.jasypt.encryption.pbe.config.SimpleStringPBEConfig">
+      <property name="algorithm" value="PBEWithMD5AndDES"></property>
+      <property name="password" value="neusoft"></property>
+      <property name="saltGenerator" ref="saltGenerator"></property>
+      
+      </bean>
+      <bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+      <property name="config" ref="simpleStringConfiguration"></property>
+      
+      </bean>
+      
+      <bean id="hibernateStringEncryptor" class="org.jasypt.hibernate.encryptor.HibernatePBEStringEncryptor">
+      <property name="encryptor" ref="configurationEncryptor"></property>
+      <property name="registeredName" value="hibernateStringEncryptor"></property>
+      
+      </bean>
+        <!--配置事务的传播特性-->
+    
+	   <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+          <tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="upda*" propagation="REQUIRED" />
+			<tx:method name="do*" propagation="REQUIRED" />
+			<tx:method name="auditingPass" propagation="REQUIRED" />
+			<tx:method name="set*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="split*" propagation="REQUIRED" />
+			<tx:method name="count*" propagation="REQUIRED" />
+			<tx:method name="get*" propagation="REQUIRED" />
+        </tx:attributes>
+       </tx:advice>
+	
+	    <!-- 哪些类的哪些方法参与事务 -->
+	    <aop:config>
+			<aop:pointcut id="audPointCut" expression="execution(* com.fuao.fajxc.*.*.impl..*(..))"/>
+			<aop:advisor pointcut-ref="audPointCut" advice-ref="txAdvice"/>
+			</aop:config>
+			<aop:config>
+			<aop:pointcut id="udPointCut" expression="execution(* com.fuao.fajxc.*.impl..*(..))"/>
+			<aop:advisor pointcut-ref="udPointCut" advice-ref="txAdvice"/>
+		</aop:config>
+		
+
+		<!--BaseDao注入 -->
+		<bean id="baseDao" class="com.fuao.fajxc.dao.impl.BaseDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"></property>
+		</bean>
+		
+		
+		<!--  <bean id="product_CommentDao" class="com.fuao.fajxc.product_manageDao.product_CommentDao" parent="baseDao">
+		
+		</bean>
+		-->
+		<!-- dwrgetdept注入 -->
+			
+		<bean id="empgetdao" class="com.fuao.fajxc.dao.impl.basic.EmployeeDaoImpl" parent="baseDao">
+		
+		</bean>
+		
+		<bean id="dwrGetDept" class="com.fuao.fajxc.dwr.service.DwrGetDeptDAO">
+		   <property name="sessionFactory" ref="sessionFactory"></property>
+		</bean>
+		<!-- dwrgetdeptAction注入 -->
+		<bean id="dwrdeptAction" class="com.fuao.fajxc.dwr.service.DwrActionTest">
+		    <property name="dwrgetdept" ref="dwrGetDept"></property>
+		</bean>
+		<bean id="empdata" class="com.fuao.fajxc.dwr.service.DwrGetEmp">
+		    <property name="empdao" ref="empgetdao"></property>
+		</bean>	
+		
+</beans>

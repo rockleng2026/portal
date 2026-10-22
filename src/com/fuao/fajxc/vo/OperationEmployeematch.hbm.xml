@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.OperationEmployeematch" table="operationEmployeematch">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="money" column="money" type="double"/>
+  <property name="creatTime" column="creatTime" type="string"/>
+  <property name="explain" column="explaines" type="string"/>
+  <property name="temp" column="temp" type="integer"/>
+
+  <many-to-one name="type" class="com.fuao.fajxc.vo.Missiontype" fetch="select">
+    <column name="typeid"></column>
+  </many-to-one>
+  
+  <many-to-one name="employee" class="com.fuao.fajxc.vo.Employee" fetch="select">
+    <column name="empid"></column>
+  </many-to-one>
+</class>
+</hibernate-mapping>
+

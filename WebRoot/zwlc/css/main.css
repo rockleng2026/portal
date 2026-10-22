@@ -1,0 +1,25 @@
+body {
+	font-family: "宋体";
+	margin: 0px;
+	padding: 0px;
+	color:#000;
+	background: #fff;
+*text-align:center;		
+}
+div,h1,img,ul,li{margin: 0px;padding: 0px; *text-align:left;}
+h1{ font-size:14px; color:#fff;padding-left:10px;}
+
+.dt01{width:750px; height:32px; line-height:32px;  margin:0 auto; background:#494949;  margin-top:15px;}
+.dt02{width:750px; height:680px; margin:0 auto; position:relative;}
+.dt03{width:750px; height:14px; margin:0 auto;}
+.dt04{ position:absolute; left:90px;top:10px; width:32px; height:23px; background:url(../image/6_03.gif) left top no-repeat; text-align:center; }
+.dt05{ position:absolute; left:250px;top:10px; width:32px; height:23px; background:url(../image/6_03.gif) left top no-repeat; text-align:center; }
+.dt06{ position:absolute; right:90px;top:10px; width:32px; height:23px; background:url(../image/6_03.gif) left top no-repeat; text-align:center; }
+.dt07{ position:absolute; right:200px;bottom:130px; width:32px; height:23px; background:url(../image/6_03.gif) left top no-repeat; text-align:center; }
+.dt08{ width:750px; height:94px; margin:0 auto; position:relative;}
+.dt09{width:750px; margin:0 auto; margin-top:50px;}
+.dt09 ul li{ list-style:none; float:left; display:inline; width:200px; font-size:14px; font-weight:bold; height:35px; line-height:35x; margin-left:100px;}
+.dt10{width:750px; margin:0 auto; margin-top:40px;}
+.dt10 ul li{list-style:none; float:left; display:inline;position:relative; margin:0 50px 0 20px;; }
+.dt11{ position:absolute;left:90px;top:-25px; background:url(../image/a3_03.gif) left top; width:61px; height:52px; line-height:45px; text-align:center;
+ font-size:12px; font-weight:bold; color:#fff;}

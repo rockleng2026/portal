@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	<!-- >>>>>>>>>>>>>>>>>>>>>cdn   Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<bean id="SaleOrderDao" class="com.fuao.fajxc.dao.impl.cdn.SaleOrderDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="CacheDao" class="com.fuao.fajxc.dao.impl.cdn.CacheDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="CDNsaleOrderDao" class="com.fuao.fajxc.dao.impl.cdn.CDNsaleOrderDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="DistrictDao" class="com.fuao.fajxc.dao.impl.cdn.DistrictDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="SetMealDao" class="com.fuao.fajxc.dao.impl.cdn.SetMealDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="TypeDao" class="com.fuao.fajxc.dao.impl.cdn.TypeDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="SetMealCenterDao" class="com.fuao.fajxc.dao.impl.cdn.SetMealCenterDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="SetMealPropertyDao" class="com.fuao.fajxc.dao.impl.cdn.SetMealPropertyDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="RealmTypeDao" class="com.fuao.fajxc.dao.impl.cdn.RealmTypeDaoImpl" parent="baseDao">
+	</bean>
+	<bean id="CDNipDao" class="com.fuao.fajxc.dao.impl.cdn.CDNipDaoImpl" parent="baseDao">
+	</bean>
+	
+	
+	<!-- >>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<bean id="SaleOrderBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.SaleOrderBussinessImpl">
+		<property name="saleorderdao" ref="SaleOrderDao"></property>
+	</bean>
+	<bean id="CacheBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.CacheBussinessImpl">
+		<property name="cachedao" ref="CacheDao"></property>
+	</bean>
+	<bean id="CDNsaleOrderBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.CDNsaleOrderBussinessImpl">
+		<property name="cdnsaleorderdao" ref="CDNsaleOrderDao"></property>
+	</bean>
+	<bean id="DistrictBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.DistrictBussinessImpl">
+		<property name="districtdao" ref="DistrictDao"></property>
+	</bean>
+	<bean id="SetMealBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.SetMealBussinessImpl">
+		<property name="setmealdao" ref="SetMealDao"></property>
+	</bean>
+	<bean id="SetMealPropertyBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.SetMealPropertyBussinessImpl">
+		<property name="setmealpropertydao" ref="SetMealPropertyDao"/>
+	</bean>
+	<bean id="SetMealCenterBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.SetMealCenterBussinessImpl">
+		<property name="setmealcenterdao" ref="SetMealCenterDao"/>
+	</bean>
+	<bean id="TypeBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.TypeBussinessImpl">
+		<property name="typedao" ref="TypeDao"></property>
+	</bean>
+	<bean id="RealmTypeBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.RealmTypeBussinessImpl">
+		<property name="realmtypedao" ref="RealmTypeDao"/>
+	</bean>
+	<bean id="CDNipBussiness" class="com.fuao.fajxc.bussiness.impl.cdn.CDNipBussinessImpl">
+		<property name="cdnipdao" ref="CDNipDao"/>
+	</bean>
+
+	
+	
+	<!-- >>>>>>>>>>>>>>>>>>>>>Action层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	<bean id="CDNsaleOrderAction" class="com.fuao.fajxc.action.cdn.CDNsaleOrderAction">
+		<property name="cdnsaleorderbussiness" ref="CDNsaleOrderBussiness"></property>
+		<property name="cachebussiness" ref="CacheBussiness"></property>
+		<property name="districtbussiness" ref="DistrictBussiness"></property>
+		<property name="realmtypebussiness" ref="RealmTypeBussiness"></property>
+		<property name="audBussiness" ref="auditingBussiness"></property>
+	</bean>
+	
+	<!-- CDN套餐action -->
+	<bean id="CDNSetMealAction" class="com.fuao.fajxc.action.cdn.CDNSetMealAction">
+		<property name="setMealBussiness" ref="SetMealBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	
+	<!-- CDN套餐属性action -->
+	<bean id="CDNSetMealPropertyAction" class="com.fuao.fajxc.action.cdn.CDNSetMealPropertyAction">
+		<property name="setMealPropertyBussiness" ref="SetMealPropertyBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	
+	<!-- CDN套餐域类型action -->
+	<bean id="CDNRealmTypeAction" class="com.fuao.fajxc.action.cdn.CDNRealmTypeAction">
+		<property name="realmTypeBussiness" ref="RealmTypeBussiness"></property>
+		<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+	</bean>
+	
+	
+</beans>

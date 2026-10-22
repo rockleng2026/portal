@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+
+<package name="PackageStockpile" extends="struts-default">
+ <!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			
+			<interceptor-stack name="myInter">
+			<interceptor-ref name="system">
+			<param name="name">SystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">select,outBoundInfo,query,warehousingInfo</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+			</interceptor-stack>
+		</interceptors>
+<!-- 入库 -->
+               
+<action name="*Warehousing" class="WarehousingAction" method="{1}">
+<interceptor-ref name="myInter"></interceptor-ref>
+
+<result name="depotdetil">/potal/page/inoutproduct/kzl_vew.jsp</result> 
+<result name="seldepot">/potal/page/inoutproduct/kzl_lb.jsp</result> 
+<result name="newwarehousingInfo">/potal/page/inoutproduct/rk_lb.jsp</result> 
+<result name="newadd">/potal/page/inoutproduct/ck_xzxz2.jsp</result> 
+<result name="seerkdlist">/potal/page/inoutproduct/rk_tgvew.jsp</result> 
+<result name="newdetail">/potal/page/inoutproduct/rk_tgvew.jsp</result>					<!-- 入库单详表 -->
+<result name="rkdlb" type="redirect">/warehousingInfoWarehousing.do?potalckd=potal</result> 
+<result name="add">/stockpile/warehousing/NewCommoditiesWarehousing.jsp</result> 			<!-- 添加入库单 -->
+<result name="detail">/stockpile/warehousing/warehousingDetail.jsp</result>					<!-- 入库单详表 -->
+<result name="profit">/stockpile/warehousing/inventoryProfit.jsp</result>                   <!-- 盘盈入库 -->
+<result name="serverBelow">/stockpile/warehousing/serverBelowWarehousing.jsp</result>       <!-- 服务器下架入库 -->
+<result name="warehousingInfo">/stockpile/warehousing/warehousingInfo.jsp</result>          <!-- 查询入库相详细信息 -->
+<result name="showDepotDialog">/showDialog/DepotDailog.jsp</result>          	<!-- 显示仓库对话框 -->
+<result name="showcustomDialog">/showDialog/customDialog.jsp</result>		 	<!-- 显示用户对话框 -->
+<result name="showcommodityDialog">/showDialog/CommodityDialog.jsp</result>		<!-- 显示商品对话框 -->
+<result name="showemployeeDialog">/showDialog/EmployeeDialog.jsp</result>       <!-- 显示员工对话框 -->
+<result name="showsupplierDialog">/showDialog/supplierDialog.jsp</result>    	<!-- 显示供应商对话框 -->
+<result name="showbatchexpDialog">/showDialog/batchexpDialog.jsp</result>   	<!-- 显示批次详表对话框 -->
+<result name="toOrderDialog">/showDialog/toOrderDialog.jsp</result>  			<!-- 显示到货单对话框 -->
+<result name="showbarcode">/stockpile/warehousing/showbarcode.jsp</result>    			<!-- 显示输入条形码页面，点击下一步执行 -->
+<result name="select" type="redirect">warehousingInfoWarehousing.do</result>
+<result name="incomeShowbarcode">/stockpile/warehousing/incomeShowbarcode.jsp</result>
+<result name="selectStocks">/stockpile/selectStocks/selectStocksList.jsp</result>
+<result name="error">/No.jsp</result>
+<result name="detailstorage">/stockpile/warehousing/detailstorage.jsp</result>
+<result name="doloadlist">/stockpile/warehousing/productbarcode_Down.jsp</result> <!-- 都出列 -->
+<result name="showdoload">/stockpile/warehousing/showBarcodeList.jsp</result> <!-- 都出列 -->
+</action>
+
+<!-- 出库 -->
+<action name="*Outbound" class="OutboundAction" method="{1}">
+<!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>
+			
+ <result name="delckd" type="redirect">/outBoundInfoOutbound.do?potalckd=potal</result>				
+<result name="newoutboundInfo">/potal/page/inoutproduct/ck_lb.jsp</result> 
+ <result name="newadd">/potal/page/inoutproduct/ck_tj.jsp</result>   	
+<result name="newdetail">/potal/page/inoutproduct/ck_vew.jsp</result>		
+<result name="outboundInfo">/stockpile/outbound/outboundInfo.jsp</result>    <!-- 出库单列表 --> 
+<result name="shatter">/stockpile/outbound/shatter.jsp</result>              <!-- 报损出库 -->
+<result name="shortage">/stockpile/outbound/shortage.jsp</result>            <!-- 盘亏出库  -->
+<result name="topcarriage">/stockpile/outbound/topcarriage.jsp</result>      <!-- 服务器上架出库 -->  
+<result name="add">/stockpile/outbound/addOutbound.jsp</result>              <!-- 添加出库单 -->
+<result name="detail">/stockpile/outbound/outdetail.jsp</result>
+<result name="showDepotDialog">/showDialog/DepotDailog.jsp</result>          <!-- 显示仓库对话框 -->
+<result name="showcustomDialog">/showDialog/customDialog.jsp</result>		 <!-- 显示用户对话框 -->
+<result name="CDNshowcustomDialog">/cdn/CDNinfoDialog.jsp</result>
+<result name="showcommodityDialog">/showDialog/CommodityDialog.jsp</result>		 <!-- 显示商品对话框 -->
+<result name="showemployeeDialog">/showDialog/EmployeeDialog.jsp</result>       <!-- 显示员工对话框 -->
+<result name="showsupplierDialog">/showDialog/supplierDialog.jsp</result>    <!-- 显示供应商对话框 -->
+<result name="showincomeDialog">/showDialog/incomeDialogl.jsp</result>    <!-- 显示报溢单对话框 -->
+<result name="showtoOrderDialog">/showDialog/toOrderDialog.jsp</result>
+<result name="showupserverDialog">/showDialog/upserverDialog.jsp</result>
+</action>   
+
+<!-- 库存明细 -->
+<action name="*StockpileDetails" class="StockpileDetailsAction" method="{1}">
+<result name="storageIntegrationQuery">/stockpile/stockpileDetails/storageIntegrationQuery.jsp</result><!-- 库存综合查询 -->
+<result name="untappeCommodity">/stockpile/stockpileDetails/untappeCommodity.jsp</result>              <!-- 架下商品查询 -->
+<result name="useCommodity">/stockpile/stockpileDetails/useCommodity.jsp</result>                      <!-- 架上商品查询 -->
+</action>
+
+<!-- 报损 -->
+<action name="*TheDamage" class="TheDamageTheGoodAction" method="{1}">
+<!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>
+<result name="newPorLoss">/stockpile/TheDamageTheGood/newPayoff.jsp</result>                             <!--  报损-->
+<result name="query">/stockpile/TheDamageTheGood/query.jsp</result>
+<result name="info">/stockpile/TheDamageTheGood/queryInfo.jsp</result>
+</action>
+
+<!-- 报益 -->
+<action name="*income" class="incomeAction" method="{1}">
+<!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>
+<result name="success">/stockpile/income/incomeInfo.jsp</result>                             <!--  报益 -->
+<result name="add">/stockpile/income/addIncome.jsp</result>
+<result name="detail">/stockpile/income/incomeDetail.jsp</result>
+</action>
+
+
+<!-- 客户商品信息 -->
+<action name="*CustomerAsset" class="CustomerAssetAction" method="{1}">
+<result name="success">/stockpile/customerAsset.jsp</result>
+</action>
+
+<!-- 库存预警 -->
+<action name="*Warning" class="WarningAction" method="{1}">
+<result name="success">/stockpile/warning.jsp</result>
+</action>
+
+<!-- 库存盘点 -->
+<action name="*Stat" class="StatAction" method="{1}">
+<!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>
+<result name="success">/stockpile/Stat/stat.jsp</result>
+<result name="detail">/stockpile/Stat/statInfo.jsp</result>
+<result name="add">/stockpile/Stat/addStat.jsp</result>
+<result name="showDepotDialog">/showDialog/DepotDailog.jsp</result>          <!-- 显示仓库对话框 -->
+<result name="showemployeeDialog">/showDialog/EmployeeDialog.jsp</result>       <!-- 显示员工对话框 -->
+</action>
+ </package>
+
+</struts>

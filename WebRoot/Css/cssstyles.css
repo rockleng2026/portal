@@ -1,0 +1,54 @@
+BODY {
+	FONT: 12px/20px Tahoma,Verdana,sans-serif; COLOR: #1a438e
+}
+a:link { text-decoration: none;color:blue;} 
+a:active { text-decoration:blink;} 
+a:hover { text-decoration:underline; color:#990000;}  
+a:visited { text-decoration: none;color:blue;} 
+
+a{color:#0066FF;}
+.div_lay{
+	margin-top:350px;
+	float:right;
+	width:410px;
+	position:absolute;
+	top:-52px;
+	left:-52px;
+	margin:60px;
+}
+
+.navheng{
+	float:left;
+	width:395px;
+	height:5px;
+	clear:both;
+}
+
+.nav{
+	float:left;
+	margin-left:10px;
+	width:390px;
+	height:3px;
+	clear:both;
+	background-color:#CCCCCC;
+}
+
+.div_lay_left{
+	margin-left:10px;
+	float:left;
+	padding-top:12px;
+	width:195px;
+	height:28px;
+	background:#DFF9FD;
+	text-align:right;
+}
+
+.div_lay_right{
+	float:left;
+	padding-left:10px;
+	width:185px;
+	height:40px;
+	background-color:#D9DDFD;
+	text-align:left;
+	clear:right;
+}

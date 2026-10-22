@@ -1,0 +1,5 @@
+/* CSS Document */
+.gb_bt{ background-color:#4FA805; font-weight:bold; color:#fff; line-height:22px; font-size:12px;width:60px;
+text-align:center; margin-left:auto; margin-right:auto; border: 1px solid #4FA805; cursor:hand; margin:3px;}
+a:hover{color:red;}
+a{color:#304F14;}

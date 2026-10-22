@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="gbk"?>
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+  <package name="PackageRoomMenu" extends="json-default" namespace="/cms">
+     <global-results>
+         <result name="reList">/serm/pager/MainServers.jsp</result>
+     </global-results>
+     <!--  
+    <action name="houseselAct" class="serAction" method="creteLeftMenu">
+         <result name="reList">/serm/pager/serverMain.jsp</result>
+    </action>
+    -->
+    <action name="getLogersUps" class="serAction" method="outputJson">
+        <result type="json"></result>
+    </action>
+    <action name="show_*" class="serAction" method="{1}">
+         <result name="input">/serm/pager/error.jsp</result>
+         <result name="showSingleImg">/serm/pager/main.html</result>
+         <result name="success">
+              <param name="uppserss"/>
+         </result>
+         <result name="putcaids">/serm/pager/upservers.jsp</result>
+         <result name="downListsvs">/serm/pager/downser.jsp</result>
+         <result name="downservsn">/serm/pager/single_left.jsp</result>
+         <result name="returnca">/serm/pager/updateCa.jsp</result>
+         <result name="returnInnit">/serm/pager/innit.jsp</result>
+         <result name="successCa">/serm/pager/success.jsp?arrMessager=${arrMessager }</result>
+         <result name="find">/serm/pager/find.jsp?arrMessager=${arrMessager }</result>
+         <result name="allEle">/serm/pager/allEle.jsp</result>
+    </action>
+
+   <action name="frontupServerStat" class="serAction" method="upServerStat">
+      <result type="json">
+           <param name="arrMessager"/>
+      </result>
+   </action>
+   <action name="storeCount_*" class="storeCountActs" method="{1}">
+      <result name="stormRoomDates">/stores/stormRoom.jsp?selValues=${flagValue }</result>
+      <result name="storeSelects">/stores/selProperty.jsp</result>
+      <result type="json">
+      </result>
+   </action>
+  </package>
+
+</struts>

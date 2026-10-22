@@ -1,0 +1,21 @@
+.externalToolBuilders/
+.myeclipse/
+.settings/
+logs/
+WebRoot/WEB-INF/classes/
+.txlcn/
+*.iml
+*.versionsBackup
+
+# Grails
+target/
+*.war
+stacktrace.log
+web-app/plugins/
+grails-app/conf/application*.yml
+
+# MyEclipse / Eclipse
+.myhibernatedata
+.project.bak
+.springBeans
+bin/

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">	 
+	 
+	 <!-- 注入commonbiz -->
+	 <!-- 注入栏目dao -->
+	 <bean id="admindao" class="com.fuao.fajxc.dao.sysadmin.SysadminDAOImpl" parent="baseDao"></bean>
+	 <!-- 注入action -->
+	 <bean id="adminAction" class="com.fuao.fajxc.action.sysadmin.SysAdminAction">
+	    <property name="admindao" ref="admindao"></property>
+	 </bean>
+</beans>

@@ -1,0 +1,73 @@
+<%@ page language="java" import="java.util.*" pageEncoding="GBK"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<base href="<%=basePath%>" />
+<title>立云-立云历程</title>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />    
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+<meta http-equiv="description" content="This is my page" />
+<link href="litscloud/css/style.css" rel="stylesheet" type="text/css" />
+<link href="litscloud/css/css.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="litscloud/css/main.css" />
+<script type="text/javascript" src="litscloud/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="litscloud/js/slides.jquery.js"></script>
+<script type="text/javascript" src="litscloud/js/top.js"></script>
+<!-- 解决IE6不缓存背景图片的问题-->
+<!--[if IE 6]>
+<script type="text/javascript">
+document.execCommand("BackgroundImageCache", false, true);
+</script>
+<![endif]-->
+<script type="text/javascript">
+
+</script>
+</head>
+
+<body>
+<div class="ly_body" id="mainbody">
+   <!------------------------------------------头部公用代码------------------------------------------------------------>
+ <jsp:include page="/litscloud/tpl/top_about.jsp"></jsp:include> 
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle">
+     <div class="ly_m">
+      <div class="ly_m_mt"></div>   
+     </div>
+          <div class="ly_dh">          
+      </div>
+      <div class="ly_dhn">
+      当前位置：<a href="litscloud/tpl/index.jsp">首页</a> > <a href="litscloud/tpl/about.jsp" target="_parent">关于我们</a> > 立云历程
+      </div>
+    
+    <div class="ly_about_d">
+       <div class="ly_about_dt"><img src="litscloud/images/ly_51.jpg" /></div>
+       <div class="ly_about_dd">     深圳市易云智达科技有限公司隶属重庆福奥科技有限公司，是国内领先的互联网综合运营服务提供商，主要面向广大海内外客户提供：<br />
+     &nbsp;&nbsp;&nbsp;&nbsp;互联网基础产品：域名注册、国内/海外虚拟主机、企业邮箱、智能建站、智能DNS、虚拟服务器（VPS）、服务器租用、服务器托管等丰富的网络产品服务。<br />
+     &nbsp;&nbsp;&nbsp;&nbsp; 互联网增值业务产品：CDN网站加速、CDN下载加速、CDN流媒体加速、P4SP百万级高清直播平台互联网运营产品：旗下游戏山林(www.yx30.com)负责将运营商与产品商、广告商联接起来，合作共赢。<br />
+     &nbsp;&nbsp;&nbsp;&nbsp;本身成立当初非为IDC业务成立,当年为协助中国奥运网络直播项目成立,项目请搜索网视机,公司名取自"福娃奥运".<br />
+     &nbsp;&nbsp;&nbsp;&nbsp; 公司主要股东及管理人员均是十年以上从事IT行业,经历过互联网十多年来的变迁.经历过各种人事风险.<br />
+     &nbsp;&nbsp;&nbsp;&nbsp;当然,福奥科技是一个技术为本的研究型公司,主要核心于互联网技术的研究和应用.<br />
+     &nbsp;&nbsp;&nbsp;&nbsp;公司自主研发的系统包括:大型CDN管理系统、CMS系统（JAVA）、内外网数据传输与监控系统（政府级）、高清视听平台综合管控系统等。<br />
+     &nbsp;&nbsp;&nbsp;&nbsp; 福奥科技一直保持低调做人,深刻做事的态度在IT界,我公司所有业务合法,自主.<br />
+     &nbsp;&nbsp;&nbsp;&nbsp; 多年来公司非常感谢全国的朋友支持与理解，感谢各位朋友对我公司各项业务的发展的支持。<br />
+     &nbsp;&nbsp;&nbsp;&nbsp;旗下有多家技术开发公司及运营公司，同时旗下广告传媒公司主要负责广告产品（电视广告、网络广告、地面广告为主）面向市场渠道对接。<br />
+     &nbsp;&nbsp;&nbsp;&nbsp;　　 自2008年在重庆成立，福奥科技已相继在北京、深圳、山东、成立分公司。福奥科技的快速发展与其企业文化密不可分，福奥人秉持"团结互助、敬业负责、恪守信誉、积极进取、勇于创新"的企业文化，汇聚了行业内的大量专业人士，拥有多位国内顶尖的linux/freeBSD/unix经验的系统工程师、微软认证工程师和网络安全技术人才。核心团队均为该行业从业多年的专业人士，拥有丰富行业经验和较高威望，并不断改革创新，以满足客户多元化需求为己任，不断进取。同时，福奥科技坚守 "专业品质、服务为本、诚信经营、恪守信誉"的核心价值观，为客户提供多样、安全、稳定、放心的产品。</div>
+    </div>     
+   
+   </div>
+
+<!--_________________________底部公用代码 _______________________________________________-->
+  <jsp:include page="/litscloud/tpl/bottom.jsp"></jsp:include> 
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

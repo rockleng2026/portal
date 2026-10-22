@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	 <!-- 通用bean操作 -->
+	<bean id="commonDao" class="com.fuao.fajxc.dao.common.CommonDaoImpl" parent="baseDao"></bean>
+	<bean id="commonBussiness" class="com.fuao.fajxc.bussiness.common.CommonBizImpl">
+        	<property name="commondao" ref="commonDao"></property>
+     </bean>
+             <!-- FJCommon注入bean -->
+     <bean id="FJCommonAction" class="com.fuao.fajxc.action.common.FJCommonAction">
+        <property name="formbiz" ref="commonBussiness"></property>
+     </bean>
+</beans>

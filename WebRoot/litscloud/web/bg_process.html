@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（自助管理-订单流程）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv">
+   </div>
+       <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心>订单管理>订单流程</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" >我的<br />账户</a></li>
+                <li><a href="bg_indent.html" style="background-image:url(images/bg_01.png); color:#ffffff;">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_indent.html" style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">订单管理</a></li>
+                    <li><a href="bg_zxgd.html" target="_parent" >在线工单</a></li>
+                    <li><a href="bg_wdgd.html">我的工单</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="bg_process">
+              <div class="bg_process_t"><img src="images/log_09.gif" /></div>
+              <div class="bg_process_m"></div>
+              <div class="bg_process_c">
+                 <div class="bg_process_ct">
+                    <div class="bg_process_ctt">
+                       <div class="bg_process_cttt">当前订单状态： 交易已成功 </div>
+                       <div class="bg_process_cttc">如果没有收到货，或收到货后出现问题，您可以联系卖家协商解决。<br />
+如果卖家没有履行应尽的承诺，您可以“投诉维权”</div>
+                       <div class="bg_process_cttd"><input type="button" value="备忘" class="button_bw" /></div>
+                    </div>
+                    <div class="bg_process_ctd">
+                      <div class="bg_process_ctdt">物流信息</div>
+                      <div class="bg_process_ctdd">
+                       <div class="bg_process_ctdd_t">
+                         <div class="bg_process_ctdd_tl">发货方式：</div>
+                         <div class="bg_process_ctdd_tr">免运费</div>
+                       </div>
+                       <div class="bg_process_ctdd_t">
+                         <div class="bg_process_ctdd_tl">物流公司：</div>
+                         <div class="bg_process_ctdd_tr">顺风速运</div>
+                       </div>
+                       <div class="bg_process_ctdd_t">
+                         <div class="bg_process_ctdd_tl">运单号码：</div>
+                         <div class="bg_process_ctdd_tr">102775497106</div>
+                       </div>
+                       <div class="bg_process_ctdd_t">
+                         <div class="bg_process_ctdd_tl">物流跟踪：</div>
+                         <div class="bg_process_ctdd_dr">2013-01-23 17:12:21 已收件<br />
+                         2013-01-23 17:12:21 正在派件<br />
+                         <span>2013-01-23 17:12:21 派送成功..</span>  
+                         </div>
+                       </div>
+                      <div class="bg_process_cd"><img src="images/log_13.gif" style="float:left;" /> 以上信息由物流公司提供，如无跟踪信息或有疑问，请查询<a href="#">顺丰速运</a>官方网站或联系起其公示电话</div> 
+                      </div> 
+                    </div>
+                 </div>
+              </div>
+              <div class="bg_process_d"></div>
+              <div class="bg_process_h"><a href="#" onclick="javascript:history.go(-1)">返回</a></div>
+          </div>      
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+ <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    <struts>
+    <package name="PackageServers" extends="struts-default" namespace="/cms">
+    <!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+			<interceptor-ref name="system">
+			<param name="name">SystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">select</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+			</interceptor-stack>
+		</interceptors>
+	
+	<action name="*Servers" class="com.fuao.fajxc.action.servers.ServersAction" method="{1}">
+	  <result name="elect">/serm/pager/MainServers.jsp</result>
+	  <result name="reList">/serm/pager/MainServers.jsp</result>
+	  <result name="reLoadHs">/serm/pager/loadHouses.jsp</result>
+	  <result name="no">/login.jsp</result>
+	</action>
+    
+    </package>
+    
+    </struts>

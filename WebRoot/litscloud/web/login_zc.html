@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-注册</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+ 	
+	 $('#topdiv').load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+	 $('#lybottom').load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+	 $('#index').css({
+	 "font-family":"Arial, Helvetica, sans-serif",
+	 "color":"#2fafea",
+	 "background-image":"url(images/ly_05.gif)",
+	 "background-repeat":"no-repeat",
+	 "background-position":"center center"	 
+	 })	 
+}); 
+</script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv"></div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+       <div class="ly_zc">
+         <div class="ly_zct">
+           <div class="ly_zctl"></div> 
+           <div class="ly_zctc">1</div>
+           <div class="ly_zctm"></div>
+           <div class="ly_zcty">2</div>
+           <div class="ly_zctm"></div>
+           <div class="ly_zcts"></div> 
+           <div class="ly_zctw"></div>           
+         </div>
+        <div class="ly_zcc">
+           <div class="ly_zccl">设置账户信息</div>
+           <div class="ly_zccc">验证账户信息</div>
+           <div class="ly_zccr">注册成功</div>
+        </div>
+        <div class="ly_zcd">
+        <div class="ly_zcm">
+          <div class="ly_zcm_l">
+          <div class="ly_zcm_m"></div>
+          <div class="ly_zcm_b"></div>
+            <div class="ly_zcm_lt">
+               <div class="ly_zcm_ltl"><span>*</span>电子邮箱：</div>
+               <div class="ly_zcm_ltr"><input type="text" name="lg_email" class="lg_email" value="输入电子邮箱作为账户名" /></div>
+            </div>
+             <div class="ly_zcm_lt">
+               <div class="ly_zcm_ltl"><span>*</span>登录密码：</div>
+               <div class="ly_zcm_ltm">
+                   <div class="ly_zcm_ltmt"><input type="password" name="lg_pass" class="lg_email" /></div>
+                   <div class="ly_zcm_ltmd"><ul>
+                      <li>弱</li>
+                      <li>中</li>
+                      <li>强</li>
+                   </ul></div>
+               </div>
+            </div>
+            <div class="ly_zcm_lt">
+               <div class="ly_zcm_ltl"><span>*</span>确认登录密码：</div>
+               <div class="ly_zcm_ltr"><input type="password" name="lg_passok" class="lg_email" /></div>
+            </div>
+            <div class="ly_zcm_lc">绑定安全手机（手机号为安全信息，不做登录使用）</div>
+            <div class="ly_zcm_lt">
+               <div class="ly_zcm_ltl"><span>*</span>手机号码：</div>
+               <div class="ly_zcm_ltm">
+                 <div class="ly_zcm_ltmt"><input type="text" name="lg_tel" class="lg_email" /></div>
+                 <div class="ly_zcm_ltmc"><input type="button" value="获取免费短信校证码" style="width:135px; text-align:center; font-size:12px; font-weight:bold; color:#666;" /></div>
+               </div>
+            </div>
+            <div class="ly_zcm_lt">
+               <div class="ly_zcm_ltl"><span>*</span>短信校正码：</div>
+               <div class="ly_zcm_ltr"><input type="text" name="lg_yzm" class="lg_yzm" value="6位数字" /></div>
+            </div>
+            <div class="ly_zcm_s">
+               <div class="ly_zcm_sv"><a href="login_zcq.html" target="_parent">同意协议并注册</a></div>
+            </div>
+            <div class="ly_zcm_h"><a href="#">《立云网站服务协议》</a></div>              
+          </div>
+          <div class="ly_zcm_r">
+             <div class="ly_zcm_rt">立云会员享四大特权</div>
+             <div class="ly_zcm_rd">1. 挑战新手任务赢好礼<br />
+2. 免费云主机成本核算<br />
+3. 免费试用多项云产品<br />
+4. 即时获取云产品最新市场
+动态</div>
+          </div>
+        </div> 
+        </div> 
+        </div>             
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div id="lybottom" class="ly_bottom">
+  </div>
+  <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.NewWatch" table="new_watch">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="suid" column="suid" type="integer"/>
+  <property name="wdate" column="wdate" type="date"/>
+  <many-to-one name="emp" class="com.fuao.fajxc.vo.Employee" column="empid" insert="false" update="false" fetch="join"></many-to-one>
+  <many-to-one name="project" class="com.fuao.fajxc.vo.NewProject" column="pid" insert="false" update="false" fetch="join"></many-to-one>
+</class>
+</hibernate-mapping>

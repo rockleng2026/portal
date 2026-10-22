@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">	 
+      <!-- 配置接收人的ID -->  
+  
+		 <bean id="helloBean" class="com.fuao.fajxc.vo.HelloBean">
+		 <property name="saleOrder"> <!-- 订单到期提醒  还15天到期 -->
+		 	<value>XSDD</value>
+		 </property>
+		  <property name="helloWorld">
+		  <value>73</value>
+		  </property>
+		 </bean>
+		
+</beans>

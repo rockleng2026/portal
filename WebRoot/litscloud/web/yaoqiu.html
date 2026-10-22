@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>立云-后台（证件上传要求）</title>
+<style type="text/css">
+body{
+	background-color:#ccc;
+	}
+.szyq{
+	width:803px;
+	margin:0 auto;
+	margin-top:30px;
+	height:auto;
+	overflow:hidden;
+	}
+.szyq_t{
+	width:803px;
+	height:2px;
+	background-image:url(images/sf_24.gif);
+	background-repeat:no-repeat;
+	overflow:hidden;
+	}
+.szyq_d{
+	width:803px;
+	height:5px;
+	background-image:url(images/sf_26.gif);
+	background-repeat:no-repeat;
+	overflow:hidden;
+	}
+.szyq_c{
+	width:803px;
+	height:30px;
+	line-height:30px;
+	background-image:url(images/sf_25.gif);
+	background-repeat:repeat-y;
+	font-size:14px;
+	font-family:"微软雅黑";
+	color:#fff;
+	text-indent:12px;
+	}
+.szyq_c span{
+	float:right;
+	margin-right:10px;
+	font-size:12px;
+	font-family:"宋体";
+	}	
+.szyq_c a{
+	font-size:12px;
+	font-family:"宋体";
+	color:#fff;
+	}
+.szyq_c a:link{
+	font-size:12px;
+	font-family:"宋体";
+	color:#fff;
+	}
+.szyq_c a:hover{
+	font-size:12px;
+	font-family:"宋体";
+	color:#f00;
+	text-decoration:underline;
+	}
+.szyq_c a:visited{
+	font-size:12px;
+	font-family:"宋体";
+	color:#fff;
+	}
+.szyq_m{
+	width:803px;
+	height:auto;
+	overflow:hidden;
+	background-color:#fff;
+	}
+.szyq_mt{
+	width:772px;
+	margin:15px auto;
+	height:auto;
+	overflow:hidden;
+	}
+.szyq_md{
+	width:90px;
+	margin:0 auto;
+	height:33px;
+	margin-top:5px;
+	margin-bottom:15px;
+	}
+.szyq_mdl{
+	width:5px;
+	height:33px;
+	background-image:url(images/log_04.gif);
+	overflow:hidden;
+	float:left;
+	}
+.szyq_mdr{
+	width:5px;
+	height:33px;
+	background-image:url(images/log_06.gif);
+	overflow:hidden;
+	float:left;
+	}	
+.szyq_mdc{
+	float:left;
+	height:33px;
+	width:80px;
+	background-image:url(images/log_05.gif);
+	background-repeat:repeat-x;
+	text-align:center;
+	line-height:33px;
+	}
+.szyq_mdc a{
+	font-size:14px;
+	font-family:"微软雅黑";
+	color:#fff;
+	font-weight:bold;
+	display:block;
+	text-decoration:none;
+	}
+.szyq_mdc a:link{
+	font-size:14px;
+	font-family:"微软雅黑";
+	color:#fff;
+	font-weight:bold;
+	display:block;
+	}
+.szyq_mdc a:visited{
+	font-size:14px;
+	font-family:"微软雅黑";
+	color:#fff;
+	font-weight:bold;
+	display:block;
+	}
+.szyq_mdc a:Hover{
+	font-size:14px;
+	font-family:"微软雅黑";
+	color:#fff;
+	font-weight:bold;
+	display:block;
+	}	
+.szyq_mtt{
+	width:772px;
+	height:8px;
+	background-image:url(images/sf_29.gif);
+	background-repeat:no-repeat;
+	overflow:hidden;
+	}
+.szyq_mtd{
+	width:772px;
+	height:8px;
+	background-image:url(images/sf_31.gif);
+	background-repeat:no-repeat;
+	overflow:hidden;
+	}
+.szyq_mtc{
+	width:772px;
+	height:auto;
+	background-image:url(images/sf_30.gif);
+	background-repeat:repeat-y;
+	overflow:hidden;
+	}
+.szyq_mtc_t{
+	width:725px;
+	height:35px;
+	line-height:35px;
+	font-size:14px;
+	font-weight:bold;
+	color:#2e2e2e;
+	margin:0 auto;	
+	text-align:center;
+	border-bottom:dashed 1px #000000;
+	}
+.szyq_mtc_c{
+	width:725px;
+	margin:0 auto;
+	font-size:14px;
+	font-weight:bold;
+	color:#4f4f4f;
+	height:30px;
+	line-height:30px;
+	}	
+.szyq_mtc_m{
+	width:725px;
+	margin:0 auto;
+	height:auto;
+	overflow:hidden;
+	font-size:14px;
+	font-family:"宋体";
+	color:#2e2e2e;
+	line-height:25px;
+	margin-top:5px;
+	margin-bottom:10px;
+	}
+.szyq_mtc_d{
+	width:725px;
+	height:auto;
+	margin:0 auto;
+	overflow:hidden;
+	}
+.szyq_mr{
+	width:772px;
+	margin:0 auto;
+	overflow:hidden;
+	height:auto;	
+	}	
+.szyq_mtc_dt{
+	width:725px;
+	height:30px;
+	font-size:14px;
+	font-family:"宋体";
+	color:#2e2e2e;
+	}
+.szyq_mtc_dt span{
+	color:#ff6600;
+	}
+.szyq_mtc_dd{
+	width:725px;
+	height:180px;
+	}
+.szyq_mtc_dd ul{
+	margin:0px;
+	padding:0px;
+	}
+.szyq_mtc_dt ul li{
+	width:330px;
+	overflow:hidden;
+	float:left;
+	list-style:none;
+	margin:0px;
+	padding:0px;
+	height:180px;
+	text-align:center;
+	}	
+</style>
+</head>
+
+<body>
+<div class="szyq">
+   <div class="szyq_t"></div>
+   <div class="szyq_c"><span><a href="#">关闭</a></span>证件上传要求</div>
+   <div class="szyq_m">
+       <div class="szyq_mt">
+         <div class="szyq_mr">
+           <div class="szyq_mtt"></div>
+          <div class="szyq_mtc">
+            <div class="szyq_mtc_t">补全认证信息之后提示“证件不符合要求”，怎么解决？</div>
+            <div class="szyq_mtc_c">补全认证信息之后提示“证件不符合要求”，请注意以下4点：</div>
+            <div class="szyq_mtc_m">1、在拍摄或扫描证件时，确保图片清晰（证件底纹、字体、照片清晰），无模糊，无白光点等；<br />
+2、请拍摄或扫描证件的原件且必须为彩色图片；<br />
+3、确保图片完整（不缺边角）；<br />
+4、证件图片大小要求在2M以内，格式为bmp、jpg、jpeg。</div>
+            <div class="szyq_mtc_d">
+              <div class="szyq_mtc_dt">证件范例（<span>注：请确保红框内的信息清淅、完整、不可涂改和遮盖</span>）：</div>
+              <div class="szyq_mtc_dt"><ul>
+                <li><img src="images/sf_27.gif" /></li>
+                <li><img src="images/sf_28.gif" /></li>
+              </ul></div>
+            </div>
+          </div>
+          <div class="szyq_mtd"></div>
+         
+         </div>
+       </div>
+       <div class="szyq_md">
+          <div class="szyq_mdl"></div>
+          <div class="szyq_mdc"><a href="#">关闭</a></div>
+          <div class="szyq_mdr"></div>
+       </div>
+   </div>
+   <div class="szyq_d"></div>
+</div>
+</body>
+</html>

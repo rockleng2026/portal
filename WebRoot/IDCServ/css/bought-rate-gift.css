@@ -1,0 +1,15 @@
+.rate-gift-tip {
+	BORDER-BOTTOM: #e3bd99 1px solid; POSITION: relative; TEXT-ALIGN: center; BORDER-LEFT: #e3bd99 1px solid; MARGIN-TOP: 10px; ZOOM: 1; BACKGROUND: #fff6e1; COLOR: #dfb082; BORDER-TOP: #e3bd99 1px solid; BORDER-RIGHT: #e3bd99 1px solid
+}
+.rate-gift-tip .tip-arrow {
+	POSITION: absolute; BORDER-LEFT: transparent 5px dotted; LINE-HEIGHT: 0; WIDTH: 0px; HEIGHT: 0px; FONT-SIZE: 0px; BORDER-TOP: transparent 5px dotted; TOP: -10px; BORDER-RIGHT: transparent 5px dotted; LEFT: 35px
+}
+.rate-gift-tip .tip-arrow-b {
+	POSITION: absolute; BORDER-LEFT: transparent 5px dotted; LINE-HEIGHT: 0; WIDTH: 0px; HEIGHT: 0px; FONT-SIZE: 0px; BORDER-TOP: transparent 5px dotted; TOP: -10px; BORDER-RIGHT: transparent 5px dotted; LEFT: 35px
+}
+.rate-gift-tip .tip-arrow {
+	BORDER-BOTTOM: #e3bd99 5px solid
+}
+.rate-gift-tip .tip-arrow-b {
+	BORDER-BOTTOM: #fff6e1 5px solid; MARGIN-TOP: 1px
+}

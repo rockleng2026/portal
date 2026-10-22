@@ -1,0 +1,9 @@
+@charset "utf-8";
+/* CSS Document */
+.footer{ display:block; clear:both; width:960px; text-align:center; padding:0; margin:15px auto;overflow:hidden;}
+*html .footer{ height:1%;}
+
+.footmenu{  display:block; clear:both;color:#C94700; margin-bottom:10px;}
+.footmenu a{color:#C94700;}
+
+.footCR{ font:normal 12px/22px Verdana, "宋体";}

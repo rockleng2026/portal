@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	 
+	
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	
+	
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+		
+		
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 临时统计Action注入 -->
+		<bean id="TemporarilyStatAction" class="com.fuao.fajxc.action.stat.TemporarilyStatAction">
+		</bean>
+		
+		<!-- 季度统计Action注入  -->
+        <bean id="UptoSnuffStatAction" class="com.fuao.fajxc.action.stat.UptoSnuffStatAction">
+        </bean> 
+        
+        <!-- 统计历史Action注入 -->
+         <bean id="AnnalsStatAction" class="com.fuao.fajxc.action.stat.AnnalsStatAction">
+		</bean>
+        
+        
+	 </beans>

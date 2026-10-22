@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	
+	
+		<!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<bean id="WorkLogDao" class="com.fuao.fajxc.dao.impl.workLog.WorkLogDaoImpl" parent="baseDao"></bean>
+		<bean id="commonDao" class="com.fuao.fajxc.dao.common.CommonDaoImpl" parent="baseDao"></bean>
+
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Business层的注入<<<<<<<<<<<<<<<<<<<< -->
+		<bean id="WorkLogBussiness" class="com.fuao.fajxc.bussiness.impl.workLog.WorkLogBussinessImpl">
+			<property name="workLogDao" ref="WorkLogDao"></property>
+		</bean>
+		
+		<bean id="commonBussiness" class="com.fuao.fajxc.bussiness.common.CommonBizImpl">
+        	<property name="commondao" ref="commonDao"></property>
+     	</bean>
+		<bean id="auditingBussiness" class="com.fuao.fajxc.bussiness.system.impl.AuditingBussinessImpl">
+			<property name="audd" ref="auditingDao"></property>
+			<property name="formbiz" ref="commonBussiness"></property>
+		</bean>
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<bean id="WorklogAction" class="com.fuao.fajxc.action.workLog.WorklogAction">
+			<property name="workLogBussiness" ref="WorkLogBussiness"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+			<property name="audBussiness" ref="auditingBussiness"></property>
+		</bean>
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>新系统action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<bean id="NewportalWorklogAction" class="com.fuao.fajxc.action.workLog.NewportalWorklogAction">
+			<property name="workLogBussiness" ref="WorkLogBussiness"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+			<property name="audBussiness" ref="auditingBussiness"></property>
+		</bean>
+		
+	 </beans>

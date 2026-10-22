@@ -1,0 +1,75 @@
+.header {
+	CLEAR: both; DISPLAY: block; MARGIN: 0px auto; WIDTH: 900px; ZOOM: 1
+}
+.logo {
+	DISPLAY: inline; FLOAT: left
+}
+.header_r {
+	DISPLAY: inline; BACKGROUND: url(../images/ph_service.gif) no-repeat right bottom; FLOAT: right; MARGIN: 10px 0px; HEIGHT: 95px
+}
+.h_top {
+	COLOR: #ddd; TEXT-ALIGN: right
+}
+.h_login {
+	COLOR: #656565
+}
+.h_login IMG {
+	MARGIN: 0px 5px 0px 0px; VERTICAL-ALIGN: middle
+}
+.h_login .h_username {
+	MARGIN: 0px 5px 0px 0px; COLOR: #f00
+}
+.h_login .mes {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 18px; BACKGROUND: url(../images/icon_mes.gif) no-repeat 0px 0px; PADDING-BOTTOM: 0px; MARGIN: 0px 5px; COLOR: #f00; PADDING-TOP: 0px
+}
+.h_tlink {
+	MARGIN: 0px 5px; COLOR: #f78431
+}
+.menu {
+	CLEAR: both; PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px auto 15px; WIDTH: 900px; PADDING-TOP: 5px; ZOOM: 1; HEIGHT: 63px
+}
+.menuli {
+	FLOAT: left; LIST-STYLE-TYPE: none
+}
+.menuli LI {
+	FLOAT: left; FONT: bold 14px/34px "宋体"; POSITION: relative
+}
+.menuli LI A.AA_m {
+	PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 16px; BACKGROUND: url(../images/bg_menu.gif) no-repeat 0px 0px; PADDING-BOTTOM: 0px; COLOR: #fff; PADDING-TOP: 0px
+}
+.menuli LI A.AA_m SPAN {
+	PADDING-RIGHT: 16px; PADDING-LEFT: 0px; BACKGROUND: url(../images/bg_menu.gif) no-repeat 0px 0px; PADDING-BOTTOM: 0px; FONT: bold 14px/34px "宋体"; CURSOR: pointer; PADDING-TOP: 0px
+}
+.menuli LI A.Anow_m {
+	PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 16px; BACKGROUND: url(../images/bg_menu.gif) no-repeat 0px -44px; FLOAT: left; PADDING-BOTTOM: 0px; COLOR: #333; PADDING-TOP: 0px
+}
+.menuli LI A.AA_m:hover {
+	PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 16px; BACKGROUND: url(../images/bg_menu.gif) no-repeat 0px -44px; FLOAT: left; PADDING-BOTTOM: 0px; COLOR: #333; PADDING-TOP: 0px
+}
+.menuli LI A.Anow_m SPAN {
+	PADDING-RIGHT: 16px; DISPLAY: block; PADDING-LEFT: 0px; BACKGROUND: url(../images/bg_menu.gif) no-repeat right -88px; PADDING-BOTTOM: 0px; CURSOR: pointer; PADDING-TOP: 0px
+}
+.menuli LI A.AA_m:hover SPAN {
+	PADDING-RIGHT: 16px; DISPLAY: block; PADDING-LEFT: 0px; BACKGROUND: url(../images/bg_menu.gif) no-repeat right -88px; PADDING-BOTTOM: 0px; CURSOR: pointer; PADDING-TOP: 0px
+}
+* HTML .menuli LI A.Anow_m SPAN {
+	FLOAT: left
+}
+.menu .btn_ql {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FLOAT: right; PADDING-BOTTOM: 0px; PADDING-TOP: 3px
+}
+.sub_menu {
+	LEFT: 0px; FONT: 12px/28px "宋体"; WIDTH: 350px; COLOR: #ece2e7; POSITION: absolute; TOP: 34px
+}
+.sub_menu A {
+	MARGIN: 0px 10px; COLOR: #656565
+}
+.sub_menu A:hover {
+	TEXT-DECORATION: underline
+}
+.sub_menu A.Anow_subm {
+	FONT: bold 12px/28px "宋体"; TEXT-DECORATION: none
+}
+.sub_menu A.Anow_subm:hover {
+	FONT: bold 12px/28px "宋体"; TEXT-DECORATION: none
+}

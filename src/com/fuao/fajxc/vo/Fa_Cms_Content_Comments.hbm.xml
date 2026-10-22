@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_Content_Comments" table="fa_cms_content_comment">
+  <id name="id" column="id" type="integer">
+    <generator class="native" />
+  </id>
+  <property name="cid" column="cid" type="integer" insert="false" update="false"/>
+  <property name="sid" column="sid" type="integer" />
+  <property name="sname" column="sname" type="string" />
+  <property name="is_self" column="is_self" type="integer" />
+  <property name="tid" column="tid" type="integer" />
+  <property name="content" column="content" type="string" />
+  <property name="sendtime" column="sendtime" type="date" />
+  <property name="ipaddress" column="ipaddress" type="string" />
+  <property name="score" column="score" type="integer" />
+  <property name="status" column="status" type="integer" />
+  <property name="auditname" column="auditname" type="string" />
+  <!-- 评论对文章  多对一 -->
+  <many-to-one name="news" class="com.fuao.fajxc.vo.Fa_Cms_News" column="cid" />
+</class>
+</hibernate-mapping>

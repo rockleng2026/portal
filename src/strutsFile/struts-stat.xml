@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+
+<package name="PackageStat" extends="struts-default">
+
+<!-- 临时统计 -->
+<action name="*TemporarilyStat" class="TemporarilyStatAction" method="{1}">
+<result name="success">/Stat/temporarilyStat.jsp</result> 
+
+</action>
+
+<!-- 季度统计 -->
+<action name="*UptoSnuffStat" class="UptoSnuffStatAction" method="{1}">
+<result name="success">/Stat/uptoSnuffStat.jsp</result>    
+   
+</action>   
+
+<!-- 统计历史记录 -->
+<action name="*AnnalsStat" class="AnnalsStatAction" method="{1}">
+<result name="success">/Stat/annalsStat.jsp</result>
+</action>
+
+
+ </package>
+
+</struts>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    <struts>
+    <package name="PackageSale" extends="struts-default">
+    <!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			<interceptor-stack name="myInter">
+			<interceptor-ref name="system">
+			<param name="name">SystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">select</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+			</interceptor-stack>
+		</interceptors>
+	<!-- S 2012-02-20 15:34:24 新版订单-->
+	<action name="*Sale" class="SaleAction" method="{1}">
+	    <result name="success" type="redirect"></result>
+	    <result name="goAdd">/orderTemplate/addOrder.jsp</result>
+	    <result name="select" type="redirect"></result>
+	    <result name="orderType" >/orderTemplate/orderType.jsp</result>
+    </action>
+    
+    <action name="*OrderType" class="OrderTypeAction" method="{1} ">
+	    <result name="no">/No.jsp</result>
+	    <result name="success" type="redirect">goListOrderType.do</result>
+	    <result name="goAdd">/orderTemplate/addOrderType.jsp</result>
+	    <result name="goList">/orderTemplate/orderType.jsp</result>
+	    <result name="goInfo">/orderTemplate/orderTypeinfo.jsp</result>
+	    <result name="goUpdate">/orderTemplate/updateOrderType.jsp</result>
+	    <result name="chanpin">/orderTemplate/productsList.jsp</result>
+	    <result name="select" type="redirect"></result>
+    </action>
+	<!-- E 2012-02-20 15:34:24 -->
+	
+    <!-- 订单Action -->
+    <action name="*saleOrder"  class="SaleOrderAction" method="{1}">
+  <!--引用拦截器栈 -->
+	    <interceptor-ref name="myInter">
+		</interceptor-ref>
+	    <result name="success">/sale/saleorder/saleroderList.jsp</result>
+	    <result name="addOrUp">/sale/saleorder/addOrUpdate.jsp</result>
+	    <result name="info">/sale/saleorder/saleorderInfo.jsp</result>
+	    <result name="update">/sale/saleorder/updateSaleorder.jsp</result>
+	    <result name="dialog">/showDialog/saleOrderDialog.jsp</result>
+	    <result name="renewlist">/sale/saleorder/orderRenewList.jsp</result>
+	    <result name="renew">/sale/saleorder/orderRenew.jsp</result>
+	    <result name="select" type="redirect">selectsaleOrder.do</result>
+	    <result name="selectrl" type="redirect">selectrlsaleOrder.do?mess=${mess}</result>
+	    <result name="saleOrderList">/foreGroundFolder/customProscenium/saleOrderList.jsp</result>
+	    <result name="salrOrderInfo">/foreGroundFolder/customProscenium/saleOrderInfo.jsp</result>
+	    <result name="updatecustomer">/Financial/orderlist/customerInfo.jsp</result>
+	    
+	        <!-- 查询快到期、已到期的订单 -->
+    <result name="toselOrder">/Financial/orderlist/selectorder.jsp</result>
+    <!-- 快到期 -->
+    <result name="kdq">/Financial/orderlist/kdqselectorder.jsp</result>
+    <!-- 已到期 -->
+    <result name="ydq">/Financial/orderlist/ydqselectorder.jsp</result>
+    <!-- 财务统计模块 -->
+    <result name="ygyj">/Financial/cwtj/empyj.jsp</result>
+    <result name="qtcdl">/Financial/cwtj/cdl.jsp</result>
+    <result name="cdlfx">/Financial/cwtj/cdfx.jsp</result>
+    </action>
+    
+    <!-- 价格调整Action -->
+    <action name="*priceReg" class="priceRegAction" method="{1}">
+    <!--引用拦截器栈 -->
+			<interceptor-ref name="myInter">
+			</interceptor-ref>	
+	    <result name="success">/sale/priceRegulation/priceRegulationShow.jsp</result>
+	    <result name="history">/sale/priceRegulation/historyPriceReg.jsp</result>
+	    <result name="add">/sale/priceRegulation/addPriceReg.jsp</result>
+    </action>
+    
+    </package>
+    
+    </struts>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.NewFunctionRecord" table="new_function_record">
+  <id name="id" column="id" type="integer">
+    <generator class="native"></generator>
+  </id>
+  <property name="turntime" column="turntime" type="date"/>
+  
+  <many-to-one name="function" class="com.fuao.fajxc.vo.NewFunction" fetch="select" lazy="false">
+            <column name="fid" />
+  </many-to-one>
+  <many-to-one name="oldemp" class="com.fuao.fajxc.vo.Employee" fetch="select" lazy="false">
+            <column name="oldempid" />
+  </many-to-one>
+  <many-to-one name="newemp" class="com.fuao.fajxc.vo.Employee" fetch="select" lazy="false">
+            <column name="newempid" />
+  </many-to-one>
+</class>
+</hibernate-mapping>
+

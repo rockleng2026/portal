@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 <!-- 
+	 <import resource="applicationContext-common.xml"/>
+	  -->	 
+<!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- BaseDao注入 -->
+		<bean id="baseDao" class="com.fuao.fajxc.util.BaseDao">
+			<property name="sessionFactory" ref="sessionFactory"></property>
+		</bean>
+		<bean id="commBaseDao" class="com.fuao.fajxc.dao.impl.CommBaseDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"></property>
+		</bean>
+		
+		<bean id="FunctionInfoSystemDao" class="com.fuao.fajxc.dao.impl.system.FunctionInfoSystemDaoImpl" parent="baseDao"></bean>
+		<bean id="RoleSystemDao" class="com.fuao.fajxc.dao.impl.system.RoleSystemDaoImpl" parent="baseDao"></bean>
+		<bean id="GroupSystemDao" class="com.fuao.fajxc.dao.impl.system.GroupSystemDaoImpl" parent="baseDao"></bean>
+		<bean id="MenuInterceptorDao" class="com.fuao.fajxc.dao.impl.system.MenuInterceptorImpl" parent="baseDao"></bean>
+		<!-- 消息提醒Dao注入 -->
+		<bean id="MessageremindDao" class="com.fuao.fajxc.dao.impl.system.MessageremindDaoImpl" parent="baseDao"></bean>
+		
+		<bean id="MenuFunctionSystemDao" class="com.fuao.fajxc.dao.impl.system.MenuFunctionSystemDaoImpl" parent="baseDao">
+			<property name="functionInfoSystemDao" ref="FunctionInfoSystemDao"></property>
+		</bean>
+		<bean id="VerifyOrderDao" class="com.fuao.fajxc.dao.impl.system.VerifyOrderDaoImpl" parent="baseDao"></bean>
+		<bean id="auditingDao" class="com.fuao.fajxc.dao.impl.system.AuditingOrderDaoImpl" parent="baseDao"></bean>
+		<!-- 工单配置 -->
+		<bean id="WorkorderConfigurDao" class="com.fuao.fajxc.dao.impl.system.WorkorderConfigurDaoImpl" parent="baseDao"></bean>
+		<!-- 单据类型流程Dao -->
+		<bean id="DocmarkDao" class="com.fuao.fajxc.dao.impl.system.DocmentDaoImpl" parent="baseDao"></bean>
+		<!-- 员工附件表上传操作 -->
+		<bean id="uploaddao" class="com.fuao.fajxc.dao.impl.system.UploadDaoImpl" parent="baseDao"></bean>
+			
+<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 通用Bussiness注入 -->
+		<bean id="BaseBussiness" class="com.fuao.fajxc.bussiness.impl.BaseBussinessImpl">
+			<property name="commBaseDao" ref="commBaseDao"></property>
+		</bean>
+		
+		
+		<!-- 登录Bussiness注入 -->
+		<bean id="FunctionInfoSystemBussiness" class="com.fuao.fajxc.bussiness.system.impl.FunctionInfoSystemBussinessImpl">
+			<property name="functionInfoSystemDao" ref="FunctionInfoSystemDao"></property>
+		</bean>
+		 
+		<bean id="RoleSystemBussiness" class="com.fuao.fajxc.bussiness.system.impl.RoleSystemBussinessImpl">
+			<property name="roleSystemDao" ref="RoleSystemDao"></property>
+		</bean>
+		
+		<bean id="GroupSystemBussiness" class="com.fuao.fajxc.bussiness.system.impl.GroupSystemBussinessImpl">
+			<property name="groupSystemDao" ref="GroupSystemDao"></property>
+		</bean>
+		<bean id="MenuFunctionSystemBussiness" class="com.fuao.fajxc.bussiness.system.impl.MenuFunctionSystemBussinessImpl">
+			<property name="menuFunctionSystemDao" ref="MenuFunctionSystemDao"></property>
+		</bean>
+		<bean id="auditingBussiness" class="com.fuao.fajxc.bussiness.system.impl.AuditingBussinessImpl">
+		<property name="audd" ref="auditingDao"></property>
+		</bean>
+		
+		<bean id="VerifyOrderBusiness" class="com.fuao.fajxc.bussiness.system.impl.VerifyOrderBussinessImpl">
+			<property name="verifyOrderDao" ref="VerifyOrderDao"></property>
+		</bean>
+		<!-- 提醒功能 -->
+		<bean id="MessageremindBiz" class="com.fuao.fajxc.bussiness.system.impl.MessageremindBizImpl">
+			<property name="md" ref="MessageremindDao"></property>
+		</bean>
+		<!-- 工单配置Biz -->
+		<bean id="WorkorderConfigurbiz" class="com.fuao.fajxc.bussiness.system.impl.WorkOrderCfigurBizImpl">
+		<property name="wocdao" ref="WorkorderConfigurDao"></property>
+		</bean>
+		
+		<!-- 员工附件表上传操作 -->
+		<bean id="uploadbiz" class="com.fuao.fajxc.bussiness.system.impl.UploadBussinessImpl">
+			<property name="uploaddao" ref="uploaddao"></property>
+		</bean>
+		
+		<!-- 单据类型bussiness -->
+		<bean id="DocBussiness" class="com.fuao.fajxc.bussiness.system.impl.DocmentBussinessImpl" >
+		<property name="docDao" ref="DocmarkDao"></property>
+		</bean>
+<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 登录Action注入 -->
+		<bean id="SystemAction" class="com.fuao.fajxc.action.system.SystemAction">
+			<property name="functionInfoSystemBussiness" ref="FunctionInfoSystemBussiness"></property>
+			<property name="groupSystemBussiness" ref="GroupSystemBussiness"></property>
+			<property name="roleSystemBussiness" ref="RoleSystemBussiness"></property>
+			<property name="empBussiness" ref="empBussiness"></property>
+			<property name="customerBussiness" ref="customerBussiness"></property>
+		</bean>
+		<bean id="RoleSystemAction" class="com.fuao.fajxc.action.system.RoleSystemAction">
+			<property name="roleSystemBussiness" ref="RoleSystemBussiness"></property>
+			<property name="functionInfoSystemBussiness" ref="FunctionInfoSystemBussiness"></property>
+		</bean>
+		<bean id="GroupSystemAction" class="com.fuao.fajxc.action.system.GroupSystemAction">
+			<property name="groupSystemBussiness" ref="GroupSystemBussiness"></property>
+			<property name="functionInfoSystemBussiness" ref="FunctionInfoSystemBussiness"></property>
+		</bean>
+		
+		<bean id="MenuManagerSystemAction" class="com.fuao.fajxc.action.system.MenuManagerSystemAction">
+			<property name="functionInfoSystemBussiness" ref="FunctionInfoSystemBussiness"></property>
+			<property name="menuFunctionSystemBussiness" ref="MenuFunctionSystemBussiness"></property>
+			<property name="roleSystemBussiness" ref="RoleSystemBussiness"></property>
+		</bean>
+		
+		<bean id="VerifyOrderAction" class="com.fuao.fajxc.action.system.VerifyOrderAction">
+			<property name="verifyOrderBusiness" ref="VerifyOrderBusiness"></property>
+		</bean>
+		<!-- 消息提醒 -->
+		<bean id="MessageremindAction" class="com.fuao.fajxc.action.system.MessageremindAction">
+			<property name="mb" ref="MessageremindBiz"></property>
+		</bean>
+		<!-- 审核action注入 -->
+		<bean id="auditingAction" class="com.fuao.fajxc.action.system.AuditingAction">
+			<property name="aub" ref="auditingBussiness"></property>
+			<property name="empBussiness" ref="empBussiness"></property>
+			<property name="formbiz" ref="commonBussiness"></property>
+			<property name="loginBussiness" ref="Loginbussiness"></property>
+			<property name="groupSystemBussiness" ref="GroupSystemBussiness"></property>
+		</bean>
+		<bean id="WorkOrderCfigurAction" class="com.fuao.fajxc.action.system.WorkOrderCfigurAction">
+		<property name="wocbiz" ref="WorkorderConfigurbiz"></property>
+		</bean>
+		
+		
+		<!-- 菜单拦截器 -->
+		<bean id="LoginInterceptor" class="com.fuao.fajxc.interceptor.LoginInterceptor" scope="prototype">
+			<property name="menuInterceptorDao" ref="MenuInterceptorDao"></property>
+		</bean>
+		
+		<!-- 岗位菜单拦截器 -->
+		<bean id="PositionLoginInterceptor" class="com.fuao.fajxc.interceptor.PositionLoginInterceptor" scope="prototype">
+			<property name="menuInterceptorDao" ref="MenuInterceptorDao"></property>
+		</bean>
+		
+		<!-- 员工附件表上传操作 -->
+		<bean id="UploadAction" class="com.fuao.fajxc.action.system.UploadAction">
+			<property name="upbiz" ref="uploadbiz"></property>
+		</bean>
+
+		
+		<!-- 通用接口工具类 -->
+		<bean id ="Genral" class="com.fuao.fajxc.utilinterface.impl.GeneralImpl">
+		<property name="messageBussiness" ref="messageBu"></property>
+        <property name="messagetypeBussiness" ref="messagetypeBussiness"></property>
+        <property name="messagereceiverBussiness" ref="messagereceiverBussiness"></property>
+        <property name="messager" ref="MessageremindBiz"></property>
+		
+		</bean>
+
+		
+		<!-- 单据类型Action -->
+		<bean id="DocmarkAction" class="com.fuao.fajxc.action.system.DocmentAction">
+			<property name="docbussiness" ref="DocBussiness"></property>
+		</bean>
+		
+		<!-- 在线支付Action -->
+		<bean id="onlinePayAction" class="com.fuao.fajxc.action.PayAction">
+			<property name="docbussiness" ref="DocBussiness"></property>
+			<property name="cuserBuss" ref="customservicebiz"></property>
+			<property name="salordBuss" ref="saleBussiness"></property>
+			<property name="chargeMoneyBuss" ref="chargeBussiness"></property>
+		</bean>
+		  <!-- FJCommon注入bean -->
+      <bean id="FJCommonAction" class="com.fuao.fajxc.action.common.FJCommonAction">
+      <property name="formbiz" ref="commonBussiness"></property>
+     </bean>
+     <!-- 注入岗位dao -->
+     <bean id="positiondao" class="com.fuao.fajxc.dao.position.PositionDaoImpl"  parent="baseDao"></bean>
+     <!-- 注入岗位action -->
+     <bean id="PositionSystemAction" class="com.fuao.fajxc.action.system.PositionSystemAction">
+         <property name="positiondao" ref="positiondao"></property>
+     </bean>
+     
+     <!-- 注放新系统账户管理action -->
+		<bean id="AccountManagerAction" class="com.fuao.fajxc.action.system.AccountManagerAction">
+			<property name="functionInfoSystemBussiness" ref="FunctionInfoSystemBussiness"></property>
+		</bean>
+	 </beans>

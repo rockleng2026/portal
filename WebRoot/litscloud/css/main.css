@@ -1,0 +1,65 @@
+BODY {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px;
+}
+img {border:0 none;}
+ul,li{ list-style-type:none;}
+
+.index_bg01 {
+	BACKGROUND: url(../images/ly_214.gif) repeat-x 0px 144px
+}
+.index_bg02 {
+	BACKGROUND: url(../images/ly_21.gif) repeat-x 0px 144px
+}
+.index_bg03 {
+	BACKGROUND: url(../images/banner_bg03.gif) repeat-x 0px 144px
+}
+.index_bg04 {
+	BACKGROUND: url(../images/banner_bg04.gif) repeat-x 0px 144px
+}
+.index_bg05 {
+	BACKGROUND: url(../images/banner_bg05.gif) repeat-x 0px 144px
+}
+#warp {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 100%; PADDING-RIGHT: 0px; HEIGHT: 403px;; PADDING-TOP: 0px;
+	margin-bottom:0px;
+	position:inherit;
+	z-index:-1;
+	margin-bottom:0px;
+	padding-bottom:0px;
+}
+.banner {
+	Z-INDEX: 99; MARGIN: 0px auto; WIDTH: 1130px; HEIGHT: 403px; _width: 1130px;	
+}
+.banner_l {
+	MARGIN-TOP: 147px; WIDTH: 85px; FLOAT: left;
+}
+.banner_r {
+	 MARGIN-TOP: 147px; WIDTH: 85px; FLOAT: left; text-align:right;
+}
+.bannerImg {
+	 POSITION: relative; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 960px; PADDING-RIGHT: 0px; FLOAT: left; PADDING-TOP: 0px; height:403px;
+}
+.bannerImg .bannerPage {
+	 POSITION: absolute; TOP: 350px; LEFT: 800px
+}
+.bannerImg .bannerPage A {
+	 MARGIN-RIGHT: 2px
+}
+.bannerImg .bannerPage A IMG {
+	 VERTICAL-ALIGN: middle
+}
+.slides_container {
+	 POSITION: relative; WIDTH: 960px; OVERFLOW: hidden
+}
+.pagination {
+	MARGIN: 26px auto 0px
+}
+.pagination LI {
+	MARGIN: 0px 1px; FLOAT: left
+}
+.pagination LI A {
+	 BACKGROUND-IMAGE: url(../images/ly_215.png); WIDTH: 11px; DISPLAY: block; BACKGROUND-POSITION:13px; 0px; FLOAT: left; HEIGHT: 0px; OVERFLOW: hidden; PADDING-TOP: 18px; margin-left:5px;
+}
+.pagination LI.current A {
+	BACKGROUND-POSITION: 0px 0px
+}

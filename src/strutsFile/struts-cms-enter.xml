@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="gbk"?>
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+  <package name="PackageLogins" extends="json-default" namespace="/cms">
+    <!--login -->
+    <action name="adminLoss" class="cmsLoAction" method="LoginEnter">
+        <result name="input">/cms/login/login.jsp</result>
+        <result name="success">/cms/login/cms.html</result>
+    </action>
+    <action name="*_MenuAllTrees" class="cmsLoAction" method="{1}">
+         <result type="json">
+         <param name="arrMessager"></param>
+         </result>
+    </action>
+  </package>
+
+</struts>

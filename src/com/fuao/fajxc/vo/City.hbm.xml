@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.City" table="t_city">
+  <id name="id" column="id" type="integer">
+    <generator class="native"/>
+  </id>
+  <property name="name" column="name" type="string" />
+  <property name="code" column="code" type="string" />
+  <property name="pinyin" column="pinyin" type="string"/>
+  <property name="superid" column="superid" type="integer" />
+  <property name="temp" column="temp" type="string" />
+  <!-- 城市对机房 一对多 -->
+  <set name="electhouses" cascade="all" lazy="false">
+    <key column="cityid"/>
+    <one-to-many class="com.fuao.fajxc.vo.ElectHouse"/>
+  </set>
+  <set name="tresourceCheck" inverse="true">
+  	<key>
+  		<column name="cid"></column>
+  	</key>
+  	<one-to-many class="com.fuao.fajxc.vo.Tresourcecheck"/>
+  </set>
+</class>
+
+</hibernate-mapping>

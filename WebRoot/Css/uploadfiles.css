@@ -1,0 +1,17 @@
+/* CSS Document */
+
+.login_box{ width:597px;  height:408px; background:url(gs1.jpg); margin-top:103px}
+
+.biaodan { width:1003px;  height:auto;}
+.STYLE1 {font-size:36px; margin-top:30px;}
+.STYLE2 {font-size:18px; margin-top:10px;}
+.biaodan_ul{ width:958px; border-top:#000000 solid 1px; border-left:#000000 solid 1px;zoom:1}
+.biaodan_lil1 { border-right:#000000 solid 1px; border-bottom:#000000 solid 1px; line-height:34px; float:left; width:130px; height:34px; text-align:left; text-indent:10px;}
+.biaodan_lir1 { border-right:#000000 solid 1px; border-bottom:#000000 solid 1px; line-height:34px; float:left; width:340px; height:34px; text-align:left; text-indent:10px;}
+.biaodan_lil2 { border-right:#000000 solid 1px; border-bottom:#000000 solid 1px; line-height:34px; float:left; width:174px; height:34px; text-align:left; text-indent:10px;}
+.biaodan_lir2 { border-right:#000000 solid 1px; border-bottom:#000000 solid 1px; line-height:34px; float:left; width:310px; height:34px; text-align:left; text-indent:10px;}
+
+.biaodan_ul1{ width:100%; height:auto;zoom:1}
+.biaodan_li1{ width:100%; height:auto;}
+
+.STYLE3 {color: #CC0000}

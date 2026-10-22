@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-后台（实名认证提交申请）</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){  
+        $("#topdiv").load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+        $("#ly_bottom").load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+        
+    }); 
+    </script>
+</head>
+
+<body>
+<div class="ly_body">
+    <!------------------------------------------头部公用代码------------------------------------------------------------>
+<div class="ly_top" id="topdiv">
+   </div>
+    <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle" style="margin-top:0px;">
+      <div class="ly_dh" style="height:4px; line-height:4px;"></div>  
+      <div class="ly_n_login">
+          <div class="bg_t">当前位置：<a href="javascript:void(0);" target="_parent">首页</a>>会员中心</div> 
+          <div class="bg_c">
+              <div class="bg_ct"><ul>
+                <li><a href="bg_data.html" style="background-image:url(images/bg_01.png); color:#ffffff;">我的<br />账户</a></li>
+                <li><a href="bg_indent.html">自助<br />管理</a></li>
+              </ul></div>
+              <div class="bg_cd">
+                 <div class="bg_cdl"></div>
+                 <div class="bg_cdc"><ul>
+                    <li><a href="bg_data.html" >个人资料</a></li>
+                    <li><a href="bg_pay.html">在线支付</a></li>
+                    <li><a href="bg_password.html">修改密码</a></li>
+                    <li><a href="bg_zhaopass.html">忘记密码</a></li>
+                    <li><a href="bg_wycz.html">我要充值</a></li>
+                    <li><a href="bg_zhxx.html" style="background-image:url(images/bg_06.jpg); color:#000; background-repeat:no-repeat;">账户信息</a></li>
+                    <li><a href="bg_czjl.html">充值记录</a></li>
+                 </ul></div>
+                 <div class="bg_cdr"></div>
+              </div>
+          </div> 
+          <div class="ly_xx">
+             <div class="ly_xxt">
+               <div class="ly_xxtl">个人实名认证</div>             
+             </div>
+             <div class="ly_rzs">
+               <div class="ly_rzs_t"><img src="images/sf_08.gif" /></div> 
+               <div class="ly_rzs_c">
+                   <div class="ly_rzs_ct">
+                     <div class="ly_rzs_ctl"><span>*</span>真实姓名：</div> 
+                     <div class="ly_rzs_ctr"><input type="text" name="zs_name" class="zs_name" /> <span>请输入身份证上的姓名</span></div> 
+                   </div>
+                   <div class="ly_rzs_ct">
+                     <div class="ly_rzs_ctl"><span>*</span>身份证号码：</div> 
+                     <div class="ly_rzs_ctr"><input type="text" name="zs_name" class="zs_name" /> <span>请填写真实的身份证号码，身份证号码是15或18数字</span></div> 
+                   </div> 
+                   <div class="ly_rzs_ct">
+                     <div class="ly_rzs_ctl"><span>*</span>固定电话：</div> 
+                     <div class="ly_rzs_ctr"><input type="text" name="zs_name" class="zs_name" /> <span>如：0571-99166698-0571,分机号码可不填写</span></div> 
+                   </div>
+                   <div class="ly_rzs_ct">
+                     <div class="ly_rzs_ctl"><span>*</span>身份证类型：</div> 
+                     <div class="ly_rzs_ctr"><input name="sfz_lx" type="radio" value="二代身份证"  style="float:left; margin-right:5px;"/><img src="images/sf_07.gif" style="float:left;" /></div> 
+                   </div>
+                   <div class="ly_rzs_ct">
+                     <div class="ly_rzs_ctl"><span>*</span>身份证图片正面：</div> 
+                     <div class="ly_rzs_ctr">
+                       <div class="ly_rzs_ctrl">
+                     <input type="button" value="点击上传" class="sczj" name="sczj" style="margin-top:8px;" /></div> 
+                       <div class="ly_rzs_ctrr">证件必须是彩色原件电子商务版，可以是扫描件或者数码拍摄照片，
+仅支持：jpg.jpeg.bmo.的图片格式，<span>图片大小不超过2M</span></div>
+                     </div>
+                   </div>
+                   <div class="ly_rzs_ct">
+                     <div class="ly_rzs_ctl"><span>*</span>身份证图片反面：</div> 
+                     <div class="ly_rzs_ctr">
+                       <div class="ly_rzs_ctrl">
+                     <input type="button" value="点击上传" class="sczj" name="sczj" style="margin-top:8px;" /></div> 
+                      
+                     </div>
+                   </div>
+                   <div class="ly_rzs_ct">
+                     <div class="ly_rzs_ctl"><span>*</span>身份证有效期：</div> 
+                     <div class="ly_rzs_ctr"><input type="text" name="zs_name" class="zs_name" /> <input name="yxq_sc" type="radio" value="二代身份证"  style=" margin-right:5px;"/> 长期 <span>日期的格式为：YYYY-MM-DD 如：2013-04-08，若证件有效期为长期，请选择长期</span></div> 
+                   </div>
+                   <div class="ly_rzs_ct">
+                     <div class="ly_rzs_ctl"><span>*</span>联系地址：</div> 
+                     <div class="ly_rzs_ctr"><input type="text" name="zs_name" class="zs_name" style="width:430px;" /></div> 
+                   </div>
+                   <div class="ly_rzs_ct">
+                     <div class="ly_rzs_ctl"><span>*</span>验证码：</div> 
+                     <div class="ly_rzs_ctr"><input type="text" name="yzm_yz" class="yzm_yz" /> <img src="images/sf_01.gif" /> <span class="blue_q"><a href="#">看不清，换一张</a></span></div> 
+                   </div>
+                   
+               </div> 
+               <div class="ly_rzs_d">
+                 <div class="ly_rzs_dm">
+                   <div class="ly_rzc_rdl"></div>
+                      <div class="ly_rzc_rdc"><a href="bg_smsh.html">下一步</a></div>
+                      <div class="ly_rzc_rdr"></div>
+                 </div> 
+               </div> 
+             </div>             
+             
+          </div>             
+      </div>  
+    
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div>  
+   </div>
+<!--_________________________底部公用代码 _______________________________________________-->
+<div class="ly_bottom" id="ly_bottom">
+ </div>
+ <!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

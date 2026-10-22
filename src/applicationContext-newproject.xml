@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 <!-- 我的项目Spring -->
+	 
+	 <!-- 注入projectdao -->
+	 <bean id="projectdao " class="com.fuao.fajxc.dao.impl.newproject.ProjectImpl" parent="baseDao"></bean>
+     <bean id="LoginDao" class="com.fuao.fajxc.dao.impl.LoginDaoImpl" parent="baseDao"></bean>
+     <!-- 注入action -->
+	 <bean id="projectAction" class="com.fuao.fajxc.action.newproject.ProjectAction">
+	   <property name="projectdao" ref="projectdao"></property>
+	   <property name="loginDao" ref="LoginDao"></property>
+	 </bean>
+	 
+	 <!-- 立项审请Spring -->
+	 <!-- 注入dao -->
+	 <bean id="startdao" class="com.fuao.fajxc.dao.impl.newproject.StartProjectImpl" parent="baseDao"></bean>
+	 <!-- 注入action -->
+	 <bean id="startProjectAction" class="com.fuao.fajxc.action.newproject.StartProjectAction">
+	   <property name="startdao" ref="startdao"></property>
+	 </bean>
+	 
+	 <!-- 审批项目Spring -->
+	 <!-- 注入dao -->
+	 <bean id="approvaldao" class="com.fuao.fajxc.dao.impl.newproject.ApprovalProjectImpl" parent="baseDao"></bean>
+	 <!-- 注入action -->
+	 <bean id="approvalProjectAction" class="com.fuao.fajxc.action.newproject.ApprovalProjectAction">
+	   <property name="approvaldao" ref="approvaldao"></property>
+	 </bean>
+	 
+	  <!-- 项目问题Spring -->
+	 <!-- 注入dao -->
+	 <bean id="questiondao" class="com.fuao.fajxc.dao.impl.newproject.QuestionProjectImpl" parent="baseDao"></bean>
+	 <!-- 注入action -->
+	 <bean id="questionProjectAction" class="com.fuao.fajxc.action.newproject.QuestionProjectAction">
+		 <property name="stockpileDetailsBussiness" ref="StockpileDetailsBussiness"></property>
+	   <property name="questiondao" ref="questiondao"></property>
+	 </bean>
+	 
+	 <!-- 项目讨论与领导评价Spring -->
+	 <!-- 注入dao -->
+	 <bean id="talkdao" class="com.fuao.fajxc.dao.impl.newproject.TalkProjectImpl" parent="baseDao"></bean>
+	 <!-- 注入action -->
+	 <bean id="talkAction" class="com.fuao.fajxc.action.newproject.TalkProjectAction">
+	   <property name="talkdao" ref="talkdao"></property>
+	 </bean>
+	 
+	  <!-- 项目任务Spring -->
+	 <!-- 注入dao -->
+	 <bean id="taskdao" class="com.fuao.fajxc.dao.impl.newproject.TaskProjectImpl" parent="baseDao"></bean>
+	 <!-- 注入action -->
+	 <bean id="taskAction" class="com.fuao.fajxc.action.newproject.TaskProjectAction">
+	  <property name="taskdao" ref="taskdao"></property>
+	 </bean>
+</beans>

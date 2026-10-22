@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+  <package name="PackageTemplate" extends="struts-default" namespace="/cms">
+    <action name="*Template" class="templateAction" method="{1}">
+         <result name="all">/cms/papers/modelTable.jsp</result>
+         <result name="update">/cms/templist/template.jsp</result>
+         <result name="add">/cms/templist/template.jsp</result>
+         <result name="file">/cms/templist/temp.jsp</result>
+         <result name="relogin">/cms/login/</result>
+    </action>
+  </package>
+</struts>

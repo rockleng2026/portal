@@ -1,0 +1,180 @@
+﻿@charset "utf-8";
+/* CSS Document */
+/*game user login and reg*/
+.NgameC_topL{ display:block; clear:both; background: url(../img/NgameCenter_1.jpg) top left no-repeat; height:56px; overflow:hidden;}
+.NgameC_topR{ display:block; clear:both; background: url(../img/NgameCenter_1.jpg) top right no-repeat; height:56px; overflow:hidden;}
+.NgameC_topC{ display:block; clear:both; background:url(../img/NgameCenter_4.jpg) repeat-x; margin:0 19px; height:56px; overflow:hidden;}
+.NgameC_tbfont{ font:bold 14px/28px Tahome "宋体"; color:#333333; padding-left:40px; background:url(../img/NgameCenter_7.jpg) 0 0 no-repeat; margin-top:17px;}
+.NgameC_tbfont span{ font:normal 12px/28px Tahome "宋体"; color:#FF6600; padding-left:6px;}
+.NgameC_tc{ display:block; clear:both; border-left:1px solid #DEDEDE; border-right:1px solid #DEDEDE; overflow:hidden; height:1%;}
+.NgameC_footL{ display:block; clear:both; background: url(../img/NgameCenter_1.jpg) bottom left no-repeat; height:12px; overflow:hidden;}
+.NgameC_footR{ display:block; clear:both; background: url(../img/NgameCenter_1.jpg) bottom right no-repeat; height:12px; overflow:hidden;}
+.NgameC_footC{ display:block; clear:both; background:url(../img/NgameCenter_8.jpg) repeat-x; margin:0 10px; height:12px; overflow:hidden;}
+/*
+.NgameC_regL{ float:left; width:390px; overflow:hidden;}
+.NgameC_regL ul{ list-style:none}
+.NgameC_regL ul li{height:38px;}
+.NgameC_regL ul li h1{ font:normal 12px/38px "宋体"; color:#333333; display:inline;}*/
+
+.NgameC_inputA{ border-left:1px solid #CCCCCC; border-bottom:1px solid #CCCCCC; border-top:1px solid #7C7C7C; border-right:1px solid #7C7C7C; width:187px; height:25px; line-height:25px;}
+.NgameC_login{ float:left; margin:12px 0 0 10px; overflow:hidden; width:320px;}
+*+html .NgameC_login{ float:left; margin:12px 0 0 20px; overflow:hidden; width:320px;}
+.NgameC_login ul{ list-style:none;}
+.NgameC_login ul li{ padding:4px 0; overflow:hidden;}
+.NgameC_login ul li input{ vertical-align:middle;}
+.NgameC_login ul li a{ text-decoration:underline; color:#C94700}
+.NgameC_login ul li a:hover{ text-decoration:underline; color:#C94700;}
+.NgameC_login ul li font011{ font-weight:normal; width:53px; float:left; text-align:right; padding-top:5px;}
+
+.NgameC{font-weight:normal; font-size:12px; width:100px; color:#C94700; display:inline;}
+.NgameC_loginzs{ padding-left:54px;}
+.NgameC_login ul li img{ padding-left:54px; vertical-align:middle;}
+.NgameC_sx{ float:left; text-align:left; width:100px;}
+.NgameC_inputB{border-left:1px solid #CCCCCC; border-bottom:1px solid #CCCCCC; border-top:1px solid #7C7C7C; border-right:1px solid #7C7C7C;}
+.NgameCli{ padding-left:54px;}
+.btn_login{ background:url(../images/btn.gif) 0 -86px no-repeat; width:106px; height:37px; border:0; margin:10px 0;}
+.NgameCbut{ padding-left:70px;}
+.NgameGimg{ float:right; padding-right:10px;}
+.Ngame_nopass{text-decoration:underline; font:normal 12px/28px Tahome "宋体"; color:#C94700;}
+.Ngame_nopass a{ text-decoration:underline; color:#C94700;}
+.Ngame_nopass a:hover{ text-decoration:underline; color:#C94700;}
+
+
+/*game center login ok*/
+
+
+.NgameCLog_topL{ display:block; clear:both; background:url(../img/NgameCenter_18.jpg) left center no-repeat; overflow:hidden; height:65px;}
+.NgameCLog_topR{ display:block; clear:both; background:url(../img/NgameCenter_18.jpg) right center no-repeat; overflow:hidden; height:65px;}
+.NgameCLog_topC{ display:block; clear:both; background:url(../img/NgameCenter_19.jpg) repeat-x; height:65px; margin:0 4px; position:relative; z-index:1;}
+.NgameCLog_Ubar{ display:block; clear:both; margin:4px 0; background-color:#FFF8E2; height:27px;}
+.NgameCLog_Uf{ float:left; width:300px; background:url(../img/NgameCenter_20.jpg) 55px 6px no-repeat; padding-left:11px; line-height:27px; color:#333333;}
+.NgameCLog_Uf span{ color:#C94700;}
+.NgameCLog_UfB{ float:right; width:160px; line-height:27px; padding-right:11px; color:#C94700; text-align:right;}
+.NgameCLog_UfB a{ text-decoration:underline; color:#C94700; font:normal 12px/27px Tahome "宋体";}
+.NgameCLog_UfB a:hover{ text-decoration:underline; color:#C94700; font:normal 12px/27px Tahome "宋体";}
+.NgameCLog_Sbar{ display:block; clear:both; margin-top:14px;}
+.NgameCLog_StopL{ display:block; clear:both; background:url(../img/NgameCenter_21.jpg) left center no-repeat; overflow:hidden; height:39px;}
+.NgameCLog_StopR{ display:block; clear:both; background:url(../img/NgameCenter_21.jpg) right center no-repeat; overflow:hidden; height:39px;}
+.NgameCLog_StopC{ display:block; clear:both; background:url(../img/NgameCenter_22.jpg) repeat-x;; overflow:hidden; height:39px; margin:0 20px; font:normal 14px/36px Tahome "宋体"; padding-left:8px;}
+.NgameCLog_StopC span{ color:#C94700; font-weight:bold;}
+/*.NgameCLog_SCB{ display:block; clear:both; border-left:1px solid #CCCCCC; border-right:1px solid #CCCCCC; overflow:hidden;}
+*/
+.NgameC_newsBar{ display:block; clear:both; margin:8px 15px 15px 15px; height:60px; background-color:#F6F6F6; border:1px solid #EDEDED;}
+.NgameC_newsImg{ float:left; width:180px; padding-left:15px; padding-top:6px;}
+.NgameC_news{ float:right; width:410px; padding:0 10px;}
+.NgameC_news ul{ list-style:none;}
+.NgameC_news ul li{ font:normal 12px/30px Tahome "宋体"; color:#904D00; height:30px;}
+.NgameC_news ul li .Ngitem{ float:left; width:360px;}
+.NgameC_news ul li .Ngitem a{ text-decoration:none; color:#904D00;}
+.NgameC_news ul li .Ngitem a:hover{ text-decoration:underline; color:#904D00;}
+.NgameC_news ul li em{float:right; color:#333; width:50px; text-align:center; font-style:normal;}
+.NgameCLog_StrL{ display:block; clear:both; background:url(../img/NgameCenter_9.jpg) left center no-repeat; height:32px; overflow:hidden; margin-left:15px;}
+.NgameCLog_StrR{ display:block; clear:both; background:url(../img/NgameCenter_9.jpg) right center no-repeat; height:32px; overflow:hidden; margin-right:15px;}
+.NgameCLog_StrC{ display:block; clear:both; background: url(../img/NgameCenter_16.jpg) repeat-x; height:32px; overflow:hidden; margin:0 10px; font:normal 14px/32px Tahome "宋体"; color:#333;}
+.NgameCLog_XF{ float:left; width:350px;}
+.NgameCLog_XF span{color:#C94700; font-weight:bold;}
+.NgameCLog_XF span a{color:#C94700; text-decoration:none;}
+.NgameCLog_XF span a:hover{color:#C94700; text-decoration:underline;}
+.NgameCLog_XFBut{ float:right; width:170px; padding-top:5px;}
+*+html .NgameCLog_XFBut{ float:right; width:170px; padding-top:1px;}
+*html .NgameCLog_XFBut{ float:right; width:170px; padding-top:5px;}
+.NgameCLog_XFBut span{ padding-left:10px;}
+.NgameC_SlistBar{ display:block; clear:both; padding-left:23px;}
+*html .NgameC_SlistBar{ display:block; clear:both;}
+.NgameC_SlistBar ul{list-style:none;}
+.NgameC_SlistBar ul li{ float:left; width:253px; background:url(../img/NgameCenter_15.jpg) no-repeat; height:30px; margin:10px 23px 0 23px; line-height:30px; font: bold 14px/30px Tahome "宋体"; color:#4D5C07; padding:0 5px;overflow:hidden;}
+*html .NgameC_SlistBar ul li{ float:left; width:260px; background:url(../img/NgameCenter_15.jpg) no-repeat; height:30px; margin:10px 21px 0 13px; line-height:30px; font: bold 14px/30px Tahome "宋体"; color:#4D5C07; padding:0 5px;overflow:hidden;}
+.NgameC_SlistBar ul li .listfont{ float:left; width:50px; text-align:center;color:#C94700;}
+.NgameC_SlistBar ul li .listfont1{ float:left; width:120px; text-align:left;}
+.NgameC_SlistBar ul li .listfont1 a{font: bold 14px/30px Tahome "宋体"; color:#4D5C07; text-decoration:none;}
+.NgameC_SlistBar ul li .listfont1 a:hover{font: bold 14px/30px Tahome "宋体"; color:#4D5C07; text-decoration:underline;}
+.NgameC_SlistBar ul li .listimg1{ float:left; width:20px; padding-top:6px; padding-left:6px;}
+.NgameC_SlistBar ul li .listimg2{ float:left; width:30px; padding-left:11px; padding-top:5px;}
+*html .NgameC_SlistBar ul li .listimg2{ float:left; width:50px; padding-left:11px; padding-top:5px;}
+.NgameC_SlistBar ul li .fontblack{ color:#333333; text-align:center; padding-left:13px;}
+.NgameC_SlistBar ul li .fontgreen{ color:#008736; text-align:center; padding-left:13px;}
+.NgameC_SlistBar ul li .fontred{ color:#ff0000; text-align:center; padding-left:13px;}
+.NgameC_SlistBar ul li .fontOrange{ color:#FE7D0F; text-align:center; padding-left:13px;}
+
+/*game center login ok*/
+
+.NgameCLog_okinfo{ display:block; clear:both; margin-top:14px; height:120px; background-color:#FFF9F1; border:1px solid #F7E8D0; padding:14px; font:normal 14px/30px Tahome "宋体"; color:#333333;}
+.NgameCLog_okinfo .userT{ color:#C94700;}
+.NgameCLog_okinfo .userTok{ color:#FF0000;}
+.NgameCLog_okBut{ display:block; clear:both; padding-top:30px;}
+.NgameCLog_okBut img{ margin-right:15px;}
+.NgameC_glist{ display:block; clear:both; padding:0 15px;}
+.NgameC_glist ul{ list-style:none;}
+.NgameC_glist ul li{ border-bottom:1px dashed #ccc; margin-top:15px; overflow:hidden; padding-bottom:15px;}
+*html .NgameC_glist ul li{ border-bottom:1px dashed #ccc; margin-top:15px; overflow:hidden; padding-bottom:15px; height:1%}
+.NgameC_glistimg{ float:left; width:220px; padding-left:15px;}
+.NgameC_glistF{ float:left; width:400px;}
+.NgameC_glistF dl{ list-style:none;}
+.NgameC_glistF dl dd{ height:20px;}
+*+html .NgameC_glistF dl dd{ height:26px;}
+.NgameC_glistF dl dd .LTfont{font: bold 12px/20px Tahome "宋体"; color:#333333;}
+.NgameC_glistF dl dd .MCfont{font: bold 12px/20px Tahome "宋体"; color:#C94700;}
+.NgameC_glistF dl dd .LinkFont{ color:#669900; width:240px; float:left;}
+.NgameC_glistF dl dd .LinkFont a{font: normal 12px/20px Tahome "宋体"; color:#669900; text-decoration:underline;}
+.NgameC_glistF dl dd .LinkFont a:hover{font: normal 12px/20px Tahome "宋体"; color:#669900; text-decoration:underline;}
+.NgameC_glistF dl dd .logimgbut{ float:right; width:115px;}
+.NgameC_glistF dl dd .QMfont{ color:#FF6600;}
+
+
+/*game conter left*/
+
+.NgameC_lmenu{display:block; clear:both; overflow:hidden; padding:0; margin:5px 0;}
+.NgameC_lmenu dt{ display:block; clear:both; background:url(../img/NgameCenter_31.jpg) 0 0 no-repeat; line-height:32px;color:#333; font-weight:bold; margin:0 6px; padding:0 10px; overflow:hidden; cursor:pointer; }
+.NgameC_lmenu dt span{padding-left:10px; }
+.NgameC_lmenu dt em{ font-style:normal; font-size:11px; float:right;}
+.NgameC_lmenu dd{ display:block; clear:both; width:205px; margin:5px 6px;_margin:5px auto 10px auto; padding:0; overflow:hidden;}
+.NgameC_lmenu dd .anowUser{ display:block; clear:both;color:#f60; background:url(../img/NgameCenter_32.jpg) no-repeat; height:30px; line-height:30px; padding:2px 0 0 60px;}
+.NgameC_lmenu dd .anow_gray{display:block; clear:both;color:#f60; background: url(../img/NgameCenter_29.jpg) no-repeat; height:30px; line-height:30px; padding:2px 0 0 60px;}
+.NgameC_lmenu dd .anow a{display:block; clear:both; background:url(../img/NgameCenter_30.jpg) no-repeat; color:#333; height:30px; line-height:30px; padding:2px 0 0 60px; overflow:hidden;}
+.NgameC_lmenu dd .anow a:hover{display:block; clear:both;color:#f60; background:url(../img/NgameCenter_29.jpg) no-repeat;}
+.NgameC_lmenu dd .anowUser_gray a{display:block; clear:both; background: url(../img/NgameCenter_gray.jpg) no-repeat; color:#333; height:30px; line-height:30px; padding:2px 0 0 60px; overflow:hidden;}
+.NgameC_lmenu dd .anowUser_gray a:hover{display:block; clear:both;color:#f60; background:url(../img/NgameCenter_32.jpg) no-repeat;}
+
+
+
+/*userinfo*/
+.NgameCLog_GmU{ display:block; clear:both; height:30px; font:normal 12px/30px Tahome "宋体"; color:#333333}
+.NgameCLog_GmU .font1{ float:left; width:115px; padding-left:11px; line-height:30px;}
+.NgameCLog_GmU .font1 em{font:bold 12px/30px Tahome "宋体"; color:#C94700; font-style:normal;}
+.NgameCLog_GmU .JDimg{ float:left; width:70px; padding-top:8px;}
+.NgameCLog_GmU .font2{ float:left; width:110px; padding-left:50px;}
+.NgameCLog_GmU .JDT{ float:left; width:75px; padding-top:8px;}
+.NgameCLog_GmU .JH{ float:left; width:75px; }
+*+html .NgameCLog_GmU .JDT{ float:left; width:75px; padding-top:9px;}
+.NgameCLog_GmU .font3{ float:left; width:120px;}
+.NgameCLog_GmU .font4{ float:right; width:60px; padding-right:11px; color:#C94700; text-align:right;}
+.NgameCLog_GmU .font4 a{ text-decoration:underline; color:#C94700; font:normal 12px/27px Tahome "宋体";}
+.NgameCLog_GmU .font4 a:hover{ text-decoration:underline; color:#C94700; font:normal 12px/27px Tahome "宋体";}
+
+
+/*---------------m window-------------------*/
+.Ngame_mc{ display:block; clear:both; position:absolute; top:60px; left:300px; width:320px;}
+.Ngame_mctop{ display:block; clear:both; background:url(../img/NgameCenter.gif) 21px 0 no-repeat; border-bottom:1px solid #FFCC99; height:6px; }
+*html .Ngame_mctop{ display:block; clear:both; background:url(../img/NgameCenter.gif) 21px 6px no-repeat; border-bottom:1px solid #FFCC99; height:6px;}
+.Ngame_mcbar{ display:block; clear:both; border-bottom:1px solid #FFCC99; border-left:1px solid #FFCC99; border-right:1px solid #FFCC99; background-color:#FFFFCC; height:1%; overflow:hidden; padding:10px 14px;}
+.Ngame_mcbar ul{ list-style: none;}
+.Ngame_mcbar ul li{text-align:left;}
+.Ngame_mcbar ul li .leftfont01{ width:180px; float:left; font:bold 12px/20px Tahome "宋体"; color:#777777; text-align:left;}
+.Ngame_mcbar ul li .leftfont02{ width:100px; float:right;  font:normal 12px/20px Tahome "宋体"; color:#C94700; text-align:right;}
+.Ngame_mcbar ul li .leftfont02 a{ text-decoration:none; color:#C94700;}
+.Ngame_mcbar ul li .leftfont02 a:hover{ text-decoration:underline; color:#C94700;}
+.Ngame_mcbar ul li .leftfont03{ width:180px; float:left;  font:normal 12px/20px Tahome "宋体"; color:#777777; text-align:left;}
+.Ngame_mcbar ul li .leftfont04{ width:100px; float:right;  font:normal 12px/20px Tahome "宋体"; color:#777777; text-align:right;}
+.Ngame_mcbar ul li .leftfont04 em{ font-style:normal; font:normal 12px/20px Tahome "宋体"; color:#C94700;}
+.Ngame_aq{display:block; clear:both; position:absolute; top:60px; left:40px; width:200px;}
+.Ngame_mcbar ul li a{ text-decoration:none; color:#777777;}
+.Ngame_mcbar ul li a:hover{ text-decoration:underline; color:#777777;}
+.Ngame_ch{display:block; clear:both; position:absolute; top:60px; left:450px; width:210px;}
+.Ngame_mcbar ul li .leftfont05{font:bold 12px/20px Tahome "宋体"; color:#C94700;}
+*+html .tipsboxC{ margin:15px; color:#f00; font-size:12px; background: url(../img/icon_note.gif) 12px 12px no-repeat; padding-left:30px; background-color:#FFF8E7;}
+*html .tipsboxC{ margin:15px; color:#f00; font-size:12px; background: url(../img/icon_note.gif) 12px 12px no-repeat; padding-left:30px; background-color:#FFF8E7;}
+.NgameC_tc .tipsboxC{ margin:15px; color:#f00; font-size:12px; background: url(../img/icon_note.gif) 12px 12px no-repeat; padding-left:30px; background-color:#FFF8E7;}
+.NgameC_tc .tipsboxC em{ font-style:normal; font-size:16px; font-weight:bold;}
+.NgameC_glistF dl dd .QMfont a{text-decoration:none; color:#FF6600;}
+.NgameC_glistF dl dd .QMfont a:hover{text-decoration:underline; color:#FF6600;}
+.NgameC_SlistBar ul li .listren{ float:left; width:50px; text-align:right; color:#FF6600;}

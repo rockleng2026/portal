@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-立云公告</title>
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+.lk_bz{display:block; background-image:url(../images/lys_76.png); background-repeat:no-repeat; color:#c4e8fa;}
+</style>
+<script type="text/javascript" src="../js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+	//加载头部模块     
+ $(document).ready(function(){ 
+ 	
+	 $('#topdiv').load("../../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+	 $('#lybottom').load("../../tpl/bottom.jsp?tt="+(new Date()).getTime());
+	 $('#qtt').load("../../web/question/qus_title.html");
+	 $('#index').css({
+	 "font-family":"Arial, Helvetica, sans-serif",
+	 "color":"#2fafea",
+	 "background-image":"url(images/ly_05.gif)",
+	 "background-repeat":"no-repeat",
+	 "background-position":"center center"	 
+	 })	 
+}); 
+
+
+</script>
+
+</head>
+<body>
+<div class="ly_body">
+   <!------------------------------------------头部公用代码------------------------------------------------------------>
+ <div class="ly_top" id="topdiv"></div>
+   <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle">
+ 
+          <div class="ly_dh" style="height:4px; overflow:hidden;">          
+      </div>
+      <div class="ly_dhn" style="background-color:#fff;">
+      当前位置：<a href="index.html">首页</a> > <a href="../news.html">新闻动态</a> > 正文
+      </div>
+     <div class="news"> 
+      <div class="new">
+        <div class="newl" id="qtt">            
+         </div>
+         <div class="newr">
+            <div class="newr_t"></div>
+            <div class="newr_c">
+               <div class="newr_m">
+                  <div class="newr_mt">立云公告</div>
+                  <div class="newr_mv">什么是云主机安全策略？ </div>
+                  <div class="newr_ms">作者：立云&nbsp;&nbsp;&nbsp;&nbsp;    文章来源：立云 &nbsp;&nbsp;&nbsp;&nbsp;   点击数：<span>288</span> &nbsp;&nbsp;&nbsp;&nbsp;   更新时间：2013-4-12</div>
+                  <div class="newr_mu">默认情况下，云主机缺省包含一定的安全规则，允许/禁止其他机器访问自己的某一个端口或服务。每条安全规则包含两个信息：来源和端口号。<br/>
+
+
+举例：如果要让所有人都可以访问某台机器的http服务，我们要向“所有来源”开放“80”端口。如果只想让自己的另外机器来访问本地的MySQL服务，我们要向来自“x.x.x.x”的机器开放“3306”端口。<br/>
+
+
+为了使用方便，我们已经为您创建了安全策略 “default”,你可以直接修改这个安全策略的规则。如果有特殊需求，可以建立新的安全策略，然后在申请云主机第2步:选择安全策略中选择新建的安全策略（或者直接在申请云主机第2步直接新建安全策略）这样你就可以使用新的安全策略了。<br/>
+
+
+需要注意的是：安全策略只对本组中云主机起作用，并且目前可以修改安全策略的内容，但不支持云主机更换安全策略。<br/>
+				  </div>
+                 <div class="newr_ms""><a href="#" onclick="history.go(-1);" style="font-size:12px;font-weight:bolder;"> 返回</a></div>
+            	  
+                
+               
+               
+               
+            </div>
+            <div class="newr_d"></div>
+         </div>
+      </div>
+      </div>
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div> 
+   </div>
+
+<!--_________________________底部公用代码 _______________________________________________-->
+  <div id="lybottom" class="ly_bottom">
+  </div>
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

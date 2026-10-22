@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">	 
+	 <!-- 注入commonbizDAO -->
+	 <bean id="commonbiz" class="com.fuao.fajxc.bussiness.common.CommonBizImpl"></bean>
+	 <!-- 注入rec_partDAO -->
+	 <bean id="partDao" class="com.fuao.fajxc.dao.cms_rec_part.Rec_PartDaoImpl" parent="baseDao"></bean>
+	 
+	   
+	 <!-- 注入action -->
+	 <bean id="rec_partAction" class="com.fuao.fajxc.action.cms_rec_part.Rec_PartAction">
+	   <property name="newsDao" ref="newsDao"></property>
+	   <property name="partDao" ref="partDao"></property>
+	   <property name="classd" ref="classesDao"></property>
+	 </bean>
+</beans>

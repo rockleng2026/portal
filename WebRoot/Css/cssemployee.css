@@ -1,0 +1,152 @@
+
+.body{	margin:0 0 0 0;}
+
+/*员工详细信息*/
+.yuangongxingxi_con{margin:0 auto; width:900px;}
+.yuangongxingxi{float:left;margin-top:1%;margin-left:92px;width:732px;background-color:#FFFFFF;}
+.yuangongxingxi_title{float:left;padding-top:5px;padding-left:15px;	width:717px;height:27px;clear:both;	background-image:url(../imagesImg/yuan_gong_ziliao_03.jpg);}
+.yuangongxingxi_leirong{float:left;width:732px;}
+.xiang_xi_table {border-collapse:collapse;width: 730px;}
+.infor_tr_td{ width:80px;height:30; background-color:#F4FAFF; bordercolor:#0099FF;}
+.infor_tr_td2{ width:110px;height:30;bordercolor:#0099FF;}
+th, td {text-align:center;color:#207DF4;font-size:13px;}
+
+/*员工添加和更新信息*/
+.add_yuangongxingxi_con{margin:0 auto;width:900px;}
+.add_yuangongxingxi{float:left;margin-top:1%;margin-left:5%;width:800px;background-color:#FFFFFF;}
+.add_yuangongxingxi_title{float:left;padding-top:5px;padding-left:15px;width:785px;height:27px;clear:both;background-image:url(../imagesImg/yuan_gong_ziliao_03.jpg);}
+.yuangongxingxi_leirong{float:left;width:732px;}
+.add_table {border-collapse:collapse;width: 800px;}
+.txtcs{	float:left;width:105px;height:22px;border:0; background-color:#FFFFFF; text-align:left; padding-top:7px;}
+.selectcs{width:105px;height:29px;border:1px solid #CCCCCC; background-color:#FFFFFF; text-align:center;}
+
+.txtcs2{float:left;	width:250px;height:22px; border:0; background-color:#FFFFFF;text-align:left;padding-top:7px;}
+.txtcs3{float:left;	width:600px;height:22px;border:0; background-color:#FFFFFF;text-align:left;padding-top:7px;}
+
+.add_jieshao_line{float:right; width:70px; height:25px; background-color:#D0E8FF; margin-left:15px; margin-right:15px;}
+.addyuangong{text-align:center;width:70px; height:25px; background-image:url(ps/an_niu.jpg); margin-left:15px; margin-right:15px;}
+.STYLE1 {color: #FF0000;}
+
+
+/*员工列表*/
+.yuangong_list_con{margin:0 auto;background-image:url(../imagesImg/yuan_gong_ziliao_bg.jpg);width:900px;height:738px;}
+.yuangong_list{	float:left;	width:865px;margin-left:6%; margin-top:5%;}
+
+.yuangonglistimglink a img {border: 1px solid #d4d4d4; margin-top:3px;}
+.yuangonglistimglink a:hover img {border: 1px solid #d40000;}
+. a:link {color: #000000;text-decoration: none;}
+. a:visited {color: #000000;text-decoration: none;}
+. a:hover {color: #000000;text-decoration:underline;}
+
+.yuangong_btn {font-family: "tahoma", "宋体";font-size: 9pt; color: #0066cc; border: 1px #0099FF solid;background-image:url(../imagesImg/btn_22.jpg);  background-color: #ffffff;    cursor: hand;    font-style: normal ;	width:60px;	height:25px;	border:0; margin-top:5px;}
+
+
+.anpager { font: 11px Arial, Helvetica, sans-serif;margin:5px 4px 0 0;padding:4px 5px 0; margin-top:5px; margin-bottom:5px;}
+.anpager .cpb {background:#4DA6FF;border:1px solid #DDEEFF;color:#207DF4;font-weight:bold;margin:0;padding:4px 5px 1px;}
+.anpager a {background:#F0F8FF;border:1px solid #DDEEFF;color: #0080FF;margin: 0;padding:4px 5px 1px;text-decoration:none}
+.anpager a:hover{background:#4DA6FF;border:1px solid #DDEEFF;color:#990000;}
+
+/*新增供应商*/
+.gong_yin_shang_add_con{ margin:0 auto; background-image:url(../imagesImg/yuan_gong_ziliao_bg.jpg); width:900px; height:700px;}
+.gong_yin_shang_add{ float:left; width:800px; margin:5%; margin-top:3%;}
+.gong_yin_shang_title{float:left; padding-top:5px;padding-left:15px;width:785px; height:27px; background-image:url(../imagesImg/yuan_gong_ziliao_03.jpg);font-size:17px; color:#FFFFFF; font-style:oblique;}
+.gong_yin_shang_leirong{ float:left; width:798px; background-color:#FFFFFF; border:1px solid #DDEEFF;}
+.gong_yin_shang_line_con{float:left; clear:both; width:798px;  border-bottom:#DDEEFF solid 1px;}
+.gong_yin_shang_left{ float:left; margin:auto 0; width:300px; height:25px;border-right:1px solid #DDEEFF; color:#207DF4; text-align:right; padding-top:10px; font-size:13px; background-color:#F4FAFF; }
+.gong_yin_shang_right{ float:right; margin:auto 0; width:495px; height:35px; color:#0066FF;text-align:left;}
+.gong_yin_shang_right1{ float:left; margin:auto 0; width:247px; height:35px;border:0px;}
+.gong_yin_shang_right2{float:right; margin:auto 0; width:247px; height:35px;border:0px;}
+.gong_yin_shang_line{ float: left; margin: 0 auto; height:35px; width: 379px; text-align:right;}
+.gong_yin_shang_line2{ float: left; margin: 0 auto; height:35px; width: 399px; text-align:left; padding-left:20px;}
+.gong_ying_shang_btntianjia {font-family: "tahoma", "宋体"; /*www.52css.com*/ font-size: 9pt; color: #0066cc; border: 1px #0099FF solid;background-image:url(../imagesImg/btn_2.jpg);  background-color: #ffffff;    cursor: hand;    font-style: normal ;	width:65px;	height:27px;	border:0; margin-top:5px;}
+.gong_ying_shang_txtcs{ width:245px; height:23px; border:0px; background-color:#FFFFFF; font-size:13px; padding-top:10px;}
+
+/*供应商列表*/
+.gong_yin_shang_list_con{ margin:0 auto; background-image:url(../imagesImg/yuan_gong_ziliao_bg.jpg); width:900px; height:738px;}
+.gong_yin_shang_list{ float:left; width:800px; margin-left:1%; margin-top:3%;}
+.gong_yin_shang_list_title{float:left; padding-top:5px;padding-left:15px;width:785px; height:27px; background-image:url(../imagesImg/yuan_gong_ziliao_03.jpg);font-size:17px; color:#FFFFFF; font-style:oblique;}
+.gong_yin_shang_list_leirong{ float:left; width:863px; background-color:#FFFFFF; border:1px solid #0099FF;}
+
+.gong_yin_shang_list_checked_con{ float:left; width:863px; height:34px; border-bottom:1px solid #DDEEFF; clear:both;}
+.gong_yin_shang_list_checked_ziduan{ float:left; width:200px; height:35xp; padding-top:10px; padding-left:10px; text-align:right; font-size:13px;color:#207DF4;}
+.gong_yin_shang_list_checked_select{float:left; width:200px; height:35xp; margin-top:9px; padding-left:10px; border:0px;}
+.gong_yin_shang_list_checked_select2{float:left; width:200px; height:35xp; border:1px solid #CCCCCC;}
+.gong_yin_shang_list_checked_txt{float:left; width:200px; height:35xp; margin-top:4px; padding-left:10px;}
+.gong_yin_shang_list_checked_btn{float:left; width:190px; height:35xp; margin-top:6px; padding-left:16px;}
+.gong_yin_shang_list_checked_btn a img {;border: 1px solid #d4d4d4;}
+.gong_yin_shang_list_checked_btn a:hover img {border: 1px solid #d40000;}
+
+.gong_yin_shang_list_No{ float:left; margin:auto 0px; height:22px; width:70px; border-bottom:1px solid #DDEEFF; border-right:1px solid #DDEEFF; text-align:center; padding-top:12px; background-color:#E8F3FF; font-weight:bold; color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_name{ float:left; margin:auto 0px; height:24px; width:185px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;background-color:#E8F3FF;font-weight:bold; color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_addres{ float:left; margin:auto 0px; height:24px; width:269px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;background-color:#E8F3FF;font-weight:bold; color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_come{ float:left; margin:auto 0px; height:24px; width:90px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;background-color:#E8F3FF;font-weight:bold; color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_fuzeren{ float:left; margin:auto 0px; height:24px; width:70px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;background-color:#E8F3FF;font-weight:bold; color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_createdate{ float:left; margin:auto 0px; height:24px; width:85px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;background-color:#E8F3FF;font-weight:bold; color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_xiangxi{ float:left; margin:auto 0px; height:30px; width:28px; border-right:1px solid #DDEEFF;text-align:center;padding-top:5px;background-color:#E8F3FF;font-weight:bold; color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_update{ float:left; margin:auto 0px; height:24px; width:28px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;background-color:#E8F3FF;font-weight:bold; color:#0099FF; font-size:13px;}
+.gong_yin_shang_listdelete{ float:left; margin:auto 0px; height:24px; width:28px;text-align:center;padding-top:10px;background-color:#E8F3FF;font-weight:bold; color:#0099FF; font-size:13px;}
+
+.gong_yin_shang_list_No2{ float:left; margin:auto 0px; height:24px; width:70px; border-right:1px solid #DDEEFF; text-align:center; padding-top:12px;color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_name2{ float:left; margin:auto 0px; height:24px; width:185px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_addres2{ float:left; margin:auto 0px; height:24px; width:269px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_come2{ float:left; margin:auto 0px; height:24px; width:90px; border-right:1px solid #E8F3FF;text-align:center;padding-top:10px;color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_fuzeren2{ float:left; margin:auto 0px; height:24px; width:70px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_createdate2{ float:left; margin:auto 0px; height:24px; width:85px; border-right:1px solid #DDEEFF;text-align:center;padding-top:10px;color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_xiangxi2{ float:left; margin:auto 0px; height:24px; width:28px; border-right:1px solid #DDEEFF;text-align:center;padding-top:5px;color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_xiangxi2 a img {;border: 1px solid #d4d4d4;}
+.gong_yin_shang_list_xiangxi2 a:hover img {border: 1px solid #d40000;}
+.gong_yin_shang_list_update2{ float:left; margin:auto 0px; height:24px; width:28px; border-right:1px solid #DDEEFF;text-align:center;padding-top:5px;color:#0099FF; font-size:13px;}
+.gong_yin_shang_list_update2 a img {;border: 1px solid #d4d4d4;}
+.gong_yin_shang_list_update2 a:hover img {border: 1px solid #d40000;}
+.gong_yin_shang_listdelete2{ float:left; margin:auto 0px; height:24px; width:28px;text-align:center;padding-top:5px;color:#0099FF; font-size:13px;}
+.gong_yin_shang_listdelete2 a img {;border: 1px solid #d4d4d4;}
+.gong_yin_shang_listdelete2 a:hover img {border: 1px solid #d40000;}
+
+/*客户添加 */
+.select{border:0.5px #CCCCCC solid;}
+.font{ font-size:12px;}
+
+/*客户更多 */
+.ke_hu_more_con{ margin:0 auto;width:400px;}
+.ke_hu_more{ width:400px;}
+.ke_hu_more_title{width:100%; height:35px; background-image:url(../imagesImg/yuan_gong_ziliao_03.jpg); border:1px solid #DDEEFF;}
+.ke_hu_more_title_left{ float:left;width:30%; height:25px; font-size:15px; font-weight:bold; color:#FFFFFF; padding:10px 0px 0px 10px;}
+.ke_hu_more_title_right{float:right;width:20%; height:25px; font-size:12px;color:#FFFFFF;padding:12px 0px 0px 0px;}
+.ke_hu_more_title_right a:link,.ke_hu_more_title_right a:visited{ text-decoration:none;color:#FFFFFF;;}
+.ke_hu_more_title_right a:hover{ text-decoration:underline;color:#FF0000;}
+
+.ke_hu_more_leirong_con{width:100%;border:1px solid #DDEEFF; }
+.ke_hu_more_leirong{width:100%; height:36px;border-bottom:1px solid #DDEEFF;}
+.ke_hu_more_leirong_left{float:left;width:40%; height:25px; font-size:12px; color:#0066FF;text-align:center;padding:10px 0px 0px 0px;} 
+.ke_hu_more_leirong_right{float:right;width:59%; height:35px;font-size:12px; color:#0066FF; text-align:center; border-left:1px solid #DDEEFF;}
+.hr{ width:100%; height:2px;}
+
+.ke_hu_more_leirong_right1{ float: left; margin: 0px;width:100%; height:13px; margin-top:3px;}
+.ke_hu_more_leirong_right1 a:link,.ke_hu_more_leirong_right1 a:visited{ text-decoration:none;color:#0066FF;}
+.ke_hu_more_leirong_right1 a:hover{ text-decoration:underline;color:#FF0000;}
+
+/*客户跟进记录 添加跟进记录*/
+.kehu_textarea{ margin:auto 0px; width:488px; height:256px;}
+/*客户试用记录 查看试用记录*/
+.kehu_more_shiyong{ float:left; width:800px; margin-left:9%; margin-top:5%;}
+/*客户交接记录 查看交接记录*/
+.kehu_more_jiaojie{ float:left; width:800px; margin-left:2%; margin-top:3%;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

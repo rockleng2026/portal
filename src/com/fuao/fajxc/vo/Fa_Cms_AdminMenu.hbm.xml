@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+<class name="com.fuao.fajxc.vo.Fa_Cms_AdminMenu" table="fa_cms_adminmenu">
+  <id name="" column="" type="">
+    <generator class="native" />
+  </id>
+  <property name="menuid" column="menuid" type="integer" />
+  <property name="superid" column="superid" type="integer" />
+  <property name="modelid" column="modelid" type="integer" />
+  <property name="menuname" column="menuname" type="string" />
+  <property name="menuengname" column="menuengname" type="string" />
+  <property name="menuico" column="menuico" type="string" />
+  <property name="menuurl" column="menuurl" type="string" />
+  <property name="menutarget" column="menutarget" type="string" />
+  <property name="memo" column="memo" type="string" />
+  <property name="regdate" column="regdate" type="string" />
+  <property name="editdate" column="editdate" type="date" />
+</class>
+</hibernate-mapping>

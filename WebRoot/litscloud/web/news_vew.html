@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>立云-立云公告</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+.lk_bz{display:block; background-image:url(images/lys_76.png); background-repeat:no-repeat; color:#c4e8fa;}
+</style>
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+	//加载头部模块     
+ $(document).ready(function(){ 
+ 	
+	 $('#topdiv').load("../tpl/htmltop.jsp?tt="+(new Date()).getTime());
+	 $('#lybottom').load("../tpl/bottom.jsp?tt="+(new Date()).getTime());
+	 $('#index').css({
+	 "font-family":"Arial, Helvetica, sans-serif",
+	 "color":"#2fafea",
+	 "background-image":"url(images/ly_05.gif)",
+	 "background-repeat":"no-repeat",
+	 "background-position":"center center"	 
+	 })	 
+}); 
+
+
+   var request ={QueryString : function(val){
+     var uri = window.location.search;
+     var re = new RegExp("" +val+ "=([^&?]*)", "ig");
+     return ((uri.match(re))?(uri.match(re)[0].substr(val.length+1)):null);
+     }
+   }
+   
+   
+    function lygg(){
+      
+      document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='block';
+      document.getElementById("r2").style.display='none';
+      document.getElementById("r3").style.display='none';
+   }
+   
+   function lygg2(){
+      $("#lygg").attr("class","lk_bz");
+      $("#rdhd").attr("class","");
+      $("#hydt").attr("class","");
+      $("#qyxw").attr("class","");
+   }
+  
+   function rdhd(){
+      document.getElementById("r1").style.display='block';
+      document.getElementById("r0").style.display='none';
+      document.getElementById("r2").style.display='none';
+      document.getElementById("r3").style.display='none';
+   }
+   
+   function rdhd2(){
+      $("#lygg").attr("class","");
+      $("#rdhd").attr("class","lk_bz");
+      $("#hydt").attr("class","");
+      $("#qyxw").attr("class","");
+   }
+   
+   function hydt(){
+      document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='none';
+      document.getElementById("r2").style.display='block';
+      document.getElementById("r3").style.display='none';
+   }
+   
+   function hydt2(){
+      $("#lygg").attr("class","");
+      $("#rdhd").attr("class","");
+      $("#hydt").attr("class","lk_bz");
+      $("#qyxw").attr("class","");
+   }
+   
+   function qyxw(){
+      document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='none';
+      document.getElementById("r2").style.display='none';
+      document.getElementById("r3").style.display='block';
+   }
+   
+   function qyxw2(){
+     $("#lygg").attr("class","");
+      $("#rdhd").attr("class","");
+      $("#hydt").attr("class","");
+      $("#qyxw").attr("class","lk_bz");
+   }
+   
+   
+   
+   
+   $(document).ready(function(){
+     var rt = request.QueryString("flag");
+     if(rt==1){
+        $("#lygg").attr("class","lk_bz");
+        document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='block';
+      document.getElementById("r2").style.display='none';
+      document.getElementById("r3").style.display='none';
+     }
+     if(rt==2){
+        $("#rdhd").attr("class","lk_bz");
+        document.getElementById("r1").style.display='block';
+        document.getElementById("r0").style.display='none';
+        document.getElementById("r2").style.display='none';
+        document.getElementById("r3").style.display='none';
+
+     }
+     if(rt==3){
+        $("#hydt").attr("class","lk_bz");
+        document.getElementById("r1").style.display='none';
+      document.getElementById("r0").style.display='none';
+      document.getElementById("r2").style.display='block';
+      document.getElementById("r3").style.display='none';
+     }
+     if(rt==4){
+        $("#qyxw").attr("class","lk_bz");
+        document.getElementById("r1").style.display='none';
+        document.getElementById("r0").style.display='none';
+        document.getElementById("r2").style.display='none';
+       document.getElementById("r3").style.display='block';
+     }
+  });
+  
+  
+  
+  
+  
+   function lygg1(){
+      window.location.href="news.html?flag=1";
+   }
+   
+   function lygg2(){
+      window.location.href="news.html?flag=2";
+   }
+   
+   function lygg3(){
+      window.location.href="news.html?flag=3";
+   }
+   
+   function lygg4(){
+      window.location.href="news.html?flag=4";
+   }
+   // JavaScript Document
+//显示立云公告
+  
+ 
+   function showgg(a)
+   {
+   var gogtitle=["迎接五一节，立云全面推出特价活动","立云开启微信服务","迎接清明节，立云全面推出特价活动","立云云主机全面升级"];
+    var goglist=["迎来了新一年的五一劳动节，立云为了回馈广大新老客户，全面推出立云品牌的各种服务器特价优惠活动，各种服务器的特价情况，可咨询我们在线客服人员。",
+                 "立云开通了微信服务，想要进一步了解微信只需关注立云即可，您可登陆微信，从“朋友们”中“添加朋友”，再从“朋友们”-“添加朋友”-“查找微信公众帐号”中搜索“立云”，再点击“关注”,您就可以轻轻松松关注立云的动态",
+                 "清明节节日，立云品牌推出特价活动，具体物价活动，请咨询在线客服人员",
+                 "立云云主机全面升级，升级后服务器更加安全稳定"];
+     $("#gogtitle").html("");
+     $("#gogtitle").html(gogtitle[a]);
+     $("#gogtext").html("");
+     $("#gogtext").html(goglist[a]);
+    
+   }
+   //显示热点活动
+   function showhd(b)
+   {
+   
+   var hdtitle=["原价800元每月现在只需466元","租用服务器可采用月季年的方式租用","速成美站，专业设计师打造精美网站","立云推出PORTAL管理系统平台"];
+    var hdlist=["原价：800 元/月，现价：466 元/月，CPU：至强5520内存：8G硬盘：256G带宽：百M独享（99%可用） 网卡：双千兆网卡 ，高配置，低价格。",
+                "可按照月季年的方式租用服务器，根据租用的方式不同，所享有的优惠价格也有所不同，详细情况可咨询我们的在线客服人员",
+               "立云推出网站建设，企业展示网站，可满足不同规模的建站需求，支持500人同时访问网站，拥有150G空间存储，后台操作简单易用，每月上传下载流量无限制，满足不同规模的建站需求，网速高达5M带宽",
+                "PORTALT管理平台：业务实时入账,单据个性化打印,采购一步式完成,往来核销精细化处理,支持多部门多人员异地实时办公,让财务决策及时响应老板需求,提升企业管理效率5倍以上!"];
+     $("#hdtitle").html("");
+     $("#hdtitle").html(hdtitle[b]);
+     $("#hdtext").html("");
+     $("#hdtext").html(hdlist[b]);
+   }
+   //显示行业动态
+      function showdt(c)
+   {
+   
+   var dttitle=["IDC如何在网络虚拟化中占据一席之地","云计算冲击IDC：哪片云'财'能下雨？","工信部集中打击VoIP非法经营","CN域名注册管理措施加强 "];
+    var dtlist=[" 预计在未来，随着3G建设的推进与“三网融合”的进程，以及电子商务、语音和视频等多网融合的应用日益火爆，与其紧密联系的相关产业将有望成为IDC行业的新增长点，企业内部应用也将日益发展为外包业务，外包业务将更多的体现为虚拟化产品服。在未来10年内，以云计算为主的聚合型分布式网络数据存储、高度整合的刀片和以及网络安全市场将开始迅速成长。电子商务、虚拟化产品服务、3G等实际应用也会陆续到来并受到关注，IDC增值业务和虚拟化业务将正式大展拳脚。",
+                "从市场的渗透情况看，在目前甚至是未来几年内，云计算在中国仍是一门新兴产业，其未来的发展，一方面有赖于云计算知识的普及，以及相关使用者对其评价和反馈。目前，各地政府对云计算的政策支持和相关的示范性工程，将给云计算的市场推广带来正面作用。另一方面，由于云计算在价值链不同环节的一些交易点上采用新的价格和服务模式，交易成本降低，这可能导致价值链在该处断裂。例如IT基础设施的运行及第三方对SLA（服务水平协议）和总体可用性的独立监督等都会改变.<br/>此外，在云计算中使用专业IT基础设施的入门成本降低，催生了大量小型创新型企业，这些企业能够以最少的投资和灵活的运营成本在市场上发布新的IT服务产品。这会产生IT服务供应商的云计算生态系统，这种生态系统，特别是亚马逊通过提供易于使用的基本IT服务和作为网络服务的中间件组件大力推广的系统，将必然导致价值链新的环节产生",
+               "日前，工信部网站贴出通知，称正会同有关部门集中开展打击非法互联网协议电话（VoIP电话）相关工作，并面向社会公开征集非法VoIP案件相关线索。国家有关部门加强CN域名的注册管理工作，使得不法分子使用CN域名制作各种不良网站的违法成本、应用门槛和法律风险均大幅提高，直接促使CN域名下的恶意网站数量显著减少，同时，数百万CN域名网站总体安全系数也获得大幅提升。",
+                "有关专家指出，CN域名下网站安全状况的大幅提升，得益于去年以来国家有关部门采取多种措施加强.CN域名注册管理。"];
+     $("#dttitle").html("");
+     $("#dttitle").html(dttitle[c]);
+     $("#dttext").html("");
+     $("#dttext").html(dtlist[c]);
+   }
+  //显示公司活动 
+   
+      function showxw(d)
+   {
+   
+   var xwtitle=["公司利用双休日组织员工爬山,锻炼身体","清明节,公司给员工发过节费,激励员工","公司将要扩大公司规模,员工预计将达到100至200人","公司将搬迁办公地点,为员工创造更舒适的工作环境"];
+    var xwlist=[" 为了丰富员工业余活动，公司组织全体员工爬山，让大家能在爬山的过程中，促进团队协作力与团队凝聚力，促进员工之间的友情，让大家在工作之余能更亲切的体会大自然的乐趣",
+                "清明节，公司给每位员工发了过节费，让大家能愉快的过一个清明节，同时也表彰了一部份在三月份表现积极的员工，并评为三月份优秀员工，给予一定的现金奖励，同时也是激励其他员工能积极工作，争取评上下个月的优秀员工",
+               "公司经过6年的发展时间，在技术，物力，人力上都有相当大的提升，公司也具备了相当雄厚的实力，为了进一步扩大公司业务，公司初步计划将员工规模扩展到100至200人",
+                "公司的业务发展逐渐壮大，员工也日渐增多，为了员工能安心，舒适的工作，公司决定搬迁办公地点，新的办公地点在老办公地点附近，里面的工作环境也将更舒适，宽敞"];
+     $("#xwtitle").html("");
+     $("#xwtitle").html(xwtitle[d]);
+     $("#xwtext").html("");
+     $("#xwtext").html(xwlist[d]);
+   }
+   
+   
+</script>
+
+</head>
+<body>
+<div class="ly_body">
+   <!------------------------------------------头部公用代码------------------------------------------------------------>
+ <div class="ly_top" id="topdiv"></div>
+   <!----------------------------------------------------------------内容开始------------------------------------------------------>
+
+   <div class="ly_imiddle">
+ 
+          <div class="ly_dh" style="height:4px; overflow:hidden;">          
+      </div>
+      <div class="ly_dhn" style="background-color:#fff;">
+      当前位置：<a href="index.html">首页</a> > <a href="news.html">新闻动态</a> > 正文
+      </div>
+     <div class="news"> 
+      <div class="new">
+         <div class="newl">
+            <div class="newl_t"></div>
+            <div class="newl_c">
+              <div class="newl_cm"><ul>
+                <li><a id="lygg" href="javascript:lygg1();" onmousemove="lygg2();">立云公告</a></li>
+                <li><a id="rdhd" href="javascript:lygg2();" onmousemove="rdhd2();">热点活动</a></li>
+                <li><a id="hydt" href="javascript:lygg3();" onmousemove="hydt2();">行业动态</a></li>
+                <li><a id="qyxw" href="javascript:lygg4();" onmousemove="qyxw2();">企业新闻</a></li>
+              </ul></div>
+            </div>
+            <div class="newl_d"></div>
+         </div>
+         <div class="newr">
+            <div class="newr_t"></div>
+            <div class="newr_c">
+               <div class="newr_m" id="r0">
+                  <div class="newr_mt">立云公告</div>
+                  <div class="newr_mv" id="gogtitle">迎接五一节，立云全面推出特价活动</div>
+                  <div class="newr_ms">作者：立云&nbsp;&nbsp;&nbsp;&nbsp;    文章来源：立云 &nbsp;&nbsp;&nbsp;&nbsp;   点击数：<span>288</span> &nbsp;&nbsp;&nbsp;&nbsp;   更新时间：2013-4-20</div>
+                  <div class="newr_mu" id="gogtext">&nbsp;&nbsp;迎来了新一年的五一劳动节，立云为了回馈广大新老客户，全面推出立云品牌的各种服务器特价优惠活动，各种服务器的特价情况，可咨询我们在线客服人员<br/>
+                                                                                                  2013年4月20日</div>
+                  <div class="newr_mi"><ul>
+                   <li style="background-image:url(images/lys_79.png); margin-bottom:5px; background-repeat:no-repeat; background-position:left center;">上一篇文章：<a href="javascript:showgg(1);" >立云开启微信服务</a></li>
+                   <li style="background-image:url(images/lys_78.png); background-repeat:no-repeat; background-position:left center;">下一篇文章：<a href="javascript:showgg(0);" >迎接清明节，立云全面推出特价活动</a></li>
+                  </ul></div>
+                  <div class="newr_mp">
+                     <div class="newr_mpt">相关文章：</div>
+                     <div class="newr_mpd"><ul>
+                     <li><a href="javascript:showgg(0);">迎接五一，立云推出特价活动</a></li>
+                      <li><a href="javascript:showgg(1);">立云开启微信服务</a></li>
+                      <li><a href="javascript:showgg(2);">迎接清明节，立推出特价活动</a></li>
+                      <li><a href="javascript:showgg(3);">立云云主机全面升级</a></li>
+                     </ul></div>
+                  </div>
+               </div>
+               
+               
+               <!-- 热点活动 -->
+               <div class="newr_m" id="r1">
+                  <div class="newr_mt">热点活动</div>
+                  <div class="newr_mv" id="hdtitle">原价800元每月现在只需466元</div>
+                  <div class="newr_ms">作者：立云&nbsp;&nbsp;&nbsp;&nbsp;    文章来源：立云 &nbsp;&nbsp;&nbsp;&nbsp;   点击数：<span>288</span> &nbsp;&nbsp;&nbsp;&nbsp;   更新时间：2013-4-12</div>
+                  <div class="newr_mu" id="hdtext">原价：800 元/月，现价：466 元/月，CPU：至强5520内存：8G硬盘：256G带宽：百M独享（99%可用） 网卡：双千兆网卡 ，高配置，低价格,时间有限，抓紧机会！</div>
+                  <div class="newr_mi"><ul>
+                   <li style="background-image:url(images/lys_79.png); margin-bottom:5px; background-repeat:no-repeat; background-position:left center;">上一篇文章：<a href="javascript:showhd(1);"> 租用服务器可采用月季年的方式租用</a></li>
+                   <li style="background-image:url(images/lys_78.png); background-repeat:no-repeat; background-position:left center;">下一篇文章： <a href="javascript:showhd(2);">速成美站，专业设计师打造精美网站</a></li>
+                  </ul></div>
+                  <div class="newr_mp">
+                     <div class="newr_mpt">相关文章：</div>
+                     <div class="newr_mpd"><ul>
+                      <li><a href="javascript:showhd(0);">原价800元每月现在只需466元</a></li>
+                      <li><a href="javascript:showhd(1);">租用服务器可采用月季年方式租用</a></li>
+                      <li><a href="javascript:showhd(2);">速成美站，专业设计师打造精美网站</a></li>
+                      <li><a href="javascript:showhd(3);">立云推出PORTAL管理系统平台</a></li>
+                     </ul></div>
+                  </div>
+               </div>
+               
+               
+               
+               <!-- 行业动态 -->
+               <div class="newr_m" id="r2">
+                  <div class="newr_mt">行业动态</div>
+                  <div class="newr_mv" id="dttitle">IDC如何在网络虚拟化中占据一席之地</div>
+                  <div class="newr_ms">作者：立云&nbsp;&nbsp;&nbsp;&nbsp;    文章来源：立云 &nbsp;&nbsp;&nbsp;&nbsp;   点击数：<span>288</span> &nbsp;&nbsp;&nbsp;&nbsp;   更新时间：2013-4-12</div>
+                  <div class="newr_mu" id="dttext"> 预计在未来，随着3G建设的推进与“三网融合”的进程，以及电子商务、语音和视频等多网融合的应用日益火爆，与其紧密联系的相关产业将有望成为IDC行业的新增长点，企业内部应用也将日益发展为外包业务，外包业务将更多的体现为虚拟化产品服。在未来10年内，以云计算为主的聚合型分布式网络数据存储、高度整合的刀片和以及网络安全市场将开始迅速成长。电子商务、虚拟化产品服务、3G等实际应用也会陆续到来并受到关注，IDC增值业务和虚拟化业务将正式大展拳脚。</div>
+                  <div class="newr_mi"><ul>
+                   <li style="background-image:url(images/lys_79.png); margin-bottom:5px; background-repeat:no-repeat; background-position:left center;">上一篇文章：<a href="javascript:showdt(1);"> 云计算冲击IDC：哪片云'财'能下雨</a></li>
+                   <li style="background-image:url(images/lys_78.png); background-repeat:no-repeat; background-position:left center;">下一篇文章：<a href="javascript:showdt(2);">工信部集中打击VoIP非法经营</a></li>
+                  </ul></div>
+                  <div class="newr_mp">
+                     <div class="newr_mpt">相关文章：</div>
+                     <div class="newr_mpd"><ul>
+                      <li><a href="javascript:showdt(0);">IDC如何在网络虚拟化占据一席之地</a></li>
+                      <li><a href="javascript:showdt(1);">云计算冲击IDC：哪片是云"财"</a></li>
+                      <li><a href="javascript:showdt(2);">工信部集中打击VoIP非法经营</a></li>
+                      <li><a href="javascript:showdt(3);">CN域名注册管理措施加强</a></li>
+                     </ul></div>
+                  </div>
+               </div>
+               
+               
+               <!-- 新闻 -->
+               <div class="newr_m" id="r3">
+                  <div class="newr_mt">企业新闻</div>
+                  <div class="newr_mv" id="xwtitle">公司利用双休日组织员工爬山，锻炼身体</div>
+                  <div class="newr_ms">作者：立云&nbsp;&nbsp;&nbsp;&nbsp;    文章来源：立云 &nbsp;&nbsp;&nbsp;&nbsp;   点击数：<span>288</span> &nbsp;&nbsp;&nbsp;&nbsp;   更新时间：2013-4-12</div>
+                  <div class="newr_mu" id="xwtext">为了丰富员工业余活动，公司组织全体员工爬山，让大家能在爬山的过程中，促进团队协作力与团队凝聚力，促进员工之间的友情，让大家在工作之余能更亲切的体会大自然的乐趣</div>
+                  <div class="newr_mi"><ul>
+                   <li style="background-image:url(images/lys_79.png); margin-bottom:5px; background-repeat:no-repeat; background-position:left center;">上一篇文章：<a href="javascript:showxw(1);"> 清明节，公司给员工发过节费</a></li>
+                   <li style="background-image:url(images/lys_78.png); background-repeat:no-repeat; background-position:left center;">下一篇文章： <a href="javascript:showxw(2);">公司将要扩大公司规模</a></li>
+                  </ul></div>
+                  <div class="newr_mp">
+                     <div class="newr_mpt">相关文章：</div>
+                     <div class="newr_mpd"><ul>
+                      <li><a href="javascript:showxw(0);">公司利用双休日组织员工爬山</a></li>
+                      <li><a href="javascript:showxw(1);">清明节，公司给员工发过节费</a></li>
+                      <li><a href="javascript:showxw(2);">公司将要扩大公司规模</a></li>
+                      <li><a href="javascript:showxw(3);">公司将搬迁办公地点</a></li>
+                      </ul></div>
+                  </div>
+               </div>
+               
+               
+               
+               
+               
+               
+               
+               
+               
+            </div>
+            <div class="newr_d"></div>
+         </div>
+      </div>
+      </div>
+    <div class="ly_n_weibu" style="margin-bottom:50px;"></div> 
+   </div>
+
+<!--_________________________底部公用代码 _______________________________________________-->
+  <div id="lybottom" class="ly_bottom">
+  </div>
+<!--------------------------------------------------------------底部结束 -------------------------------------------------------------->
+</div>
+</body>
+</html>

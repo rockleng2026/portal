@@ -1,0 +1,225 @@
+.lbar {
+	FLOAT: left; WIDTH: 668px
+}
+.rbar {
+	FLOAT: right; WIDTH: 217px
+}
+.lbarB {
+	FLOAT: left; WIDTH: 217px
+}
+.rbarB {
+	FLOAT: right; WIDTH: 668px
+}
+.hotgame {
+	CLEAR: both; DISPLAY: block; MARGIN-BOTTOM: 15px; OVERFLOW: hidden; ZOOM: 1
+}
+.bottom_hotgame {
+	DISPLAY: block; FONT-SIZE: 0px; BACKGROUND: url(/images/bg_mbox.gif) no-repeat -222px -347px; PADDING-BOTTOM: 5px; ZOOM: 1
+}
+.bottom_lboxA {
+	DISPLAY: block; FONT-SIZE: 0px; BACKGROUND: url(/images/bg_mbox.gif) no-repeat 0px -72px; PADDING-BOTTOM: 5px; ZOOM: 1
+}
+.columnA {
+	CLEAR: both; DISPLAY: block; OVERFLOW: hidden; ZOOM: 1
+}
+.columnB {
+	CLEAR: both; DISPLAY: block; OVERFLOW: hidden; ZOOM: 1
+}
+.columnC {
+	CLEAR: both; DISPLAY: block; OVERFLOW: hidden; ZOOM: 1
+}
+.columnD {
+	CLEAR: both; DISPLAY: block; OVERFLOW: hidden; ZOOM: 1
+}
+.columnE {
+	CLEAR: both; DISPLAY: block; OVERFLOW: hidden; ZOOM: 1
+}
+.columnF {
+	CLEAR: both; DISPLAY: block; OVERFLOW: hidden; ZOOM: 1
+}
+.columnA {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 30px; BACKGROUND: url(/images/bg_mbox.gif) no-repeat 0px 0px; PADDING-BOTTOM: 0px; FONT: bold 14px/40px tahoma,"ËÎÌå"; COLOR: #c94700; PADDING-TOP: 5px
+}
+.columnB {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 30px; BACKGROUND: url(/images/bg_mbox.gif) no-repeat -222px -87px; PADDING-BOTTOM: 0px; FONT: bold 14px/40px tahoma,"ËÎÌå"; COLOR: #c94700; PADDING-TOP: 5px
+}
+.columnC {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 30px; BACKGROUND: url(/images/bg_mbox.gif) no-repeat 0px -212px; PADDING-BOTTOM: 0px; FONT: bold 14px/38px tahoma,"ËÎÌå"; COLOR: #c94700; PADDING-TOP: 5px
+}
+.columnD {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 15px; BACKGROUND: url(/images/bg_mbox.gif) no-repeat -222px -278px; PADDING-BOTTOM: 0px; FONT: bold 14px/36px tahoma,"ËÎÌå"; COLOR: #c94700; PADDING-TOP: 0px
+}
+.columnF {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 30px; BACKGROUND: url(/images/bg_mbox.gif) no-repeat -222px -151px; PADDING-BOTTOM: 0px; FONT: bold 14px/42px tahoma,"ËÎÌå"; COLOR: #c94700; PADDING-TOP: 0px
+}
+.columnE {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 30px; BACKGROUND: url(/images/bg_mbox.gif) no-repeat -222px -229px; PADDING-BOTTOM: 0px; FONT: bold 14px/38px tahoma,"ËÎÌå"; COLOR: #c94700; PADDING-TOP: 0px
+}
+.graybox {
+	CLEAR: both; DISPLAY: block; BACKGROUND: url(/images/boxbg02_217.gif) repeat-y 0px 0px; MARGIN-BOTTOM: 15px; OVERFLOW: hidden; ZOOM: 1
+}
+.graybox_m {
+	CLEAR: both; PADDING-RIGHT: 10px; DISPLAY: block; PADDING-LEFT: 10px; BACKGROUND: url(/images/boxbg03_217s.gif) no-repeat center top; PADDING-BOTTOM: 0px; OVERFLOW: hidden; PADDING-TOP: 0px; ZOOM: 1
+}
+.graybox_bottom {
+	PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 0px; FONT-SIZE: 0px; BACKGROUND: url(/images/bg_mbox.gif) no-repeat 0px -289px; PADDING-BOTTOM: 5px; MARGIN: 0px 0px -2px; PADDING-TOP: 0px; ZOOM: 1; _margin: 0 0 -2px 0
+}
+UL.service {
+	PADDING-RIGHT: 15px; DISPLAY: block; PADDING-LEFT: 15px; PADDING-BOTTOM: 10px; PADDING-TOP: 10px; LIST-STYLE-TYPE: none
+}
+UL.service LI A {
+	MARGIN-RIGHT: 5px
+}
+.grayboxB {
+	CLEAR: both; PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 0px; BACKGROUND: url(/images/bg_m_r_box.gif) no-repeat -451px bottom; MARGIN-BOTTOM: 15px; PADDING-BOTTOM: 6px; OVERFLOW: hidden; PADDING-TOP: 0px; ZOOM: 1
+}
+.grayboxB_m {
+	CLEAR: both; BORDER-RIGHT: #dedede 1px solid; PADDING-RIGHT: 16px; BORDER-TOP: #dedede 1px; DISPLAY: block; PADDING-LEFT: 16px; BACKGROUND: url(/images/bg_m_r_box.gif) no-repeat right top; PADDING-BOTTOM: 10px; OVERFLOW: hidden; BORDER-LEFT: #dedede 1px solid; PADDING-TOP: 16px; BORDER-BOTTOM: #dedede 1px; ZOOM: 1
+}
+UL.list_qs {
+	CLEAR: both; PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 12px; PADDING-BOTTOM: 8px; OVERFLOW: hidden; PADDING-TOP: 8px; ZOOM: 1; LIST-STYLE-TYPE: none
+}
+UL.list_qs LI {
+	PADDING-RIGHT: 0px; DISPLAY: inline; PADDING-LEFT: 30px; BACKGROUND: url(/images/icon_main.gif) no-repeat 5px -68px; FLOAT: left; PADDING-BOTTOM: 0px; WIDTH: 290px; LINE-HEIGHT: 30px; PADDING-TOP: 0px; BORDER-BOTTOM: #e6cf87 1px dashed; HEIGHT: 30px
+}
+.steptips {
+	BACKGROUND: url(/images/bg_mbox.gif) no-repeat -222px -356px; FONT: bold 14px/46px "ËÎÌå"; HEIGHT: 46px
+}
+.steptips SPAN {
+	PADDING-RIGHT: 30px; PADDING-LEFT: 20px; BACKGROUND: url(/images/bg_steptips.gif) no-repeat right 0px; FLOAT: left; PADDING-BOTTOM: 0px; PADDING-TOP: 0px
+}
+.steptips .last {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 20px; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px; PADDING-TOP: 0px
+}
+.steptips .now {
+	COLOR: #eb5310
+}
+.part {
+	DISPLAY: block; MARGIN: 0px -10px 0px 6px; OVERFLOW: hidden; ZOOM: 1
+}
+.part A {
+	BORDER-RIGHT: #ccc 1px solid; BORDER-TOP: #ccc 1px solid; DISPLAY: inline; FLOAT: left; MARGIN: 0px 10px 0px 1px; BORDER-LEFT: #ccc 1px solid; WIDTH: 113px; BORDER-BOTTOM: #ccc 1px solid; HEIGHT: 46px
+}
+.paygameli {
+	DISPLAY: inline; FLOAT: left; MARGIN: 10px 0px 10px 12px; FONT: bold 12px/24px "ËÎÌå"; OVERFLOW: hidden; WIDTH: 195px; COLOR: #333; ZOOM: 1
+}
+.paygameli IMG {
+	BORDER-RIGHT: #ccc 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #ccc 1px solid; DISPLAY: block; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; BORDER-LEFT: #ccc 1px solid; PADDING-TOP: 2px; BORDER-BOTTOM: #ccc 1px solid
+}
+.paygameli INPUT {
+	FLOAT: right
+}
+.paygameli SPAN {
+	PADDING-RIGHT: 3px; DISPLAY: block; PADDING-LEFT: 3px; PADDING-BOTTOM: 0px; PADDING-TOP: 3px; HEIGHT: 24px
+}
+.btn_pay {
+	MARGIN-TOP: 2px; BACKGROUND: url(/images/btn.gif) no-repeat left -257px; WIDTH: 78px; CURSOR: pointer; BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; HEIGHT: 19px; BORDER-BOTTOM-STYLE: none
+}
+.paytips_t {
+	FONT-WEIGHT: normal; FONT-SIZE: 12px; COLOR: #666
+}
+.paytips_t EM {
+	COLOR: #f60; FONT-STYLE: normal
+}
+.paynav {
+	CLEAR: both; PADDING-RIGHT: 10px; DISPLAY: block; PADDING-LEFT: 30px; PADDING-BOTTOM: 0px; MARGIN: 5px 6px; FONT: bold 14px/39px verdana,"ËÎÌå"; OVERFLOW: hidden; PADDING-TOP: 0px; HEIGHT: 39px
+}
+.paynav_now {
+	CLEAR: both; PADDING-RIGHT: 10px; DISPLAY: block; PADDING-LEFT: 30px; PADDING-BOTTOM: 0px; MARGIN: 5px 6px; FONT: bold 14px/39px verdana,"ËÎÌå"; OVERFLOW: hidden; PADDING-TOP: 0px; HEIGHT: 39px
+}
+.paynav:hover {
+	CLEAR: both; PADDING-RIGHT: 10px; DISPLAY: block; PADDING-LEFT: 30px; PADDING-BOTTOM: 0px; MARGIN: 5px 6px; FONT: bold 14px/39px verdana,"ËÎÌå"; OVERFLOW: hidden; PADDING-TOP: 0px; HEIGHT: 39px
+}
+.paynav {
+	BACKGROUND: url(/images/bg_mbox.gif) no-repeat 0px -168px
+}
+.paynav_now {
+	BACKGROUND: url(/images/bg_mbox.gif) no-repeat 0px -124px; COLOR: #ea5d03
+}
+.paynav:hover {
+	BACKGROUND: url(/images/bg_mbox.gif) no-repeat 0px -124px; COLOR: #ea5d03
+}
+.tit_paymod {
+	FONT: 14px/42px "ËÎÌå"; COLOR: #666
+}
+.tit_paymod STRONG {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; COLOR: #f60; PADDING-TOP: 0px
+}
+H4 {
+	CLEAR: both; DISPLAY: block; PADDING-LEFT: 18px; BACKGROUND: url(/images/icon_main.gif) no-repeat 0px 5px; FONT: bold 14px/24px verdana,"ËÎÌå"; OVERFLOW: hidden; COLOR: #ea5d03
+}
+.pay_m_form {
+	CLEAR: both; PADDING-RIGHT: 30px; DISPLAY: block; PADDING-LEFT: 30px; PADDING-BOTTOM: 5px; MARGIN: 5px 0px 15px; OVERFLOW: hidden; COLOR: #333; PADDING-TOP: 5px; ZOOM: 1; LIST-STYLE-TYPE: none
+}
+.pay_m_form LI {
+	CLEAR: both; DISPLAY: block; MARGIN: 10px 0px; OVERFLOW: hidden
+}
+.pay_m_form .inputA {
+	BORDER-RIGHT: #d6b259 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #d6b259 1px solid; PADDING-LEFT: 2px; PADDING-BOTTOM: 0px; FONT: 12px/22px verdana, "ËÎÌå"; VERTICAL-ALIGN: middle; BORDER-LEFT: #d6b259 1px solid; WIDTH: 180px; PADDING-TOP: 0px; BORDER-BOTTOM: #d6b259 1px solid; HEIGHT: 22px
+}
+.pay_m_formB {
+	CLEAR: both; PADDING-RIGHT: 30px; DISPLAY: block; PADDING-LEFT: 30px; PADDING-BOTTOM: 5px; MARGIN: 5px 0px 15px; OVERFLOW: hidden; COLOR: #333; PADDING-TOP: 5px; ZOOM: 1; LIST-STYLE-TYPE: none
+}
+.pay_m_formB LI {
+	PADDING-RIGHT: 30px; DISPLAY: inline; PADDING-LEFT: 0px; FLOAT: left; PADDING-BOTTOM: 5px; OVERFLOW: hidden; WIDTH: 250px; PADDING-TOP: 5px; HEIGHT: 24px
+}
+.pay_m_formB INPUT {
+	VERTICAL-ALIGN: middle
+}
+.btn_next_p {
+	BACKGROUND: url(/images/btn.gif) no-repeat 0px -286px; WIDTH: 113px; CURSOR: pointer; BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; HEIGHT: 33px; BORDER-BOTTOM-STYLE: none
+}
+.bankli TH {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; FONT-WEIGHT: normal; PADDING-BOTTOM: 0px; VERTICAL-ALIGN: middle; PADDING-TOP: 0px
+}
+.bankli TD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 5px; VERTICAL-ALIGN: bottom; PADDING-TOP: 5px
+}
+.payres_ok {
+	CLEAR: both; DISPLAY: block; PADDING-LEFT: 70px; MARGIN: 50px 130px; OVERFLOW: hidden
+}
+.payres_wr {
+	CLEAR: both; DISPLAY: block; PADDING-LEFT: 70px; MARGIN: 50px 130px; OVERFLOW: hidden
+}
+.payres_ok {
+	BACKGROUND: url(/images/info_success_48.gif) no-repeat 0px 10px
+}
+.payres_wr {
+	BACKGROUND: url(/images/info_success_49.gif) no-repeat 0px 10px
+}
+.payres_ok .payrestit {
+	CLEAR: both; PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 0px; PADDING-BOTTOM: 8px; MARGIN: 0px 0px 8px; OVERFLOW: hidden; PADDING-TOP: 0px; BORDER-BOTTOM: #e3e3e3 1px solid
+}
+.payres_wr .payrestit {
+	CLEAR: both; PADDING-RIGHT: 0px; DISPLAY: block; PADDING-LEFT: 0px; PADDING-BOTTOM: 8px; MARGIN: 0px 0px 8px; OVERFLOW: hidden; PADDING-TOP: 0px; BORDER-BOTTOM: #e3e3e3 1px solid
+}
+.payres_ok .payrestit .bigtit {
+	FONT: bold 18px/40px "Î¢ÈíÑÅºÚ","Ó×Ô²","ËÎÌå"; COLOR: #333
+}
+.payres_wr .payrestit .bigtit {
+	FONT: bold 18px/40px "Î¢ÈíÑÅºÚ","Ó×Ô²","ËÎÌå"; COLOR: #333
+}
+.payres_ok UL {
+	CLEAR: both; PADDING-RIGHT: 10px; DISPLAY: block; PADDING-LEFT: 10px; PADDING-BOTTOM: 0px; OVERFLOW: hidden; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+.payres_wr UL {
+	CLEAR: both; PADDING-RIGHT: 10px; DISPLAY: block; PADDING-LEFT: 10px; PADDING-BOTTOM: 0px; OVERFLOW: hidden; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+.payres_ok UL LI {
+	CLEAR: both; DISPLAY: block; PADDING-LEFT: 10px; BACKGROUND: url(/images/icon_m04.gif) no-repeat 0px 10px; OVERFLOW: hidden
+}
+.payres_wr UL LI {
+	CLEAR: both; DISPLAY: block; PADDING-LEFT: 10px; BACKGROUND: url(/images/icon_m04.gif) no-repeat 0px 10px; OVERFLOW: hidden
+}
+.payres_ok A {
+	COLOR: #f60; TEXT-DECORATION: underline
+}
+.payres_wr A {
+	COLOR: #f60; TEXT-DECORATION: underline
+}
+.payres_ok A:hover {
+	COLOR: #f60; TEXT-DECORATION: none
+}
+.payres_wr A:hover {
+	COLOR: #f60; TEXT-DECORATION: none
+}

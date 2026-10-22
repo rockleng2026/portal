@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+    
+    <struts>
+    <!-- 通用接口package -->
+    <package name="PackageCommon" extends="struts-default">
+    <!-- 自定义拦截器 ，交由spring容器管理 -->
+		<interceptors>
+			<interceptor name="system" class="LoginInterceptor"></interceptor>
+			
+			<interceptor-stack name="myInter">
+			<interceptor-ref name="system">
+			<param name="name">SystemAction拦截</param>
+				<!-- 指定要拦截的方法名 -->
+				<param name="includeMethods">select,getpage</param>	
+			</interceptor-ref>
+			<!-- 调用每一个拦截器后，必须在后面添加调用默认的拦截器 defaultStack -->
+			<interceptor-ref name="defaultStack"/>  
+			</interceptor-stack>
+		</interceptors>
+	<global-results>
+		<result name="error">/No.jsp</result>
+	</global-results>
+	<!--通用附件接口管理 FJCommonAction -->
+    <action name="*commonaction" class="FJCommonAction" method="{1}" >
+     <result name="fjlist">/mission/fjlist.jsp</result>
+     <result name="addfj">/mission/addfj.jsp</result>
+     <result name="addfjsuccess" type="redirect">fjlistcommonaction.do</result>
+    </action>
+</package>
+</struts>

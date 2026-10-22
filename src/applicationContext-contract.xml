@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+	 
+	 
+	
+	 <!-- >>>>>>>>>>>>>>>>>>>>>Dao层的注入<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+	   <bean id="ContractDao" class="com.fuao.fajxc.dao.contract.impl.ContractDaoImpl" parent="baseDao"/>
+	
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>Bussiness层的注入<<<<<<<<<<<<<<<<<<<< -->
+		<bean id="ContractBiz" class="com.fuao.fajxc.bussiness.contract.impl.ContractBizImpl">
+			<property name="cdao" ref="ContractDao"></property>
+		</bean>
+		
+		
+		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
+		<!-- 合同管理Action -->
+		<bean id="ContractActiona" class="com.fuao.fajxc.action.contract.ContractAction">
+			<property name="cbiz" ref="ContractBiz"></property>
+			<property name="commbiz" ref="commonBussiness"></property>
+			<property name="audBussiness" ref="auditingBussiness"></property>
+			<property name="executeRecordBussiness" ref="executeRecordBussiness"></property>
+		</bean>        
+        
+	 </beans>  
