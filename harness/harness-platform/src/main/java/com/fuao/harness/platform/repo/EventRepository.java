@@ -32,6 +32,10 @@ public class EventRepository {
     }
 
     public IngestResult ingest(EventEnvelope e) {
+        // 03 §4 rule 2: an event whose content looks like an injection is not work. It is a
+        // report for a human, so it is stored with the status 'suspected' and the router never
+        // picks it up as something to do.
+        String status = e.suspectedInjection() ? "suspected" : "new";
         int updated = jdbc.sql("""
                         INSERT INTO harness_event
                           (event_id, fingerprint, event_window, source, event_type, latency_class, priority,
@@ -39,7 +43,7 @@ public class EventRepository {
                            last_event_id, status)
                         VALUES
                           (:eventId, :fingerprint, :eventWindow, :source, :eventType, :latencyClass, :priority,
-                           :payload, :contentTrust, :sourceRef, :receivedAt, 1, :receivedAt, :eventId, 'new')
+                           :payload, :contentTrust, :sourceRef, :receivedAt, 1, :receivedAt, :eventId, :status)
                         ON DUPLICATE KEY UPDATE
                           dedup_count = dedup_count + 1,
                           last_seen_at = :receivedAt,
@@ -57,6 +61,7 @@ public class EventRepository {
                 .param("contentTrust", e.contentTrust().name().toLowerCase())
                 .param("sourceRef", e.sourceRef())
                 .param("receivedAt", Timestamp.from(e.receivedAt()))
+                .param("status", status)
                 .update();
 
         boolean deduplicated = updated == 2; // MySQL reports 2 for an ON DUPLICATE KEY UPDATE

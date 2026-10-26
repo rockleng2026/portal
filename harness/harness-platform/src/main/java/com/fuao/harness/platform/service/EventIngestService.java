@@ -74,16 +74,32 @@ public class EventIngestService {
 
         EventRepository.IngestResult result = events.ingest(envelope);
 
+        // 03 §4 rule 2 and red-team R-05: a suspected injection is not dispatched as work. The
+        // event is kept (the facts are still facts), it is downgraded to a report, and the
+        // management state is told about it.
+        if (envelope.suspectedInjection()) {
+            audit.record(actor, envelope.eventId(), "event.injection_detected", "event",
+                    envelope.eventId(), "deny", "SUSPECTED_INJECTION",
+                    "the content looks like an instruction to the agent, not a fact: "
+                            + String.join("; ", envelope.injectionReasons()),
+                    Map.of("source", envelope.source(),
+                            "eventType", envelope.eventType(),
+                            "fingerprint", envelope.fingerprint(),
+                            "contentTrust", envelope.contentTrust().name(),
+                            "downgradedTo", "L0_REPORT"));
+        }
+
         audit.record(actor, envelope.eventId(), "event.ingest", "event",
                 result.deduplicated() ? envelope.fingerprint() : envelope.eventId(),
-                "allow",
-                result.deduplicated() ? "DEDUPED" : null,
+                envelope.suspectedInjection() ? "deny" : "allow",
+                result.deduplicated() ? "DEDUPED" : (envelope.suspectedInjection() ? "SUSPECTED_INJECTION" : null),
                 cmd.source() + "/" + cmd.eventType(),
                 Map.of("fingerprint", envelope.fingerprint(),
                         "eventWindow", envelope.eventWindow(),
                         "dedupCount", String.valueOf(result.dedupCount()),
                         "latencyClass", cls.wireName(),
                         "contentTrust", envelope.contentTrust().name(),
+                        "status", envelope.suspectedInjection() ? "suspected" : "new",
                         "requiresAck", String.valueOf(envelope.requiresAcknowledgement())));
 
         return result;

@@ -24,7 +24,11 @@ public record EventEnvelope(
         String eventWindow,
         String sourceRef,
         Map<String, Object> payload,
-        Instant receivedAt) {
+        Instant receivedAt,
+        /** Whether the content looks like an injection attempt (03 §4 rule 2). */
+        boolean suspectedInjection,
+        /** Why it was flagged; empty when it was not. */
+        java.util.List<String> injectionReasons) {
 
     public EventEnvelope {
         if (source == null || source.isBlank()) {
@@ -34,6 +38,7 @@ public record EventEnvelope(
             throw new IllegalArgumentException("eventType is required");
         }
         payload = payload == null ? Map.of() : Map.copyOf(payload);
+        injectionReasons = injectionReasons == null ? java.util.List.of() : java.util.List.copyOf(injectionReasons);
     }
 
     /**
@@ -71,6 +76,11 @@ public record EventEnvelope(
                                        Map<String, Object> payload,
                                        String eventId,
                                        Instant receivedAt) {
+        // The detection runs over untrusted content only. The instruction channel is trusted by
+        // construction, so scanning it would only produce false alarms.
+        InjectionDetector.Detection detection = contentTrust == ContentTrust.UNTRUSTED
+                ? InjectionDetector.detectPayload(payload)
+                : InjectionDetector.Detection.clean();
         return new EventEnvelope(
                 eventId,
                 source,
@@ -82,7 +92,9 @@ public record EventEnvelope(
                 window(receivedAt, latencyClass),
                 sourceRef,
                 payload,
-                receivedAt);
+                receivedAt,
+                detection.suspected(),
+                detection.reasons());
     }
 
     public boolean requiresAcknowledgement() {

@@ -146,8 +146,8 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 
 ## 下一批（建议顺序）
 
-1. **注入检测器与 `suspected_injection`**（02 §R-05、03 §4 规则 2）：事件信封里加标记、
-   命中即降级为 L0 报告并告警。这是当前唯一还开着的"读到的内容当指令"缺口。
+1. **把智能体接上设备外壳**（验收报告 §6 待决 1）：外壳用 HMAC 取回该终端的能力集，
+   智能体读同一份授权——目前两端各有一份 `LocalPolicy`，中间没有接线。
 2. **时间解析接入同步流程**（A0-8 / T-14）：`PortalTimeParser` 写好了但没有调用方，
    `scheduleplan.begintime` / `new_task.begintime` 的脏数据目前不会进 `harness_dirty_queue`。
 3. **A0-3 自动比对**：适配层的权限解析结果 vs portal 侧 `permission/snapshot` 的自动比对。
