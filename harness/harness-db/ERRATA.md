@@ -3,10 +3,13 @@
 > 记录在把 `03-协议与数据模型.md` 转写成可执行 DDL 与代码时发现的规格缺陷。
 > 每一条都给出：**现象 → 影响 → 本次采用的修法 → 需要文档方确认的点**。
 > 文档修订后，本文件对应条目标记为 CLOSED。
+>
+> **当前状态（2026-10-26）**：`E-01`、`E-05` 已回写进 `03-协议与数据模型.md`（§2.2 / §3.1 / §3.2 / §10），
+> 状态为 **CLOSED**。其余条目代码侧已落地，文档回写待做。
 
 ---
 
-## E-01 `harness_event` 引用了不存在的列（阻塞级）
+## E-01 `harness_event` 引用了不存在的列（阻塞级） — **CLOSED（2026-10-26，已回写 03 §2.2）**
 
 **规格原文（03 §2.2）**
 
@@ -27,7 +30,15 @@ UNIQUE KEY `uk_fp_window` (`fingerprint`,`event_window`)
 
 窗口取值由 `LatencyClass` 推导（`harness-protocol` 的 `EventEnvelope.window()`）：realtime → 分钟桶、nearline → 小时桶、batch → 日桶。
 
-**待确认**：窗口粒度是否就是 realtime=1min / nearline=1h / batch=1d。告警风暴抑制（01 §7.3）与 A2-8 的"100 条同根因告警合并为 1 条 issue"依赖此粒度；若运维希望夜间批处理按小时合并，需要在实现前改。
+**已确认（2026-10-26）**：窗口粒度就是 realtime=1min / nearline=1h / batch=1d。
+**已回写 03 §2.2**：列清单补上 `event_window VARCHAR(64) NOT NULL DEFAULT 'none'`，
+并新增一张表说明粒度、典型事件与取值形状（`r3421` / `n289744` / `b20537`）。
+告警风暴抑制（01 §7.3）与 A2-8 的"100 条同根因告警合并为 1 条 issue"由这个粒度满足；
+运维若需要更粗的窗口（例如夜间批处理按小时合并），**改桶大小即可，不改去重语义**。
+
+> 注意：`fingerprint` 的注释原文是 `source+key+hash(window)`，但实现算的是
+> `source + businessKey + sha256(canonical(payload))`——payload 的哈希，不是窗口的哈希。
+> 窗口单独由 `event_window` 承载。回写时一并改正了这个注释，否则两处会各说各话。
 
 ---
 
@@ -61,7 +72,7 @@ UNIQUE KEY `uk_fp_window` (`fingerprint`,`event_window`)
 
 ---
 
-## E-05 帧 MAC 未覆盖 type/flags/length（中，安全）
+## E-05 帧 MAC 未覆盖 type/flags/length（中，安全） — **CLOSED（2026-10-26，已回写 03 §3.1/§3.2/§10）**
 
 **规格原文（03 §3.1）**：`应用层再叠加 HMAC-SHA256(seq, nonce, payload)`。
 
@@ -69,7 +80,21 @@ UNIQUE KEY `uk_fp_window` (`fingerprint`,`event_window`)
 
 **修法**：`Frame.signedBytes()` 签的是"MAGIC‖VERSION‖TYPE‖FLAGS‖LENGTH‖SEQ‖NONCE‖PAYLOAD"整帧（去掉尾部 32 字节 MAC）。收发两侧共用同一方法，因此线格式仍然自洽；`FrameCodecTest.macCoversTypeAndFlagsSoAFrameCannotBeRelabelled` 固化了这个行为。
 
-**待确认**：边缘层与终端必须同时升级；若已有终端按旧算法实现，需要一个版本位（本实现使用 `VERSION=1`，与 03 §10 的"N-1 兼容窗口"策略相容）。
+**已确认（2026-10-26）**：帧 MAC 覆盖整帧（尾部 32 字节 MAC 除外）。**已回写 03 §3.1**，
+并补上了两条配套要求：
+
+* **签名字节必须由收发两侧共用的方法产出**（`Frame.signedBytes()`），不得各写一遍——
+  这正是该缺陷最初藏身之处；
+* **`VERSION` 不被容忍**：版本号不认识的帧**整帧拒绝并断开连接**，不做"尽力解析"。
+  覆盖范围变了，`VERSION` 就是唯一的路标；混合部署会立刻暴露（连接被拒），
+  而不是把一条 `CMD` 误读成一条 `EVENT`。
+
+**已回写 03 §10**：帧格式或 MAC 覆盖范围一旦改变，`VERSION` 必须 +1，边缘与终端**同时升级**；
+`N-1` 兼容窗口从第二个版本开始有意义，当前 `VERSION=1` 是首个发布版本。
+
+> 代码侧已就位：`FrameCodec` 对不支持的 `VERSION` 抛错而不是猜测，
+> `FrameCodecTest.macCoversTypeAndFlagsSoAFrameCannotBeRelabelled` 固化覆盖行为。
+> 边缘层尚未实现，因此"同时升级"目前还没有真实的对手方——等边缘层落地时按 §10 执行即可。
 
 ---
 
@@ -139,7 +164,7 @@ V1–V3 的库与新库收敛到同一 schema。
 没有部门或岗位已删除的员工。适配器一遇到这种行就整批失败——脏数据把同步整条卡死。
 
 **修法**：`V5__harness_mirror_allows_broken_links.sql` 把两列改为可空。镜像的职责是**如实反映**
-组织现状，"这个员工没有部门"本身就是平台需要的��息（例如升级路由要判断上级是谁），
+组织现状，"这个员工没有部门"本身就是平台需要的信息（例如升级路由要判断上级是谁），
 而不是把这条员工从镜像里抹掉；同时适配器把它写进 `harness_dirty_queue`（A0-8）。
 
 ---

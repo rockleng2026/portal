@@ -104,4 +104,52 @@ class FrameCodecTest {
     void cleanEofReturnsNull() throws IOException {
         assertNull(FrameCodec.read(new ByteArrayInputStream(new byte[0])));
     }
+
+    @Test
+    void refusesAnUnknownVersionInsteadOfGuessing() throws IOException {
+        // 03 §3.2 (E-05): a version this end does not know is refused as a whole. A peer that
+        // speaks an older dialect has to be noticed, not misread as a command.
+        byte[] payload = "{}".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        byte[] wire = FrameCodec.encode(Frame.of(FrameType.CMD, 0, 1L, 2L, payload, null), DEVICE_KEY);
+        wire[2] = 99; // a version nobody implements
+
+        IOException e = assertThrows(IOException.class,
+                () -> FrameCodec.read(new ByteArrayInputStream(wire)));
+        assertTrue(e.getMessage().contains("unsupported frame version"), e.getMessage());
+    }
+
+    @Test
+    void theMacCoversTheLengthSoATruncatedFrameIsDetected() throws IOException {
+        // LENGTH is inside the signed bytes, so a frame whose payload was cut short does not
+        // verify even though it still parses.
+        byte[] payload = "{\"cmd\":\"sys.info\"}".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        byte[] wire = FrameCodec.encode(Frame.of(FrameType.CMD, 0, 7L, 8L, payload, null), DEVICE_KEY);
+
+        // Claim one byte less than the frame actually carries.
+        int declared = Frame.readIntBE(wire, 5);
+        Frame.writeIntBE(wire, 5, declared - 1);
+        Frame parsed = FrameCodec.read(new ByteArrayInputStream(wire));
+        assertFalse(parsed.verifyMac(DEVICE_KEY),
+                "a frame whose LENGTH was changed must not verify");
+    }
+
+    @Test
+    void readAndVerifyRefusesAFrameThatDoesNotVerify() throws IOException {
+        byte[] payload = "{}".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        byte[] wire = FrameCodec.encode(Frame.of(FrameType.CMD, 0, 3L, 4L, payload, null), DEVICE_KEY);
+        wire[Frame.HEADER_LENGTH] ^= 0x01;
+
+        IOException e = assertThrows(IOException.class,
+                () -> FrameCodec.readAndVerify(new ByteArrayInputStream(wire), DEVICE_KEY));
+        assertTrue(e.getMessage().contains("MAC"), e.getMessage());
+    }
+
+    @Test
+    void readAndVerifyAcceptsAGoodFrame() throws IOException {
+        byte[] payload = "{}".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        byte[] wire = FrameCodec.encode(Frame.of(FrameType.CMD, 0, 3L, 4L, payload, null), DEVICE_KEY);
+        Frame frame = FrameCodec.readAndVerify(new ByteArrayInputStream(wire), DEVICE_KEY);
+        assertEquals(FrameType.CMD, frame.type());
+        assertNull(FrameCodec.readAndVerify(new ByteArrayInputStream(new byte[0]), DEVICE_KEY));
+    }
 }

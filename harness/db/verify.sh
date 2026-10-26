@@ -72,6 +72,23 @@ SELECT CASE WHEN (SELECT COUNT(*) FROM harness_event) = 2
             THEN 'OK   dedup: same window collapses, new window does not'
             ELSE 'FAIL dedup contract broken' END AS assert_dedup;
 
+-- E-01: the unique key references event_window, so the column has to exist. The spec (03 §2.2)
+-- used the key without ever declaring the column - a schema that cannot be created.
+SELECT CASE WHEN COUNT(*) = 1
+            THEN 'OK   event_window exists (E-01): the dedup key is usable'
+            ELSE 'FAIL event_window is missing - uk_fp_window cannot be enforced' END AS assert_event_window
+  FROM information_schema.columns
+ WHERE table_schema = 'harness' AND table_name = 'harness_event' AND column_name = 'event_window';
+
+-- E-05: the frame MAC covers the whole frame, so the wire format is defined by the version
+-- byte. Nothing to assert in the database, but the migration set must not leave a half-fixed
+-- dedup window behind.
+SELECT CASE WHEN (SELECT COUNT(*) FROM information_schema.statistics
+                   WHERE table_schema='harness' AND table_name='harness_event'
+                     AND index_name='uk_fp_window' AND column_name='event_window') = 1
+            THEN 'OK   the dedup key really is on event_window'
+            ELSE 'FAIL uk_fp_window does not cover event_window' END AS assert_dedup_key;
+
 -- the idempotency key is a hard unique constraint, so a replayed action cannot execute twice
 INSERT INTO harness_action (action_id,plan_id,step_seq,agent_id,arguments,arguments_hash,started_at)
 VALUES ('0198f0c2-0000-7000-8000-00000000000a','p1',1,'a1','{}','verify:idempotency',NOW());

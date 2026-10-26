@@ -84,8 +84,29 @@ public final class FrameCodec {
         return new Frame(version, type, flags, seq, nonce, payload, mac);
     }
 
-    private static byte[] readFully(InputStream in, int n, boolean allowCleanEof) throws IOException {
-        byte[] buf = new byte[n];
+    /**
+     * Reads one frame and verifies its MAC.
+     *
+     * <p>{@link #read} only checks the structural invariants - a frame it returns has a
+     * plausible header, not a trustworthy one. This is the method a receiver should use: it
+     * refuses a frame whose MAC does not match, so a caller cannot accidentally act on a frame
+     * it never checked.
+     *
+     * @return the frame, or {@code null} on clean EOF
+     * @throws IOException when the frame is malformed **or** its MAC does not verify
+     */
+    public static Frame readAndVerify(InputStream in, byte[] deviceKey) throws IOException {
+        Frame frame = read(in);
+        if (frame == null) {
+            return null;
+        }
+        if (!frame.verifyMac(deviceKey)) {
+            throw new IOException("frame MAC does not verify");
+        }
+        return frame;
+    }
+
+    private static byte[] readFully(InputStream in, int n, boolean allowCleanEof) throws IOException {        byte[] buf = new byte[n];
         int off = 0;
         while (off < n) {
             int r = in.read(buf, off, n - off);
