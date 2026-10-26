@@ -133,14 +133,7 @@ pub async fn main() -> Result<()> {
 }
 
 /// The capabilities an agent has when it runs standalone, without a platform.
-const STANDALONE_CAPABILITIES: &[&str] = &[
-    "cap:fs.read",
-    "cap:fs.write",
-    "cap:fs.delete",
-    "cap:shell.exec",
-    "cap:git.read",
-    "cap:git.commit",
-];
+const STANDALONE_CAPABILITIES: &[&str] = crate::tools::capabilities::ALL;
 
 /// Builds the workspace, the tools and the policy.
 ///
@@ -161,9 +154,15 @@ fn build_environment(
     } else {
         allowed_roots.to_vec()
     };
+    // The command line may only narrow the grant's roots, never widen them.
+    let narrowed_roots: Vec<PathBuf> = roots
+        .iter()
+        .map(|root| crate::workspace::normalize(root))
+        .collect();
     let (policy, authority) = match identity {
         Some(directory) => {
-            let (policy, grant) = grant::policy_for_machine(directory);
+            let (policy, grant) =
+                grant::policy_for_machine_narrowed(directory, &narrowed_roots);
             match grant {
                 Some(grant) => (
                     policy,

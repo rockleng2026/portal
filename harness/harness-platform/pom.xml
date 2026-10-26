@@ -85,6 +85,16 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-redis</artifactId>
     </dependency>
+    <!-- Lettuce's pooling connection factory needs commons-pool2 on the classpath. Spring Boot
+         enables pooling by default (RedisProperties.Lettuce.Pool has non-null defaults), so
+         without this the platform fails to start with
+         "NoClassDefFoundError: org/apache/commons/pool2/impl/GenericObjectPoolConfig".
+         The integration tests never saw it because the "test" profile uses the in-memory
+         nonce and binding-code stores and therefore never builds a Redis connection. -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-pool2</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>

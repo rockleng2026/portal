@@ -66,6 +66,20 @@ public class ApiExceptionHandler {
                 .body(ApiError.of("MALFORMED_REQUEST", "request body could not be parsed").enveloped());
     }
 
+    /**
+     * An unknown path is a 404, not a 500.
+     *
+     * <p>Without this, a typo in a URL - a missing terminal id, a wrong prefix - comes back as
+     * "unhandled failure", which sends the operator looking for a bug in the platform instead
+     * of at the URL.
+     */
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<Map<String, Object>> noSuchPath(Exception e) {
+        log.warn("no such path: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiError.of("NOT_FOUND", "no such endpoint").enveloped());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> unexpected(Exception e) {
         log.error("unhandled failure: {}", e.getMessage(), e);

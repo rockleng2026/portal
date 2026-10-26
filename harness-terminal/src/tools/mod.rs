@@ -10,6 +10,7 @@
 //! * **every call is checked by the policy first** - the tool does not decide whether it may
 //!   run.
 
+pub mod capabilities;
 pub mod exec;
 pub mod fs_ops;
 

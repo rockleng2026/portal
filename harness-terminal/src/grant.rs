@@ -64,12 +64,23 @@ pub fn read(path: &Path) -> Option<Grant> {
 ///
 /// The capabilities and the level come from the platform; the roots come from the device. The
 /// effective set is the intersection of the two, and the agent enforces both.
-pub fn policy_from(grant: &Grant) -> LocalPolicy {
-    let roots: Vec<PathBuf> = grant
-        .allowed_roots
-        .iter()
-        .map(PathBuf::from)
-        .collect();
+///
+/// `narrowed_to` may narrow the roots further - the command line can only ever take authority
+/// away, never add it.
+pub fn policy_from(grant: &Grant, narrowed_to: &[PathBuf]) -> LocalPolicy {
+    let granted: Vec<PathBuf> = grant.allowed_roots.iter().map(PathBuf::from).collect();
+    let roots: Vec<PathBuf> = if narrowed_to.is_empty() {
+        granted
+    } else {
+        granted
+            .into_iter()
+            .filter(|root| {
+                narrowed_to
+                    .iter()
+                    .any(|narrow| narrow.starts_with(root) || root.starts_with(narrow))
+            })
+            .collect()
+    };
     LocalPolicy::new(
         AutonomyLevel::from_u8(grant.autonomy_level),
         grant.capabilities.iter().cloned(),
@@ -82,9 +93,17 @@ pub fn policy_from(grant: &Grant) -> LocalPolicy {
 /// Without a grant the agent gets a policy that allows nothing: an agent that has not been
 /// granted authority may still read nothing and write nothing, and the operator sees why.
 pub fn policy_for_machine(identity_directory: &Path) -> (LocalPolicy, Option<Grant>) {
+    policy_for_machine_narrowed(identity_directory, &[])
+}
+
+/// The policy for a machine, with the roots optionally narrowed further.
+pub fn policy_for_machine_narrowed(
+    identity_directory: &Path,
+    narrowed_to: &[PathBuf],
+) -> (LocalPolicy, Option<Grant>) {
     match read(&grant_file(identity_directory)) {
         Some(grant) => {
-            let policy = policy_from(&grant);
+            let policy = policy_from(&grant, narrowed_to);
             (policy, Some(grant))
         }
         None => (LocalPolicy::empty(), None),
@@ -112,7 +131,7 @@ mod tests {
         assert_eq!(grant.autonomy_level, 2);
         assert_eq!(grant.capabilities.len(), 2);
 
-        let policy = policy_from(&grant);
+        let policy = policy_from(&grant, &[]);
         assert_eq!(policy.autonomy_level(), AutonomyLevel::L2);
         assert!(policy.capabilities().contains("cap:fs.read"));
         assert!(policy.is_within_allowed_roots(Path::new("/srv/data/x.txt")));

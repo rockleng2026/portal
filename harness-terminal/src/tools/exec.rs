@@ -5,6 +5,7 @@
 //! error or a failing test, and paraphrasing that would defeat the purpose.
 
 use crate::policy::AutonomyLevel;
+use crate::tools::capabilities::{CAP_FILE_WRITE, CAP_GIT_COMMIT, CAP_GIT_READ, CAP_SSH_EXEC};
 use crate::tools::{arg_str, opt_bool, opt_str, Tool, ToolContext, ToolResult};
 use anyhow::{anyhow, Result};
 use serde_json::{json, Value};
@@ -53,11 +54,11 @@ impl Tool for ShellExec {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:shell.exec")
+        Some(CAP_SSH_EXEC)
     }
 
     fn min_level(&self) -> AutonomyLevel {
-        AutonomyLevel::L2
+        AutonomyLevel::L3
     }
 
     fn run(&self, context: &ToolContext, arguments: &Value) -> Result<ToolResult> {
@@ -133,7 +134,7 @@ impl Tool for RunTests {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:shell.exec")
+        Some(CAP_SSH_EXEC)
     }
 
     fn min_level(&self) -> AutonomyLevel {
@@ -180,7 +181,7 @@ impl Tool for GitStatus {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:git.read")
+        Some(CAP_GIT_READ)
     }
 
     fn min_level(&self) -> AutonomyLevel {
@@ -220,7 +221,7 @@ impl Tool for GitCommit {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:git.commit")
+        Some(CAP_GIT_COMMIT)
     }
 
     fn min_level(&self) -> AutonomyLevel {
@@ -381,7 +382,7 @@ pub fn may_write(context: &ToolContext) -> bool {
         || context
             .policy
             .capabilities()
-            .contains("cap:fs.write")
+            .contains(CAP_FILE_WRITE)
 }
 
 #[cfg(test)]

@@ -5,6 +5,7 @@
 //! there - or when it is there more than once, because "which one?" is a question the agent
 //! has to answer, not one the tool should guess.
 
+use crate::tools::capabilities::{CAP_FILE_DELETE, CAP_FILE_READ, CAP_FILE_WRITE};
 use crate::tools::{arg_path, arg_str, opt_bool, opt_i64, opt_str, Tool, ToolContext, ToolResult};
 use crate::workspace::Workspace;
 use anyhow::{anyhow, Result};
@@ -44,7 +45,7 @@ impl Tool for ReadFile {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:fs.read")
+        Some(CAP_FILE_READ)
     }
 
     fn min_level(&self) -> crate::policy::AutonomyLevel {
@@ -108,7 +109,7 @@ impl Tool for WriteFile {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:fs.write")
+        Some(CAP_FILE_WRITE)
     }
 
     fn min_level(&self) -> crate::policy::AutonomyLevel {
@@ -155,7 +156,7 @@ impl Tool for EditFile {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:fs.write")
+        Some(CAP_FILE_WRITE)
     }
 
     fn min_level(&self) -> crate::policy::AutonomyLevel {
@@ -228,7 +229,7 @@ impl Tool for DeleteFile {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:fs.delete")
+        Some(CAP_FILE_DELETE)
     }
 
     fn min_level(&self) -> crate::policy::AutonomyLevel {
@@ -284,7 +285,7 @@ impl Tool for ListFiles {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:fs.read")
+        Some(CAP_FILE_READ)
     }
 
     fn min_level(&self) -> crate::policy::AutonomyLevel {
@@ -347,7 +348,7 @@ impl Tool for SearchCode {
     }
 
     fn capability(&self) -> Option<&'static str> {
-        Some("cap:fs.read")
+        Some(CAP_FILE_READ)
     }
 
     fn min_level(&self) -> crate::policy::AutonomyLevel {
@@ -433,9 +434,9 @@ mod tests {
         let policy = Arc::new(LocalPolicy::new(
             AutonomyLevel::L3,
             vec![
-                "cap:fs.read".to_string(),
-                "cap:fs.write".to_string(),
-                "cap:fs.delete".to_string(),
+                CAP_FILE_READ.to_string(),
+                CAP_FILE_WRITE.to_string(),
+                CAP_FILE_DELETE.to_string(),
             ],
             vec![dir.to_path_buf()],
         ));

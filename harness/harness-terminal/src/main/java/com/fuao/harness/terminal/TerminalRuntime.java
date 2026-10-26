@@ -44,6 +44,9 @@ public final class TerminalRuntime {
         this.identity = identity;
         this.platform = platform;
         this.policy = policy;
+        // The device id was written to the configuration when the device registered, so a later
+        // command (a heartbeat, a grant refresh) can find the device without registering again.
+        this.terminalId = config.terminalId();
     }
 
     public String terminalId() {
@@ -75,6 +78,7 @@ public final class TerminalRuntime {
         PlatformClient.HelloResponse response = platform.hello(device);
         this.terminalId = response.terminalId();
         this.status = response.status();
+        remember();
         return response;
     }
 
@@ -126,12 +130,29 @@ public final class TerminalRuntime {
      */
     public TerminalGrant refreshGrant() throws IOException, InterruptedException {
         if (terminalId.isBlank()) {
+            // The id was written to the configuration when the device registered, so a later
+            // command (a scheduled refresh, say) can still find the device.
+            terminalId = config.terminalId();
+        }
+        if (terminalId.isBlank()) {
             throw new IllegalStateException("this terminal has no id yet; run 'hello' first");
         }
         Map<String, Object> platformGrant = platform.grant(terminalId);
         TerminalGrant grant = TerminalGrant.from(platformGrant, config.allowedRoots());
         grant.save(TerminalGrant.fileOf(config.identityDirectory()));
         return grant;
+    }
+
+    /** Writes the device id into the configuration, so the next command finds the device. */
+    private void remember() {
+        if (!terminalId.equals(config.terminalId())) {
+            config.terminalId(terminalId);
+            try {
+                config.save();
+            } catch (IOException e) {
+                // Not fatal: the id is in the platform's records, and 'hello' can be repeated.
+            }
+        }
     }
 
     /** The grant that was fetched last, if any. */

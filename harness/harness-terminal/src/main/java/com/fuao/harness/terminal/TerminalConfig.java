@@ -31,6 +31,10 @@ public final class TerminalConfig {
     private List<String> allowedRoots = new ArrayList<>();
     private String agentKey = "";
     private Integer portalEmployeeId;
+    /** The platform's id for this device. Remembered so a later command can find it. */
+    private String terminalId = "";
+    /** Where this configuration lives, so a command can write it back. */
+    private Path configFile = TerminalConfig.defaultConfigFile();
 
     public URI platformUri() {
         return platformUri;
@@ -99,6 +103,15 @@ public final class TerminalConfig {
         return portalEmployeeId;
     }
 
+    public String terminalId() {
+        return terminalId;
+    }
+
+    public TerminalConfig terminalId(String value) {
+        this.terminalId = value == null ? "" : value;
+        return this;
+    }
+
     public TerminalConfig portalEmployeeId(Integer value) {
         this.portalEmployeeId = value;
         return this;
@@ -116,6 +129,7 @@ public final class TerminalConfig {
     /** Reads the configuration; missing file means "not installed yet". */
     public static TerminalConfig load(Path file) throws IOException {
         TerminalConfig config = new TerminalConfig();
+        config.configFile = file;
         if (!Files.exists(file)) {
             return config;
         }
@@ -133,6 +147,7 @@ public final class TerminalConfig {
                 config.identityDirectory.toString()));
         config.autonomyLevel = Integer.parseInt(properties.getProperty("autonomy.level", "0"));
         config.agentKey = properties.getProperty("agent.key", "");
+        config.terminalId = properties.getProperty("terminal.id", "");
         String employee = properties.getProperty("portal.employee.id", "");
         if (!employee.isBlank()) {
             config.portalEmployeeId = Integer.parseInt(employee);
@@ -148,8 +163,14 @@ public final class TerminalConfig {
         return config;
     }
 
+    /** Writes the configuration back to where it was loaded from. */
+    public void save() throws IOException {
+        save(configFile);
+    }
+
     /** Writes the configuration with owner-only permissions. */
     public void save(Path file) throws IOException {
+        configFile = file;
         Path parent = file.getParent();
         if (parent != null) {
             Files.createDirectories(parent);
@@ -161,6 +182,7 @@ public final class TerminalConfig {
         properties.setProperty("identity.directory", identityDirectory.toString());
         properties.setProperty("autonomy.level", String.valueOf(autonomyLevel));
         properties.setProperty("agent.key", agentKey);
+        properties.setProperty("terminal.id", terminalId);
         if (portalEmployeeId != null) {
             properties.setProperty("portal.employee.id", String.valueOf(portalEmployeeId));
         }
@@ -185,6 +207,7 @@ public final class TerminalConfig {
         out.put("clientId", clientId);
         out.put("autonomyLevel", autonomyLevel);
         out.put("agentKey", agentKey);
+        out.put("terminalId", terminalId);
         out.put("allowedRoots", List.copyOf(allowedRoots));
         out.put("secretConfigured", !secret.isBlank());
         return out;
