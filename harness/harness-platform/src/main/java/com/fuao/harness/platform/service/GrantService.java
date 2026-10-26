@@ -69,9 +69,16 @@ public class GrantService {
 
         Duration ttl = cmd.ttl() == null ? PolicyEngine.MAX_GRANT_TTL : cmd.ttl();
         if (ttl.isNegative() || ttl.isZero()) {
+            audit.record(actor, "grant.issue", "grant", cmd.agentId(), "deny", "INVALID_TTL",
+                    "ttl must be positive", Map.of("capKey", cmd.capKey(),
+                            "ttlSeconds", String.valueOf(ttl.toSeconds())));
             throw new IllegalArgumentException("ttl must be positive");
         }
         if (ttl.compareTo(PolicyEngine.MAX_GRANT_TTL) > 0) {
+            audit.record(actor, "grant.issue", "grant", cmd.agentId(), "deny", "TTL_CEILING_EXCEEDED",
+                    "ttl " + ttl + " exceeds the " + PolicyEngine.MAX_GRANT_TTL + " ceiling (01 §5.2)",
+                    Map.of("capKey", cmd.capKey(), "ttlSeconds", String.valueOf(ttl.toSeconds()),
+                            "agentKey", agent.agentKey()));
             throw new IllegalArgumentException(
                     "ttl " + ttl + " exceeds the " + PolicyEngine.MAX_GRANT_TTL + " ceiling (01 §5.2): "
                             + "temporary privilege must be able to expire on its own");

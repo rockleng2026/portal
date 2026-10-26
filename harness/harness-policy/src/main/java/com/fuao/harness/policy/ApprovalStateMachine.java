@@ -86,6 +86,30 @@ public final class ApprovalStateMachine {
     }
 
     /**
+     * The checks that apply to <em>every</em> signature on an escalation, including the first of
+     * a dual approval: a natural human, and not the agent's own owner.
+     *
+     * <p>{@link #decide} applies them too; they are exposed separately because a dual approval
+     * records the first signature without moving the approval row, and that signature must not
+     * escape the same two rules.
+     *
+     * @throws IllegalTransitionException when the decider is not a human or is the owner
+     */
+    public static void assertDeciderEligible(Request request, ActorRef decidedBy) {
+        if (!decidedBy.isHuman()) {
+            throw new IllegalTransitionException(
+                    "approval must be decided by a natural human, got " + decidedBy
+                            + " - AI must not authorise itself (P2 / R-02)");
+        }
+        int deciderEmployeeId = decidedBy.employeeId();
+        if (deciderEmployeeId == request.ownerEmployeeId()) {
+            throw new IllegalTransitionException(
+                    "employee " + deciderEmployeeId + " owns agent " + request.agentKey()
+                            + " and may not decide its own escalation (no self-approval, R-02)");
+        }
+    }
+
+    /**
      * Validates and returns the next state.
      *
      * @param desired either {@link State#APPROVED} or {@link State#REJECTED}
@@ -102,17 +126,8 @@ public final class ApprovalStateMachine {
         if (desired != State.APPROVED && desired != State.REJECTED) {
             throw new IllegalTransitionException("a human can only approve or reject, got " + desired);
         }
-        if (!decidedBy.isHuman()) {
-            throw new IllegalTransitionException(
-                    "approval must be decided by a natural human, got " + decidedBy
-                            + " - AI must not authorise itself (P2 / R-02)");
-        }
+        assertDeciderEligible(request, decidedBy);
         int deciderEmployeeId = decidedBy.employeeId();
-        if (deciderEmployeeId == request.ownerEmployeeId()) {
-            throw new IllegalTransitionException(
-                    "employee " + deciderEmployeeId + " owns agent " + request.agentKey()
-                            + " and may not decide its own escalation (no self-approval, R-02)");
-        }
 
         // An approval that outlived its TTL cannot be revived by a late click.
         if (!now.isBefore(request.expiresAt())) {

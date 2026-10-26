@@ -23,11 +23,11 @@ mvn -B -o package       # 离线
 | 模块 | 内容 | 状态 |
 |---|---|---|
 | `harness-db` | Flyway 迁移：`03 §2` 冻结 schema + 治理/种子/修正增量 | ✅ 已在 MySQL 8.4 验证 |
-| `harness-protocol` | UUIDv7、TCP 帧编解码与命令码表、能力令牌、事件信封与去重指纹、规范化 JSON | ✅ 36 tests |
-| `harness-policy` | `能力 ∩ 作用域 ∩ TTL` 决策引擎、自治等级、审批状态机（自然人锚点）、升级路由（2 跳上限）、自动降级 | ✅ 42 tests |
-| `harness-platform` | Spring Boot 3：HMAC 身份、Agent 注册与生命周期、授权、事件总线、审批、终端接入、Kill-Switch、审计、看板 API | ✅ 48 tests（真实 MySQL 8.4） |
+| `harness-protocol` | UUIDv7（RFC 9562）、TCP 帧编解码与命令码表、能力令牌、事件信封与去重指纹、规范化 JSON | ✅ 42 tests |
+| `harness-policy` | `能力 ∩ 作用域 ∩ TTL` 决策引擎、自治等级、审批状态机（自然人锚点）、升级路由（2 跳上限）、自动降级 | ✅ 49 tests |
+| `harness-platform` | Spring Boot 3：HMAC 身份、Agent 注册与生命周期、授权、事件总线、审批、终端接入、Kill-Switch、审计、看板 API | ✅ 52 tests（真实 MySQL 8.4） |
+| `harness-terminal` | 终端运行时：设备身份、绑定码流程、平台客户端、本地拒绝策略、审批验签 | ✅ 17 tests |
 | `harness-adapter-portal` | portal 只读同步、规范化镜像、权限串/时间严格解析、脏数据队列 | ✅ 20 tests（双 MySQL 容器） |
-| `harness-terminal` | 终端运行时：Trinity 守护、设备绑定、执行器、本地模型 | ⬜ 下一批 |
 | `tools/` | 跨系统契约校验（portal ↔ platform HMAC 互认） | ✅ |
 | `db/portal/` | portal 侧仅 3 处 ALTER 的**手工**脚本（禁止自动执行） | ✅ |
 
@@ -38,8 +38,15 @@ export HARNESS_DB_URL='jdbc:mysql://127.0.0.1:3306/harness?connectionTimeZone=UT
 export HARNESS_DB_USER=harness HARNESS_DB_PASSWORD=...
 export HARNESS_REDIS_HOST=127.0.0.1
 export HARNESS_BOOTSTRAP_SECRET='至少 24 位的随机串'   # 不设置则平台拒绝一切 API 调用
+export HARNESS_HUMAN_CLIENT_ID=harness-admin          # 第一个自然人控制台账号
+export HARNESS_HUMAN_SECRET='至少 24 位的随机串'
+export HARNESS_HUMAN_EMPLOYEE_ID=1                     # portal.employee.id
 java -jar harness-platform/target/harness-platform-0.1.0-SNAPSHOT.jar
 ```
+
+> **没有自然人账号就没有平台**。所有治理动作（授权、审批、Kill-Switch、Agent 生命周期、终端绑定）
+> 都要求"调用者是自然人"，判定看的是 `harness_principal.principal_type`（必须是 `human`），
+> 不是"有没有 employee_id"。没有 `HARNESS_HUMAN_*` 时这些端点一律 403，这是刻意的。
 
 Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内建能力（V3）。
 第一个服务账号由 `harness.bootstrap.secret` 在启动时派生，**迁移文件里不预置任何口令**。
@@ -78,22 +85,35 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 | 7 一体化看板 v1 | ✅ 数据 API 就绪（前端未做） |
 | 8 审计与可观测 | ✅ 追加式审计 + 哈希链自检 + 按 trace 回放 |
 
-### portal 侧改动（01 §17.3：≤8 处、≤1500 行、全部为新增）
+### portal 侧改动（01 §17.3 的目标是 ≤8 处、全部为新增；实际落地 **17 个文件**，其中 8 个是既有文件被修改）
 
 | # | 位置 | 内容 |
 |---|---|---|
-| 1 | `src/strutsFile/struts-harness.xml`（新） | `/api/harness` 命名空间，独立拦截器栈 |
+| 1 | `src/strutsFile/struts-harness.xml`（新） | `/api/harness` 命名空间；每个 URL 段一个 package（`alwaysSelectFullNamespace=true` 的必然要求），独立拦截器栈 |
 | 2 | `src/struts.xml`（改 1 行） | 引入上面的配置文件 |
-| 3 | `src/interceptor/HarnessApiInterceptor.java`（新） | HMAC 服务账号认证：头齐全、client 匹配、时窗、nonce 防重放、签名 |
-| 4 | `src/util/HarnessHmac.java`、`HarnessJson.java`、`HarnessCachedBodyRequest.java`（新） | 签名/JSON/请求体可重读（与平台逐字节一致） |
-| 5 | `src/dao/harness/HarnessAccountDao.java`（新） | `isAI` 判定、权限快照、入职写入 |
-| 6 | `src/action/harness/HarnessApiAction.java`（新） | `health` / `permission/snapshot` / `agent/onboard` |
+| 3 | `src/com/fuao/fajxc/interceptor/HarnessApiInterceptor.java`（新） | HMAC 服务账号认证：头齐全、client 匹配、时窗、**验签后才占用 nonce**、请求体回填 |
+| 4 | `src/com/fuao/fajxc/util/HarnessHmac.java`、`HarnessJson.java`、`HarnessCachedBodyRequest.java`（新） | 签名 / JSON（读+写）/ 请求体可重读（与平台逐字节一致） |
+| 5 | `src/com/fuao/fajxc/dao/harness/HarnessAccountDao.java`（新） | `isAI` 判定、权限快照、入职写入 |
+| 6 | `src/com/fuao/fajxc/action/harness/HarnessApiAction.java`（新） | `health` / `permission/snapshot` / `agent/onboard` |
 | 7 | `src/applicationContext-harness.xml`（新） | 两个 bean，复用既有 `baseDao`/sessionFactory |
 | 8 | `WebRoot/WEB-INF/props/harness-api.properties`（新） | clientId/secret/时窗/nonce TTL（默认关闭） |
-| 9 | `src/vo/Users.java` + `Users.hbm.xml`（改） | 新增 `isAI` 映射 |
-| 10 | `src/action/LoginAction.java`（改） | **A0-2**：登录页在验证码与口令比对之前拒绝数字员工账号 |
-| 11 | `src/dao/impl/LoginDaoImpl.java`（改） | **A0-2 兜底**：4 条登录路径共用的 DAO 入口统一拒绝 |
-| 12 | `src/applicationContext-login.xml`（改 1 行） | 注入 `harnessAccountDao` |
+| 9 | `WebRoot/WEB-INF/web.xml`（改 1 段） | 把 `/api/harness/*` 映射到 struts2 filter，否则整个命名空间 404 |
+| 10 | `src/com/fuao/fajxc/vo/Users.java` + `Users.hbm.xml`（改） | 新增 `isAI` 映射 |
+| 11 | `src/com/fuao/fajxc/action/LoginAction.java`（改） | **A0-2**：登录页在验证码与口令比对之前拒绝数字员工账号 |
+| 12 | `src/com/fuao/fajxc/dao/impl/LoginDaoImpl.java`（改） | **A0-2 兜底**：`isAI` 判定，查询失败时**失败关闭** |
+| 13 | `src/com/fuao/fajxc/dao/impl/CommBaseDaoImpl.java`（改） | **A0-2**：凭据查询加 `isAI=0` |
+| 14 | `src/com/fuao/fajxc/dao/impl/stockpile/WarehousingDaoImpl.java`（改） | **A0-2**：同上 |
+| 15 | `src/com/fuao/fajxc/dao/impl/system/FunctionInfoSystemDaoImpl.java`（改） | **A0-2**：同上 |
+| 16 | `src/com/fuao/fajxc/dao/impl/system/RoleSystemDaoImpl.java`（改） | **A0-2**：同上 |
+| 17 | `src/com/fuao/fajxc/dao/impl/system/MenuInterceptorImpl.java`（改） | **A0-2**：同上 |
+| 18 | `src/com/fuao/fajxc/action/sale/SaleOrderAction.java`（改） | **A0-2**：cookie 凭据路径同样排除数字员工 |
+| 19 | `src/applicationContext-login.xml`（改 1 行） | 注入 `harnessAccountDao` |
+| 20 | `src/com/fuao/fajxc/action/GlobalVariables.java`（改） | 编码修复 + 死代码清理 |
+| 21 | `src/com/fuao/fajxc/vo/Groups.hbm.xml`（改） | `groups` 是 MySQL 8 保留字，加反引号 |
+
+> **与 01 §17.3 的偏差（已知，需设计方确认）**：改动点是 21 处而不是 ≤8 处，且其中 10 处是修改既有文件
+> 而不是纯新增。超出部分几乎全部是 **A0-2 的收口**——portal 里有 6 份各自复制的凭据查询，
+> 只堵住其中一份就等于没堵。
 
 > 数字员工账号同时持有**随机哨兵口令**：即使 A0-2 的检查被误删，账号仍无法通过口令认证。
 
@@ -126,10 +146,26 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 
 ## 下一批（建议顺序）
 
-1. `harness-adapter-portal`：`department` / `employee` / `workposition.permissions`（逗号串 `functionID.subID`）严格解析 + `utf8mb4` 显式设置 + `scheduleplan.begintime` 等 varchar 时间解析，失败进 `harness_dirty_queue`（A0-8）。
-2. portal 侧 ≤8 处新增：`/api/harness/**` 独立命名空间 + HMAC 拦截器 + 3 处 ALTER 的登录阻断（A0-2）。
-3. `harness-terminal`：安装/绑定码/心跳/`sys.info`/执行器，A0-5 吊销 ≤30s。
-4. 看板前端（`document/harness/prototypes/*.html` 已有两版原型可参考）。
+1. **注入检测器与 `suspected_injection`**（02 §R-05、03 §4 规则 2）：事件信封里加标记、
+   命中即降级为 L0 报告并告警。这是当前唯一还开着的"读到的内容当指令"缺口。
+2. **时间解析接入同步流程**（A0-8 / T-14）：`PortalTimeParser` 写好了但没有调用方，
+   `scheduleplan.begintime` / `new_task.begintime` 的脏数据目前不会进 `harness_dirty_queue`。
+3. **A0-3 自动比对**：适配层的权限解析结果 vs portal 侧 `permission/snapshot` 的自动比对。
+4. **终端执行器**：本地策略与审批验签已就位，但还没有真正执行 `fs.read` / `fs.write` /
+   `sys.exec` 的命令处理器，也没有 TCP 帧通道（边缘层未实现，平台目前只有 HTTP）。
+5. **看板前端**（`document/harness/prototypes/*.html` 已有两版原型可参考）。
+
+## 仓库根目录的 `harness-terminal/`（Rust）= 终端智能体
+
+它是**终端智能体运行时**：收集上下文 → 动手 → 验证 → 循环，带技能（SKILL.md）与 MCP 插件。
+详见 `harness-terminal/README.md`。
+
+> 评审时这个工程是编译不过的孤儿（缺 4 个依赖、clap 版本不匹配、直连 MySQL 且硬编码 root 口令），
+> 本轮按"终端智能体"重写了。见 `document/harness/06-验收报告.md` §4.2。
+>
+> 与 `harness/harness-terminal`（Java 设备外壳）的分工：外壳管身份与心跳，智能体管干活；
+> **每次工具调用都要过外壳那一份策略**——智能体不是权限主体。
+> 两者目前各有一份 `LocalPolicy` 实现（Java / Rust），尚未接线成同一份能力集。
 
 ## 文档侧待办
 

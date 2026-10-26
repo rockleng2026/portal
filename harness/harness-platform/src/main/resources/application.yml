@@ -37,11 +37,20 @@ harness:
     binding-code-ttl: 10m
   terminal:
     heartbeat-timeout: 30s
+    degrade-after: 15m
   bootstrap:
     client-id: harness-bootstrap
     secret: ${HARNESS_BOOTSTRAP_SECRET:}
+    # The first natural-human console principal. Without it every human-only endpoint
+    # (grant issue, approval decision, kill switch, agent lifecycle) is unreachable.
+    human-client-id: ${HARNESS_HUMAN_CLIENT_ID:}
+    human-secret: ${HARNESS_HUMAN_SECRET:}
+    human-employee-id: ${HARNESS_HUMAN_EMPLOYEE_ID:}
   federation:
     local-fed-id: ${HARNESS_FED_ID:}
+  scheduler:
+    terminal-scan-ms: 60000
+    approval-expiry-ms: 300000
 
 management:
   endpoints:

@@ -43,19 +43,30 @@ public class ClientAuthenticator {
             Integer employeeId,
             String apiScope,
             String status,
-            Instant expiresAt) {
+            Instant expiresAt,
+            String role,
+            Integer deptId) {
     }
 
     public Optional<Principal> findPrincipal(String clientId) {
         return jdbc.sql("""
                         SELECT principal_id, client_id, principal_type, secret_hash, agent_id, terminal_id,
-                               employee_id, api_scope, status, expires_at
+                               employee_id, api_scope, status, expires_at, role, dept_id
                           FROM harness_principal
                          WHERE client_id = :clientId
                         """)
                 .param("clientId", clientId)
                 .query(Principal.class)
                 .optional();
+    }
+
+    /** The status of the device a principal authenticates as, or {@code null} when unknown. */
+    private String terminalStatus(String terminalId) {
+        return jdbc.sql("SELECT status FROM harness_terminal WHERE terminal_id = :id")
+                .param("id", terminalId)
+                .query(String.class)
+                .optional()
+                .orElse(null);
     }
 
     /**
@@ -78,6 +89,15 @@ public class ClientAuthenticator {
         if (principal.expiresAt() != null && !Instant.now().isBefore(principal.expiresAt())) {
             throw new AuthenticationException(403, "PRINCIPAL_EXPIRED", "client " + clientId + " expired at " + principal.expiresAt());
         }
+        if (principal.terminalId() != null) {
+            // A device credential inherits the fate of its device (A0-5). Revocation must reach
+            // the credential, not only the heartbeat endpoint.
+            String terminalStatus = terminalStatus(principal.terminalId());
+            if ("revoked".equals(terminalStatus)) {
+                throw new AuthenticationException(403, "TERMINAL_REVOKED",
+                        "terminal " + principal.terminalId() + " is revoked");
+            }
+        }
 
         Instant sentAt;
         try {
@@ -98,7 +118,8 @@ public class ClientAuthenticator {
         }
 
         return new AuthenticatedClient(principal.clientId(), principal.principalType(), principal.agentId(),
-                principal.terminalId(), principal.employeeId(), principal.apiScope());
+                principal.terminalId(), principal.employeeId(), principal.apiScope(),
+                principal.role(), principal.deptId());
     }
 
     /** Truncation helper used by audit rows that store the call instant at minute granularity. */

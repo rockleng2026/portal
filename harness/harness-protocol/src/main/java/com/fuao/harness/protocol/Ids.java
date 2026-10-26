@@ -81,10 +81,20 @@ public final class Ids {
         }
         rand62 &= 0x3FFFFFFFFFFFFFFFL; // keep 62 bits
 
-        long msb = ((millis & 0xFFFFFFFFL) << 32)      // timeLow  (bits 63..32)
-                | (((millis >>> 32) & 0xFFFFL) << 16)   // timeMid  (bits 47..32)
-                | (0x7L << 12)                         // version 7 (bits 15..12)
-                | ((long) seq & 0x0FFFL);               // rand_a   (bits 11..0) <- the counter
+        // RFC 9562 §5.7 layout, byte for byte:
+        //   msb bytes 0..1  unix_ts_ms[47:32]
+        //   msb bytes 2..3  unix_ts_ms[31:16]
+        //   msb bytes 4..5  unix_ts_ms[15:0]
+        //   msb byte  6     ver (4 bits) + rand_a high nibble
+        //   msb byte  7     rand_a low byte
+        // The timestamp therefore occupies the most significant bytes, so the printed id sorts
+        // in creation order as a string - which is what "time ordered" has to mean for a column
+        // that is read with ORDER BY id.
+        long msb = (((millis >>> 32) & 0xFFFFL) << 48)   // ts[47:32] -> msb 63..48
+                | (((millis >>> 16) & 0xFFFFL) << 32)    // ts[31:16] -> msb 47..32
+                | ((millis & 0xFFFFL) << 16)             // ts[15:0]  -> msb 31..16
+                | (0x7L << 12)                           // ver 7      -> msb 15..12
+                | ((long) seq & 0x0FFFL);                // rand_a     -> msb 11..0
 
         long lsb = (0x2L << 62)                         // variant 0b10 (bits 63..62)
                 | (rand62 & 0x3FFFFFFFFFFFFFFFL);       // rand_b   (62 bits)
@@ -102,12 +112,27 @@ public final class Ids {
         return prefix + newId();
     }
 
-    /** Unix millis embedded in a UUIDv7. */
+    /**
+     * Unix millis embedded in a UUIDv7.
+     *
+     * <p>Read the way RFC 9562 §5.7 lays the timestamp out: the high 32 bits of
+     * {@code unix_ts_ms} are in msb bits 63..32 and the low 16 bits in msb 31..16.
+     */
     public static long timestampOf(UUID uuid) {
         long msb = uuid.getMostSignificantBits();
-        long low32 = (msb >>> 32) & 0xFFFFFFFFL;
-        long high16 = (msb >>> 16) & 0xFFFFL;
-        return low32 | (high16 << 32);
+        long ts47_32 = (msb >>> 48) & 0xFFFFL;
+        long ts31_16 = (msb >>> 32) & 0xFFFFL;
+        long ts15_0 = (msb >>> 16) & 0xFFFFL;
+        return (ts47_32 << 32) | (ts31_16 << 16) | ts15_0;
+    }
+
+    /**
+     * The RFC 9562 version nibble of a UUIDv7 (msb bits 15..12).
+     *
+     * <p>Java's {@link UUID#version()} reads exactly those bits, so it agrees for v7 as well.
+     */
+    public static int versionOf(UUID uuid) {
+        return (int) ((uuid.getMostSignificantBits() >>> 12) & 0xFL);
     }
 
     /** Strips a known prefix if present. */

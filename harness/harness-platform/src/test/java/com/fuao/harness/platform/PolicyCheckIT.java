@@ -26,7 +26,7 @@ class PolicyCheckIT extends PlatformTestBase {
     @BeforeEach
     void setup() {
         createPrincipal(SERVICE_CLIENT, SERVICE_SECRET, "service", null);
-        createPrincipal(HUMAN_CLIENT, HUMAN_SECRET, "service", HUMAN_EMPLOYEE_ID);
+        createPrincipal(HUMAN_CLIENT, HUMAN_SECRET, "human", HUMAN_EMPLOYEE_ID, "system_admin", null);
         agentId = seedAgent(AGENT, AGENT_OWNER_EMPLOYEE_ID, DEPT, 2);
     }
 
@@ -43,7 +43,8 @@ class PolicyCheckIT extends PlatformTestBase {
         return Map.of(
                 "agentId", agentId,
                 "capKey", "cap:portal.mission.complete",
-                "scope", Map.of("deptIds", Set.of(DEPT)));
+                "scope", Map.of("deptIds", Set.of(DEPT)),
+                "contentTrust", "trusted");
     }
 
     @Test

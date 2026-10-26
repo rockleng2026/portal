@@ -15,6 +15,10 @@ import java.util.Map;
  * against the platform's public key, which it was given when it was bound. An approval that the
  * terminal cannot verify is an approval that does not exist - the edge cannot talk a terminal
  * into running {@code fs.delete} by claiming a human said yes.
+ *
+ * <p>An approval is also <em>bound</em>: it names the command, the capability and the path it
+ * was given for. A signature that verifies is not enough - the edge must not be able to spend
+ * an approval for one file on another one.
  */
 public final class CommandApproval {
 
@@ -58,7 +62,7 @@ public final class CommandApproval {
      * @return the approval, or {@code null} when it does not verify
      */
     public static LocalPolicy.ApprovalToken verify(PublicKey platformKey, Map<String, Object> payload,
-                                                    byte[] signature) {
+                                                     byte[] signature) {
         try {
             Signature verifier = Signature.getInstance("Ed25519");
             verifier.initVerify(platformKey);
@@ -75,8 +79,18 @@ public final class CommandApproval {
             return null;
         }
         long expiresAtEpoch = expiresAt instanceof Number n ? n.longValue() : 0L;
-        return new LocalPolicy.ApprovalToken(String.valueOf(approvalId), expiresAtEpoch, signature,
-                canonicalPayload(payload));
+        return new LocalPolicy.ApprovalToken(
+                String.valueOf(approvalId),
+                expiresAtEpoch,
+                signature,
+                canonicalPayload(payload),
+                asString(payload.get("command")),
+                asString(payload.get("capKey")),
+                asString(payload.get("targetPath")));
+    }
+
+    private static String asString(Object value) {
+        return value == null ? null : String.valueOf(value);
     }
 
     /** Convenience for the platform side: build the frame payload of an approval. */

@@ -84,11 +84,13 @@ public class LoginDaoImpl extends HibernateDaoSupport implements LoginDao {
 			return count instanceof Number && ((Number) count).intValue() > 0;
 		} catch (Exception e) {
 			// The users.isAI column is a new addition to this legacy schema. If it has not been
-			// applied yet the query fails and the safe answer is "not an AI account": the AI
-			// accounts hold a random sentinel password and therefore still cannot log in.
+			// applied yet the query fails - and then the answer has to be "this might be a digital
+			// employee", not "this is a human". The check fails closed: a portal whose isAI
+			// column is missing refuses logins with a clear marker instead of quietly letting
+			// AI accounts through (A0-2).
 			log.error("[HARNESS-SECURITY] isAI lookup failed, has the users.isAI column been "
 					+ "applied? " + e.getMessage());
-			return false;
+			return true;
 		}
 	}
 	

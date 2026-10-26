@@ -34,8 +34,9 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        return !path.startsWith("/api/harness/") || path.startsWith("/api/harness/internal/");
+        // Every path under /api/harness/ is authenticated. There is no carve-out: an endpoint
+        // that must not be reachable without a signature does not belong under this prefix.
+        return !request.getRequestURI().startsWith("/api/harness/");
     }
 
     @Override
@@ -56,7 +57,7 @@ public class AuthFilter extends OncePerRequestFilter {
                     cached.body());
 
             String scope = client.apiScope();
-            if (scope != null && !scope.endsWith("*") && !scope.equals(request.getRequestURI())) {
+            if (scope != null && !scope.isBlank() && !withinScope(scope, request.getRequestURI())) {
                 throw new AuthenticationException(403, "SCOPE_NOT_ALLOWED",
                         "client " + client.clientId() + " may not call " + request.getRequestURI());
             }
@@ -71,5 +72,23 @@ public class AuthFilter extends OncePerRequestFilter {
         } finally {
             authContext.clear();
         }
+    }
+
+    /**
+     * Whether a path is inside a principal's {@code api_scope}.
+     *
+     * <p>The scope is a path <em>prefix</em> (V2: {@code api_scope} = "允许的路径前缀"). A scope
+     * ending in {@code *} matches everything below it; a scope without {@code *} must match the
+     * path exactly or be a path prefix of it. Comparing a wildcard scope for equality - which is
+     * what this used to do - would hand every endpoint to a principal that was only meant to have
+     * one.
+     */
+    static boolean withinScope(String scope, String path) {
+        String s = scope.trim();
+        if (s.endsWith("*")) {
+            String prefix = s.substring(0, s.length() - 1);
+            return path.startsWith(prefix);
+        }
+        return s.equals(path) || path.startsWith(s.endsWith("/") ? s : s + "/");
     }
 }

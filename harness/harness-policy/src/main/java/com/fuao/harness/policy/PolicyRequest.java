@@ -100,10 +100,24 @@ public record PolicyRequest(
         }
     }
 
+    /**
+     * The source references that cannot be traced back to a source.
+     *
+     * <p>For trusted content this is always empty. For untrusted content it lists every blank
+     * reference, and it also reports "no reference at all" as one untraceable entry: content that
+     * came from somewhere but cites nothing is precisely the case ADR-011 is about.
+     */
     public List<String> untrustedSourcesWithoutRefs() {
         if (contentTrust.isTrusted()) {
             return List.of();
         }
-        return sourceRefs.stream().filter(s -> s == null || s.isBlank()).toList();
+        List<String> blank = sourceRefs.stream().filter(s -> s == null || s.isBlank()).toList();
+        if (!blank.isEmpty()) {
+            return blank;
+        }
+        if (sourceRefs.isEmpty()) {
+            return List.of("<no source_ref>");
+        }
+        return List.of();
     }
 }

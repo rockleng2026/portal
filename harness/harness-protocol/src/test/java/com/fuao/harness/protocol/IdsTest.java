@@ -16,7 +16,38 @@ class IdsTest {
     void producesVersion7Variant1Uuids() {
         UUID u = Ids.uuid7();
         assertEquals(7, u.version(), "version nibble must be 7");
+        assertEquals(7, Ids.versionOf(u), "RFC 9562 version nibble must be 7");
         assertEquals(2, u.variant(), "variant must be RFC 9562 (0b10)");
+    }
+
+    @Test
+    void theTimestampSurvivesTheRoundTrip() {
+        // Before the RFC 9562 fix only 32 bits of the millisecond counter were kept, so the
+        // decoded timestamp was wrong by multiples of 2^32 milliseconds (~56.8 years).
+        long before = System.currentTimeMillis();
+        UUID u = Ids.uuid7();
+        long after = System.currentTimeMillis();
+        long decoded = Ids.timestampOf(u);
+        assertTrue(decoded >= before && decoded <= after,
+                "decoded timestamp " + decoded + " outside [" + before + "," + after + "]");
+    }
+
+    @Test
+    void idsSortInCreationOrderAcrossMilliseconds() {
+        // Before the RFC 9562 fix the low 32 bits of the millisecond counter sat in the most
+        // significant hex characters, so the order broke every 2^32 milliseconds (~49.7 days).
+        List<String> ids = new ArrayList<>();
+        for (int i = 0; i < 2000; i++) {
+            ids.add(Ids.newId());
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        List<String> sorted = new ArrayList<>(ids);
+        Collections.sort(sorted);
+        assertEquals(ids, sorted, "UUIDv7 must sort in creation order across milliseconds");
     }
 
     @Test

@@ -34,9 +34,21 @@ public final class PolicyEngine {
                                    Instant now) {
         Objects.requireNonNull(req, "request");
         Objects.requireNonNull(now, "now");
+        if (grants == null) {
+            grants = List.of();
+        }
+        if (killSwitch == null) {
+            killSwitch = KillSwitchState.empty();
+        }
         CapabilityDescriptor cap = req.capability();
         if (cap == null) {
             return PolicyDecision.deny("CAPABILITY_UNKNOWN", "no capability descriptor supplied", now);
+        }
+        if (req.autonomyLevel() == null) {
+            req = withLevel(req, AutonomyLevel.L0);
+        }
+        if (req.agentState() == null) {
+            return PolicyDecision.deny("AGENT_NOT_ACTIVE", "no agent state supplied", now);
         }
 
         // -- 1. kill-switch -------------------------------------------------------
@@ -74,32 +86,32 @@ public final class PolicyEngine {
             return PolicyDecision.deny("CAPABILITY_DISABLED", "capability " + cap.capKey() + " is disabled", now);
         }
 
-        // -- 4. autonomy level ---------------------------------------------------
-        AutonomyLevel effectiveLevel = sw != null ? AutonomyLevel.L0 : req.autonomyLevel();
-        if (effectiveLevel.level() < cap.minLevel()) {
-            return PolicyDecision.deny("AUTONOMY_TOO_LOW",
-                    cap.capKey() + " needs " + cap.minAutonomyLevel() + ", agent " + req.agentKey()
-                            + " is at " + effectiveLevel, now);
-        }
-
-        // -- 5. grant must exist and be live ------------------------------------
+        // -- 4. grant must exist and be live ------------------------------------
+        // 03 §6.3 ①: the grant check comes before the autonomy check - "you have no grant" is
+        // the first permission question, and answering it with "your level is too low" leaks the
+        // capability's min_level to a caller that holds nothing.
         List<Grant> live = new ArrayList<>();
-        List<Grant> dead = new ArrayList<>();
+        List<String> deadReasons = new ArrayList<>();
         for (Grant g : grants) {
             if (!cap.capId().equals(g.capId())) {
+                continue;
+            }
+            if (g.agentId() != null && req.agentId() != null && !g.agentId().equals(req.agentId())) {
+                // A grant belongs to one agent. Another agent's grant is not a grant for this one.
+                deadReasons.add("grant " + g.grantId() + " belongs to agent " + g.agentId());
                 continue;
             }
             String deadReason = g.deadReasonAt(now);
             if (deadReason == null) {
                 live.add(g);
             } else {
-                dead.add(g);
+                deadReasons.add(deadReason);
             }
         }
         if (live.isEmpty()) {
-            String why = dead.isEmpty()
+            String why = deadReasons.isEmpty()
                     ? "no grant exists"
-                    : "all " + dead.size() + " grant(s) are unusable: " + dead.get(0).deadReasonAt(now);
+                    : "all " + deadReasons.size() + " grant(s) are unusable: " + deadReasons.get(0);
             return PolicyDecision.deny("GRANT_MISSING", cap.capKey() + ": " + why, now);
         }
         // A grant longer than the ceiling is a caller bug, not something to silently shorten.
@@ -109,12 +121,13 @@ public final class PolicyEngine {
                     cap.capKey() + ": every grant exceeds the " + MAX_GRANT_TTL.toHours() + "h ceiling", now);
         }
 
-        // -- 6. scope must cover the object --------------------------------------
+        // -- 5. scope must cover the object --------------------------------------
         Scope effectiveScope = null;
         List<String> contributing = new ArrayList<>();
         Instant expiresAt = null;
+        Scope requested = req.requestedScope() == null ? Scope.UNBOUNDED : req.requestedScope();
         for (Grant g : live) {
-            Scope narrowed = g.scope().intersect(req.requestedScope());
+            Scope narrowed = g.scope().intersect(requested);
             if (narrowed == null) {
                 continue;
             }
@@ -136,21 +149,35 @@ public final class PolicyEngine {
         if (effectiveScope == null) {
             return PolicyDecision.deny("SCOPE_NOT_COVERED",
                     cap.capKey() + ": grant scope " + describe(live.get(0).scope())
-                            + " does not reach " + describe(req.requestedScope()), now);
+                            + " does not reach " + describe(requested), now);
         }
 
         PolicyDecision.EffectivePermission permission =
                 new PolicyDecision.EffectivePermission(cap.capKey(), effectiveScope, contributing, expiresAt);
 
+        // -- 6. autonomy level ---------------------------------------------------
+        // 03 §6.3 ②, after the grant conversation of ①.
+        AutonomyLevel effectiveLevel = sw != null ? AutonomyLevel.L0 : req.autonomyLevel();
+        if (effectiveLevel.level() < cap.minLevel()) {
+            return PolicyDecision.deny("AUTONOMY_TOO_LOW",
+                    cap.capKey() + " needs " + cap.minAutonomyLevel() + ", agent " + req.agentKey()
+                            + " is at " + effectiveLevel, now);
+        }
+
         // -- 7. untrusted content must be traceable -------------------------------
         // ADR-011 / red-team R-03: data read from a mail, chat or document may become a fact
         // but never a tool argument unless the argument carries a reference back to it.
-        if (!req.contentTrust().isTrusted() && req.sourceRefs().isEmpty()) {
+        // A blank reference is not a reference: the check is on the content of the citation, not
+        // on the presence of a string.
+        if (!req.contentTrust().isTrusted() && !req.untrustedSourcesWithoutRefs().isEmpty()) {
             return PolicyDecision.deny("UNTRUSTED_CONTENT_WITHOUT_REF",
                     "arguments derived from " + req.contentTrust() + " content must cite a source_ref", now);
         }
 
         // -- 8. approval policy ---------------------------------------------------
+        // 03 §6.3 ③. Note the deliberate deviation from the document's ordering: the
+        // source-reference check (⑤) runs before this one, because refusing untraceable
+        // arguments is strictly stronger than routing them to a human.
         boolean escalates = cap.approvalPolicy() == CapabilityDescriptor.ApprovalPolicy.HUMAN
                 || cap.approvalPolicy() == CapabilityDescriptor.ApprovalPolicy.DUAL
                 || cap.requiresHuman()
@@ -170,9 +197,11 @@ public final class PolicyEngine {
     // ------------------------------------------------------------------ helpers
 
     /**
-     * TTL policy lives here and nowhere else: a grant that arrives with more than 24h of life is
-     * not silently shortened, it is rejected. Quietly truncating it would hide a caller bug
-     * behind a working permission.
+     * Returns a copy of the request with the autonomy level forced down.
+     *
+     * <p>Used by the kill-switch: a switch that demotes to L0 does not change what the agent
+     * asked for, only what it is allowed to ask for. TTL policy lives in {@link Grant} and in
+     * {@link #MAX_GRANT_TTL}; nothing here shortens a grant.
      */
     private static PolicyRequest withLevel(PolicyRequest req, AutonomyLevel level) {
         return new PolicyRequest(req.agentId(), req.agentKey(), req.agentName(), req.agentState(), level,
@@ -225,7 +254,7 @@ public final class PolicyEngine {
             return PolicyDecision.ApproverScope.DUAL_CISO;
         }
         boolean outsideOwnDept = scope != null && scope.deptIds() != null && agentDeptId != null
-                && scope.deptIds().stream().noneMatch(d -> d == agentDeptId);
+                && scope.deptIds().stream().noneMatch(d -> d.intValue() == agentDeptId.intValue());
         if (HIGH_RISK_CLASS.equals(cap.riskClass()) || outsideOwnDept) {
             return PolicyDecision.ApproverScope.SYSTEM_ADMIN;
         }

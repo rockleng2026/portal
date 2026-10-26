@@ -39,12 +39,12 @@ public record Scope(Set<Integer> deptIds, Map<String, Object> rowFilter, String 
     }
 
     /**
-     * Whether this (granted) scope reaches the object identified by {@code requested}.
+     * Whether this (granted) scope fully contains the scope of {@code requested}.
      *
-     * <p>Both sides must be non-null; an unbounded grant covers everything, a bounded grant
-     * only covers its departments. Intersecting an unbounded request with a bounded grant is
-     * <em>not</em> allowed to succeed by default - see {@link #intersect} for the callers that
-     * really do want that (federation diagnostics), which must say so explicitly.
+     * <p>Containment, not overlap: a grant of department 91 does not "cover" a request that
+     * touches 91 and 92, because the grant cannot pay for 92. An unbounded grant covers
+     * everything; a bounded grant never covers an unbounded request, because "this agent may
+     * touch department 91" must never become "this agent may touch the whole organisation".
      */
     public boolean covers(Scope requested) {
         Objects.requireNonNull(requested, "requested");
@@ -54,9 +54,7 @@ public record Scope(Set<Integer> deptIds, Map<String, Object> rowFilter, String 
         if (requested.isUnbounded()) {
             return false; // a bounded grant must never authorise a whole-organisation action
         }
-        Set<Integer> overlap = new LinkedHashSet<>(deptIds);
-        overlap.retainAll(requested.deptIds);
-        return !overlap.isEmpty();
+        return deptIds.containsAll(requested.deptIds);
     }
 
     /**
@@ -68,6 +66,12 @@ public record Scope(Set<Integer> deptIds, Map<String, Object> rowFilter, String 
      * inherits the grant's bound. The reverse does not hold: a bounded scope intersected with an
      * unbounded request yields {@code null}, because "this agent may touch department 91" must
      * never become "this agent may touch the whole organisation".
+     *
+     * <p>Row filters and the resource permission are constraints, not preferences: when the two
+     * sides name the same key with different values they contradict each other and the
+     * intersection is empty. The requested scope therefore can never <em>widen</em> a grant -
+     * a request carrying {@code owner=everyone} does not escape a grant limited to
+     * {@code owner=me} (01 §5.2, red-team R-01).
      */
     public Scope intersect(Scope other) {
         if (isUnbounded()) {
@@ -82,8 +86,19 @@ public record Scope(Set<Integer> deptIds, Map<String, Object> rowFilter, String 
             return null;
         }
         Map<String, Object> filters = new LinkedHashMap<>(rowFilter);
-        filters.putAll(other.rowFilter); // the narrower (later) filter wins
-        return new Scope(overlap, filters, other.resourcePerm() != null ? other.resourcePerm() : resourcePerm());
+        for (Map.Entry<String, Object> e : other.rowFilter.entrySet()) {
+            Object mine = filters.get(e.getKey());
+            if (mine != null && !mine.equals(e.getValue())) {
+                return null; // contradictory constraints: nothing satisfies both
+            }
+            filters.put(e.getKey(), e.getValue());
+        }
+        if (other.resourcePerm() != null && resourcePerm() != null
+                && !other.resourcePerm().equals(resourcePerm())) {
+            return null; // contradictory resource permissions
+        }
+        String perm = other.resourcePerm() != null ? other.resourcePerm() : resourcePerm();
+        return new Scope(overlap, filters, perm);
     }
 
     public Map<String, Object> toMap() {

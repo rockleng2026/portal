@@ -227,7 +227,7 @@ public class WarehousingDaoImpl extends  BaseDaoImpl implements WarehousingDao {
 	 */
 	public Users getUsersByLoginName(String loginname,String password)
 	{
-		String hql="from Users where loginName=? and password=?";
+		String hql="from Users where loginName=? and password=? and isAI=0";
 		Query query = this.getSession().createQuery(hql);
 		query.setString(0, loginname);
 		query.setString(1, password);

@@ -41,6 +41,201 @@ public final class HarnessJson {
         return object(map);
     }
 
+    /**
+     * Parses a JSON request body into a map.
+     *
+     * <p>The harness API takes flat JSON objects, but nested values are accepted too: the parser
+     * returns {@link Map} for objects, {@link List} for arrays, {@link String}, {@link Double},
+     * {@link Boolean} and {@code null} for the scalars.
+     *
+     * @return the parsed object, or {@code null} when the body is not a JSON object (an empty
+     *         body is not an error: some calls carry no parameters at all)
+     */
+    public static Map parseObject(byte[] body) {
+        if (body == null || body.length == 0) {
+            return null;
+        }
+        try {
+            Parser parser = new Parser(new String(body, "UTF-8"));
+            parser.skipWhitespace();
+            if (parser.eof()) {
+                return null;
+            }
+            Object value = parser.readValue();
+            parser.skipWhitespace();
+            if (value instanceof Map) {
+                return (Map) value;
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /** A small recursive-descent JSON reader; enough for a request body, no more. */
+    private static final class Parser {
+
+        private final String text;
+        private int pos;
+
+        Parser(String text) {
+            this.text = text;
+        }
+
+        boolean eof() {
+            return pos >= text.length();
+        }
+
+        void skipWhitespace() {
+            while (pos < text.length() && Character.isWhitespace(text.charAt(pos))) {
+                pos++;
+            }
+        }
+
+        Object readValue() {
+            skipWhitespace();
+            if (eof()) {
+                throw new IllegalStateException("unexpected end of json");
+            }
+            char c = text.charAt(pos);
+            if (c == '{') {
+                return readObject();
+            }
+            if (c == '[') {
+                return readArray();
+            }
+            if (c == '"') {
+                return readString();
+            }
+            if (text.startsWith("true", pos)) {
+                pos += 4;
+                return Boolean.TRUE;
+            }
+            if (text.startsWith("false", pos)) {
+                pos += 5;
+                return Boolean.FALSE;
+            }
+            if (text.startsWith("null", pos)) {
+                pos += 4;
+                return null;
+            }
+            return readNumber();
+        }
+
+        Map readObject() {
+            HarnessMap map = new HarnessMap();
+            pos++; // {
+            skipWhitespace();
+            if (!eof() && text.charAt(pos) == '}') {
+                pos++;
+                return map;
+            }
+            while (true) {
+                skipWhitespace();
+                String key = readString();
+                skipWhitespace();
+                expect(':');
+                Object value = readValue();
+                map.put(key, value);
+                skipWhitespace();
+                if (eof()) {
+                    throw new IllegalStateException("unterminated json object");
+                }
+                char c = text.charAt(pos++);
+                if (c == '}') {
+                    return map;
+                }
+                if (c != ',') {
+                    throw new IllegalStateException("unexpected character in json object: " + c);
+                }
+            }
+        }
+
+        List readArray() {
+            List list = new ArrayList();
+            pos++; // [
+            skipWhitespace();
+            if (!eof() && text.charAt(pos) == ']') {
+                pos++;
+                return list;
+            }
+            while (true) {
+                list.add(readValue());
+                skipWhitespace();
+                if (eof()) {
+                    throw new IllegalStateException("unterminated json array");
+                }
+                char c = text.charAt(pos++);
+                if (c == ']') {
+                    return list;
+                }
+                if (c != ',') {
+                    throw new IllegalStateException("unexpected character in json array: " + c);
+                }
+            }
+        }
+
+        String readString() {
+            expect('"');
+            StringBuilder sb = new StringBuilder();
+            while (true) {
+                if (eof()) {
+                    throw new IllegalStateException("unterminated json string");
+                }
+                char c = text.charAt(pos++);
+                if (c == '"') {
+                    return sb.toString();
+                }
+                if (c == '\\') {
+                    if (eof()) {
+                        throw new IllegalStateException("unterminated json escape");
+                    }
+                    char e = text.charAt(pos++);
+                    if (e == 'n') {
+                        sb.append('\n');
+                    } else if (e == 't') {
+                        sb.append('\t');
+                    } else if (e == 'r') {
+                        sb.append('\r');
+                    } else if (e == 'b') {
+                        sb.append('\b');
+                    } else if (e == 'f') {
+                        sb.append('\f');
+                    } else if (e == 'u') {
+                        if (pos + 4 > text.length()) {
+                            throw new IllegalStateException("truncated unicode escape");
+                        }
+                        sb.append((char) Integer.parseInt(text.substring(pos, pos + 4), 16));
+                        pos += 4;
+                    } else {
+                        sb.append(e);
+                    }
+                } else {
+                    sb.append(c);
+                }
+            }
+        }
+
+        Double readNumber() {
+            int start = pos;
+            while (pos < text.length() && "+-0123456789.eE".indexOf(text.charAt(pos)) >= 0) {
+                pos++;
+            }
+            if (start == pos) {
+                throw new IllegalStateException("not a number at " + pos);
+            }
+            return Double.valueOf(text.substring(start, pos));
+        }
+
+        void expect(char c) {
+            skipWhitespace();
+            if (eof() || text.charAt(pos) != c) {
+                throw new IllegalStateException("expected " + c + " at " + pos);
+            }
+            pos++;
+        }
+    }
+
     public static String escape(String value) {
         StringBuilder sb = new StringBuilder();
         writeString(sb, value);

@@ -24,6 +24,8 @@ import java.util.Set;
  *       even if the capability is held;</li>
  *   <li>destructive commands need a fresh, signed approval token, and the token is spent by the
  *       first use;</li>
+ *   <li>an approval is bound to the command it was given for - an approval for
+ *       {@code fs.delete /srv/data} does not authorise {@code fs.delete /etc};</li>
  *   <li>a revocation empties the capability set immediately, without waiting for the platform
  *       to say so again (A0-5).</li>
  * </ul>
@@ -36,10 +38,10 @@ public final class LocalPolicy {
     private int autonomyLevel;
     private boolean revoked;
 
-    public LocalPolicy(int autonomyLevel, Set<String> grantedCapabilities, List<String> allowedRoots) {
+    public LocalPolicy(int autonomyLevel, Set<String> grantedCapabilities, List<String> roots) {
         this.autonomyLevel = autonomyLevel;
         this.grantedCapabilities.addAll(grantedCapabilities);
-        for (String root : allowedRoots) {
+        for (String root : roots == null ? List.<String>of() : roots) {
             allowedRoots.add(Paths.get(root).toAbsolutePath().normalize());
         }
     }
@@ -62,9 +64,13 @@ public final class LocalPolicy {
      * <p>Signed by the platform with Ed25519; the terminal holds the platform's public key and
      * verifies the signature itself. Without this, "a human approved it" would be whatever the
      * edge claims.
+     *
+     * @param command         the command the approval was given for
+     * @param capKey          the capability the approval was given for
+     * @param targetPath      the path the approval was given for, or {@code null}
      */
     public record ApprovalToken(String approvalId, long expiresAtEpochSecond, byte[] platformSignature,
-                                 byte[] payload) {
+                                 byte[] payload, String command, String capKey, String targetPath) {
     }
 
     public void grant(String capKey) {
@@ -135,8 +141,35 @@ public final class LocalPolicy {
                 return Verdict.deny("APPROVAL_ALREADY_USED",
                         "the approval token for " + approvalToken.approvalId() + " was already spent");
             }
+            Verdict mismatch = approvalCovers(approvalToken, command, capKey, targetPath);
+            if (mismatch != null) {
+                return mismatch;
+            }
         }
         return Verdict.allow();
+    }
+
+    /**
+     * Whether the approval covers exactly what is about to happen.
+     *
+     * <p>An approval is written for one command, one capability and one path. A signature that
+     * verifies is not enough: the edge must not be able to take an approval for
+     * {@code fs.delete} in a scratch directory and spend it on {@code fs.delete} somewhere else.
+     */
+    private Verdict approvalCovers(ApprovalToken token, CommandCode command, String capKey, String targetPath) {
+        if (token.command() != null && !token.command().equals(command.commandName())) {
+            return Verdict.deny("APPROVAL_SCOPE_MISMATCH",
+                    "the approval was given for " + token.command() + ", not " + command.commandName());
+        }
+        if (token.capKey() != null && capKey != null && !token.capKey().equals(capKey)) {
+            return Verdict.deny("APPROVAL_SCOPE_MISMATCH",
+                    "the approval was given for " + token.capKey() + ", not " + capKey);
+        }
+        if (token.targetPath() != null && !token.targetPath().equals(targetPath)) {
+            return Verdict.deny("APPROVAL_SCOPE_MISMATCH",
+                    "the approval was given for " + token.targetPath() + ", not " + targetPath);
+        }
+        return null;
     }
 
     /** Marks an approval as spent. One approval buys exactly one execution. */

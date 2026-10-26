@@ -194,7 +194,8 @@ public class ConsoleController {
     // ------------------------------------------------------------------ policy
 
     public record PolicyCheckRequest(@NotBlank String agentId, @NotBlank String capKey, Scope scope,
-                                     String contentTrust, Set<String> sourceRefs, String planId, int stepSeq) {
+                                     String contentTrust, Set<String> sourceRefs, String planId, int stepSeq,
+                                     String terminalId) {
     }
 
     public record PolicyCheckResponse(String outcome, String reasonCode, String reason,
@@ -220,13 +221,26 @@ public class ConsoleController {
 
     @PostMapping("/policy/check")
     public PolicyCheckResponse check(@RequestBody PolicyCheckRequest request) {
-        ContentTrust trust = request.contentTrust() == null
-                ? ContentTrust.TRUSTED
-                : ContentTrust.valueOf(request.contentTrust().toUpperCase(java.util.Locale.ROOT));
+        // The trust level of the content the arguments came from must be declared. Defaulting
+        // it would either hand a caller the trusted path by omitting a field (ADR-011) or break
+        // every legitimate instruction-channel call; declaring it keeps the two channels apart
+        // (01 §16: 数据与指令双通道).
+        if (request.contentTrust() == null || request.contentTrust().isBlank()) {
+            throw new IllegalArgumentException(
+                    "contentTrust is required: declare whether the arguments came from the instruction "
+                            + "channel (trusted) or from external content (untrusted)");
+        }
+        ContentTrust trust;
+        try {
+            trust = ContentTrust.valueOf(request.contentTrust().toUpperCase(java.util.Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("contentTrust must be 'trusted' or 'untrusted', got "
+                    + request.contentTrust());
+        }
         PolicyFacade.CheckResult result = policy.check(new PolicyFacade.CheckRequest(
                 request.agentId(), request.capKey(), request.scope(), trust,
                 request.sourceRefs() == null ? Set.of() : request.sourceRefs(),
-                request.planId(), request.stepSeq()));
+                request.planId(), request.stepSeq(), request.terminalId()));
         return PolicyCheckResponse.of(result.decision(), result.approval());
     }
 

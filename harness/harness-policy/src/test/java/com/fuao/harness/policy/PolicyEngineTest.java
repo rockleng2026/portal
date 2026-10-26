@@ -183,6 +183,36 @@ class PolicyEngineTest {
         assertTrue(d.allowed(), d.reason());
     }
 
+    @Test
+    void aGlobalHaltIsNotDefeatedByANarrowerSwitch() {
+        // "stop everything" must survive a narrower switch, whatever the narrower one says.
+        // Before the fix the most specific switch won and a global halt was silently lost.
+        PolicyRequest req = request(capMissionComplete(), AutonomyLevel.L2, Scope.ofDept(91));
+        KillSwitchState ks = KillSwitchState.fromStrings(List.of("global:*:halt", "agent:" + AGENT + ":to_l0"));
+
+        PolicyDecision d = engine.evaluate(req, List.of(grant("cap-1", Scope.ofDept(91), Duration.ofHours(2))), ks, NOW);
+        assertEquals("KILL_SWITCH_HALT", d.reasonCode(), d.reason());
+    }
+
+    @Test
+    void aGlobalDemotionIsNotDilutedByANarrowerSwitch() {
+        PolicyRequest req = request(capMissionComplete(), AutonomyLevel.L3, Scope.ofDept(91));
+        KillSwitchState ks = KillSwitchState.fromStrings(List.of("global:*:to_l0", "dept:91:to_l0"));
+
+        PolicyDecision d = engine.evaluate(req, List.of(grant("cap-1", Scope.ofDept(91), Duration.ofHours(2))), ks, NOW);
+        assertEquals(PolicyDecision.Outcome.DENY, d.outcome());
+        assertEquals("AUTONOMY_TOO_LOW", d.reasonCode());
+    }
+
+    @Test
+    void aNarrowHaltSurvivesAGlobalDemotion() {
+        PolicyRequest req = request(capMissionComplete(), AutonomyLevel.L2, Scope.ofDept(91));
+        KillSwitchState ks = KillSwitchState.fromStrings(List.of("global:*:to_l0", "cap:portal.mission.complete:halt"));
+
+        PolicyDecision d = engine.evaluate(req, List.of(grant("cap-1", Scope.ofDept(91), Duration.ofHours(2))), ks, NOW);
+        assertEquals("KILL_SWITCH_HALT", d.reasonCode());
+    }
+
     // ---------------------------------------------------------------- approval
 
     @Test
@@ -259,5 +289,57 @@ class PolicyEngineTest {
         PolicyDecision d = evaluate(request(cap, AutonomyLevel.L2, Scope.ofDept(91)),
                 List.of(grant(cap.capId(), Scope.ofDept(91), Duration.ofHours(2))));
         assertEquals("CAPABILITY_KILL_SWITCHED", d.reasonCode());
+    }
+
+    // ---------------------------------------------------------------- regressions
+
+    @Test
+    void aRequestedScopeCannotWidenTheGrantsRowFilter() {
+        // The request is the attacker-controlled side. It must not be able to replace the
+        // grant's constraint with a looser one.
+        CapabilityDescriptor cap = capMissionComplete();
+        Scope granted = new Scope(java.util.Set.of(91), java.util.Map.of("owner", "me"), "dept:91-only");
+        Scope asked = new Scope(java.util.Set.of(91), java.util.Map.of("owner", "everyone"), "ALL");
+        Grant g = new Grant("grant-1", AGENT, cap.capId(), granted, NOW.minusSeconds(60),
+                NOW.plusSeconds(3600), ActorRef.human(100), "onboarding", null, Grant.Status.ACTIVE);
+
+        PolicyDecision d = evaluate(request(cap, AutonomyLevel.L2, asked), List.of(g));
+        assertEquals("SCOPE_NOT_COVERED", d.reasonCode(),
+                "a request that contradicts the grant's row filter must not be authorised");
+    }
+
+    @Test
+    void aBlankSourceReferenceIsNotAReference() {
+        CapabilityDescriptor cap = capMissionComplete();
+        PolicyRequest req = PolicyRequest.builder()
+                .agent(AGENT, AGENT_KEY, "leon", AgentState.ACTIVE, AutonomyLevel.L2, 91)
+                .capability(cap)
+                .scope(Scope.ofDept(91))
+                .content(ContentTrust.UNTRUSTED, Set.of("   "))
+                .requestedBy(ActorRef.human(100))
+                .build();
+
+        PolicyDecision d = evaluate(req, List.of(grant(cap.capId(), Scope.ofDept(91), Duration.ofHours(2))));
+        assertEquals("UNTRUSTED_CONTENT_WITHOUT_REF", d.reasonCode());
+    }
+
+    @Test
+    void anotherAgentsGrantIsNotThisAgentsGrant() {
+        CapabilityDescriptor cap = capMissionComplete();
+        Grant foreign = new Grant("grant-x", "0198f0c2-0000-7000-8000-00000000bbbb", cap.capId(),
+                Scope.ofDept(91), NOW.minusSeconds(60), NOW.plusSeconds(3600),
+                ActorRef.human(100), "onboarding", null, Grant.Status.ACTIVE);
+
+        PolicyDecision d = evaluate(request(cap, AutonomyLevel.L2, Scope.ofDept(91)), List.of(foreign));
+        assertEquals("GRANT_MISSING", d.reasonCode());
+    }
+
+    @Test
+    void aMissingGrantIsReportedBeforeTheAutonomyLevel() {
+        // 03 §6.3 puts the grant check first: "you hold nothing" is the first permission
+        // question, and the capability's min_level is not the answer to it.
+        CapabilityDescriptor cap = capMissionComplete();
+        PolicyDecision d = evaluate(request(cap, AutonomyLevel.L0, Scope.ofDept(91)), List.of());
+        assertEquals("GRANT_MISSING", d.reasonCode());
     }
 }

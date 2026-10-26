@@ -8,8 +8,16 @@
   not travel on that machinery, so this namespace never touches the cookie session: it speaks
   HMAC service-account authentication (03 §9) and nothing else (ADR-004).
 
-  The action names keep their slashes: Struts matches the whole name after the namespace, so
-  "permission/snapshot" answers POST /api/harness/permission/snapshot.
+  One package per URL segment. This portal runs with
+  "struts.mapper.alwaysSelectFullNamespace=true", which takes the namespace from everything
+  before the LAST slash of the path: "/api/harness/permission/snapshot" therefore resolves to
+  namespace "/api/harness/permission" and action "snapshot", not to namespace "/api/harness" and
+  action "permission/snapshot". Declaring one package per segment is what makes the mapping
+  unambiguous without touching the mapper setting that the other 497 function points rely on.
+
+  The URLs carry the portal's action extension ("do"), like every other action in this
+  application: the platform signs the exact path it requests, so the extension is part of the
+  signature and both sides have to use the same one.
 -->
 <struts>
 	<package name="harness-api" extends="json-default" namespace="/api/harness">
@@ -28,7 +36,16 @@
 			</result>
 		</action>
 
-		<action name="permission/snapshot" class="HarnessApiAction" method="permissionSnapshot">
+	</package>
+
+	<package name="harness-api-permission" extends="json-default" namespace="/api/harness/permission">
+
+		<interceptors>
+			<interceptor name="harnessAuth" class="com.fuao.fajxc.interceptor.HarnessApiInterceptor"/>
+			<interceptor name="defaultStack" class="org.apache.struts2.interceptor.DefaultStack"/>
+		</interceptors>
+
+		<action name="snapshot" class="HarnessApiAction" method="permissionSnapshot">
 			<result name="success" type="json">
 				<param name="root">payload</param>
 			</result>
@@ -37,7 +54,16 @@
 			</result>
 		</action>
 
-		<action name="agent/onboard" class="HarnessApiAction" method="onboard">
+	</package>
+
+	<package name="harness-api-agent" extends="json-default" namespace="/api/harness/agent">
+
+		<interceptors>
+			<interceptor name="harnessAuth" class="com.fuao.fajxc.interceptor.HarnessApiInterceptor"/>
+			<interceptor name="defaultStack" class="org.apache.struts2.interceptor.DefaultStack"/>
+		</interceptors>
+
+		<action name="onboard" class="HarnessApiAction" method="onboard">
 			<result name="success" type="json">
 				<param name="root">payload</param>
 			</result>

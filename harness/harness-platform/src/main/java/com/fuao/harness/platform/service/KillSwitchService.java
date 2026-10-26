@@ -41,7 +41,7 @@ public class KillSwitchService {
             throw new AgentService.NotAHumanException(
                     "kill-switch activation requires a natural human, caller was " + actor.actorType());
         }
-        KillSwitchState.Scope parsedScope = KillSwitchState.Scope.valueOf(scope.toUpperCase(Locale.ROOT));
+        KillSwitchState.Scope parsedScope = KillSwitchState.Scope.fromWire(scope);
         if (reason == null || reason.isBlank()) {
             throw new IllegalArgumentException("a kill switch needs a reason; unexplained switches are "
                     + "indistinguishable from mistakes during an incident");
@@ -50,7 +50,7 @@ public class KillSwitchService {
             throw new AgentService.AgentNotFound("no such agent: " + scopeId);
         }
 
-        String id = switches.activate(parsedScope.name().toLowerCase(Locale.ROOT),
+        String id = switches.activate(parsedScope.wire(),
                 parsedScope == KillSwitchState.Scope.GLOBAL ? "*" : scopeId,
                 effect == null ? "to_l0" : effect, reason, actor.actorId());
 

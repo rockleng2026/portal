@@ -21,7 +21,7 @@ class TerminalAndKillSwitchIT extends PlatformTestBase {
     @BeforeEach
     void setup() {
         createPrincipal(SERVICE_CLIENT, SERVICE_SECRET, "service", null);
-        createPrincipal(HUMAN_CLIENT, HUMAN_SECRET, "service", HUMAN_EMPLOYEE_ID);
+        createPrincipal(HUMAN_CLIENT, HUMAN_SECRET, "human", HUMAN_EMPLOYEE_ID, "system_admin", null);
         seedAgent(AGENT_KEY, AGENT_OWNER_EMPLOYEE_ID, 93, 2);
     }
 
@@ -130,6 +130,7 @@ class TerminalAndKillSwitchIT extends PlatformTestBase {
         String checkBody = body(Map.of(
                 "agentId", agentId,
                 "capKey", "cap:portal.mission.complete",
+                "contentTrust", "trusted",
                 "scope", Map.of("deptIds", Set.of(94))));
         MockHttpServletRequestBuilder allowed = post("/api/harness/policy/check")
                 .contentType(MediaType.APPLICATION_JSON)

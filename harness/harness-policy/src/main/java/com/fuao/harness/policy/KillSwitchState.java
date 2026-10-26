@@ -20,7 +20,36 @@ public record KillSwitchState(List<Switch> switches) {
         DEPT,
         AGENT,
         CAPABILITY,
-        TERMINAL
+        TERMINAL;
+
+        /** The wire name stored in {@code harness_killswitch.scope} (03 §2.4 / V2 DDL). */
+        public String wire() {
+            return switch (this) {
+                case GLOBAL -> "global";
+                case DEPT -> "dept";
+                case AGENT -> "agent";
+                case CAPABILITY -> "cap";
+                case TERMINAL -> "terminal";
+            };
+        }
+
+        /**
+         * Reads a scope name leniently: the DDL says {@code cap}, the enum says
+         * {@code CAPABILITY}, and both appear in operator tooling. Refusing one of them would
+         * make the kill switch - the control that must work during an incident - fail on a
+         * spelling.
+         */
+        public static Scope fromWire(String value) {
+            String v = value == null ? "" : value.trim().toUpperCase(java.util.Locale.ROOT);
+            return switch (v) {
+                case "CAP", "CAPABILITY" -> CAPABILITY;
+                case "GLOBAL" -> GLOBAL;
+                case "DEPT", "DEPARTMENT" -> DEPT;
+                case "AGENT" -> AGENT;
+                case "TERMINAL" -> TERMINAL;
+                default -> throw new IllegalArgumentException("unknown kill-switch scope: " + value);
+            };
+        }
     }
 
     public enum Effect {
@@ -40,26 +69,40 @@ public record KillSwitchState(List<Switch> switches) {
         return new KillSwitchState(List.of(switches));
     }
 
-    /** Most specific switch affecting this actor/capability, or {@code null} when clear. */
+    /**
+     * The switch that actually governs this actor/capability, or {@code null} when clear.
+     *
+     * <p>The effective switch is the <em>most restrictive</em> one that matches, not the most
+     * specific one. A global {@code HALT} is the platform's "stop everything" lever (04 §8.2) and
+     * must not be defeated by a narrower {@code TO_L0}; conversely a narrow {@code HALT} must not
+     * be diluted by a global {@code TO_L0}. When two matching switches are equally restrictive the
+     * more specific scope wins, because it is the one an operator will recognise in the audit.
+     */
     public Switch activeFor(String agentId, Integer deptId, String capKey, String terminalId) {
-        Switch global = null;
-        Switch mostSpecific = null;
-        int rank = -1;
+        Switch best = null;
+        int bestRank = -1;
         for (Switch s : switches) {
             if (!matches(s, agentId, deptId, capKey, terminalId)) {
                 continue;
             }
-            if (s.scope() == Scope.GLOBAL) {
-                global = s;
-                continue;
-            }
             int r = rank(s.scope());
-            if (r > rank) {
-                rank = r;
-                mostSpecific = s;
+            if (best == null
+                    || restrictiveness(s.effect()) > restrictiveness(best.effect())
+                    || (restrictiveness(s.effect()) == restrictiveness(best.effect()) && r > bestRank)) {
+                best = s;
+                bestRank = r;
             }
         }
-        return mostSpecific != null ? mostSpecific : global;
+        return best;
+    }
+
+    /** How much a switch takes away: a higher number is more restrictive. */
+    private static int restrictiveness(Effect effect) {
+        return switch (effect) {
+            case TO_L0 -> 1;
+            case STOP -> 2;
+            case HALT -> 3;
+        };
     }
 
     public boolean halted(String agentId, Integer deptId, String capKey, String terminalId) {
@@ -91,14 +134,27 @@ public record KillSwitchState(List<Switch> switches) {
         return new KillSwitchState(specs.stream().map(KillSwitchState::parse).toList());
     }
 
-    /** Parses {@code scope:scopeId:effect}, e.g. {@code agent:0198...:to_l0}. */
+    /**
+     * Parses {@code scope:scopeId:effect}, e.g. {@code agent:0198...:to_l0}.
+     *
+     * <p>The scope id of a capability switch is a cap_key, and a cap_key contains colons
+     * ({@code cap:portal.mission.complete}). The format is therefore read from both ends: the
+     * scope is the first token, the effect is after the <em>last</em> colon, and everything in
+     * between is the scope id. A capability id that was written without its {@code cap:} prefix
+     * gets it back, so both spellings reach the same switch.
+     */
     public static Switch parse(String spec) {
-        String[] parts = spec.split(":", 3);
-        if (parts.length != 3) {
+        int first = spec.indexOf(':');
+        int last = spec.lastIndexOf(':');
+        if (first < 0 || last <= first || last == spec.length() - 1) {
             throw new IllegalArgumentException("expected scope:scopeId:effect, got " + spec);
         }
-        Scope scope = Scope.valueOf(parts[0].toUpperCase());
-        Effect effect = Effect.valueOf(parts[2].toUpperCase());
-        return new Switch(scope, parts[1], effect);
+        Scope scope = Scope.fromWire(spec.substring(0, first));
+        String scopeId = spec.substring(first + 1, last);
+        Effect effect = Effect.valueOf(spec.substring(last + 1).trim().toUpperCase(java.util.Locale.ROOT));
+        if (scope == Scope.CAPABILITY && !scopeId.startsWith("cap:")) {
+            scopeId = "cap:" + scopeId;
+        }
+        return new Switch(scope, scopeId, effect);
     }
 }

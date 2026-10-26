@@ -28,8 +28,8 @@ class ApprovalFlowIT extends PlatformTestBase {
     @BeforeEach
     void setup() {
         createPrincipal(SERVICE_CLIENT, SERVICE_SECRET, "service", null);
-        createPrincipal(HUMAN_CLIENT, HUMAN_SECRET, "service", HUMAN_EMPLOYEE_ID);
-        createPrincipal(OTHER_HUMAN_CLIENT, OTHER_HUMAN_SECRET, "service", OTHER_EMPLOYEE_ID);
+        createPrincipal(HUMAN_CLIENT, HUMAN_SECRET, "human", HUMAN_EMPLOYEE_ID, "system_admin", null);
+        createPrincipal(OTHER_HUMAN_CLIENT, OTHER_HUMAN_SECRET, "human", OTHER_EMPLOYEE_ID, "system_admin", null);
         agentId = seedAgent("agent:leon:ops:approval", AGENT_OWNER, 92, 4);
         grant(agentId, "cap:db.ddl", 92, 3600);
     }
@@ -38,6 +38,7 @@ class ApprovalFlowIT extends PlatformTestBase {
         String body = body(Map.of(
                 "agentId", agentId,
                 "capKey", "cap:db.ddl",
+                "contentTrust", "trusted",
                 "scope", Map.of("deptIds", Set.of(92))));
         MockHttpServletRequestBuilder request = post("/api/harness/policy/check")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,12 +62,41 @@ class ApprovalFlowIT extends PlatformTestBase {
     }
 
     @Test
-    void anIndependentHumanCanApprove() throws Exception {
+    void anIrreversibleEscalationNeedsTwoDifferentHumans() throws Exception {
+        // cap:db.ddl is R4 and irreversible, so one signature is not an approval
+        // (01 §5.3: "双人审批"; red-team R-02).
         String approvalId = openEscalation();
 
-        mvc.perform(decide(HUMAN_CLIENT, HUMAN_SECRET, approvalId, "approved", "change window is open"))
+        mvc.perform(decide(HUMAN_CLIENT, HUMAN_SECRET, approvalId, "approved", "first signature"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.state").value("pending"));
+
+        assertEquals("pending", jdbc.sql("SELECT status FROM harness_approval WHERE approval_id = :id")
+                .param("id", approvalId).query(String.class).single(),
+                "one signature must not approve an irreversible escalation");
+
+        mvc.perform(decide(OTHER_HUMAN_CLIENT, OTHER_HUMAN_SECRET, approvalId, "approved", "second signature"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.state").value("approved"));
+
+        assertEquals("approved", jdbc.sql("SELECT status FROM harness_approval WHERE approval_id = :id")
+                .param("id", approvalId).query(String.class).single());
+        assertEquals(2, jdbc.sql("SELECT COUNT(DISTINCT employee_id) FROM harness_approval_signoff "
+                        + "WHERE approval_id = :id")
+                .param("id", approvalId).query(Integer.class).single(),
+                "both signatures must be on record");
+    }
+
+    @Test
+    void theSameHumanCannotSignTwiceForAnIrreversibleEscalation() throws Exception {
+        String approvalId = openEscalation();
+
+        mvc.perform(decide(HUMAN_CLIENT, HUMAN_SECRET, approvalId, "approved", "first")).andExpect(status().isOk());
+        mvc.perform(decide(HUMAN_CLIENT, HUMAN_SECRET, approvalId, "approved", "again")).andExpect(status().isOk());
+
+        assertEquals("pending", jdbc.sql("SELECT status FROM harness_approval WHERE approval_id = :id")
+                .param("id", approvalId).query(String.class).single(),
+                "the same person is not two approvers");
     }
 
     @Test
@@ -74,7 +104,7 @@ class ApprovalFlowIT extends PlatformTestBase {
         String approvalId = openEscalation();
 
         // The agent's owner is employee 7007; give them a console principal for this test.
-        createPrincipal("harness-test-owner", OWNER_SECRET, "service", AGENT_OWNER);
+        createPrincipal("harness-test-owner", OWNER_SECRET, "human", AGENT_OWNER, "system_admin", null);
 
         mvc.perform(decide("harness-test-owner", OWNER_SECRET, approvalId, "approved", "trust me"))
                 .andExpect(status().isConflict())
@@ -98,8 +128,13 @@ class ApprovalFlowIT extends PlatformTestBase {
     void anApprovalCannotBeDecidedTwice() throws Exception {
         String approvalId = openEscalation();
 
+        // Two independent signatures close an irreversible escalation.
         mvc.perform(decide(HUMAN_CLIENT, HUMAN_SECRET, approvalId, "approved", "ok")).andExpect(status().isOk());
-        mvc.perform(decide(OTHER_HUMAN_CLIENT, OTHER_HUMAN_SECRET, approvalId, "rejected", "changed my mind"))
+        mvc.perform(decide(OTHER_HUMAN_CLIENT, OTHER_HUMAN_SECRET, approvalId, "approved", "also ok"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.state").value("approved"));
+
+        mvc.perform(decide(HUMAN_CLIENT, HUMAN_SECRET, approvalId, "rejected", "changed my mind"))
                 .andExpect(status().isConflict());
     }
 
@@ -130,6 +165,16 @@ class ApprovalFlowIT extends PlatformTestBase {
 
     private static void assertEquals(String actual, String expected, String message) {
         if (!actual.equals(expected)) {
+            throw new AssertionError(message + ": expected '" + expected + "' but was '" + actual + "'");
+        }
+    }
+
+    private static void assertEquals(String actual, String expected) {
+        assertEquals(actual, expected, "values differ");
+    }
+
+    private static void assertEquals(int actual, int expected, String message) {
+        if (actual != expected) {
             throw new AssertionError(message + ": expected '" + expected + "' but was '" + actual + "'");
         }
     }

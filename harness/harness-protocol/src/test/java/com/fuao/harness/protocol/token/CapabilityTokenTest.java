@@ -60,6 +60,42 @@ class CapabilityTokenTest {
     }
 
     @Test
+    void refusesATokenThatOutlivesTheTwentyFourHourCeiling() {
+        // 03 §5: "exp ... TTL ≤ 24h（联邦 ≤1h）". The ceiling is enforced at minting time; a
+        // token that outlives it is refused, not quietly shortened.
+        CapabilityToken.TokenException e = assertThrows(CapabilityToken.TokenException.class,
+                () -> CapabilityToken.mint(keys.getPrivate(),
+                        claims("agent:a1", List.of("cap:portal.mission.complete"), 25 * 3600)));
+        assertEquals(CapabilityToken.TokenError.TTL_TOO_LONG, e.error());
+    }
+
+    @Test
+    void acceptsATokenAtExactlyTwentyFourHours() {
+        CapabilityToken token = CapabilityToken.mint(keys.getPrivate(),
+                claims("agent:a1", List.of("cap:portal.mission.complete"), 24 * 3600));
+        assertEquals(24 * 3600L, token.claims().ttlSeconds());
+    }
+
+    @Test
+    void refusesAFederationTokenThatOutlivesOneHour() {
+        long now = Instant.now().getEpochSecond();
+        CapabilityToken.Claims fed = new CapabilityToken.Claims(
+                "harness:brain-core", "fed:peer-1", "fed:peer-2",
+                List.of("cap:x"), Map.of("deptIds", List.of(91)), "jti-fed", now, now + 2 * 3600, null, null);
+        CapabilityToken.TokenException e = assertThrows(CapabilityToken.TokenException.class,
+                () -> CapabilityToken.mint(keys.getPrivate(), fed));
+        assertEquals(CapabilityToken.TokenError.TTL_TOO_LONG, e.error());
+    }
+
+    @Test
+    void refusesATokenThatExpiresBeforeItWasIssued() {
+        CapabilityToken.TokenException e = assertThrows(CapabilityToken.TokenException.class,
+                () -> CapabilityToken.mint(keys.getPrivate(),
+                        claims("agent:a1", List.of("cap:portal.mission.complete"), 0)));
+        assertEquals(CapabilityToken.TokenError.BAD_FORMAT, e.error());
+    }
+
+    @Test
     void rejectsATamperedSignature() {
         authority.granted = new HashSet<>(List.of("cap:x"));
         String serialized = CapabilityToken.mint(keys.getPrivate(), claims("agent:a1", List.of("cap:x"), 60)).serialized();

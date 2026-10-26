@@ -161,8 +161,12 @@ public class TerminalService {
         }
         boolean revoked = terminals.revoke(terminalId, Instant.now());
         codes.revokeAllFor(terminalId);
+        // The device credential is a principal. Revoking the device without revoking the
+        // credential would leave it with full API access (A0-5: "loses all capabilities").
+        int disabled = terminals.disablePrincipalsFor(terminalId);
         audit.record(actor, "terminal.revoke", "terminal", terminalId,
-                revoked ? "allow" : "deny", revoked ? null : "NOT_FOUND", reason, Map.of());
+                revoked ? "allow" : "deny", revoked ? null : "NOT_FOUND", reason,
+                Map.of("disabledPrincipals", String.valueOf(disabled)));
         if (!revoked) {
             throw new IllegalArgumentException("no such terminal: " + terminalId);
         }

@@ -1,64 +1,153 @@
 # 01-部署手册（Windows/Linux/macOS 安装、绑定、吊销）
 
+> 本手册描述的是**两个**产物：
+>
+> * `harness/harness-terminal`（Java）—— **设备外壳**：设备身份、绑定码、心跳、本地拒绝策略；
+> * `harness-terminal/`（Rust）—— **终端智能体**：收集上下文、动手、验证、循环；技能与 MCP 插件。
+>
+> 两者的边界：外壳决定"这台机器是谁、能做什么"，智能体决定"先做什么、后做什么"。
+> 每次工具调用都要过外壳那一份策略——智能体不是权限主体。
+> 见 `document/harness/06-验收报告.md`。
+
+## 产物
+
+```bash
+# 设备外壳
+cd harness
+mvn -B -pl harness-terminal -am package
+# 产物：harness-terminal/target/harness-terminal-0.1.0-SNAPSHOT.jar（包含 protocol，自包含）
+
+# 终端智能体
+cd ../harness-terminal
+cargo build --release
+# 产物：target/release/harness-agent（单二进制，约 7 MB）
+```
+
 ## 安装
 
-### Windows
-1. 下载 `harness-terminal-windows-x64.zip` 并解压
-2. 运行 `harness-terminal.exe --install` 安装为系统服务
-3. 使用管理员权限启动服务
+安装分两步：**写下配置和设备身份**，**把机器交给平台**。终端不需要 portal 密码，也不会
+连 portal 的数据库——它只有 HMAC 服务账号（ADR-004）。
 
-### Linux
+### Windows / Linux / macOS（同一套命令）
+
 ```bash
-# 安装依赖
-sudo apt-get install -y openjdk-17-jdk
+# 1) 生成配置与设备身份（设备密钥只写一次，权限 0600）
+java -jar harness-terminal.jar install https://harness.example.com agent:leon:sales:sh001
 
-# 下载并解压
-wget https://example.com/harness-terminal-linux-x64.tar.gz
-tar -xzf harness-terminal-linux-x64.tar.gz
-cd harness-terminal-linux-x64
+# 2) 向平台报到，拿一次性绑定码（有效期 10 分钟，03 §3.5）
+java -jar harness-terminal.jar hello
 
-# 运行安装 wizard
-./harness-terminal --install
+# 3) 管理员在管理台输入绑定码，选择绑定到 leon / 某个自然人
+#    （绑定这一步必须由自然人完成，终端自己不能绑定自己）
+
+# 4) 兑换绑定码
+java -jar harness-terminal.jar bind <绑定码>
+
+# 5) 验证
+java -jar harness-terminal.jar status
 ```
 
-### macOS
+### 常驻运行
+
 ```bash
-brew install --cask harness-terminal
-# 或手动安装
-tar -xzf harness-terminal-macos-x64.tar.gz
-cd harness-terminal-macos-x64
-./harness-terminal --install
+# Linux: systemd
+sudo tee /etc/systemd/system/harness-terminal.service <<'UNIT'
+[Unit]
+Description=Harness digital employee terminal
+After=network-online.target
+
+[Service]
+Type=simple
+User=harness
+ExecStart=/usr/bin/java -jar /opt/harness/harness-terminal.jar run
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+sudo systemctl daemon-reload && sudo systemctl enable --now harness-terminal
 ```
+
+Windows 用 nssm / WinSW 注册为服务，macOS 用 launchd。三者执行的命令完全一样。
 
 ## 绑定
 
-### 获取绑定码
-```bash
-harness-terminal --gen-code
-```
+| 步骤 | 命令 | 说明 |
+|---|---|---|
+| 平台发码 | `harness-terminal hello` | 终端向 `POST /api/harness/terminal/hello` 报到，平台返回 `bindingCode`（TTL 10 分钟） |
+| 人工绑定 | 管理台 | 自然人在管理台输入绑定码并选择绑定目标；**这一步不能由终端自己完成** |
+| 兑换 | `harness-terminal bind <code>` | 终端调用 `POST /api/harness/terminal/bind`，绑定成功后能力集下发到本地 |
 
-### 执行绑定
-```bash
-harness-terminal --bind-code <code_hash>
-# 或在管理平台输入绑定码
-```
-
-### 验证绑定状态
-```bash
-harness-terminal --status
-```
+绑定码是一次性的、10 分钟过期的（03 §3.5），过期后重新 `hello` 即可。
 
 ## 吊销
 
-### 吊销终端绑定
 ```bash
-harness-terminal --revoke --terminal-id <terminal-id>
-# 或在管理平台操作
+# 人工吊销（推荐）：管理台点吊销，或
+java -jar harness-terminal.jar revoke <terminal-id>
+
+# 验证：平台在 30 秒内拒绝该设备的全部请求
+java -jar harness-terminal.jar heartbeat
+# 退出码 3，输出 "this terminal was revoked and has given up its capabilities"
 ```
 
-### 验证吊销生效
+吊销会同时失效两处（04 §2.2 A0-5）：
+
+1. 平台侧 `harness_terminal.status='revoked'`，**并且**该设备对应的 `harness_principal`
+   被置为 `disabled`——否则设备凭据仍能调用 API；
+2. 终端侧本地能力集立即清空（`LocalPolicy.revoke()`），此后任何命令都被拒绝，
+   不需要等平台再说一次。
+
+## 终端自己的拒绝规则
+
+即使平台或边缘层被攻破，终端也会拒绝这些动作（red-team R-01）：
+
+| 规则 | 拒绝码 |
+|---|---|
+| 没有授予过的能力 | `CAPABILITY_NOT_GRANTED` |
+| 命令要求的等级高于终端等级 | `AUTONOMY_TOO_LOW` |
+| 路径不在允许的根目录内（含 `..` 越界） | `PATH_OUTSIDE_ALLOWED_ROOTS` |
+| 破坏性命令没有人工审批令牌 | `APPROVAL_REQUIRED` |
+| 审批令牌过期 / 已用过 / 与本次命令不匹配 | `APPROVAL_EXPIRED` / `APPROVAL_ALREADY_USED` / `APPROVAL_SCOPE_MISMATCH` |
+| 终端已被吊销 | `TERMINAL_REVOKED` |
+
+## 终端智能体
+
 ```bash
-# 30秒内请求应被拒绝
-harness-terminal --execute
-# 或观察看板状态变为 offline
+# 看一眼它会看到什么：工作区、语言统计、技能
+harness-agent inspect --workspace /path/to/repo --skills ~/.harness/skills
+
+# 工具清单（模型看到的就是这个）
+harness-agent tools
+
+# 跑一个任务
+export HARNESS_MODEL_API_KEY=...
+harness-agent run "修复登录接口的空指针，并让测试通过" \
+    --workspace /path/to/repo \
+    --provider anthropic --model claude-sonnet-4-5 \
+    --autonomy 2 --allowed-root /path/to/repo \
+    --transcript /tmp/trace.jsonl
+
+# 不接模型，回放一段脚本（测循环本身用）
+harness-agent replay --script turns.json --workspace /path/to/repo
 ```
+
+**智能体受同一套治理约束**：每次工具调用先过本地策略——能力是否授予、自治等级是否够、
+路径是否在允许根目录内、破坏性操作是否有绑定到本次命令与路径的人工审批令牌。
+技能（`SKILL.md`）与 MCP server 是**插件**，能扩展能力，但**不能自授权限**。
+
+## 故障排查
+
+| 现象 | 检查 |
+|---|---|
+| `harness API namespace is disabled` | 平台侧 `HARNESS_BOOTSTRAP_SECRET` / `HARNESS_HUMAN_SECRET` 是否配置；终端 `terminal.properties` 的 `secret` 是否与平台一致 |
+| `BAD_SIGNATURE` | 两侧签名串是否一致：跑 `harness/tools/verify-portal-interop.sh` |
+| `NONCE_REPLAY` | 客户端重试时必须换 nonce |
+| `TERMINAL_REVOKED` | 终端已被吊销，需要重新 `hello` + `bind` |
+| 心跳正常但看板灰 | 看板状态是 `online/offline` 由 `last_heartbeat` 推导；15 分钟无心跳自动降为只读（`TERMINAL_OFFLINE`） |
+| 智能体报 `CAPABILITY_NOT_GRANTED` | 自治等级或能力集不足；调 `--autonomy` 或由平台下发能力 |
+| 智能体报 `PATH_OUTSIDE_ALLOWED_ROOTS` | `--allowed-root` 没覆盖要改的目录 |
+| 智能体报 `APPROVAL_REQUIRED` | 破坏性操作需要人工审批令牌；平台审批后下发 |
+| 智能体报 `APPROVAL_SCOPE_MISMATCH` | 审批令牌是给别的命令/路径的，必须重新审批 |

@@ -131,7 +131,10 @@
         <url-pattern>*.do</url-pattern>
         <url-pattern>*.jsp</url-pattern>
         <url-pattern>/struts/*</url-pattern>
-        
+        <!-- The harness API namespace is a normal Struts namespace; without this mapping
+             /api/harness/** never reaches the dispatcher and every call is a 404. -->
+        <url-pattern>/api/harness/*</url-pattern>
+
     </filter-mapping>
 	
 	<!-- 验证码配置 -->

@@ -21,6 +21,7 @@
     <module>harness-protocol</module>
     <module>harness-policy</module>
     <module>harness-platform</module>
+    <module>harness-terminal</module>
     <module>harness-adapter-portal</module>
   </modules>
 

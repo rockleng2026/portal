@@ -114,6 +114,33 @@ public class TerminalRepository {
                 .update() == 1;
     }
 
+    /**
+     * Disables every principal that authenticates as this terminal.
+     *
+     * <p>A0-5 says a revoked terminal loses <em>all</em> capabilities within 30 seconds, not just
+     * its heartbeat. The device credential is a principal in {@code harness_principal}, so the
+     * revocation has to reach it - otherwise the device keeps its API access and only its
+     * heartbeat is refused.
+     */
+    public int disablePrincipalsFor(String terminalId) {
+        return jdbc.sql("""
+                        UPDATE harness_principal
+                           SET status = 'disabled'
+                         WHERE terminal_id = :id AND status = 'active'
+                        """)
+                .param("id", terminalId)
+                .update();
+    }
+
+    /** The terminal's current status, or {@code null} when the device is unknown. */
+    public String statusOf(String terminalId) {
+        return jdbc.sql("SELECT status FROM harness_terminal WHERE terminal_id = :id")
+                .param("id", terminalId)
+                .query(String.class)
+                .optional()
+                .orElse(null);
+    }
+
     public int markStaleOffline(Instant cutoff) {
         return jdbc.sql("UPDATE harness_terminal SET status = 'offline' "
                         + "WHERE status = 'online' AND (last_heartbeat IS NULL OR last_heartbeat < :cutoff)")

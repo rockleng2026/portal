@@ -33,6 +33,12 @@ public final class CapabilityToken {
     private static final Base64.Decoder B64D = Base64.getUrlDecoder();
     private static final String SIG_ALGORITHM = "Ed25519";
 
+    /** 03 §5: a capability token lives at most 24 hours. */
+    public static final long MAX_TTL_SECONDS = 24 * 60 * 60L;
+
+    /** 03 §5: a federation token lives at most 1 hour. */
+    public static final long FEDERATION_MAX_TTL_SECONDS = 60 * 60L;
+
     private final Claims claims;
     private final String signedPayload;
 
@@ -110,10 +116,28 @@ public final class CapabilityToken {
 
     // ------------------------------------------------------------------ minting
 
-    /** Mints and signs a token. The caller is responsible for TTL policy (03 §5: ≤24h, federation ≤1h). */
+    /**
+     * Mints and signs a token.
+     *
+     * <p>The TTL ceiling is enforced here, not left to the caller: 03 §5 says a capability token
+     * lives at most 24 hours, and a federation token at most 1 hour. A token that outlives its
+     * ceiling is refused rather than quietly shortened - the caller has to decide that.
+     *
+     * @throws TokenException when the claims are malformed or exceed the TTL ceiling
+     */
     public static CapabilityToken mint(PrivateKey signingKey, Claims claims) {
         Objects.requireNonNull(signingKey, "signingKey");
         Objects.requireNonNull(claims, "claims");
+        if (claims.exp() <= claims.iat()) {
+            throw new TokenException(TokenError.BAD_FORMAT,
+                    "exp must be after iat: exp=" + claims.exp() + " iat=" + claims.iat());
+        }
+        long ttl = claims.exp() - claims.iat();
+        long ceiling = federationAudience(claims.aud) ? FEDERATION_MAX_TTL_SECONDS : MAX_TTL_SECONDS;
+        if (ttl > ceiling) {
+            throw new TokenException(TokenError.TTL_TOO_LONG,
+                    "token ttl " + ttl + "s exceeds the " + ceiling + "s ceiling for audience " + claims.aud());
+        }
         String payload = B64.encodeToString(Json.canonicalBytes(claims.toMap()));
         byte[] raw = B64D.decode(payload);
         try {
@@ -125,6 +149,11 @@ public final class CapabilityToken {
         } catch (Exception e) {
             throw new IllegalStateException("cannot sign capability token", e);
         }
+    }
+
+    /** A federation audience is {@code fed:<peer_fed_id>}; its tokens live at most an hour. */
+    private static boolean federationAudience(String aud) {
+        return aud != null && aud.startsWith("fed:");
     }
 
     public String serialized() {
@@ -266,7 +295,8 @@ public final class CapabilityToken {
         CAP_NOT_GRANTED,
         SCOPE_NOT_INTERSECTED,
         APPROVAL_NOT_APPROVED,
-        APPROVAL_EXPIRED
+        APPROVAL_EXPIRED,
+        TTL_TOO_LONG
     }
 
     public record VerificationResult(boolean allowed, TokenError error, String detail, Claims claims) {

@@ -1,17 +1,30 @@
 package com.fuao.harness.platform.security;
 
-/** An authenticated caller, as resolved from a verified HMAC signature. */
+/**
+ * An authenticated caller, as resolved from a verified HMAC signature.
+ *
+ * @param principalType one of {@code human}, {@code service}, {@code agent}, {@code terminal},
+ *                      {@code system} - the type is authoritative, not a label
+ * @param role          what a human is allowed to approve: {@code employee},
+ *                      {@code dept_director}, {@code system_admin} (red-team R-02: the approver
+ *                      has to be the responsible person, not "anybody with a console")
+ * @param deptId        the department a human belongs to; a department director may only
+ *                      approve escalations that stay inside it
+ */
 public record AuthenticatedClient(
         String clientId,
         String principalType,
         String agentId,
         String terminalId,
         Integer employeeId,
-        String apiScope) {
+        String apiScope,
+        String role,
+        Integer deptId) {
 
     /** The platform acting on its own behalf (schedulers, policy engine, expiry jobs). */
     public static AuthenticatedClient system(String code) {
-        return new AuthenticatedClient("system:" + code, "system", null, null, null, "/api/harness/*");
+        return new AuthenticatedClient("system:" + code, "system", null, null, null, "/api/harness/*",
+                "system", null);
     }
 
     public boolean isTerminal() {
@@ -26,8 +39,26 @@ public record AuthenticatedClient(
         return "service".equals(principalType);
     }
 
+    /**
+     * Whether this caller is a natural human.
+     *
+     * <p>The type is the authority, not the presence of an employee id: every human-only
+     * endpoint (grant issue, approval decision, kill switch, agent lifecycle, terminal binding)
+     * gates on this, so a machine principal that merely happens to carry an {@code employee_id}
+     * must not be able to act as a person. Red-team R-02 / R-04 depend on it.
+     */
     public boolean isHuman() {
-        return employeeId != null;
+        return "human".equals(principalType) && employeeId != null;
+    }
+
+    /** Whether this human may approve escalations that reach beyond their own department. */
+    public boolean isSystemAdmin() {
+        return isHuman() && "system_admin".equals(role);
+    }
+
+    /** Whether this human is the director of {@code departmentId}. */
+    public boolean isDepartmentDirectorOf(Integer departmentId) {
+        return isHuman() && "dept_director".equals(role) && deptId != null && deptId.equals(departmentId);
     }
 
     /** Actor string used by {@code harness_audit.actor_id}: type prefixes are mandatory (03 §2.3). */

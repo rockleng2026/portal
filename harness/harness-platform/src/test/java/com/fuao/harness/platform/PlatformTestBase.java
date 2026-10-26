@@ -108,22 +108,41 @@ public abstract class PlatformTestBase {
                 body == null ? new byte[0] : body.getBytes(StandardCharsets.UTF_8)));
     }
 
-    /** Creates a service or console principal with a known secret. */
+    /** Creates a service, console or terminal principal with a known secret. */
     protected void createPrincipal(String clientId, String secret, String type, Integer employeeId) {
+        createPrincipal(clientId, secret, type, employeeId, "employee", null);
+    }
+
+    /**
+     * Creates a principal with a known secret.
+     *
+     * @param type  {@code service}, {@code human}, {@code agent} or {@code terminal}. The type is
+     *              what the "natural human" gate reads, so a human principal must say
+     *              {@code human}.
+     * @param role  what a human may approve: {@code employee}, {@code dept_director},
+     *              {@code system_admin}
+     */
+    protected void createPrincipal(String clientId, String secret, String type, Integer employeeId,
+                                   String role, Integer deptId) {
         jdbc.sql("""
                         INSERT INTO harness_principal
                           (principal_id, client_id, principal_type, secret_hash, employee_id, api_scope, status,
-                           created_by, created_at)
+                           role, dept_id, created_by, created_at)
                         VALUES (:id, :clientId, :type, :hash, :employeeId, '/api/harness/*', 'active',
-                                'system:test', NOW())
+                                :role, :deptId, 'system:test', NOW())
                         ON DUPLICATE KEY UPDATE secret_hash = VALUES(secret_hash),
-                                                employee_id = VALUES(employee_id)
+                                                employee_id = VALUES(employee_id),
+                                                principal_type = VALUES(principal_type),
+                                                role = VALUES(role),
+                                                dept_id = VALUES(dept_id)
                         """)
                 .param("id", "0198f500-0000-7000-8000-" + UUID.randomUUID().toString().substring(0, 12))
                 .param("clientId", clientId)
                 .param("type", type)
                 .param("hash", HmacSigner.deriveKey(secret))
                 .param("employeeId", employeeId)
+                .param("role", role)
+                .param("deptId", deptId)
                 .update();
     }
 

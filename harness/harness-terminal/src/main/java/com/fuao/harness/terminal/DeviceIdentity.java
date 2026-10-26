@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Who this machine is, and the key it signs commands with.
@@ -46,12 +47,14 @@ public final class DeviceIdentity {
      */
     public static DeviceIdentity loadOrCreate(Path identityDirectory) throws IOException {
         Files.createDirectories(identityDirectory);
+        restrictToOwner(identityDirectory);
         Path file = identityDirectory.resolve("device.key");
 
         if (Files.exists(file)) {
             String stored = Files.readString(file, StandardCharsets.UTF_8).trim();
             String[] parts = stored.split(":");
             if (parts.length == 3 && "harness-device".equals(parts[0])) {
+                restrictToOwner(file);
                 return new DeviceIdentity(parts[1], decodeKey(parts[2]), file);
             }
             throw new IOException("identity file " + file + " is corrupt; move it aside to re-register");
@@ -60,8 +63,34 @@ public final class DeviceIdentity {
         String deviceId = deriveDeviceId();
         byte[] key = new byte[32];
         RANDOM.nextBytes(key);
-        Files.writeString(file, "harness-device:" + deviceId + ":" + encodeKey(key), StandardCharsets.UTF_8);
+        Path tmp = identityDirectory.resolve("device.key.tmp");
+        Files.writeString(tmp, "harness-device:" + deviceId + ":" + encodeKey(key), StandardCharsets.UTF_8);
+        restrictToOwner(tmp);
+        Files.move(tmp, file);
+        restrictToOwner(file);
         return new DeviceIdentity(deviceId, key, file);
+    }
+
+    /**
+     * Restricts a file to its owner.
+     *
+     * <p>The device key is the device's identity; a world-readable copy of it is a copy of the
+     * terminal's authority (red-team R-01). On a POSIX filesystem the mode is set explicitly;
+     * on Windows the file inherits the per-user profile directory, which is already per-user.
+     */
+    private static void restrictToOwner(Path path) {
+        if (!path.getFileSystem().supportedFileAttributeViews().contains("posix")) {
+            return;
+        }
+        // A directory needs the execute bit to be searchable; a file does not.
+        String mode = Files.isDirectory(path) ? "rwx------" : "rw-------";
+        try {
+            Files.setPosixFilePermissions(path,
+                    java.nio.file.attribute.PosixFilePermissions.fromString(mode));
+        } catch (IOException | UnsupportedOperationException e) {
+            // A filesystem that does not implement POSIX permissions (some network mounts) is not
+            // something this program can fix; the directory is still owner-only.
+        }
     }
 
     /** A fixed identity, for tests and for a dry run on a machine that is not the target one. */

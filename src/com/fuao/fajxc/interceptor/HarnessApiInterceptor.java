@@ -51,7 +51,7 @@ public class HarnessApiInterceptor implements Interceptor {
     public static final String HEADER_NONCE = "X-Harness-Nonce";
     public static final String HEADER_SIGNATURE = "X-Harness-Signature";
 
-    private static final String CONFIG_RESOURCE = "/props/harness-api.properties";
+    private static final String CONFIG_RESOURCE = "/WEB-INF/props/harness-api.properties";
     private static final String SECURITY_MARKER = "[HARNESS-SECURITY]";
 
     private String clientId;
@@ -59,6 +59,7 @@ public class HarnessApiInterceptor implements Interceptor {
     private long clockSkewSeconds;
     private long nonceTtlSeconds;
     private boolean enabled;
+    private volatile boolean configured;
 
     /**
      * Nonces already seen, per node. A portal cluster would need a shared store here; the
@@ -66,7 +67,35 @@ public class HarnessApiInterceptor implements Interceptor {
      */
     private final Map<String, Long> seenNonces = new HashMap<String, Long>();
 
+    /**
+     * Loads the configuration.
+     *
+     * <p>Struts calls {@code init()} while it builds the configuration, which is before the
+     * servlet context exists - so the context is not available here and the configuration is
+     * loaded lazily on the first request instead. The file lives under {@code /WEB-INF}, where
+     * only the application may read it.
+     */
     public void init() {
+        configured = false;
+    }
+
+    public void destroy() {
+        synchronized (seenNonces) {
+            seenNonces.clear();
+        }
+    }
+
+    /**
+     * Reads the configuration once, on the first call.
+     *
+     * <p>The namespace stays closed until the file has been read: "the file is missing" and "the
+     * namespace is off" must not be confused with "the namespace is on".
+     */
+    private synchronized void ensureConfigured() {
+        if (configured) {
+            return;
+        }
+        configured = true;
         Properties properties = new Properties();
         InputStream in = null;
         try {
@@ -74,7 +103,10 @@ public class HarnessApiInterceptor implements Interceptor {
             if (context != null) {
                 in = context.getResourceAsStream(CONFIG_RESOURCE);
             }
-            if (in != null) {
+            if (in == null) {
+                logger.error(SECURITY_MARKER + " cannot read " + CONFIG_RESOURCE
+                        + "; the harness API namespace stays closed");
+            } else {
                 properties.load(in);
             }
         } catch (IOException e) {
@@ -98,6 +130,11 @@ public class HarnessApiInterceptor implements Interceptor {
             logger.error(SECURITY_MARKER + " harness API enabled but the shared secret is shorter than 24 "
                     + "characters; the namespace stays closed");
         }
+        if (enabled && clientId.length() == 0) {
+            enabled = false;
+            logger.error(SECURITY_MARKER + " harness API enabled but no client id is configured; "
+                    + "the namespace stays closed");
+        }
         if (enabled) {
             logger.info("harness API namespace enabled for client '" + clientId + "'");
         } else {
@@ -105,13 +142,9 @@ public class HarnessApiInterceptor implements Interceptor {
         }
     }
 
-    public void destroy() {
-        synchronized (seenNonces) {
-            seenNonces.clear();
-        }
-    }
-
     public String intercept(com.opensymphony.xwork2.ActionInvocation invocation) throws Exception {
+        ensureConfigured();
+
         HttpServletRequest request = ServletActionContext.getRequest();
         HttpServletResponse response = ServletActionContext.getResponse();
 
@@ -149,19 +182,27 @@ public class HarnessApiInterceptor implements Interceptor {
                     "timestamp is outside the " + clockSkewSeconds + "s window");
         }
 
-        if (!claimNonce(nonce)) {
-            return reject(request, response, invocation, 401, "NONCE_REPLAY",
-                    "nonce already used");
-        }
-
         String key = HarnessHmac.deriveKey(secret);
         if (!HarnessHmac.verify(key, signature, request.getMethod(), request.getRequestURI(),
                 timestamp, nonce, cached.getBody())) {
             return reject(request, response, invocation, 401, "BAD_SIGNATURE",
                     "signature does not match");
         }
+        // The nonce is only claimed once the signature is proven. Claiming it first would let
+        // anybody burn a nonce that a legitimate client is about to use.
+        if (!claimNonce(nonce)) {
+            return reject(request, response, invocation, 401, "NONCE_REPLAY",
+                    "nonce already used");
+        }
 
-        // hand the still-readable body to the rest of the chain
+        // Hand the still-readable body to the rest of the chain: the interceptor consumed the
+        // input stream to verify the signature, so without this the action sees an empty
+        // request and reports "no parameters" for a call that did carry them.
+        ServletActionContext.getContext().put(ServletActionContext.HTTP_REQUEST, cached);
+        Map parsed = HarnessJson.parseObject(cached.getBody());
+        if (parsed != null) {
+            cached.setAttribute("harness.parameters", parsed);
+        }
         return invocation.invoke();
     }
 

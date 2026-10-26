@@ -24,7 +24,7 @@ public class KillSwitchRepository {
 
         public KillSwitchState.Switch toState() {
             return new KillSwitchState.Switch(
-                    KillSwitchState.Scope.valueOf(scope.toUpperCase(Locale.ROOT)),
+                    KillSwitchState.Scope.fromWire(scope),
                     scopeId,
                     KillSwitchState.Effect.valueOf(effect.toUpperCase(Locale.ROOT)));
         }
@@ -40,7 +40,7 @@ public class KillSwitchRepository {
                         SELECT scope, scope_id, effect FROM harness_killswitch WHERE active = 1
                         """)
                 .query((rs, i) -> new KillSwitchState.Switch(
-                        KillSwitchState.Scope.valueOf(rs.getString("scope").toUpperCase(Locale.ROOT)),
+                        KillSwitchState.Scope.fromWire(rs.getString("scope")),
                         rs.getString("scope_id"),
                         KillSwitchState.Effect.valueOf(rs.getString("effect").toUpperCase(Locale.ROOT))))
                 .list();

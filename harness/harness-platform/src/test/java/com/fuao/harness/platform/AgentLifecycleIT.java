@@ -22,7 +22,7 @@ class AgentLifecycleIT extends PlatformTestBase {
     @BeforeEach
     void principals() {
         createPrincipal(SERVICE_CLIENT, SERVICE_SECRET, "service", null);
-        createPrincipal(HUMAN_CLIENT, HUMAN_SECRET, "service", HUMAN_EMPLOYEE_ID);
+        createPrincipal(HUMAN_CLIENT, HUMAN_SECRET, "human", HUMAN_EMPLOYEE_ID, "system_admin", null);
     }
 
     private MockHttpServletRequestBuilder createRequest(Map<String, Object> payload) throws Exception {

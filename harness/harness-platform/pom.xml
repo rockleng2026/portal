@@ -54,6 +54,14 @@
       <artifactId>harness-protocol</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- The terminal signs requests with the same scheme; the interop test keeps the two
+         implementations from drifting apart (this has happened once already). -->
+    <dependency>
+      <groupId>com.fuao.harness</groupId>
+      <artifactId>harness-terminal</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>com.fuao.harness</groupId>
       <artifactId>harness-policy</artifactId>

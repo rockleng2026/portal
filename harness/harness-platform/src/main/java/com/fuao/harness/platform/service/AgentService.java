@@ -138,9 +138,15 @@ public class AgentService {
         AgentState from = AgentState.fromWire(current.status().wire());
 
         if (!isLegal(from, target)) {
+            audit.record(actor, "agent." + target.wire(), "agent", agentId, "deny", "ILLEGAL_TRANSITION",
+                    "illegal lifecycle transition " + from + " -> " + target,
+                    Map.of("from", from.wire(), "to", target.wire(), "agentKey", current.agentKey()));
             throw new IllegalStateException("illegal lifecycle transition " + from + " -> " + target);
         }
         if (target == AgentState.ACTIVE && current.portalEmployeeId() == null) {
+            audit.record(actor, "agent." + target.wire(), "agent", agentId, "deny", "PORTAL_IDENTITY_MISSING",
+                    "agent " + current.agentKey() + " has no portal employee id yet",
+                    Map.of("from", from.wire(), "to", target.wire(), "agentKey", current.agentKey()));
             throw new IllegalStateException("agent " + current.agentKey()
                     + " has no portal employee id yet; onboarding must finish before it can take work (01 §5.1)");
         }
@@ -148,6 +154,9 @@ public class AgentService {
         int updated = agents.updateStatus(agentId, current.status(),
                 AgentRecord.AgentStatus.valueOf(target.name()));
         if (updated == 0) {
+            audit.record(actor, "agent." + target.wire(), "agent", agentId, "deny", "CONCURRENT_MODIFICATION",
+                    "agent " + agentId + " changed state concurrently",
+                    Map.of("from", from.wire(), "to", target.wire()));
             throw new ConcurrentModificationException("agent " + agentId + " changed state concurrently");
         }
 

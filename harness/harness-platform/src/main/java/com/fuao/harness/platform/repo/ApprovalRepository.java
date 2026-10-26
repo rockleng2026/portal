@@ -94,6 +94,49 @@ public class ApprovalRepository {
                 .update();
     }
 
+    // ------------------------------------------------------------------ dual approval
+
+    /**
+     * Records one human signature on an escalation.
+     *
+     * <p>Dual approval (L4 / irreversible) needs every signature on its own row, because the
+     * approval itself may only become APPROVED once two <em>different</em> humans signed. A
+     * single {@code decided_by} column cannot hold that.
+     *
+     * @return {@code true} when this signature was new, {@code false} when the same person
+     *         signed again
+     */
+    public boolean recordSignoff(String approvalId, int employeeId, Instant at, String note) {
+        return jdbc.sql("""
+                        INSERT INTO harness_approval_signoff
+                          (signoff_id, approval_id, employee_id, decided_at, note, created_at)
+                        VALUES (:id, :approvalId, :employeeId, :at, :note, NOW())
+                        ON DUPLICATE KEY UPDATE note = VALUES(note)
+                        """)
+                .param("id", com.fuao.harness.protocol.Ids.newId())
+                .param("approvalId", approvalId)
+                .param("employeeId", employeeId)
+                .param("at", Timestamp.from(at))
+                .param("note", note)
+                .update() == 1;
+    }
+
+    /** How many different humans signed this escalation. */
+    public int distinctSignoffs(String approvalId) {
+        return jdbc.sql("SELECT COUNT(DISTINCT employee_id) FROM harness_approval_signoff WHERE approval_id = :id")
+                .param("id", approvalId)
+                .query(Integer.class)
+                .single();
+    }
+
+    /** The employee ids that signed this escalation. */
+    public List<Integer> signoffEmployeeIds(String approvalId) {
+        return jdbc.sql("SELECT DISTINCT employee_id FROM harness_approval_signoff WHERE approval_id = :id")
+                .param("id", approvalId)
+                .query(Integer.class)
+                .list();
+    }
+
     private static PolicyInputs.ApprovalRow map(java.sql.ResultSet rs) throws java.sql.SQLException {
         Object scopeObj = Json.parse(rs.getString("scope") == null ? "{}" : rs.getString("scope"));
         Scope scope = scopeObj instanceof java.util.Map<?, ?> m

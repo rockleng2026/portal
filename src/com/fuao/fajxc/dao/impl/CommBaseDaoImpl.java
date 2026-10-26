@@ -503,7 +503,7 @@ public class CommBaseDaoImpl extends HibernateDaoSupport implements CommBaseDao{
 		user.setLoginName(loginname);
 		
 		user.setPassword(password);
-		String hql="from Users where loginName=? and password=? and delflag=0";
+		String hql="from Users where loginName=? and password=? and delflag=0 and isAI=0";
 		Query query=this.getSession().createQuery(hql);
 		query.setParameter(0, user.getLoginName());
 		query.setParameter(1, user.getPassword());

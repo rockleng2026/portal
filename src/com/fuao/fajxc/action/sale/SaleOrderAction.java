@@ -771,7 +771,7 @@ public class SaleOrderAction implements ModelDriven, ServletRequestAware,
 			Cookies cook = new Cookies();
 			String loginName = cook.getCookie(request, "loginName");
 			String password = cook.getCookie(request, "password");
-			String selhql = " from Users where loginName = '"+loginName+"' and password = '"+password+"'";
+			String selhql = " from Users where loginName = '"+loginName+"' and password = '"+password+"' and isAI = 0";
 			System.out.println("hql : "+selhql);
 			List<Users> ulist = sobiz.getList(selhql);
 			System.out.println("size : "+ulist.size());
