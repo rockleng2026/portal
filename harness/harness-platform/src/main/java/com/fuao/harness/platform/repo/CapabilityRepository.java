@@ -120,6 +120,30 @@ public class CapabilityRepository {
                 .list();
     }
 
+    /**
+     * The capabilities an agent currently holds, as cap keys.
+     *
+     * <p>This is the answer to "what may this agent do right now", and it is what the terminal
+     * asks the platform for: the platform holds the grants, so the platform is the only place
+     * that can answer it. A revoked or expired grant disappears from the list by itself.
+     */
+    public List<String> activeCapKeysFor(String agentId) {
+        if (agentId == null || agentId.isBlank()) {
+            return List.of();
+        }
+        return jdbc.sql("""
+                        SELECT c.cap_key
+                          FROM harness_grant g
+                          JOIN harness_capability c ON c.cap_id = g.cap_id
+                         WHERE g.agent_id = :agentId AND g.status = 'active' AND g.expires_at > NOW()
+                           AND c.status = 'active'
+                         ORDER BY c.cap_key
+                        """)
+                .param("agentId", agentId)
+                .query(String.class)
+                .list();
+    }
+
     public void insertGrant(PolicyInputs.GrantRow grant) {
         jdbc.sql("""
                         INSERT INTO harness_grant

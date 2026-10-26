@@ -1,5 +1,6 @@
 package com.fuao.harness.platform;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,6 +54,48 @@ class TerminalAndKillSwitchIT extends PlatformTestBase {
                 .content(body);
         signAsHuman("POST", path, request, body);
         return request;
+    }
+
+    @Test
+    void theGrantTellsTheDeviceWhatItMayDo() throws Exception {
+        // The platform holds the grants, so the platform is the only place that can answer.
+        // The shell asks it and the agent on the same machine reads the answer.
+        String agentId = jdbc.sql("SELECT agent_id FROM harness_agent WHERE agent_key = :key")
+                .param("key", AGENT_KEY).query(String.class).single();
+        grant(agentId, "cap:portal.mission.complete", 93, 3600);
+
+        String code = hello("device-sha-grant");
+        MockHttpServletRequestBuilder bind = humanPost("/api/harness/terminal/bind",
+                Map.of("bindingCode", code, "agentKey", AGENT_KEY));
+        String bindResponse = mvc.perform(bind).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String terminalId = String.valueOf(parse(bindResponse).get("terminalId"));
+
+        MockHttpServletRequestBuilder request = get("/api/harness/terminal/" + terminalId + "/grant");
+        signAsService("GET", "/api/harness/terminal/" + terminalId + "/grant", request, "");
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.terminalId").value(terminalId))
+                .andExpect(jsonPath("$.agentId").value(agentId))
+                .andExpect(jsonPath("$.autonomyLevel").value("2"))
+                .andExpect(jsonPath("$.capabilities").isArray());
+    }
+
+    @Test
+    void aRevokedTerminalGetsNoGrantAtAll() throws Exception {
+        String code = hello("device-sha-revoked-grant");
+        MockHttpServletRequestBuilder bind = humanPost("/api/harness/terminal/bind",
+                Map.of("bindingCode", code, "agentKey", AGENT_KEY));
+        String bindResponse = mvc.perform(bind).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String terminalId = String.valueOf(parse(bindResponse).get("terminalId"));
+
+        mvc.perform(humanPost("/api/harness/terminal/" + terminalId + "/revoke", Map.of("reason", "lost")))
+                .andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder request = get("/api/harness/terminal/" + terminalId + "/grant");
+        signAsService("GET", "/api/harness/terminal/" + terminalId + "/grant", request, "");
+        mvc.perform(request).andExpect(status().isGone());
     }
 
     @Test

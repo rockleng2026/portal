@@ -146,9 +146,7 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 
 ## 下一批（建议顺序）
 
-1. **把智能体接上设备外壳**（验收报告 §6 待决 1）：外壳用 HMAC 取回该终端的能力集，
-   智能体读同一份授权——目前两端各有一份 `LocalPolicy`，中间没有接线。
-2. **时间解析接入同步流程**（A0-8 / T-14）：`PortalTimeParser` 写好了但没有调用方，
+1. **时间解析接入同步流程**（A0-8 / T-14）：`PortalTimeParser` 写好了但没有调用方，
    `scheduleplan.begintime` / `new_task.begintime` 的脏数据目前不会进 `harness_dirty_queue`。
 3. **A0-3 自动比对**：适配层的权限解析结果 vs portal 侧 `permission/snapshot` 的自动比对。
 4. **终端执行器**：本地策略与审批验签已就位，但还没有真正执行 `fs.read` / `fs.write` /
@@ -164,8 +162,11 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 > 本轮按"终端智能体"重写了。见 `document/harness/06-验收报告.md` §4.2。
 >
 > 与 `harness/harness-terminal`（Java 设备外壳）的分工：外壳管身份与心跳，智能体管干活；
-> **每次工具调用都要过外壳那一份策略**——智能体不是权限主体。
-> 两者目前各有一份 `LocalPolicy` 实现（Java / Rust），尚未接线成同一份能力集。
+> **每次工具调用都要过策略**——智能体不是权限主体。
+>
+> **授权已经接线**（一个权威、两处执行）：
+> 平台 `harness_grant` ──HMAC──▶ 外壳取回 ──写 `~/.harness/terminal/grant.json`（0600）──▶ 智能体读同一份文件。
+> 文件里没有审批令牌——审批是给单条命令签的，跟着命令走。
 
 ## 文档侧待办
 

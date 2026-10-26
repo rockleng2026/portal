@@ -28,16 +28,20 @@ public class TerminalService {
 
     private final TerminalRepository terminals;
     private final AgentRepository agents;
+    private final com.fuao.harness.platform.repo.CapabilityRepository capabilityRepo;
     private final BindingCodeStore codes;
     private final AuditService audit;
     private final AuthContext authContext;
     private final Duration heartbeatTimeout;
 
-    public TerminalService(TerminalRepository terminals, AgentRepository agents, BindingCodeStore codes,
+    public TerminalService(TerminalRepository terminals, AgentRepository agents,
+                           com.fuao.harness.platform.repo.CapabilityRepository capabilities,
+                           BindingCodeStore codes,
                            AuditService audit, AuthContext authContext,
                            com.fuao.harness.platform.config.HarnessProperties properties) {
         this.terminals = terminals;
         this.agents = agents;
+        this.capabilityRepo = capabilities;
         this.codes = codes;
         this.audit = audit;
         this.authContext = authContext;
@@ -171,6 +175,53 @@ public class TerminalService {
             throw new IllegalArgumentException("no such terminal: " + terminalId);
         }
         return terminals.findById(terminalId).orElseThrow();
+    }
+
+    /**
+     * What this terminal is allowed to do, according to the platform.
+     *
+     * <p>This is the answer to the question both runtimes on the machine ask: the shell (which
+     * registers and heartbeats) and the agent (which acts). The platform holds the grants, so
+     * the platform is the only place that can answer - there is no second copy of the authority
+     * to drift out of date (red-team R-01, 01 §5.2).
+     *
+     * <p>The grant carries capabilities and the autonomy level. It carries <b>no</b> approval
+     * tokens: an approval is signed for one command and travels with that command, so it is
+     * never handed out in advance.
+     */
+    public record TerminalGrant(String terminalId, String agentId, int autonomyLevel,
+                                 List<String> capabilities, List<Integer> deptIds,
+                                 Instant grantedAt, String source) {
+    }
+
+    /**
+     * The grant for a terminal.
+     *
+     * @throws RevokedTerminalException when the terminal was revoked - a revoked device gets
+     *         nothing, not even an empty grant
+     */
+    @Transactional
+    public TerminalGrant grant(String terminalId) {
+        PolicyInputs.TerminalRow row = terminals.findById(terminalId)
+                .orElseThrow(() -> new IllegalArgumentException("no such terminal: " + terminalId));
+        if ("revoked".equals(row.status())) {
+            throw new RevokedTerminalException(terminalId);
+        }
+        String agentId = row.agentId();
+        int autonomy = 0;
+        List<Integer> deptIds = List.of();
+        if (agentId != null && !agentId.isBlank()) {
+            AgentRecord agent = agents.findById(agentId).orElse(null);
+            if (agent != null) {
+                autonomy = agent.autonomyLevel();
+                if (agent.deptId() != null) {
+                    deptIds = List.of(agent.deptId());
+                }
+            }
+        }
+        List<String> capKeys = capabilityRepo.activeCapKeysFor(agentId);
+        return new TerminalGrant(terminalId, agentId, autonomy, capKeys, deptIds, Instant.now(),
+                "platform");
     }
 
     public List<PolicyInputs.TerminalRow> list(int limit) {

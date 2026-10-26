@@ -15,6 +15,29 @@
 | **扩展** | 技能（SKILL.md + scripts/）与 MCP（stdio JSON-RPC）都是插件：加一个目录或起一个 MCP server 就能接入新能力 |
 | **多模型** | Anthropic Messages API、OpenAI chat-completions，或 `scripted`（离线回放，用于测试） |
 
+## 授权从哪来：平台 → 外壳 → 智能体
+
+智能体的能力集**不是自己定的**：
+
+```
+平台 harness_grant ──HMAC──▶ Java 设备外壳 ──写 grant.json(0600)──▶ 本智能体
+   （唯一权威）              （取回 + 落地）              （读同一份文件并执行）
+```
+
+```bash
+# 外壳取回授权（一次性）
+java -jar harness-terminal.jar grant
+
+# 智能体带 --identity 启动 → 以 grant 为准；没有 grant 就什么都不能做
+harness-agent run "..." --workspace /path/to/repo --identity ~/.harness/terminal
+```
+
+不给 `--identity` 是"有人坐在机器前"的独立运行模式，命令行会明说
+`standalone: no platform grant, the command line decides`。
+
+授权文件里只有能力集、自治等级和允许的根目录，**没有审批令牌**——审批是给单条命令签的，
+跟着命令走，绝不预先分发。
+
 ## 和普通 coding agent 的区别：它受治理约束
 
 这是本项目最重要的一点。智能体**不是**权限主体：

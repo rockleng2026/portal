@@ -349,6 +349,19 @@ public class ConsoleController {
         return Map.of("terminalId", terminalId, "status", "revoked");
     }
 
+    @GetMapping("/terminal/{terminalId}/grant")
+    public Map<String, Object> grant(@PathVariable String terminalId) {
+        TerminalService.TerminalGrant grant = terminals.grant(terminalId);
+        return Map.of(
+                "terminalId", grant.terminalId(),
+                "agentId", grant.agentId() == null ? "" : grant.agentId(),
+                "autonomyLevel", String.valueOf(grant.autonomyLevel()),
+                "capabilities", grant.capabilities(),
+                "deptIds", grant.deptIds(),
+                "grantedAt", grant.grantedAt().toString(),
+                "source", grant.source());
+    }
+
     @GetMapping("/terminal")
     public List<PolicyInputs.TerminalRow> terminals(@RequestParam(defaultValue = "200") int limit) {
         return terminals.list(limit);

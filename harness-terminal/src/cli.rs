@@ -7,6 +7,7 @@
 use crate::agent::{Agent, AgentConfig, AgentEvent, TaskOutcome};
 use crate::model::{AnthropicModel, Message, Model, OpenAiModel, ScriptedModel, Turn};
 use crate::policy::{AutonomyLevel, LocalPolicy};
+use crate::grant;
 use crate::skills::SkillLibrary;
 use crate::tools::{ToolRegistry, ToolResult};
 use crate::workspace::Workspace;
@@ -71,6 +72,9 @@ struct RunArgs {
     /// The directory with the skills.
     #[arg(long)]
     skills: Option<PathBuf>,
+    /// The directory with the device identity; the grant is read from here.
+    #[arg(long)]
+    identity: Option<PathBuf>,
     /// Write the transcript as JSON lines to this file.
     #[arg(long)]
     transcript: Option<PathBuf>,
@@ -94,6 +98,12 @@ struct ReplayArgs {
     /// The workspace root.
     #[arg(long, default_value = ".")]
     workspace: PathBuf,
+    /// The directory with the device identity; the grant is read from here.
+    #[arg(long)]
+    identity: Option<PathBuf>,
+    /// Write the transcript as JSON lines to this file.
+    #[arg(long)]
+    transcript: Option<PathBuf>,
 }
 
 /// The entry point. The binary calls this; it is async because the model and the tools are.
@@ -122,41 +132,78 @@ pub async fn main() -> Result<()> {
     result
 }
 
+/// The capabilities an agent has when it runs standalone, without a platform.
+const STANDALONE_CAPABILITIES: &[&str] = &[
+    "cap:fs.read",
+    "cap:fs.write",
+    "cap:fs.delete",
+    "cap:shell.exec",
+    "cap:git.read",
+    "cap:git.commit",
+];
+
 /// Builds the workspace, the tools and the policy.
+///
+/// The authority is the platform. When an identity directory is given, the grant the shell
+/// fetched is the policy - capabilities, level and roots all come from it, and without a grant
+/// the agent may do nothing. Without an identity directory the agent runs standalone with the
+/// capabilities below, which is the "somebody is sitting in front of it" case, not the
+/// "digital employee" case.
 fn build_environment(
     workspace_root: &PathBuf,
     autonomy: u8,
     allowed_roots: &[PathBuf],
-) -> Result<(Arc<Workspace>, ToolRegistry, Arc<LocalPolicy>)> {
-    let mut workspace = Workspace::new(workspace_root)?;
+    identity: Option<&PathBuf>,
+) -> Result<(Arc<Workspace>, ToolRegistry, Arc<LocalPolicy>, String)> {
+    let workspace = Workspace::new(workspace_root)?;
     let roots: Vec<PathBuf> = if allowed_roots.is_empty() {
         vec![workspace.root().to_path_buf()]
     } else {
         allowed_roots.to_vec()
     };
-    let policy = LocalPolicy::new(
-        AutonomyLevel::from_u8(autonomy),
-        vec![
-            "cap:fs.read".to_string(),
-            "cap:fs.write".to_string(),
-            "cap:fs.delete".to_string(),
-            "cap:shell.exec".to_string(),
-            "cap:git.read".to_string(),
-            "cap:git.commit".to_string(),
-        ],
-        roots,
-    );
+    let (policy, authority) = match identity {
+        Some(directory) => {
+            let (policy, grant) = grant::policy_for_machine(directory);
+            match grant {
+                Some(grant) => (
+                    policy,
+                    format!(
+                        "platform grant for terminal {} (L{}, {} capabilities)",
+                        grant.terminal_id,
+                        grant.autonomy_level,
+                        grant.capabilities.len()
+                    ),
+                ),
+                None => (
+                    LocalPolicy::empty(),
+                    "no grant: this agent may do nothing until the shell fetches one".to_string(),
+                ),
+            }
+        }
+        None => (
+            LocalPolicy::new(
+                AutonomyLevel::from_u8(autonomy),
+                STANDALONE_CAPABILITIES.iter().map(|c| c.to_string()),
+                roots,
+            ),
+            "standalone: no platform grant, the command line decides".to_string(),
+        ),
+    };
     let mut registry = ToolRegistry::new();
     crate::tools::fs_ops::register(&mut registry);
     crate::tools::exec::register(&mut registry);
-    let _ = &mut workspace;
-    Ok((Arc::new(workspace), registry, Arc::new(policy)))
+    Ok((Arc::new(workspace), registry, Arc::new(policy), authority))
 }
 
 /// Runs a task.
 async fn run(args: RunArgs) -> Result<()> {
-    let (workspace, tools, policy) =
-        build_environment(&args.workspace, args.autonomy, &args.allowed_root)?;
+    let (workspace, tools, policy, authority) = build_environment(
+        &args.workspace,
+        args.autonomy,
+        &args.allowed_root,
+        args.identity.as_ref(),
+    )?;
+    println!("authority: {authority}");
 
     let api_key = args
         .api_key
@@ -260,7 +307,13 @@ async fn replay(args: ReplayArgs) -> Result<()> {
         })
         .collect();
 
-    let (workspace, tools, policy) = build_environment(&args.workspace, 2, &[])?;
+    let (workspace, tools, policy, authority) = build_environment(
+        &args.workspace,
+        2,
+        &[],
+        args.identity.as_ref(),
+    )?;
+    println!("authority: {authority}");
     let mut agent = Agent::new(
         AgentConfig {
             task: "replay".to_string(),
@@ -279,7 +332,7 @@ async fn replay(args: ReplayArgs) -> Result<()> {
     };
     let outcome = agent.run(&tool_context).await?;
     let transcript = agent.transcript().to_vec();
-    report(&outcome, &transcript, None)?;
+    report(&outcome, &transcript, args.transcript.as_deref())?;
     Ok(())
 }
 

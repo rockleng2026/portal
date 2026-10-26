@@ -103,6 +103,19 @@ public final class TerminalMain {
                 runtime.run();
                 return runtime.isRevoked() ? 3 : 0;
             }
+            case "grant" -> {
+                TerminalConfig config = TerminalConfig.load(configFile);
+                TerminalRuntime runtime = runtime(config);
+                TerminalGrant grant = runtime.refreshGrant();
+                System.out.println("grant written to "
+                        + TerminalGrant.fileOf(config.identityDirectory()));
+                System.out.println("  terminalId: " + grant.terminalId());
+                System.out.println("  agentId: " + grant.agentId());
+                System.out.println("  autonomyLevel: " + grant.autonomyLevel());
+                System.out.println("  capabilities: " + String.join(", ", grant.capabilities()));
+                System.out.println("  allowedRoots: " + String.join(", ", grant.allowedRoots()));
+                return 0;
+            }
             case "revoke" -> {
                 TerminalConfig config = TerminalConfig.load(configFile);
                 DeviceIdentity identity = TerminalRuntime.identityOf(config);
@@ -179,6 +192,7 @@ public final class TerminalMain {
         System.out.println("  hello                             register the device and ask for a binding code");
         System.out.println("  bind <binding-code>               redeem a binding code a human entered in the console");
         System.out.println("  heartbeat                         send one heartbeat");
+        System.out.println("  grant                             fetch the platform's grant and write it for the agent");
         System.out.println("  run                               heartbeat until the terminal is revoked");
         System.out.println("  revoke [terminal-id]              ask the platform to revoke this terminal");
     }

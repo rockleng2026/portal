@@ -117,6 +117,32 @@ public final class TerminalRuntime {
         revoke();
     }
 
+    /**
+     * Fetches the grant from the platform and writes it where the agent can read it.
+     *
+     * <p>This is the handover between the two runtimes on this machine: the shell asks the
+     * platform (the only authority) and the agent reads the answer. Both enforce it locally, so
+     * a compromised edge still cannot widen it.
+     */
+    public TerminalGrant refreshGrant() throws IOException, InterruptedException {
+        if (terminalId.isBlank()) {
+            throw new IllegalStateException("this terminal has no id yet; run 'hello' first");
+        }
+        Map<String, Object> platformGrant = platform.grant(terminalId);
+        TerminalGrant grant = TerminalGrant.from(platformGrant, config.allowedRoots());
+        grant.save(TerminalGrant.fileOf(config.identityDirectory()));
+        return grant;
+    }
+
+    /** The grant that was fetched last, if any. */
+    public TerminalGrant grant() {
+        try {
+            return TerminalGrant.read(TerminalGrant.fileOf(config.identityDirectory()));
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     /** The device as the platform sees it. */
     public Map<String, Object> describe() {
         Map<String, Object> out = new LinkedHashMap<>();

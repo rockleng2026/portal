@@ -133,6 +133,43 @@ public final class PlatformClient {
         post("/api/harness/terminal/" + terminalId + "/revoke", Map.of("reason", reason == null ? "" : reason));
     }
 
+    /**
+     * Asks the platform what this terminal may do.
+     *
+     * <p>The platform holds the grants, so the platform is the only place that can answer.
+     * The shell fetches the answer and hands it to the agent that runs on the same machine -
+     * there is no second copy of the authority to drift.
+     */
+    public Map<String, Object> grant(String terminalId) throws IOException, InterruptedException {
+        String path = "/api/harness/terminal/" + terminalId + "/grant";
+        String timestamp = String.valueOf(Instant.now().getEpochSecond());
+        String nonce = UUID.randomUUID().toString();
+        HttpRequest request = HttpRequest.newBuilder(baseUri.resolve(path))
+                .header(HEADER_CLIENT, clientId)
+                .header(HEADER_TIMESTAMP, timestamp)
+                .header(HEADER_NONCE, nonce)
+                .header(HEADER_SIGNATURE, sign(hmacKey, "GET", path, timestamp, nonce, null))
+                .timeout(timeout)
+                .GET()
+                .build();
+        HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 403 || response.statusCode() == 410) {
+            throw new IOException("the platform refused the grant for terminal " + terminalId
+                    + " (HTTP " + response.statusCode() + "): the device is revoked or disabled");
+        }
+        if (response.statusCode() / 100 != 2) {
+            throw new IOException("the platform refused the grant for terminal " + terminalId
+                    + ": HTTP " + response.statusCode() + " " + response.body());
+        }
+        Object parsed = Json.parse(response.body());
+        if (parsed instanceof Map<?, ?> m) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> typed = (Map<String, Object>) m;
+            return typed;
+        }
+        return Map.of();
+    }
+
     private Map<String, Object> post(String path, Map<String, Object> payload)
             throws IOException, InterruptedException {
         byte[] body = Json.canonicalBytes(payload);

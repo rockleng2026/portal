@@ -43,9 +43,16 @@ java -jar harness-terminal.jar hello
 # 4) 兑换绑定码
 java -jar harness-terminal.jar bind <绑定码>
 
-# 5) 验证
+# 5) 取回授权（平台 → 外壳 → 智能体，三方共用同一份能力集）
+java -jar harness-terminal.jar grant
+
+# 6) 验证
 java -jar harness-terminal.jar status
 ```
+
+授权文件在 `~/.harness/terminal/grant.json`（权限 0600），**智能体读的就是这一份**。
+里面只有能力集、自治等级和允许的根目录，**没有审批令牌**——审批是给单条命令签的，
+跟着命令走，不会预先分发。没有这份文件时，智能体什么都不能做。
 
 ### 常驻运行
 
