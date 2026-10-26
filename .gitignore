@@ -19,3 +19,5 @@ grails-app/conf/application*.yml
 .project.bak
 .springBeans
 bin/
+# Rust build output
+harness-terminal/target/
