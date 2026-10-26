@@ -17,14 +17,14 @@ import com.fuao.fajxc.vo.Workposition;
 import com.fuao.fajxc.vo.WorkpositionEmployee;
 
 /**
- * @author ²ÌÑÇ¿¡
+ * @author ï¿½ï¿½ï¿½Ç¿ï¿½
  *
  * 2011-7-20
  */
 public class MenuInterceptorImpl extends HibernateDaoSupport implements MenuInterceptorDao {
 
 	/**
-	 * ¸ù¾ÝÓÃ»§ÃûºÍÃÜÂë£¬»ñµÃ¸ÃÓÃ»§¶ÔÏó
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½Ã¸ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * @param loginname
 	 * @param password
 	 * @return
@@ -36,7 +36,7 @@ public class MenuInterceptorImpl extends HibernateDaoSupport implements MenuInte
 		user.setLoginName(loginname);
 		
 		user.setPassword(password);
-		String hql="from Users where loginName=? and password=? and delflag=0";
+		String hql="from Users where loginName=? and password=? and delflag=0 and isAI=0";
 		Query query=this.getSession().createQuery(hql);
 		query.setParameter(0, user.getLoginName());
 		query.setParameter(1, user.getPassword());
@@ -53,7 +53,7 @@ public class MenuInterceptorImpl extends HibernateDaoSupport implements MenuInte
 	}
 	
 	/**
-	 * ¸ù¾ÝÓÃ»§id²éÑ¯¸ÃÓÃ»§ÊÇ·ñ´æÔÚ·ÃÎÊÈ¨ÏÞ
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½idï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½È¨ï¿½ï¿½
 	 * @param userid
 	 * @return
 	 */
@@ -81,7 +81,7 @@ public class MenuInterceptorImpl extends HibernateDaoSupport implements MenuInte
 	}
 	
 	/**
-	 * »ñÈ¡¶ÔÏóÁÐ±í
+	 * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
 	 * @param tableName
 	 * @param andhql
 	 * @return
@@ -95,7 +95,7 @@ public class MenuInterceptorImpl extends HibernateDaoSupport implements MenuInte
 	}
 	
 	/************
-	 * ¸ù¾Ý²¿ÃÅ±àºÅÕÒµ½¸ÚÎ»
+	 * ï¿½ï¿½ï¿½Ý²ï¿½ï¿½Å±ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½Î»
 	 */
 	public List<Workposition> positionList(int deptid){
 		List<Workposition> wpolist=new ArrayList<Workposition>();
@@ -113,7 +113,7 @@ public class MenuInterceptorImpl extends HibernateDaoSupport implements MenuInte
 	}
 	
 	/*********
-	 * µÃµ½µ±Ç°µÇÂ¼ÈË
+	 * ï¿½Ãµï¿½ï¿½ï¿½Ç°ï¿½ï¿½Â¼ï¿½ï¿½
 	 */
 	public Employee getObj(String loginname){
 		String hql="from Employee where empNo='"+loginname+"'";

@@ -55,7 +55,11 @@
         <property name="status" type="java.lang.Integer">
             <column name="status" />
         </property>
-        <property name="delflag" type="java.lang.String">
+        <property name="isAI" type="java.lang.Integer">
+    <column name="isAI"/>
+    </property>
+
+    <property name="delflag" type="java.lang.String">
             <column name="delflag" length="50" />
         </property>
         <set name="roleFunctionInfos" inverse="true">

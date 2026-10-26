@@ -1,0 +1,29 @@
+[package]
+name = "harness-terminal"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Async runtime - Tokio (业界标准)
+tokio = { version = "1.38", features = ["full"] }
+
+# mTLS - rustls (原生、零 C 依赖、内存安全)
+rustls = "0.23"
+webpki-roots = "0.23"
+
+# JSON + serialization - serde (必备)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# 编码 - base64 (绑定码生成)
+base64 = "0.21"
+
+# 时间处理 - chrono (心跳/TTL/过期)
+chrono = { version = "0.4", features = ["serde"] ]
+
+# 终端界面 - clap (CLI 参数)
+clap = { version = "4.5", features = ["derive"] }
+
+# 结构化日志 - tracing (便于观测)
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

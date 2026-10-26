@@ -28,6 +28,12 @@ public class Users implements java.io.Serializable {
 	private String lastIpPart;
 	private Integer status;
 	private String delflag;
+	/**
+	 * 1 = the account belongs to a digital employee. Such accounts must never be able to log in
+	 * to the portal: the platform authenticates them with HMAC instead (A0-2, ADR-004).
+	 * See WebRoot/WEB-INF/props/harness-api.properties and HarnessAccountDao.isAiAccount.
+	 */
+	private Integer isAI;
 	private Set roleFunctionInfos = new HashSet(0);
 	private Set userGroupInfos = new HashSet(0);
 	MD5 test = new MD5();
@@ -197,6 +203,12 @@ public class Users implements java.io.Serializable {
 		return this.delflag;
 	}
 
+	public Integer getIsAI() {
+		return isAI;
+	}
+	public void setIsAI(Integer isAI) {
+		this.isAI = isAI;
+	}
 	public void setDelflag(String delflag) {
 		this.delflag = delflag;
 	}

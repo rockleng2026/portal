@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Harness API namespace (/api/harness/**).
+
+  A separate package with its own namespace and its own interceptor stack. The portal's normal
+  packages use LoginInterceptor, which identifies a human by a reversible cookie password and
+  resolves authority by scraping the request URL (01 §2.1 conclusion B). A digital employee must
+  not travel on that machinery, so this namespace never touches the cookie session: it speaks
+  HMAC service-account authentication (03 §9) and nothing else (ADR-004).
+
+  The action names keep their slashes: Struts matches the whole name after the namespace, so
+  "permission/snapshot" answers POST /api/harness/permission/snapshot.
+-->
+<struts>
+	<package name="harness-api" extends="json-default" namespace="/api/harness">
+
+		<interceptors>
+			<interceptor name="harnessAuth" class="com.fuao.fajxc.interceptor.HarnessApiInterceptor"/>
+			<interceptor name="defaultStack" class="org.apache.struts2.interceptor.DefaultStack"/>
+		</interceptors>
+
+		<action name="health" class="HarnessApiAction" method="health">
+			<result name="success" type="json">
+				<param name="root">payload</param>
+			</result>
+			<result name="harnessRejected" type="json">
+				<param name="root">error</param>
+			</result>
+		</action>
+
+		<action name="permission/snapshot" class="HarnessApiAction" method="permissionSnapshot">
+			<result name="success" type="json">
+				<param name="root">payload</param>
+			</result>
+			<result name="harnessRejected" type="json">
+				<param name="root">error</param>
+			</result>
+		</action>
+
+		<action name="agent/onboard" class="HarnessApiAction" method="onboard">
+			<result name="success" type="json">
+				<param name="root">payload</param>
+			</result>
+			<result name="harnessRejected" type="json">
+				<param name="root">error</param>
+			</result>
+		</action>
+
+	</package>
+</struts>

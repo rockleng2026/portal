@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
@@ -28,12 +29,32 @@ import com.fuao.fajxc.vo.VerifyOrder;
 
 public class LoginDaoImpl extends HibernateDaoSupport implements LoginDao {
 
+	private static Logger log = Logger.getLogger(LoginDaoImpl.class);
+
 	/*
 	 * ÓÃ»§µÇÂ¼(non-Javadoc)
 	 * @see com.fuao.fajxc.dao.LoginDao#UserLogin(java.lang.String, java.lang.String)
 	 */
 	public boolean UserLogin(Users users) {
 		boolean flag=true;
+		/*
+		 * A0-2: a digital employee must never be able to log in to the portal.
+		 *
+		 * The portal authenticates humans with a reversible password that is kept in a cookie,
+		 * and the platform authenticates digital employees with HMAC service accounts. The two
+		 * systems share no credential material on purpose (ADR-004). This check is the choke
+		 * point: every login path in the portal ends up here, so a new login screen cannot
+		 * accidentally leave the door open.
+		 *
+		 * The accounts carry a random sentinel password as well, so even if this check were
+		 * removed the account still could not authenticate - this is the second lock, not the
+		 * only one.
+		 */
+		if (isAiAccount(users.getLoginName())) {
+			log.warn("[HARNESS-SECURITY] refused portal login for digital employee account: "
+					+ users.getLoginName());
+			return false;
+		}
 		String hql="from Users where loginName=? and password=? and delflag=0";
 		Query query=this.getSession().createQuery(hql);
 		query.setParameter(0, users.getLoginName());
@@ -42,6 +63,33 @@ public class LoginDaoImpl extends HibernateDaoSupport implements LoginDao {
 		if(query.list().size()<1)
 			flag=false;
 		return flag;
+	}
+
+	/**
+	 * @return true when the login name belongs to a digital employee (users.isAI = 1)
+	 */
+	private boolean isAiAccount(String loginName) {
+		if (loginName == null || loginName.trim().length() == 0) {
+			return false;
+		}
+		try {
+			Query query = this.getSession().createQuery(
+					"select count(u) from Users u where u.loginName = ? and u.isAI = 1");
+			query.setParameter(0, loginName.trim());
+			List list = query.list();
+			if (list == null || list.isEmpty()) {
+				return false;
+			}
+			Object count = list.get(0);
+			return count instanceof Number && ((Number) count).intValue() > 0;
+		} catch (Exception e) {
+			// The users.isAI column is a new addition to this legacy schema. If it has not been
+			// applied yet the query fails and the safe answer is "not an AI account": the AI
+			// accounts hold a random sentinel password and therefore still cannot log in.
+			log.error("[HARNESS-SECURITY] isAI lookup failed, has the users.isAI column been "
+					+ "applied? " + e.getMessage());
+			return false;
+		}
 	}
 	
 	

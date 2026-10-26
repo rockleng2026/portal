@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.fuao.harness</groupId>
+    <artifactId>harness-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>harness-policy</artifactId>
+  <packaging>jar</packaging>
+  <name>harness :: policy (capability x scope x TTL)</name>
+  <description>
+    The governance core: autonomy levels (01 §5.3), the capability x scope x TTL decision
+    engine (01 §5.2), the approval state machine with a mandatory natural-human anchor
+    (02 R-02), the escalation router with a hard hop cap (02 R-06) and the automatic
+    degradation rules (01 §14.4). Pure logic, no I/O, no framework.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fuao.harness</groupId>
+      <artifactId>harness-protocol</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>

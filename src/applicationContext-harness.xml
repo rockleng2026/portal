@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+
+	<!--
+	  Beans for the harness API namespace. The context is picked up automatically: web.xml
+	  points the ContextLoaderListener at /WEB-INF/classes/applicationContext*.xml, so this file
+	  joins the existing set without touching web.xml.
+
+	  The DAO extends BaseDao, which is a HibernateDaoSupport: it inherits the sessionFactory of
+	  the existing baseDao bean, so the harness API reads and writes exactly the same database as
+	  the rest of the portal - no second datasource, no new connection pool.
+	-->
+	<bean id="harnessAccountDao" class="com.fuao.fajxc.dao.harness.HarnessAccountDao" parent="baseDao">
+	</bean>
+
+	<bean id="HarnessApiAction" class="com.fuao.fajxc.action.harness.HarnessApiAction">
+		<property name="harnessAccountDao" ref="harnessAccountDao"></property>
+	</bean>
+
+</beans>

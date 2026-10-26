@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: harness-adapter-portal
+  datasource:
+    # The harness library. The adapter writes the mirror tables and the dirty queue here.
+    url: ${HARNESS_DB_URL:jdbc:mysql://127.0.0.1:3306/harness?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true}
+    username: ${HARNESS_DB_USER:harness}
+    password: ${HARNESS_DB_PASSWORD:}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: non_null
+
+harness:
+  portal:
+    # The portal database. READ ONLY: the account must have INSERT/UPDATE/DELETE revoked.
+    datasource:
+      url: ${HARNESS_PORTAL_DB_URL:jdbc:mysql://127.0.0.1:3306/portal20160513?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true}
+      username: ${HARNESS_PORTAL_DB_USER:harness_ro}
+      password: ${HARNESS_PORTAL_DB_PASSWORD:}
+    sync-enabled: ${HARNESS_PORTAL_SYNC_ENABLED:false}
+    sync-interval-ms: ${HARNESS_PORTAL_SYNC_INTERVAL_MS:600000}
+    # The portal's own API, used for the permission snapshot comparison (A0-3).
+    api-base-url: ${HARNESS_PORTAL_API_URL:}
+    api-client-id: ${HARNESS_PORTAL_API_CLIENT:}
+    api-secret: ${HARNESS_PORTAL_API_SECRET:}
+    api-enabled: ${HARNESS_PORTAL_API_ENABLED:false}
+
+logging:
+  level:
+    com.fuao.harness: INFO

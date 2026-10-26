@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harness Core Brain Dashboard</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --error: #e74c3c;
+      --background: #f5f5f5;
+      --card: #ffffff;
+      --text: #333333;
+      --text-light: #777777;
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0; padding: 0; background: var(--background); color: var(--text);
+      line-height: 1.5;
+    }
+    
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem 1.5rem;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+    
+    .header .version {
+      float: right;
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+    
+    .content {
+      padding: 1.5rem;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    
+    .panel {
+      background: var(--card);
+      border: 1px solid #ddd;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+    }
+    
+    .panel h2 {
+      margin: 0 0 0.75rem 0;
+      color: var(--primary);
+      font-size: 0.875rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .card {
+      background: var(--card);
+      padding: 0.75rem;
+      border-radius: 3px;
+    }
+    
+    .card h3 {
+      margin: 0 0 0.5rem 0;
+      color: #555;
+      font-size: 0.75rem;
+    }
+    
+    .value {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--primary);
+      display: block;
+      margin: 0.25rem 0;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+    
+    .status-online { background: var(--success); }
+    .status-offline { background: var(--error); }
+    .status-warning { background: var(--warning); }
+    
+    .progress-bar {
+      width: 100%;
+      height: 0.5rem;
+      background: #eee;
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+    
+    .progress-bar div {
+      height: 100%;
+      width: 0%;
+      background: var(--secondary);
+      transition: width 0.3s ease;
+    }
+    
+    .progress-bar span {
+      float: right;
+      font-size: 0.75rem;
+      color: #666;
+      margin-right: 0.5rem;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    
+    th, td {
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 0.875rem;
+    }
+    
+    th {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .quick-action {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      margin: 0.25rem;
+    }
+    
+    .quick-action:hover {
+      background: #2980b9;
+    }
+    
+    .ability-level {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      background: #95a5a6;
+      color: white;
+      font-size: 0.75rem;
+      border-radius: 3px;
+      margin: 0.1rem;
+    }
+    
+    .mini-chart {
+      width: 60px;
+      height: 20px;
+      background: #eee;
+      margin: 0.25rem 0;
+    }
+    
+    .mini-chart div {
+      height: 100%;
+      float: left;
+    }
+    
+    .chart-green { background: var(--success); }
+    .chart-orange { background: var(--warning); }
+    .chart-red { background: var(--error); }
+    
+    .footer {
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #777;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Harness Core Brain Dashboard</h1>
+    <div class="version">v1.0 · Agent Framework</div>
+  </div>
+  
+  <div class="content">
+    <div class="grid">
+      <!-- 系统概览 -->
+      <div class="panel">
+        <h2>系统概览</h2>
+        <div class="grid" style="gap: 0.5rem;">
+          <div class="card"><div>总代理</div><div class="value" id="totalAgents">--</div></div>
+          <div class="card"><div>在线终端</div><div class="value status-online" id="onlineAgents">--</div></div>
+          <div class="card"><div>今日任务</div><div class="value" id="tasksToday">--</div></div>
+          <div class="card"><div>月token消耗</div><div class="value" id="tokensMonth">--</div></div>
+          <div class="card"><div>自主等级分布</div><div class="value" style="font-size: 0.8rem;">L0:<span id="l0">--</span> L1:<span id="l1">--</span></div></div>
+        </div>
+      </div>
+      
+      <!-- 五大能力点状态 -->
+      <div class="panel">
+        <h2>五大能力点状态</h2>
+        <div class="grid">
+          <div class="card" style="width:100%;">
+            <div style="margin-bottom: 0.5rem;"><strong>自发工作</strong> <span class="ability-level" id="ability-proactive">未检测</span></div>
+            <div class="mini-chart"><div class="chart-green" style="width:33%"></div></div>
+          </div>
+          <div class="card" style="width:100%;">
+            <div style="margin-bottom: 0.5rem;"><strong>自主接收</strong> <span class="ability-level" id="ability-trigger">未检测</span></div>
+            <div class="mini-chart"><div class="chart-orange" style="width:33%"></div></div>
+          </div>
+          <div class="card" style="width:100%;">
+            <div style="margin-bottom: 0.5rem;"><strong>自主开展</strong> <span class="ability-level" id="ability-autonomous">未检测</span></div>
+            <div class="mini-chart"><div class="chart-orange" style="width:33%"></div></div>
+          </div>
+          <div class="card" style="width:100%;">
+            <div style="margin-bottom: 0.5rem;"><strong>自我进化</strong> <span class="ability-level" id="ability-evolution">未检测</span></div>
+            <div class="mini-chart"><div class="chart-orange" style="width:33%"></div></div>
+          </div>
+          <div class="card" style="width:100%;">
+            <div style="margin-bottom: 0.5rem;"><strong>方案小组</strong> <span class="ability-level" id="ability-committee">未检测</span></div>
+            <div class="mini-chart"><div class="chart-orange" style="width:33%"></div></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 最近事件 -->
+      <div class="panel">
+        <h2>最近事件</h2>
+        <div style="height: 130px; overflow-y: auto; font-size: 0.85rem;">
+          <table>
+            <tr><th>时间</th><th>类型</th><th>Agent</th><th>状态</th></tr>
+            <tr><td>2026-10-22 10:45</td><td>任务分配</td><td>leon</td><td>进行中</td></tr>
+            <tr><td>2026-10-22 10:30</td><td>群@回复</td><td>assistant:hr</td><td>已回复</td></tr>
+            <tr><td>2026-10-22 10:15</td><td>权限申请</td><td>market:jiaqi</td><td>审批中</td></tr>
+          </table>
+        </div>
+      </div>
+      
+      <!-- 模型运行状态 -->
+      <div class="panel">
+        <h2>模型运行状态</h2>
+        <div style="margin-top: 0.5rem;">
+          <div style="margin-bottom: 0.5rem;"><span style="color: var(--primary);">快思考(规则)</span> <span style="color: var(--success);">活跃</span> (<span id="ruleCount">--</span> 事件/s)</div>
+          <div style="margin-bottom: 0.5rem;"><span style="color: var(--primary);">慢思考(LLM)</span> <span style="color: var(--warning);">每日--次</span> (<span id="llmCount">--</span>)</div>
+          <div><span style="color: var(--primary);">本地Qwen3.8B</span> <span style="color: #666;">已就绪</span> (<span id="localCount">--</span> 请求/s)</div>
+        </div>
+        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: #666;">
+          快慢分离：规则路径承担 ≥70% 事件，成本控制主杠杆
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="text-align: right; margin: 1rem 0;">
+    <button class="quick-action" onclick="refreshStats()">刷新统计</button>
+    <button class="quick-action" style="background: var(--error);" onclick="hardStop()">紧急暂停</button>
+  </div>
+  
+  <div class="footer">
+    Harness Core Brain · 数字员工运营平台 · 所有自主动作均留痕 · Kill-Switch 可用
+  </div>
+  
+  <script>
+    // 模拟数据刷新
+    function refreshStats() {
+      // 更新计数器
+      const now = new Date();
+      // 注意：这里不显示秒，避免频繁重绘干扰
+      
+      // 模拟代理状态更新
+      const agents = ['leon', 'assistant:hr:bj001', 'market:jiaqi:sh001', 'engineer:dev:gz001'];
+      const container = document.getElementById('onlineAgents');
+      container.innerHTML = '';
+      
+      agents.forEach(agent => {
+        const online = Math.random() > 0.2; // 80% 在线
+        const div = document.createElement('div');
+        div.style = 'margin-bottom: 0.5rem;';
+        div.innerHTML = `
+          <span class="status-dot ${online ? 'status-online' : 'status-offline'}"></span>
+          <strong>${agent}</strong>
+          <span style="color: #666; font-size: 0.75rem;">${online ? '在线' : '离线'}</span>
+        `;
+        container.appendChild(div);
+      });
+      
+      // 随机更新五大能力点状态
+      const abilities = ['proactive', 'trigger', 'autonomous', 'evolution', 'committee'];
+      const levels = ['优秀', '良好', '一般', '需关注'];
+      const colorMap = {'优秀': '#27ae60', '良好': '#2ecc71', '一般': '#f39c12', '需关注': '#e74c3c'};
+      
+      abilities.forEach(ability => {
+        const idx = Math.floor(Math.random() * 4);
+        const level = levels[idx];
+        document.getElementById('ability-' + ability).innerText = level;
+        document.getElementById('ability-' + ability).style.color = colorMap[level];
+      });
+      
+      // 更新模型计数
+      document.getElementById('ruleCount').innerText = Math.floor(Math.random() * 50 + 10);
+      document.getElementById('llmCount').innerText = Math.floor(Math.random() * 5 + 1);
+      document.getElementById('localCount').innerText = Math.floor(Math.random() * 20 + 5);
+    }
+    
+    // 紧急停止
+    function hardStop() {
+      if(confirm('确认所有Agent立即降级至L0并冻结自主执行？')) {
+        alert('紧急停止已触发。所有自主权限收回，系统进入保守模式。');
+        refreshStats();
+      }
+    }
+    
+    // 初始化
+    refreshStats();
+  </script>
+</body>
+</html>

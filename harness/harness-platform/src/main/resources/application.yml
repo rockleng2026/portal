@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: harness-platform
+  datasource:
+    url: ${HARNESS_DB_URL:jdbc:mysql://127.0.0.1:3306/harness?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true}
+    username: ${HARNESS_DB_USER:harness}
+    password: ${HARNESS_DB_PASSWORD:}
+    hikari:
+      maximum-pool-size: ${HARNESS_DB_POOL:20}
+      pool-name: harness-pool
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+  data:
+    redis:
+      host: ${HARNESS_REDIS_HOST:127.0.0.1}
+      port: ${HARNESS_REDIS_PORT:6379}
+      timeout: 2s
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 16
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: ${HARNESS_PORT:8080}
+  error:
+    include-message: never
+
+harness:
+  security:
+    clock-skew: 300s
+    nonce-ttl: 5m
+    binding-code-ttl: 10m
+  terminal:
+    heartbeat-timeout: 30s
+  bootstrap:
+    client-id: harness-bootstrap
+    secret: ${HARNESS_BOOTSTRAP_SECRET:}
+  federation:
+    local-fed-id: ${HARNESS_FED_ID:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    com.fuao.harness: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{traceId:--}] %logger{36} - %msg%n"

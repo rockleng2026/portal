@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数字员工实时视图</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --error: #e74c3c;
+      --background: #f5f5f5;
+      --card: #ffffff;
+      --text: #333333;
+      --text-light: #777777;
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0; padding: 0; background: var(--background); color: var(--text);
+      line-height: 1.5;
+    }
+    
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem 1.5rem;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+    
+    .header .breadcrumb {
+      float: right;
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+    
+    .content {
+      padding: 1.5rem;
+    }
+    
+    .panel {
+      background: var(--card);
+      border: 1px solid #ddd;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+    }
+    
+    .panel h2 {
+      margin: 0 0 0.75rem 0;
+      color: var(--primary);
+      font-size: 0.875rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .card {
+      background: var(--card);
+      padding: 0.6rem;
+      border-radius: 3px;
+    }
+    
+    .card h3 {
+      margin: 0 0 0.5rem 0;
+      color: #555;
+      font-size: 0.8rem;
+    }
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+      background: #3498db;
+      color: white;
+      font-size: 1rem;
+      line-height: 38px;
+      text-align: center;
+      float: left;
+      margin-right: 0.75rem;
+    }
+    
+    .clearfix::after { content: ""; clear: both; display: table; }
+    
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      float: left;
+      margin-right: 0.3rem;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 0.4rem;
+      background: #eee;
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 0.3rem 0;
+    }
+    
+    .progress-bar div {
+      height: 100%;
+      width: 0%;
+      background: var(--secondary);
+      transition: width 0.3s;
+    }
+    
+    .progress-bar span {
+      float: right;
+      font-size: 0.7rem;
+      color: #666;
+      margin-right: 0.3rem;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+    
+    th, td {
+      padding: 0.4rem 0.5rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .quick-action {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.6rem;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      margin: 0.2rem;
+    }
+    
+    .quick-action:hover { background: #2980b9; }
+    
+    .action-badge {
+      display: inline-block;
+      padding: 0.1rem 0.3rem;
+      background: #6c75bd;
+      color: white;
+      font-size: 0.65rem;
+      border-radius: 2px;
+      margin: 0.1rem;
+    }
+    
+    .mini-row { display: table; width: 100%; margin: 0.2rem 0; }
+    .mini-row .label { display: table-cell; width: 30%; font-weight: normal; color: #555; font-size: 0.7rem; }
+    .mini-row .value { display: table-cell; }
+    
+    .footer {
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #777;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>数字员工实时视图</h1>
+    <div class="breadcrumb">部门: 深圳销售部 · 负责: leon · 更新: <span id="lastUpdate">--</span></div>
+  </div>
+  
+  <div class="content">
+    <div class="grid">
+      <!-- 组织结构概览 -->
+      <div class="panel">
+        <h2>组织结构</h2>
+        <div style="height: 150px; background: #f8f8f8; border-radius: 3px; margin-bottom: 0.5rem; line-height: 150px; text-align: center; color: #777;">
+          <div>组织结构图将在此显示</div>
+        </div>
+      </div>
+      
+      <!-- 在线数字员工 -->
+      <div class="panel">
+        <h2>在线数字员工</h2>
+        <div id="onlineAgents" style="max-height: 200px; overflow-y: auto; font-size: 0.9rem;">
+          <div style="text-align: center; color: #777; padding: 10px;">正在加载在线数字员工...</div>
+        </div>
+      </div>
+      
+      <!-- 我的待办 -->
+      <div class="panel">
+        <h2>我的待办</h2>
+        <div id="myTasks" style="max-height: 200px; overflow-y: auto; font-size: 0.9rem;">
+          <div style="text-align: center; color: #777; padding: 10px;">加载我的任务...</div>
+        </div>
+      </div>
+      
+      <!-- 最近活动 -->
+      <div class="panel">
+        <h2>最近活动</h2>
+        <div style="height: 130px; overflow-y: auto; font-size: 0.8rem;">
+          <table style="width:100%;">
+            <tr><th>时间</th><th>事件</th><th>详情</th><th>Agent</th></tr>
+            <tr><td>10:45</td><td>任务分配</td><td>销售客户跟进</td><td>leon</td></tr>
+            <tr><td>10:35</td><td>消息回复</td><td>群@回复：方案审议</td><td>leon</td></tr>
+            <tr><td>10:20</td><td>日志记录</td><td>今日工作总结</td><td>leon</td></tr>
+            <tr><td>10:10</td><td>权限申请</td><td>申请: conkout处理权</td><td>assistant:hr</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin: 1rem 0; text-align: right;">
+    <button class="quick-action" onclick="refreshView()">刷新视图</button>
+    <button class="quick-action" onclick="acceptTask('task-001')">接待办</button>
+    <button class="quick-action" onclick="sendMessage('leon', '测试')">发消息</button>
+  </div>
+  
+  <div class="footer">
+    Harness v1.0 · 数字员工实时视图 · 部门: 深圳销售部 · 负责: leon
+  </div>
+  
+  <script>
+    // 日期格式扩展
+    Date.prototype.format = function(format) {
+      var o = {
+        "M+": this.getMonth() + 1,
+        "d+": this.getDate(),
+        "H+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds(),
+        "q+": Math.floor((this.getMonth() + 3) / 3),
+        "S": this.getMilliseconds()
+      };
+      if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.length));
+      for (var k in o) if (new RegExp("(" + k + ")").test(format)) format = format.replace(RegExp.$1, (o[k] === 0) ? "0" : o[k]);
+      return format;
+    };
+    
+    // 刷新视图
+    function refreshView() {
+      document.getElementById('lastUpdate').innerText = new Date().format('HH:mm:ss');
+      
+      // 模拟在线代理
+      const agents = [
+        {name: 'leon', online: true, tasks: 3, progress: 65},
+        {name: 'assistant:hr:bj001', online: true, tasks: 1, progress: 90},
+        {name: 'market:jiaqi:sh001', online: false, tasks: 0, progress: 0},
+        {name: 'engineer:dev:gz001', online: true, tasks: 5, progress: 40}
+      ];
+      
+      const container = document.getElementById('onlineAgents');
+      container.innerHTML = '';
+      
+      agents.forEach(a => {
+        const div = document.createElement('div');
+        div.style = 'margin-bottom: 0.3rem;';
+        div.innerHTML = `
+          <span class="avatar">${a.name.split(':')[0] || a.name}</span>
+          <div style="margin-left: 55px;">
+            <div style="font-weight: bold; margin-bottom: 2px;">${a.name}</div>
+            <div style="color: var(--success); font-size: 0.7rem;">在线</div>
+            <div style="color: #666; font-size: 0.65rem;">任务 ${a.tasks} • 完成 ${a.progress}%</div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+    
+    // 初始化
+    refreshView();
+  </script>
+</body>
+</html>

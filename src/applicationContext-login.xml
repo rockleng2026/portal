@@ -44,6 +44,8 @@
 		<!-- >>>>>>>>>>>>>>>>>>>>>>>action层的注入<<<<<<<<<<<<<<<<<<<<<<<< -->
 		<!-- 登录Action注入 -->
 		<bean id="LoginAction" class="com.fuao.fajxc.action.LoginAction">
+			<!-- A0-2: lets the login page recognise and refuse digital employee accounts. -->
+			<property name="harnessAccountDao" ref="harnessAccountDao"></property>
 			<property name="loginBussiness" ref="Loginbussiness"></property>
 			<property name="functionInfobiz" ref="Functioninfobiz"></property>
 			<property name="functionInfoSystemBussiness" ref="FunctionInfoSystemBussiness"></property>

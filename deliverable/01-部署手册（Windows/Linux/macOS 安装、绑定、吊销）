@@ -1,0 +1,64 @@
+# 01-部署手册（Windows/Linux/macOS 安装、绑定、吊销）
+
+## 安装
+
+### Windows
+1. 下载 `harness-terminal-windows-x64.zip` 并解压
+2. 运行 `harness-terminal.exe --install` 安装为系统服务
+3. 使用管理员权限启动服务
+
+### Linux
+```bash
+# 安装依赖
+sudo apt-get install -y openjdk-17-jdk
+
+# 下载并解压
+wget https://example.com/harness-terminal-linux-x64.tar.gz
+tar -xzf harness-terminal-linux-x64.tar.gz
+cd harness-terminal-linux-x64
+
+# 运行安装 wizard
+./harness-terminal --install
+```
+
+### macOS
+```bash
+brew install --cask harness-terminal
+# 或手动安装
+tar -xzf harness-terminal-macos-x64.tar.gz
+cd harness-terminal-macos-x64
+./harness-terminal --install
+```
+
+## 绑定
+
+### 获取绑定码
+```bash
+harness-terminal --gen-code
+```
+
+### 执行绑定
+```bash
+harness-terminal --bind-code <code_hash>
+# 或在管理平台输入绑定码
+```
+
+### 验证绑定状态
+```bash
+harness-terminal --status
+```
+
+## 吊销
+
+### 吊销终端绑定
+```bash
+harness-terminal --revoke --terminal-id <terminal-id>
+# 或在管理平台操作
+```
+
+### 验证吊销生效
+```bash
+# 30秒内请求应被拒绝
+harness-terminal --execute
+# 或观察看板状态变为 offline
+```

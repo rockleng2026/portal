@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.fuao.harness</groupId>
+    <artifactId>harness-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>harness-protocol</artifactId>
+  <packaging>jar</packaging>
+  <name>harness :: protocol (frozen contracts)</name>
+  <description>
+    Wire-level contracts shared by the platform, the edge layer and the terminal agent:
+    UUIDv7 ids, the TCP frame codec (03 §3.2), the command code table (03 §3.3),
+    capability tokens (03 §5) and the event envelope (03 §4).
+    Deliberately dependency-free so it can be embedded in the terminal runtime as-is.
+  </description>
+</project>

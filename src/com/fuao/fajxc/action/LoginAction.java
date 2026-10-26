@@ -80,6 +80,15 @@ public class LoginAction implements ModelDriven,ServletRequestAware,ServletRespo
 	private ExecuteRecordBussiness executeRecordBussiness;
 	private ProjectDao prjdao;
 	private Project projectdao;
+	/**
+	 * Used only to recognise digital employee accounts, which are refused at the login page
+	 * (A0-2). See com.fuao.fajxc.dao.harness.HarnessAccountDao.
+	 */
+	private com.fuao.fajxc.dao.harness.HarnessAccountDao harnessAccountDao;
+
+	public void setHarnessAccountDao(com.fuao.fajxc.dao.harness.HarnessAccountDao harnessAccountDao) {
+		this.harnessAccountDao = harnessAccountDao;
+	}
 	private String funcid;
     
 	public String getFuncid() {
@@ -260,6 +269,25 @@ public class LoginAction implements ModelDriven,ServletRequestAware,ServletRespo
 	 */
 	public String User()
 	{
+		
+		/*
+		 * A0-2: a digital employee must never be able to log in to the portal.
+		 *
+		 * The portal identifies humans by a reversible cookie password; the platform identifies
+		 * digital employees with HMAC service accounts (ADR-004). Mixing the two would put a whole
+		 * organisation's authority behind a cookie that can leak. The check sits in front of the
+		 * captcha and the password comparison on purpose: an attempt by an AI account is a
+		 * security event even when the captcha was never solved.
+		 */
+		if (harnessAccountDao != null
+				&& harnessAccountDao.isAiAccount(this.users == null ? null : this.users.getLoginName())) {
+			logger.warn("[HARNESS-SECURITY] refused portal login for digital employee account: "
+					+ this.users.getLoginName());
+			HttpServletRequest harnessRequest = ServletActionContext.getRequest();
+			harnessRequest.setAttribute("errorMsg",
+					"\u8be5\u8d26\u53f7\u662f\u6570\u5b57\u5458\u5de5\u8d26\u53f7\uff0c\u4e0d\u5141\u8bb8\u767b\u5f55 portal\u3002");
+			return "error";
+		}
 		
 		// session
 		HttpServletRequest request=ServletActionContext.getRequest();

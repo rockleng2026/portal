@@ -1,0 +1,95 @@
+# 02-数字员工入职手册（创建、入职、岗位配置、权限映射）
+
+## 入职流程
+
+### 1. 创建数字员工
+
+#### 通过管理平台
+1. 登录管理平台
+2. 点击"创建 Agent" 或 "创建数字员工"
+3. 填写信息：
+   - 名称：如 "销售助理 leon"
+   - 岗位：选择对应岗位（如 "深圳销售助理"）
+   - 部门：指定部门（如 "深圳销售部"）
+   - 责任人：指定人类管理者
+   - 权限包：自动继承岗位权限
+
+#### 通过 CLI（可选）
+```bash
+# 创建数字员工（管理平台主导，CLI 为辅助）
+harness-terminal --create-agent \
+  --name "销售助理 leon" \
+  --position "深圳销售助理" \
+  --department "深圳销售部" \
+  --responsible "张三"
+```
+
+### 2. 门户同步
+
+创建完成后，系统自动执行：
+
+1. **写入 `portal.employee`**：
+   - `uuid` = agent UUID（如 `agent:leon:sales:sh001`）
+   - `isLoginAccount` = 1（表示登录账号）
+   - `isLeave` = 0（表示在职）
+   - `department` = 目标部门ID
+   - `position` = 目标岗位ID
+
+2. **写入 `portal.users`**：
+   - `loginName` = 登录名（如 `leon`）
+   - `isAI` = 1（数字员工标识）
+   - `password` = 哨兵密码（自动生成，不可逆使用）
+
+3. **绑定 `workposition_employee`**：
+   - 将数字员工关联到 `workposition`
+   - 继承岗位的 `functionIDs` 和 `permissions`
+
+### 3. 验证入职
+
+```bash
+# 检查组织树是否出现
+# 观察权限页是否继承自岗位
+
+# 关键验收点 A0-1：
+# - 数字员工出现在 portal 组织树与通讯录
+# - 权限页显示继承自岗位的权限集
+
+# 验收点 A0-2 检查：
+# - 尝试用任何密码登录 POST /login → 必须失败
+# - 控制台应产生安全事件告警
+```
+
+### 4. 终端绑定
+
+1. 生成绑定码：`harness-terminal --gen-code`
+2. 在终端机器上执行绑定：`harness-terminal --bind-code <code_hash>`
+3. 验证看板显示"在线"状态
+
+## 岗位配置详解
+
+### 权限继承模型
+
+数字员工的实际权限 = 岗位权限 ∩ 作用域 ∩ 时效
+
+- **Capability**：工具级能力（如 `cap:portal.task.complete`）
+- **Scope**：数据级范围（绑定到部门子树 + `resourcePermission`）
+- **TTL**：时效级（授权带过期时间，自动降权）
+
+### 常见岗位配置
+
+| 岗位 | functionIDs | permissions | 典型能力 |
+|---|---|---|---|
+| 销售助理 | `351.7,352.1` | `351.7,352.1` | 创建/查看工单、查看客户 |
+| 运维工程师 | `401.2,402.5` | `401.2,402.5` | 重启服务、查看监控 |
+| 测试工程师 | `501.3` | `501.3` | 上传测试报告、运行测试用例 |
+
+## 常见问题
+
+### Q: 入职后为什么看不到数字员工在组织树？
+### A: 检查 `portal.employee` 表是否有 `isLoginAccount=1` 的行，以及 `workposition_employee` 关联是否正确。
+
+### Q: 明明有岗位权限，为什么无法执行任务？
+### A: 检查 `isAI=1` 是否正确，以及 `portal.users` 是否有对应的登录账号行。
+
+### Q: 绑定码生成后绑定失败？
+### A: 确认 `harness_terminal` 数据库中的 `harness_binding_codes` 表是否有对应记录，以及 terminal_id 是否匹配。

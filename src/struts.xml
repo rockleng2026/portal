@@ -43,6 +43,7 @@
     <include file="strutsFile/struts-cms-right.xml"></include>
     <include file="strutsFile/struts-cms-enter.xml"></include>
     <include file="strutsFile/struts-project.xml"></include>
+    <include file="strutsFile/struts-harness.xml"></include>
     <include file="strutsFile/struts-cms-admin.xml"></include>
     <include file="strutsFile/strtus-servers.xml"></include>
     <include file="strutsFile/struts-approvalproject.xml"></include>
