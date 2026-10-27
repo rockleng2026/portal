@@ -534,7 +534,16 @@ async function pollTasks() {
   try {
     // The last 20 tasks: the chat shows the recent history, not everything ever asked.
     tasks = (await api('GET', '/api/harness/tasks?terminalId=' + encodeURIComponent(chat.terminalId) + '&limit=20')) || [];
-  } catch (e) { return; }
+    chat.lastError = null;
+  } catch (e) {
+    // A failing poll used to be swallowed, so the panel said "pending" for ever while the
+    // terminal had already answered. Say it instead.
+    if (chat.lastError !== e.message) {
+      chat.lastError = e.message;
+      addChat('读取失败', e.message + '（面板停在旧状态，可能是浏览器缓存了旧的脚本：Ctrl+Shift+R 强刷）', 'err');
+    }
+    return;
+  }
   tasks.slice().reverse().forEach(task => {
     const last = chat.shown.get(task.taskId);
     if (last === task.status) {
