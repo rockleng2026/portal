@@ -20,6 +20,7 @@ pub mod cli;
 pub mod grant;
 pub mod mcp;
 pub mod model;
+pub mod platform;
 pub mod policy;
 pub mod skills;
 pub mod tools;

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harness 控制台 · 数字员工运营平台</title>
+  <link rel="stylesheet" href="console.css">
+</head>
+<body>
+<div id="login" class="login">
+  <div class="login-box">
+    <h1>Harness 控制台</h1>
+    <p class="muted">平台接口用 HMAC 签名认证（<code>03 §9</code>），不是 Cookie。这里填的是
+      <b>自然人控制台账号</b>——它能做的都留了痕。</p>
+    <label>客户端 ID<input id="clientId" placeholder="harness-admin" autocomplete="off"></label>
+    <label>密钥<input id="clientSecret" type="password" placeholder="至少 24 位" autocomplete="off"></label>
+    <label>平台地址<input id="baseUrl" placeholder="http://127.0.0.1:18080" autocomplete="off"></label>
+    <button id="loginBtn" class="primary">进入控制台</button>
+    <div id="loginError" class="error"></div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <header class="topbar">
+    <div class="brand">Harness 控制台</div>
+    <div class="topbar-right">
+      <span id="who" class="muted"></span>
+      <button id="refreshBtn" class="ghost">刷新</button>
+      <button id="logoutBtn" class="ghost">退出</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="overview">总览</button>
+    <button class="tab" data-tab="agents">数字员工</button>
+    <button class="tab" data-tab="terminals">终端</button>
+    <button class="tab" data-tab="grants">授权</button>
+    <button class="tab" data-tab="approvals">审批</button>
+    <button class="tab" data-tab="killswitch">Kill-Switch</button>
+    <button class="tab" data-tab="events">事件</button>
+    <button class="tab" data-tab="audit">审计</button>
+  </nav>
+
+  <main id="panels">
+    <!-- 总览 -->
+    <section class="panel active" id="tab-overview">
+      <div class="kpis" id="kpis"></div>
+      <div class="two-col">
+        <div class="card">
+          <h3>数字员工</h3>
+          <div id="overviewAgents" class="list"></div>
+        </div>
+        <div class="card">
+          <h3>终端</h3>
+          <div id="overviewTerminals" class="list"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>最近动作（审计链尾部）</h3>
+        <div id="overviewAudit" class="list"></div>
+      </div>
+    </section>
+
+    <!-- 数字员工 -->
+    <section class="panel" id="tab-agents">
+      <div class="toolbar">
+        <button class="primary" id="newAgentBtn">新建数字员工</button>
+        <span class="muted">自主等级 L0–L4；L4 默认禁用，需要双人审批。</span>
+      </div>
+      <div id="agentsTable" class="table-wrap"></div>
+    </section>
+
+    <!-- 终端 -->
+    <section class="panel" id="tab-terminals">
+      <div class="toolbar">
+        <span class="muted">吊销 ≤30s 生效；绑定与吊销只能由自然人操作。</span>
+      </div>
+      <div id="terminalsTable" class="table-wrap"></div>
+      <div class="card" id="terminalDetailCard" style="display:none">
+        <h3>终端详情</h3>
+        <div id="terminalDetail"></div>
+      </div>
+    </section>
+
+    <!-- 授权 -->
+    <section class="panel" id="tab-grants">
+      <div class="toolbar">
+        <button class="primary" id="newGrantBtn">授予能力</button>
+        <span class="muted">临时授权 TTL ≤ 24h，超限会被拒绝（不是截短）。</span>
+      </div>
+      <div id="grantsTable" class="table-wrap"></div>
+    </section>
+
+    <!-- 审批 -->
+    <section class="panel" id="tab-approvals">
+      <div class="toolbar">
+        <span class="muted">不可逆动作需要两名不同的自然人签字；驳回不需要理由门槛，批准需要。</span>
+      </div>
+      <div id="approvalsTable" class="table-wrap"></div>
+    </section>
+
+    <!-- Kill-Switch -->
+    <section class="panel" id="tab-killswitch">
+      <div class="toolbar">
+        <button class="danger" id="newSwitchBtn">拉下 Kill-Switch</button>
+        <span class="muted">全局 / 部门 / Agent / 能力 / 终端 五个粒度。全局 halt 不会被更窄的开关盖掉。</span>
+      </div>
+      <div id="switchesTable" class="table-wrap"></div>
+    </section>
+
+    <!-- 事件 -->
+    <section class="panel" id="tab-events">
+      <div class="toolbar">
+        <span class="muted">同指纹同窗口会合并成一条并计数；被判定为注入的事件降级为报告（suspected）。</span>
+      </div>
+      <div id="eventsTable" class="table-wrap"></div>
+    </section>
+
+    <!-- 审计 -->
+    <section class="panel" id="tab-audit">
+      <div class="toolbar">
+        <button class="ghost" id="verifyChainBtn">校验哈希链</button>
+        <span id="chainResult" class="muted"></span>
+      </div>
+      <div id="auditTable" class="table-wrap"></div>
+    </section>
+  </main>
+
+  <!-- 聊天抽屉：与某个终端里的智能体对话 -->
+  <aside id="chat" class="chat hidden">
+    <div class="chat-head">
+      <div>
+        <div class="chat-title" id="chatTitle">与智能体对话</div>
+        <div class="muted" id="chatSubtitle"></div>
+      </div>
+      <button class="ghost" id="chatClose">关闭</button>
+    </div>
+    <div class="chat-log" id="chatLog"></div>
+    <form class="chat-input" id="chatForm">
+      <textarea id="chatPrompt" rows="3" placeholder="例：读一下 main.rs，把里面的 hello 改成 harness"></textarea>
+      <div class="chat-actions">
+        <span class="muted" id="chatHint"></span>
+        <button class="primary" type="submit">发送</button>
+      </div>
+    </form>
+  </aside>
+
+  <!-- 弹窗 -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-box">
+      <h3 id="modalTitle"></h3>
+      <div id="modalBody"></div>
+      <div class="modal-actions">
+        <button class="ghost" id="modalCancel">取消</button>
+        <button class="primary" id="modalOk">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="console.js"></script>
+</body>
+</html>

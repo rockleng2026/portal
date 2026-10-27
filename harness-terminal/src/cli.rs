@@ -39,6 +39,8 @@ enum Command {
     Tools,
     /// Replay a task from a script, without a model. Used to test the loop.
     Replay(ReplayArgs),
+    /// Serve the console: pick up requests from the platform and answer them.
+    Serve(ServeArgs),
 }
 
 #[derive(Parser, Debug)]
@@ -91,6 +93,41 @@ struct InspectArgs {
 }
 
 #[derive(Parser, Debug)]
+struct ServeArgs {
+    /// The workspace the agent works in.
+    #[arg(long, default_value = ".")]
+    workspace: PathBuf,
+    /// The directory with the device identity; the grant and the platform parameters come
+    /// from here.
+    #[arg(long)]
+    identity: Option<PathBuf>,
+    /// The configuration file of the terminal (platform.url, client.id, secret).
+    #[arg(long)]
+    config: Option<PathBuf>,
+    /// The model to use: `anthropic` or `openai`.
+    #[arg(long, default_value = "anthropic")]
+    provider: String,
+    /// The model name.
+    #[arg(long, default_value = "claude-sonnet-4-5")]
+    model: String,
+    /// The API key. Read from HARNESS_MODEL_API_KEY when not given.
+    #[arg(long)]
+    api_key: Option<String>,
+    /// The base URL of the model API.
+    #[arg(long)]
+    base_url: Option<String>,
+    /// The maximum number of model turns per request.
+    #[arg(long, default_value_t = 40)]
+    max_steps: usize,
+    /// How often to look for new work, in seconds.
+    #[arg(long, default_value_t = 2)]
+    poll_seconds: u64,
+    /// Stop after this many requests (0 = never stop).
+    #[arg(long, default_value_t = 0)]
+    max_tasks: usize,
+}
+
+#[derive(Parser, Debug)]
 struct ReplayArgs {
     /// A JSON file with the model's turns.
     #[arg(long)]
@@ -128,6 +165,7 @@ pub async fn main() -> Result<()> {
             Ok(())
         }
         Command::Replay(args) => replay(args).await,
+        Command::Serve(args) => serve(args).await,
     };
     result
 }
@@ -333,6 +371,194 @@ async fn replay(args: ReplayArgs) -> Result<()> {
     let transcript = agent.transcript().to_vec();
     report(&outcome, &transcript, args.transcript.as_deref())?;
     Ok(())
+}
+
+/// Serves the console: takes requests from the platform, answers them.
+///
+/// The loop is the whole point of the terminal being a *digital employee* rather than a
+/// tool: somebody asks a question in the console, and the machine that is bound to that
+/// digital employee answers it - under its own policy, with its own grant.
+async fn serve(args: ServeArgs) -> Result<()> {
+    // --identity is the directory with the device identity and the grant; the shell's
+    // configuration file (platform.url, client.id, secret) sits next to it.
+    let identity_dir = args.identity.clone().unwrap_or_else(|| {
+        crate::platform::PlatformConfig::default_path()
+            .parent()
+            .map(|p| p.to_path_buf())
+            .unwrap_or_default()
+    });
+    let config_path = args.config.clone().unwrap_or_else(|| {
+        identity_dir.join("terminal.properties")
+    });
+    let platform_config = crate::platform::PlatformConfig::read(&config_path)?;
+    if platform_config.terminal_id.is_empty() {
+        return Err(anyhow::anyhow!(
+            "the configuration {} has no terminal.id - run 'harness-terminal hello' first",
+            config_path.display()
+        ));
+    }
+    let platform = Arc::new(crate::platform::PlatformClient::new(&platform_config)?);
+
+    let (workspace, tools, policy, authority) = build_environment(
+        &args.workspace,
+        2,
+        &[],
+        Some(&identity_dir),
+    )?;
+    println!("authority: {authority}");
+    println!(
+        "serving terminal {} on {}",
+        platform_config.terminal_id, platform_config.base_url
+    );
+
+    let api_key = args
+        .api_key
+        .clone()
+        .or_else(|| std::env::var("HARNESS_MODEL_API_KEY").ok());
+    let brain: Brain = match (args.provider.as_str(), api_key) {
+        ("anthropic", Some(key)) => {
+            let mut model = AnthropicModel::new(key, args.model.clone());
+            if let Some(base_url) = &args.base_url {
+                model = model.with_base_url(base_url.clone());
+            }
+            Brain::Model(Arc::new(model))
+        }
+        ("openai", Some(key)) => {
+            let mut model = OpenAiModel::new(key, args.model.clone());
+            if let Some(base_url) = &args.base_url {
+                model = model.with_base_url(base_url.clone());
+            }
+            Brain::Model(Arc::new(model))
+        }
+        (_, None) => {
+            println!(
+                "no HARNESS_MODEL_API_KEY: a request is executed as a command, not answered by a model"
+            );
+            Brain::Command
+        }
+        (other, _) => return Err(anyhow::anyhow!("unknown provider '{other}'")),
+    };
+
+    let mut served = 0usize;
+    loop {
+        let task = match platform.next_task(&platform_config.terminal_id).await {
+            Ok(task) => task,
+            Err(error) => {
+                // The whole chain, not just the top line: "the platform did not answer" on its
+                // own says nothing about why.
+                eprintln!("cannot reach the platform: {error:#}");
+                tokio::time::sleep(std::time::Duration::from_secs(args.poll_seconds)).await;
+                continue;
+            }
+        };
+        let Some(task) = task else {
+            tokio::time::sleep(std::time::Duration::from_secs(args.poll_seconds)).await;
+            continue;
+        };
+        let task_id = task
+            .get("taskId")
+            .and_then(Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        let prompt = task
+            .get("prompt")
+            .and_then(Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        println!("--- task {task_id}: {prompt}");
+
+        let outcome = answer(&prompt, &args, &brain, workspace.clone(), tools.clone(), policy.clone()).await;
+        let result = match outcome {
+            Ok((answer, transcript, touched)) => {
+                crate::platform::task_result(&answer, transcript, touched, None)
+            }
+            Err(error) => crate::platform::task_result(
+                &format!("the request failed: {error}"),
+                json!({}),
+                Vec::new(),
+                Some(error.to_string()),
+            ),
+        };
+        if let Err(error) = platform.complete_task(&task_id, &result).await {
+            eprintln!("cannot post the answer: {error}");
+        }
+        served += 1;
+        if args.max_tasks > 0 && served >= args.max_tasks {
+            break;
+        }
+    }
+    Ok(())
+}
+
+/// What answers a request: a language model, or the command pass-through.
+enum Brain {
+    Model(Arc<dyn Model>),
+    /// No model is configured, so the request is run as a command. The terminal's policy
+    /// decides whether it may run - the same policy as everything else.
+    Command,
+}
+
+/// Answers one request with the agent loop.
+async fn answer(
+    prompt: &str,
+    args: &ServeArgs,
+    brain: &Brain,
+    workspace: Arc<Workspace>,
+    tools: ToolRegistry,
+    policy: Arc<LocalPolicy>,
+) -> Result<(String, Value, Vec<String>)> {
+    if matches!(brain, Brain::Command) {
+        let context = crate::tools::ToolContext {
+            workspace: workspace.clone(),
+            policy: policy.clone(),
+            cwd: workspace_root(&args.workspace),
+            now_epoch: now_epoch(),
+            approval: None,
+        };
+        let call = crate::tools::ToolCall {
+            name: "shell_exec".to_string(),
+            arguments: json!({"command": prompt}),
+        };
+        let result = tools.dispatch(&call, &context);
+        if result.ok {
+            Ok((result.output.clone(), json!({"mode": "command"}), result.touched.clone()))
+        } else {
+            Err(anyhow::anyhow!(
+                "{}: {}",
+                result.reason_code.clone().unwrap_or_else(|| "REFUSED".to_string()),
+                result.output
+            ))
+        }
+    } else {
+    let model = match brain {
+        Brain::Model(model) => model.clone(),
+        Brain::Command => unreachable!("handled above"),
+    };
+    let mut agent = Agent::new(
+        AgentConfig {
+            task: prompt.to_string(),
+            max_steps: args.max_steps,
+            ..Default::default()
+        },
+        model.clone(),
+        tools,
+        policy.clone(),
+    );
+    let tool_context = crate::tools::ToolContext {
+        workspace,
+        policy,
+        cwd: workspace_root(&args.workspace),
+        now_epoch: now_epoch(),
+        approval: None,
+    };
+    let outcome = agent.run(&tool_context).await?;
+    let transcript = serde_json::to_value(agent.transcript())?;
+    Ok((outcome.answer, transcript, outcome.touched))
+    }
+}
+
+fn workspace_root(path: &std::path::Path) -> std::path::PathBuf {
+    crate::workspace::normalize(path)
 }
 
 /// Shows what the agent sees.

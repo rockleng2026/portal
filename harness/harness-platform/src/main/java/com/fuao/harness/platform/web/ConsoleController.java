@@ -48,11 +48,15 @@ public class ConsoleController {
     private final PolicyFacade policy;
     private final TerminalService terminals;
     private final AuditService audit;
+    private final com.fuao.harness.platform.service.TaskService tasks;
+    private final com.fuao.harness.platform.repo.CapabilityRepository capabilities;
 
     public ConsoleController(AgentService agents, GrantService grants,
                              com.fuao.harness.platform.service.ApprovalService approvals,
                              KillSwitchService killSwitches, PolicyFacade policy,
-                             TerminalService terminals, AuditService audit) {
+                             TerminalService terminals, AuditService audit,
+                             com.fuao.harness.platform.service.TaskService tasks,
+                             com.fuao.harness.platform.repo.CapabilityRepository capabilities) {
         this.agents = agents;
         this.grants = grants;
         this.approvals = new ApprovalServiceHolder(approvals);
@@ -60,6 +64,8 @@ public class ConsoleController {
         this.policy = policy;
         this.terminals = terminals;
         this.audit = audit;
+        this.tasks = tasks;
+        this.capabilities = capabilities;
     }
 
     /** Exists so the constructor signature stays readable while the approval service is injected. */
@@ -161,12 +167,13 @@ public class ConsoleController {
                                     Long ttlSeconds, String reason, String approvalId) {
     }
 
-    public record GrantView(String grantId, String agentId, String capId, Scope scope, Instant grantedAt,
-                            Instant expiresAt, String grantedBy, String reason) {
+    public record GrantView(String grantId, String agentId, String capId, String capKey, Scope scope,
+                            Instant grantedAt, Instant expiresAt, String grantedBy, String reason,
+                            boolean revoked) {
 
-        static GrantView of(PolicyInputs.GrantRow g) {
-            return new GrantView(g.grantId(), g.agentId(), g.capId(), g.scope(), g.grantedAt(), g.expiresAt(),
-                    g.grantedBy(), g.reason());
+        static GrantView of(PolicyInputs.GrantRow g, String capKey) {
+            return new GrantView(g.grantId(), g.agentId(), g.capId(), capKey, g.scope(), g.grantedAt(),
+                    g.expiresAt(), g.grantedBy(), g.reason(), g.revokedAt() != null);
         }
     }
 
@@ -176,12 +183,20 @@ public class ConsoleController {
                 request.agentId(), request.capKey(), request.scope(),
                 request.ttlSeconds() == null ? null : java.time.Duration.ofSeconds(request.ttlSeconds()),
                 request.reason(), request.approvalId()));
-        return GrantView.of(grant);
+        return GrantView.of(grant, capabilities.capKeyOf(grant.capId()));
     }
 
+    /**
+     * The grants of one agent, or of every agent when no agent is named.
+     *
+     * <p>The console needs the second form: an operator looks at "who holds what", not at one
+     * agent at a time.
+     */
     @GetMapping("/grant")
-    public List<GrantView> activeGrants(@RequestParam String agentId) {
-        return grants.activeFor(agentId).stream().map(GrantView::of).toList();
+    public List<GrantView> activeGrants(@RequestParam(required = false) String agentId) {
+        return grants.activeFor(agentId).stream()
+                .map(g -> GrantView.of(g, capabilities.capKeyOf(g.capId())))
+                .toList();
     }
 
     @PostMapping("/grant/{grantId}/revoke")
@@ -365,6 +380,81 @@ public class ConsoleController {
     @GetMapping("/terminal")
     public List<PolicyInputs.TerminalRow> terminals(@RequestParam(defaultValue = "200") int limit) {
         return terminals.list(limit);
+    }
+
+    // ------------------------------------------------------------------ tasks (the console-to-terminal channel)
+
+    public record CreateTaskRequest(@NotBlank String prompt) {
+    }
+
+    public record TaskResultRequest(String status, String answer, Map<String, Object> transcript,
+                                    java.util.List<String> touched, String error) {
+    }
+
+    /** A human asks a terminal to do something. */
+    @PostMapping("/terminal/{terminalId}/tasks")
+    public Map<String, Object> createTask(@PathVariable String terminalId,
+                                          @RequestBody CreateTaskRequest request) {
+        com.fuao.harness.platform.repo.TaskRepository.TaskRow task =
+                tasks.create(terminalId, request.prompt());
+        return taskView(task);
+    }
+
+    /** The tasks of a terminal (or of every terminal). */
+    @GetMapping("/tasks")
+    public List<Map<String, Object>> listTasks(@RequestParam(required = false) String terminalId,
+                                               @RequestParam(required = false) String status,
+                                               @RequestParam(defaultValue = "50") int limit) {
+        return tasks.list(terminalId, status, limit).stream().map(ConsoleController::taskView).toList();
+    }
+
+    @GetMapping("/tasks/{taskId}")
+    public Map<String, Object> getTask(@PathVariable String taskId) {
+        return taskView(tasks.get(taskId));
+    }
+
+    /** The terminal's side: take the next task, if there is one. */
+    @GetMapping("/terminal/{terminalId}/tasks/next")
+    public Map<String, Object> nextTask(@PathVariable String terminalId) {
+        com.fuao.harness.platform.repo.TaskRepository.TaskRow task = tasks.claimNext(terminalId);
+        if (task == null) {
+            // The same shape as a task, with an empty id: the terminal polls this in a loop and
+            // must be able to tell "nothing to do" from "the answer is empty".
+            return Map.of("taskId", "", "status", "idle");
+        }
+        return taskView(task);
+    }
+
+    /** The terminal's side: the answer. */
+    @PostMapping("/tasks/{taskId}/result")
+    public Map<String, Object> completeTask(@PathVariable String taskId,
+                                             @RequestBody TaskResultRequest request) {
+        boolean ok = tasks.complete(taskId, request.status(), request.answer(),
+                request.transcript(), request.touched(), request.error());
+        return Map.of("accepted", ok);
+    }
+
+    @PostMapping("/tasks/{taskId}/cancel")
+    public Map<String, Object> cancelTask(@PathVariable String taskId,
+                                          @RequestParam(defaultValue = "cancelled by a human") String reason) {
+        return Map.of("cancelled", tasks.cancel(taskId, reason));
+    }
+
+    private static Map<String, Object> taskView(com.fuao.harness.platform.repo.TaskRepository.TaskRow task) {
+        java.util.Map<String, Object> out = new java.util.LinkedHashMap<>();
+        out.put("taskId", task.taskId());
+        out.put("terminalId", task.terminalId());
+        out.put("prompt", task.prompt());
+        out.put("status", task.status());
+        out.put("answer", task.answer() == null ? "" : task.answer());
+        out.put("transcript", com.fuao.harness.platform.repo.TaskRepository.parseJson(task.transcript()));
+        out.put("touched", com.fuao.harness.platform.repo.TaskRepository.parseJson(task.touched()));
+        out.put("error", task.error() == null ? "" : task.error());
+        out.put("createdBy", task.createdBy());
+        out.put("createdAt", task.createdAt().toString());
+        out.put("startedAt", task.startedAt() == null ? "" : task.startedAt().toString());
+        out.put("finishedAt", task.finishedAt() == null ? "" : task.finishedAt().toString());
+        return out;
     }
 
     // ------------------------------------------------------------------ audit

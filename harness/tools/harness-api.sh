@@ -53,7 +53,11 @@ else
   BODY_HASH="$(printf '' | sha256sum | cut -d' ' -f1)"
 fi
 
-CANONICAL="${METHOD}"$'\n'"${PATH_PART}"$'\n'"${TIMESTAMP}"$'\n'"${NONCE}"$'\n'"${BODY_HASH}"
+# The signature covers the path WITHOUT the query string: the platform signs
+# request.getRequestURI(), which does not include it. The query is still sent.
+SIGNED_PATH="${PATH_PART%%\?*}"
+
+CANONICAL="${METHOD}"$'\n'"${SIGNED_PATH}"$'\n'"${TIMESTAMP}"$'\n'"${NONCE}"$'\n'"${BODY_HASH}"
 
 # The HMAC key is the ASCII of hex(sha256(secret)) - the same value the platform stores in
 # harness_principal.secret_hash. Note "key:" and not "hexkey:": openssl's hexkey would decode

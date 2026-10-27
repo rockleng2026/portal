@@ -47,6 +47,9 @@ public class AuthFilter extends OncePerRequestFilter {
             // a request that can still be read from (CachedBodyHttpServletRequest).
             CachedBodyHttpServletRequest cached = new CachedBodyHttpServletRequest(request);
 
+            // The signed path is request.getRequestURI() - the path WITHOUT the query string.
+            // A client that signs the query along with it gets BAD_SIGNATURE, and the query
+            // itself is not covered by the signature (it selects, it does not authorise).
             AuthenticatedClient client = authenticator.authenticate(
                     request.getHeader(ClientAuthenticator.HEADER_CLIENT),
                     request.getHeader(ClientAuthenticator.HEADER_TIMESTAMP),

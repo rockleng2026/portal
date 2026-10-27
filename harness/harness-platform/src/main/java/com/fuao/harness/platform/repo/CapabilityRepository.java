@@ -40,6 +40,18 @@ public class CapabilityRepository {
                 .optional();
     }
 
+    /** The cap key of a capability id, or the id itself when the capability is unknown. */
+    public String capKeyOf(String capId) {
+        if (capId == null || capId.isBlank()) {
+            return "";
+        }
+        return jdbc.sql("SELECT cap_key FROM harness_capability WHERE cap_id = :id")
+                .param("id", capId)
+                .query(String.class)
+                .optional()
+                .orElse(capId);
+    }
+
     public List<CapabilityDescriptor> findAllByKeys(List<String> capKeys) {
         if (capKeys == null || capKeys.isEmpty()) {
             return List.of();
@@ -98,12 +110,15 @@ public class CapabilityRepository {
                 .list();
     }
 
+    /** The live grants of one agent, or of every agent when no agent is named. */
     public List<PolicyInputs.GrantRow> activeGrantsFor(String agentId) {
         return jdbc.sql("""
                         SELECT grant_id, agent_id, cap_id, scope, granted_at, expires_at, granted_by,
                                reason, revoked_at, status
                           FROM harness_grant
-                         WHERE agent_id = :agentId AND status = 'active' AND expires_at > NOW()
+                         WHERE (:agentId IS NULL OR agent_id = :agentId)
+                           AND status = 'active' AND expires_at > NOW()
+                         ORDER BY granted_at DESC
                         """)
                 .param("agentId", agentId)
                 .query((rs, i) -> new PolicyInputs.GrantRow(

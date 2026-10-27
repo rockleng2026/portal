@@ -103,7 +103,10 @@ public abstract class PlatformTestBase {
         builder.header("X-Harness-Client", clientId);
         builder.header("X-Harness-Timestamp", timestamp);
         builder.header("X-Harness-Nonce", nonce);
-        builder.header("X-Harness-Signature", HmacSigner.sign(HmacSigner.deriveKey(secret), method, path,
+        // The signature covers the path WITHOUT the query string: the platform signs
+        // request.getRequestURI(), which does not include it.
+        String signedPath = path.split("\\?")[0];
+        builder.header("X-Harness-Signature", HmacSigner.sign(HmacSigner.deriveKey(secret), method, signedPath,
                 timestamp, nonce,
                 body == null ? new byte[0] : body.getBytes(StandardCharsets.UTF_8)));
     }

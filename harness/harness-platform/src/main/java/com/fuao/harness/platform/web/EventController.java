@@ -67,9 +67,17 @@ public class EventController {
     }
 
     @GetMapping("/event/poll")
-    public List<Map<String, Object>> poll(@RequestParam(defaultValue = "new") String status,
+    /**
+     * The events on the bus.
+     *
+     * <p>No status means "all of them" - the console wants to see the events that were
+     * downgraded to a report, not only the ones that are still waiting. A router asks for
+     * {@code status=new} explicitly.
+     */
+    public List<Map<String, Object>> poll(@RequestParam(required = false) String status,
                                           @RequestParam(defaultValue = "50") int limit) {
-        return ingest.poll(status, limit).stream()
+        String wanted = status == null || status.isBlank() ? null : status;
+        return ingest.poll(wanted, limit).stream()
                 .map(e -> Maps.of(
                         "eventId", e.eventId(),
                         "source", e.source(),
