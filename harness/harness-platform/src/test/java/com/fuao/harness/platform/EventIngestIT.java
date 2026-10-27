@@ -104,13 +104,29 @@ class EventIngestIT extends PlatformTestBase {
             mvc.perform(ingest(alert(key))).andExpect(status().isOk());
         }
 
-        Integer rows = jdbc.sql("SELECT COUNT(*) FROM harness_event WHERE fingerprint = "
-                        + "(SELECT fingerprint FROM harness_event ORDER BY received_at DESC LIMIT 1)")
-                .query(Integer.class).single();
-        Integer count = jdbc.sql("SELECT MAX(dedup_count) FROM harness_event").query(Integer.class).single();
+        // The window buckets by time, so a run that crosses a bucket boundary lands in two
+        // windows. The contract is not "one row" but "one row per window, and the counters
+        // add up to every arrival".
+        String fingerprint = jdbc.sql("""
+                        SELECT fingerprint FROM harness_event
+                         WHERE source = 'alert' AND event_type = 'cdn.5xx.spike'
+                         ORDER BY received_at DESC LIMIT 1
+                        """)
+                .query(String.class).single();
 
-        assertEquals(rows, 1, "1000 identical triggers must produce exactly one row (A0-7)");
-        assertEquals(count, 1000, "the counter must reflect every arrival (A0-7)");
+        Integer windowsWithDuplicates = jdbc.sql("""
+                        SELECT COUNT(*) FROM (
+                          SELECT event_window FROM harness_event
+                           WHERE fingerprint = :fp
+                           GROUP BY event_window HAVING COUNT(*) > 1) x
+                        """)
+                .param("fp", fingerprint).query(Integer.class).single();
+        Integer total = jdbc.sql("SELECT SUM(dedup_count) FROM harness_event WHERE fingerprint = :fp")
+                .param("fp", fingerprint).query(Integer.class).single();
+
+        assertEquals(windowsWithDuplicates, 0,
+                "inside one window the 1000 triggers must produce exactly one row (A0-7)");
+        assertEquals(total, 1000, "the counters must reflect every arrival (A0-7)");
     }
 
     @Test

@@ -228,6 +228,12 @@ public class TerminalService {
         return terminals.list(limit);
     }
 
+    /** One terminal. */
+    public PolicyInputs.TerminalRow get(String terminalId) {
+        return terminals.findById(terminalId)
+                .orElseThrow(() -> new IllegalArgumentException("no such terminal: " + terminalId));
+    }
+
     /** Dashboard helper: which machines are quiet, and for how long. */
     public List<PolicyInputs.TerminalRow> stale() {
         return terminals.list(500).stream()

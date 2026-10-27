@@ -73,8 +73,8 @@ public class TaskService {
 
     /** The terminal's side: the answer. */
     @Transactional
-    public boolean complete(String taskId, String status, String answer, Map<String, Object> transcript,
-                            List<String> touched, String error) {
+    public boolean complete(String taskId, String status, String answer,
+                            List<Map<String, Object>> transcript, List<String> touched, String error) {
         AuthenticatedClient actor = authContext.require();
         boolean ok = tasks.complete(taskId, status == null ? "done" : status, answer,
                 transcript == null ? null : Json.canonical(transcript),

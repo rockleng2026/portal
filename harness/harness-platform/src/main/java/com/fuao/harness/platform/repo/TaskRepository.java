@@ -166,6 +166,30 @@ public class TaskRepository {
         return parsed instanceof Map ? castMap(parsed) : Map.of();
     }
 
+    /** A JSON array of anything, parsed for the console (the touched files are strings). */
+    public static List<Object> parseJsonArray(String json) {
+        Object parsed = Json.parse(json == null || json.isBlank() ? "[]" : json);
+        if (parsed instanceof List<?> list) {
+            return new java.util.ArrayList<>(list);
+        }
+        return List.of();
+    }
+
+    /** A JSON array, parsed for the console (the transcript is a list of events). */
+    public static List<Map<String, Object>> parseJsonList(String json) {
+        Object parsed = Json.parse(json == null || json.isBlank() ? "[]" : json);
+        if (parsed instanceof List<?> list) {
+            List<Map<String, Object>> out = new java.util.ArrayList<>();
+            for (Object item : list) {
+                if (item instanceof Map) {
+                    out.add(castMap(item));
+                }
+            }
+            return out;
+        }
+        return List.of();
+    }
+
     @SuppressWarnings("unchecked")
     private static Map<String, Object> castMap(Object value) {
         return (Map<String, Object>) value;

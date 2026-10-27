@@ -411,33 +411,34 @@ async fn serve(args: ServeArgs) -> Result<()> {
         platform_config.terminal_id, platform_config.base_url
     );
 
-    let api_key = args
-        .api_key
-        .clone()
-        .or_else(|| std::env::var("HARNESS_MODEL_API_KEY").ok());
-    let brain: Brain = match (args.provider.as_str(), api_key) {
-        ("anthropic", Some(key)) => {
-            let mut model = AnthropicModel::new(key, args.model.clone());
-            if let Some(base_url) = &args.base_url {
-                model = model.with_base_url(base_url.clone());
-            }
-            Brain::Model(Arc::new(model))
-        }
-        ("openai", Some(key)) => {
-            let mut model = OpenAiModel::new(key, args.model.clone());
-            if let Some(base_url) = &args.base_url {
-                model = model.with_base_url(base_url.clone());
-            }
-            Brain::Model(Arc::new(model))
-        }
-        (_, None) => {
+    // The model configuration comes from the platform, so the operator can set it in the
+    // console. The command line and the environment are the fallback for a terminal that is
+    // not bound to a platform yet.
+    let mut brain: Brain = Brain::Command;
+    let mut model_fingerprint = String::new();
+    match platform.model_config(&platform_config.terminal_id).await {
+        Ok(Some(config)) => {
             println!(
-                "no HARNESS_MODEL_API_KEY: a request is executed as a command, not answered by a model"
+                "model: {} / {} (from the platform)",
+                config.provider, config.model_name
             );
-            Brain::Command
+            model_fingerprint =
+                format!("{}|{}|{}", config.provider, config.model_name, config.api_key);
+            brain = Brain::Model(model_of(
+                &config.provider,
+                &config.model_name,
+                &config.base_url,
+                &config.api_key,
+            )?);
         }
-        (other, _) => return Err(anyhow::anyhow!("unknown provider '{other}'")),
-    };
+        Ok(None) => {}
+        Err(error) => eprintln!("cannot read the model configuration: {error:#}"),
+    }
+    if matches!(brain, Brain::Command) {
+        if let Some(brain_from_env) = brain_from_environment(&args)? {
+            brain = brain_from_env;
+        }
+    }
 
     let mut served = 0usize;
     let mut announced = false;
@@ -448,6 +449,21 @@ async fn serve(args: ServeArgs) -> Result<()> {
         since_heartbeat += 1;
         if since_heartbeat * args.poll_seconds >= HEARTBEAT_INTERVAL_SECONDS {
             since_heartbeat = 0;
+            // The model configuration may have changed in the console. Pick it up without a
+            // restart - an operator should not have to touch the machine to change the brain.
+            if let Ok(Some(config)) = platform.model_config(&platform_config.terminal_id).await {
+                let fingerprint = format!("{}|{}|{}", config.provider, config.model_name, config.api_key);
+                if fingerprint != model_fingerprint {
+                    model_fingerprint = fingerprint.clone();
+                    match model_of(&config.provider, &config.model_name, &config.base_url, &config.api_key) {
+                        Ok(model) => {
+                            println!("model: {} / {}", config.provider, config.model_name);
+                            brain = Brain::Model(model);
+                        }
+                        Err(error) => eprintln!("cannot use the model configuration: {error:#}"),
+                    }
+                }
+            }
             match platform.heartbeat(&platform_config.terminal_id).await {
                 Ok(status) => {
                     if status == "revoked" {
@@ -525,6 +541,55 @@ async fn serve(args: ServeArgs) -> Result<()> {
     Ok(())
 }
 
+/// Builds a model from a configuration the platform handed out.
+fn model_of(
+    provider: &str,
+    model_name: &str,
+    base_url: &str,
+    api_key: &str,
+) -> Result<Arc<dyn Model>> {
+    match provider {
+        "anthropic" => {
+            let mut model = AnthropicModel::new(api_key, model_name);
+            if !base_url.is_empty() {
+                model = model.with_base_url(base_url.to_string());
+            }
+            Ok(Arc::new(model))
+        }
+        "openai" => {
+            let mut model = OpenAiModel::new(api_key, model_name);
+            if !base_url.is_empty() {
+                model = model.with_base_url(base_url.to_string());
+            }
+            Ok(Arc::new(model))
+        }
+        other => Err(anyhow::anyhow!("unknown provider '{other}'")),
+    }
+}
+
+/// The model from the command line or the environment - the fallback when the platform has
+/// no configuration for this terminal.
+fn brain_from_environment(args: &ServeArgs) -> Result<Option<Brain>> {
+    let api_key = args
+        .api_key
+        .clone()
+        .or_else(|| std::env::var("HARNESS_MODEL_API_KEY").ok());
+    let Some(key) = api_key else {
+        println!(
+            "no model configured: a request is executed as a command, not answered by a model.\n\
+             Set one in the console (终端 -> 配置模型) or export HARNESS_MODEL_API_KEY."
+        );
+        return Ok(None);
+    };
+    let name = args.model.clone();
+    Ok(Some(Brain::Model(model_of(
+        &args.provider,
+        &name,
+        args.base_url.as_deref().unwrap_or(""),
+        &key,
+    )?)))
+}
+
 /// What answers a request: a language model, or the command pass-through.
 enum Brain {
     Model(Arc<dyn Model>),
@@ -556,10 +621,18 @@ async fn answer(
         };
         let result = tools.dispatch(&call, &context);
         if result.ok {
-            Ok((result.output.clone(), json!({"mode": "command"}), result.touched.clone()))
+            Ok((
+                format!(
+                    "{}\n\n（本终端没有配置模型，请求被当作命令执行。要用自然语言提问，\
+                     请在控制台的「终端 → 配置模型」里设置。）",
+                    result.output
+                ),
+                json!({"mode": "command"}),
+                result.touched.clone(),
+            ))
         } else {
             Err(anyhow::anyhow!(
-                "{}: {}",
+                "{}: {}\n（本终端没有配置模型，请求被当作命令执行，命令失败了。                 要用自然语言提问，请在控制台的「终端 → 配置模型」里设置。）",
                 result.reason_code.clone().unwrap_or_else(|| "REFUSED".to_string()),
                 result.output
             ))

@@ -36,6 +36,7 @@
     <button class="tab" data-tab="terminals">终端</button>
     <button class="tab" data-tab="grants">授权</button>
     <button class="tab" data-tab="approvals">审批</button>
+    <button class="tab" data-tab="models">模型配置</button>
     <button class="tab" data-tab="killswitch">Kill-Switch</button>
     <button class="tab" data-tab="events">事件</button>
     <button class="tab" data-tab="audit">审计</button>
@@ -97,6 +98,15 @@
         <span class="muted">不可逆动作需要两名不同的自然人签字；驳回不需要理由门槛，批准需要。</span>
       </div>
       <div id="approvalsTable" class="table-wrap"></div>
+    </section>
+
+    <!-- 模型配置 -->
+    <section class="panel" id="tab-models">
+      <div class="toolbar">
+        <button class="primary" id="newModelBtn">配置模型</button>
+        <span class="muted">作用域：大脑（平台默认）/ 数字员工 / 终端。密钥加密存放，接口只写不读。</span>
+      </div>
+      <div id="modelsTable" class="table-wrap"></div>
     </section>
 
     <!-- Kill-Switch -->

@@ -120,12 +120,16 @@ class TaskChannelIT extends PlatformTestBase {
                     + againResult.getContentAsString());
         }
 
-        // The terminal answers.
+        // The terminal answers. The transcript is a LIST of events (the agent's trajectory),
+        // and the touched files are a list too - the platform has to accept what the agent
+        // actually sends.
         String result = body(Map.of(
                 "status", "done",
                 "answer", "hi",
                 "touched", java.util.List.of("main.rs"),
-                "transcript", Map.of("steps", 2)));
+                "transcript", java.util.List.of(
+                        Map.of("kind", "model", "step", 1),
+                        Map.of("kind", "tool", "tool", "shell_exec", "ok", true))));
         MockHttpServletRequestBuilder complete = post("/api/harness/tasks/" + taskId + "/result")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(result);
@@ -138,7 +142,9 @@ class TaskChannelIT extends PlatformTestBase {
         mvc.perform(list)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].status").value("done"))
-                .andExpect(jsonPath("$[0].answer").value("hi"));
+                .andExpect(jsonPath("$[0].answer").value("hi"))
+                .andExpect(jsonPath("$[0].touched[0]").value("main.rs"))
+                .andExpect(jsonPath("$[0].transcript[1].tool").value("shell_exec"));
     }
 
     @Test

@@ -162,6 +162,39 @@ impl PlatformClient {
         }
     }
 
+    /// The model configuration of this terminal, with the key.
+    ///
+    /// The platform holds it so the operator can set it from the console; the terminal only has
+    /// to be able to reach it. An empty answer means "no model configured" - the terminal then
+    /// runs a request as a command instead of pretending a model is there.
+    pub async fn model_config(&self, terminal_id: &str) -> Result<Option<ModelConfig>> {
+        let answer = self
+            .send("GET", &format!("/api/harness/terminal/{terminal_id}/model"), None)
+            .await?;
+        let provider = answer.get("provider").and_then(Value::as_str).unwrap_or("");
+        if provider.is_empty() {
+            return Ok(None);
+        }
+        Ok(Some(ModelConfig {
+            provider: provider.to_string(),
+            model_name: answer
+                .get("modelName")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string(),
+            base_url: answer
+                .get("baseUrl")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string(),
+            api_key: answer
+                .get("apiKey")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string(),
+        }))
+    }
+
     /// One heartbeat.
     ///
     /// The device's liveness is what the platform uses to decide whether the machine is still
@@ -244,6 +277,15 @@ pub fn sign(key: &[u8], message: &[u8]) -> String {
     let mut mac = <Hmac<Sha256> as Mac>::new_from_slice(key).expect("hmac accepts any key length");
     mac.update(message);
     hex::encode(mac.finalize().into_bytes())
+}
+
+/// The model configuration the platform handed out.
+#[derive(Debug, Clone, Default)]
+pub struct ModelConfig {
+    pub provider: String,
+    pub model_name: String,
+    pub base_url: String,
+    pub api_key: String,
 }
 
 /// The answer the agent posts back.

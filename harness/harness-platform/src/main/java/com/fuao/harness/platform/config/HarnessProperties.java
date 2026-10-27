@@ -4,7 +4,17 @@ import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "harness")
-public record HarnessProperties(Security security, Terminal terminal, Bootstrap bootstrap, Federation federation) {
+public record HarnessProperties(Security security, Terminal terminal, Bootstrap bootstrap,
+                                Federation federation, Model model) {
+
+    /**
+     * @param encryptionKey the key the model credentials are encrypted with. When it is not set,
+     *                       the key is derived from the bootstrap secret - a dedicated key is
+     *                       better (it can be rotated on its own), but a fresh machine should
+     *                       not be blocked from configuring a model.
+     */
+    public record Model(String encryptionKey) {
+    }
 
     public record Security(Duration clockSkew, Duration nonceTtl, Duration bindingCodeTtl) {
     }

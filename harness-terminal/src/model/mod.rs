@@ -11,6 +11,49 @@ use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+/// The http client a model call uses.
+///
+/// <p>No proxy: a model gateway is reached directly, and a proxy that cannot reach it is a
+/// mysterious timeout. The timeout is long because a local gateway may load the model on the
+/// first request.
+fn model_client() -> reqwest::Client {
+    let timeout = std::env::var("HARNESS_MODEL_TIMEOUT_SECONDS")
+        .ok()
+        .and_then(|v| v.parse::<u64>().ok())
+        .unwrap_or(DEFAULT_MODEL_TIMEOUT_SECONDS);
+    reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(timeout))
+        .no_proxy()
+        .build()
+        .unwrap_or_else(|_| reqwest::Client::new())
+}
+
+/// The full URL of an OpenAI-compatible chat endpoint.
+pub fn chat_completions_url(base: &str) -> String {
+    let base = base.trim_end_matches('/');
+    if base.is_empty() {
+        return "https://api.openai.com/v1/chat/completions".to_string();
+    }
+    if base.ends_with("/chat/completions") {
+        base.to_string()
+    } else {
+        format!("{base}/chat/completions")
+    }
+}
+
+/// The full URL of an Anthropic-compatible messages endpoint.
+pub fn messages_url(base: &str) -> String {
+    let base = base.trim_end_matches('/');
+    if base.is_empty() {
+        return "https://api.anthropic.com/v1/messages".to_string();
+    }
+    if base.ends_with("/messages") {
+        base.to_string()
+    } else {
+        format!("{base}/messages")
+    }
+}
+
 /// One turn of the conversation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Message {
@@ -58,6 +101,10 @@ pub trait Model: Send + Sync {
     async fn next_turn(&self, messages: &[Message], tools: &Value) -> Result<Turn>;
 }
 
+/// How long a model may take. Local gateways that load a 27B model on the first request can
+/// take minutes; the default 30s of an HTTP client is not enough for that.
+pub const DEFAULT_MODEL_TIMEOUT_SECONDS: u64 = 600;
+
 /// The Anthropic Messages API.
 pub struct AnthropicModel {
     client: reqwest::Client,
@@ -70,7 +117,7 @@ pub struct AnthropicModel {
 impl AnthropicModel {
     pub fn new(api_key: impl Into<String>, model: impl Into<String>) -> Self {
         Self {
-            client: reqwest::Client::new(),
+            client: model_client(),
             api_key: api_key.into(),
             model: model.into(),
             base_url: "https://api.anthropic.com/v1/messages".to_string(),
@@ -78,8 +125,12 @@ impl AnthropicModel {
         }
     }
 
+    /// The endpoint of an Anthropic-compatible gateway.
+    ///
+    /// <p>The operator configures a base ("http://host:30000/v1"); the path is added here, so
+    /// a full path is accepted too and nothing has to be typed twice.
     pub fn with_base_url(mut self, base_url: impl Into<String>) -> Self {
-        self.base_url = base_url.into();
+        self.base_url = messages_url(&base_url.into());
         self
     }
 
@@ -144,7 +195,7 @@ pub struct OpenAiModel {
 impl OpenAiModel {
     pub fn new(api_key: impl Into<String>, model: impl Into<String>) -> Self {
         Self {
-            client: reqwest::Client::new(),
+            client: model_client(),
             api_key: api_key.into(),
             model: model.into(),
             base_url: "https://api.openai.com/v1/chat/completions".to_string(),
@@ -152,8 +203,12 @@ impl OpenAiModel {
         }
     }
 
+    /// The endpoint of an OpenAI-compatible gateway (vLLM, llama.cpp, LMDeploy, ...).
+    ///
+    /// <p>The operator configures a base ("http://host:30000/v1"); the path is added here, so
+    /// a full path is accepted too.
     pub fn with_base_url(mut self, base_url: impl Into<String>) -> Self {
-        self.base_url = base_url.into();
+        self.base_url = chat_completions_url(&base_url.into());
         self
     }
 }
@@ -303,6 +358,13 @@ pub fn parse_openai_turn(response: &Value) -> Turn {
         if let Some(message) = choice.get("message") {
             if let Some(chunk) = message.get("content").and_then(Value::as_str) {
                 text.push_str(chunk);
+            }
+            // A reasoning model puts its thinking in a separate field. It is not the answer, but
+            // hiding it makes a slow answer look like a broken one.
+            if let Some(reasoning) = message.get("reasoning_content").and_then(Value::as_str) {
+                if !reasoning.is_empty() && text.is_empty() {
+                    text.push_str(reasoning);
+                }
             }
             if let Some(tool_calls) = message.get("tool_calls").and_then(Value::as_array) {
                 for call in tool_calls {

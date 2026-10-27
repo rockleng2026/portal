@@ -251,13 +251,14 @@ function confirmBox(title, message, onOk) {
 const state = { agents: [], terminals: [], approvals: [], grants: [], switches: [], events: [], audit: [], tasks: [] };
 
 async function loadAll() {
-  const [agents, terminals, approvals, grants, switches, audit] = await Promise.all([
+  const [agents, terminals, approvals, grants, switches, audit, modelConfigs] = await Promise.all([
     api('GET', '/api/harness/agent'),
     api('GET', '/api/harness/terminal'),
     api('GET', '/api/harness/approval?limit=50'),
     api('GET', '/api/harness/grant'),
     api('GET', '/api/harness/killswitch'),
     api('GET', '/api/harness/audit?limit=50'),
+    api('GET', '/api/harness/model-config'),
   ]);
   state.agents = agents || [];
   state.terminals = terminals || [];
@@ -265,6 +266,7 @@ async function loadAll() {
   state.grants = grants || [];
   state.switches = switches || [];
   state.audit = audit || [];
+  state.modelConfigs = modelConfigs || [];
   try {
     state.events = (await api('GET', '/api/harness/event/poll?limit=100')) || [];
   } catch (e) { state.events = []; }
@@ -277,6 +279,7 @@ function renderAll() {
   renderTerminals();
   renderGrants();
   renderApprovals();
+  renderModels();
   renderSwitches();
   renderEvents();
   renderAudit();
@@ -333,6 +336,7 @@ function renderAgents() {
         + (a.status !== 'active' ? '<button class="tiny" data-act="activate" data-id="' + esc(a.agentId) + '">启用</button>' : '')
         + (a.status === 'active' ? '<button class="tiny" data-act="pause" data-id="' + esc(a.agentId) + '">暂停</button>' : '')
         + '<button class="tiny" data-act="grant" data-id="' + esc(a.agentId) + '">授权</button>'
+        + '<button class="tiny" data-act="agent-model" data-id="' + esc(a.agentId) + '">配置模型</button>'
         + '<button class="tiny" data-act="chat" data-id="' + esc(a.agentId) + '">对话</button>'
         + '</div>'
     },
@@ -347,8 +351,17 @@ function renderTerminals() {
     { title: '平台员工', render: t => esc(t.portalEmployeeId || '-') },
     { title: '最后心跳', render: t => esc(when(t.lastHeartbeat)) },
     {
+      title: '模型', render: t => {
+        const config = modelConfigOf(t.terminalId);
+        if (!config) return '<span class="muted">未配置</span>';
+        return '<span class="tag info">' + esc(config.provider) + '</span> <span class="mono">'
+          + esc(config.modelName) + '</span>';
+      }
+    },
+    {
       title: '操作', render: t => '<div class="row-actions">'
         + '<button class="tiny" data-act="terminal-chat" data-id="' + esc(t.terminalId) + '">对话</button>'
+        + '<button class="tiny" data-act="terminal-model" data-id="' + esc(t.terminalId) + '">配置模型</button>'
         + '<button class="tiny" data-act="terminal-grant" data-id="' + esc(t.terminalId) + '">看授权</button>'
         + (t.status !== 'revoked' ? '<button class="tiny" data-act="terminal-revoke" data-id="' + esc(t.terminalId) + '">吊销</button>' : '')
         + '</div>'
@@ -387,6 +400,25 @@ function renderApprovals() {
         : '<span class="muted">已结</span>'
     },
   ], state.approvals, '没有待处理的审批。');
+}
+
+function renderModels() {
+  const scopeNames = { brain: '大脑（平台默认）', agent: '数字员工', terminal: '终端' };
+  $('#modelsTable').innerHTML = table([
+    { title: '作用域', render: m => '<span class="tag info">' + esc(scopeNames[m.scope] || m.scope) + '</span>' },
+    { title: '对象', render: m => '<span class="mono">' + esc(m.scopeId) + '</span>' },
+    { title: '服务', render: m => esc(m.provider) },
+    { title: '模型', render: m => '<span class="mono">' + esc(m.modelName) + '</span>' },
+    { title: '网关', render: m => '<span class="mono">' + esc(m.baseUrl || '-') + '</span>' },
+    { title: '密钥', render: m => m.keyConfigured ? '<span class="tag ok">已配置</span>' : '<span class="tag warn">未配置</span>' },
+    { title: '配置人', render: m => '<span class="mono">' + esc(m.createdBy) + '</span>' },
+    {
+      title: '操作', render: m => '<div class="row-actions">'
+        + '<button class="tiny" data-act="model-edit" data-scope="' + esc(m.scope) + '" data-id="' + esc(m.scopeId) + '">改</button>'
+        + '<button class="tiny" data-act="model-delete" data-scope="' + esc(m.scope) + '" data-id="' + esc(m.scopeId) + '">删</button>'
+        + '</div>'
+    },
+  ], state.modelConfigs, '还没有配置模型。点「配置模型」给大脑或某个数字员工配一个。');
 }
 
 function renderSwitches() {
@@ -548,6 +580,10 @@ function bindEvents() {
     });
   });
 
+  $('#newModelBtn').addEventListener('click', () => {
+    modelModal('brain', '*');
+  });
+
   $('#newSwitchBtn').addEventListener('click', () => {
     modal('拉下 Kill-Switch', [
       {
@@ -605,9 +641,19 @@ function bindEvents() {
       else if (act === 'pause') { await api('POST', '/api/harness/agent/' + id + '/lifecycle', { to: 'paused', reason: '控制台暂停' }); toast('已暂停', 'ok'); }
       else if (act === 'onboard') { await onboardModal(id); return; }
       else if (act === 'grant') { openGrantModal(id); return; }
+      else if (act === 'agent-model') { modelModal('agent', id); return; }
       else if (act === 'chat') { const a = state.agents.find(x => x.agentId === id); openChat(terminalOfAgent(id), a ? (a.name || a.agentKey) : id); return; }
       else if (act === 'terminal-chat') { openChat(id, '终端 ' + id.slice(0, 8) + '…'); return; }
       else if (act === 'terminal-grant') { showGrant(id); return; }
+      else if (act === 'terminal-model') { modelModal('terminal', id); return; }
+      else if (act === 'model-edit') { modelModal(btn.dataset.scope, btn.dataset.id); return; }
+      else if (act === 'model-delete') {
+        await api('DELETE', '/api/harness/model-config?scope=' + encodeURIComponent(btn.dataset.scope)
+          + '&scopeId=' + encodeURIComponent(btn.dataset.id));
+        toast('已删除', 'ok');
+        await loadAll();
+        return;
+      }
       else if (act === 'terminal-revoke') { confirmBox('吊销终端', '吊销后这台设备 30 秒内失去全部能力，确定？', async () => { await api('POST', '/api/harness/terminal/' + id + '/revoke', { reason: '控制台吊销' }); toast('已吊销', 'ok'); }); return; }
       else if (act === 'approve') { decideApproval(id, 'approved'); return; }
       else if (act === 'reject') { decideApproval(id, 'rejected'); return; }
@@ -631,6 +677,20 @@ function onboardModal(agentId) {
     toast('已入职', 'ok');
     await loadAll();
   });
+}
+
+function modelConfigOf(terminalId) {
+  const terminal = state.terminals.find(t => t.terminalId === terminalId);
+  const candidates = [
+    { scope: 'terminal', scopeId: terminalId },
+    terminal && terminal.agentId ? { scope: 'agent', scopeId: terminal.agentId } : null,
+    { scope: 'global', scopeId: '*' },
+  ].filter(Boolean);
+  for (const candidate of candidates) {
+    const found = state.modelConfigs.find(c => c.scope === candidate.scope && c.scopeId === candidate.scopeId);
+    if (found) return found;
+  }
+  return null;
 }
 
 function terminalOfAgent(agentId) {
@@ -663,6 +723,52 @@ function decideApproval(approvalId, decision) {
     if (decision === 'rejected' && !v.note.trim()) throw new Error('驳回必须写理由');
     await api('POST', '/api/harness/approval/' + approvalId + '/decide', { decision, note: v.note });
     toast(decision === 'approved' ? '已签字' : '已驳回', 'ok');
+    await loadAll();
+  });
+}
+
+function modelModal(scope, scopeId) {
+  const existing = (scope || 'brain') === 'brain'
+    ? state.modelConfigs.find(c => c.scope === 'brain')
+    : (scope === 'terminal' ? modelConfigOf(scopeId) : state.modelConfigs.find(c => c.scope === 'agent' && c.scopeId === scopeId));
+  const scopeName = { brain: '大脑（平台默认）', agent: '数字员工', terminal: '终端' }[scope] || scope;
+  modal('配置模型 · ' + scopeName, [
+    {
+      name: 'scope', label: '作用域', type: 'select',
+      options: [
+        { value: 'brain', label: '大脑（平台默认）' },
+        { value: 'agent', label: '数字员工' },
+        { value: 'terminal', label: '终端' },
+      ],
+    },
+    {
+      name: 'scopeId', label: '对象（大脑填 *，数字员工/终端填 ID）',
+      value: scope === 'brain' ? '*' : (scopeId || ''),
+    },
+    {
+      name: 'provider', label: '模型服务', type: 'select',
+      options: [{ value: 'openai', label: 'OpenAI 兼容（vLLM / llama.cpp / LMDeploy）' },
+                { value: 'anthropic', label: 'Anthropic' }],
+    },
+    { name: 'modelName', label: '模型名', value: existing ? existing.modelName : 'Qwen3.8-27B' },
+    {
+      name: 'baseUrl', label: '网关地址（可空；填 /v1 这种基址即可，路径会自动补）',
+      value: existing ? existing.baseUrl : '',
+    },
+    {
+      name: 'apiKey', label: existing && existing.keyConfigured
+        ? 'API 密钥（已配置；要换就填新的）' : 'API 密钥',
+      type: 'password', value: '',
+    },
+  ], async (v) => {
+    if (!v.apiKey) {
+      throw new Error('要配置模型就得给一个 API 密钥');
+    }
+    await api('POST', '/api/harness/model-config', {
+      scope: v.scope, scopeId: v.scopeId || '*', provider: v.provider,
+      modelName: v.modelName, baseUrl: v.baseUrl || null, apiKey: v.apiKey,
+    });
+    toast('模型已配置，终端会在一分钟内取到', 'ok');
     await loadAll();
   });
 }

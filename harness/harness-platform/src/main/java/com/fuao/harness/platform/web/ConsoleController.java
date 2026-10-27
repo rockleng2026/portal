@@ -50,13 +50,15 @@ public class ConsoleController {
     private final AuditService audit;
     private final com.fuao.harness.platform.service.TaskService tasks;
     private final com.fuao.harness.platform.repo.CapabilityRepository capabilities;
+    private final com.fuao.harness.platform.service.ModelConfigService modelConfigs;
 
     public ConsoleController(AgentService agents, GrantService grants,
                              com.fuao.harness.platform.service.ApprovalService approvals,
                              KillSwitchService killSwitches, PolicyFacade policy,
                              TerminalService terminals, AuditService audit,
                              com.fuao.harness.platform.service.TaskService tasks,
-                             com.fuao.harness.platform.repo.CapabilityRepository capabilities) {
+                             com.fuao.harness.platform.repo.CapabilityRepository capabilities,
+                             com.fuao.harness.platform.service.ModelConfigService modelConfigs) {
         this.agents = agents;
         this.grants = grants;
         this.approvals = new ApprovalServiceHolder(approvals);
@@ -66,6 +68,7 @@ public class ConsoleController {
         this.audit = audit;
         this.tasks = tasks;
         this.capabilities = capabilities;
+        this.modelConfigs = modelConfigs;
     }
 
     /** Exists so the constructor signature stays readable while the approval service is injected. */
@@ -382,12 +385,73 @@ public class ConsoleController {
         return terminals.list(limit);
     }
 
+    // ------------------------------------------------------------------ model configuration
+
+    public record ModelConfigRequest(@NotBlank String scope, String scopeId, @NotBlank String provider,
+                                     @NotBlank String modelName, String baseUrl, @NotBlank String apiKey) {
+    }
+
+    /** The model configurations, without the keys. */
+    @GetMapping("/model-config")
+    public List<Map<String, Object>> modelConfigs() {
+        return modelConfigs.list().stream().map(c -> Map.<String, Object>of(
+                "configId", c.configId(),
+                "scope", c.scope(),
+                "scopeId", c.scopeId(),
+                "provider", c.provider(),
+                "modelName", c.modelName(),
+                "baseUrl", c.baseUrl(),
+                "keyConfigured", c.keyConfigured(),
+                "createdBy", c.createdBy(),
+                "updatedAt", c.updatedAt().toString())).toList();
+    }
+
+    /** Sets the model configuration of a terminal, an agent, or the whole platform. */
+    @PostMapping("/model-config")
+    public Map<String, Object> setModelConfig(@RequestBody ModelConfigRequest request) {
+        com.fuao.harness.platform.service.ModelConfigService.ModelConfigView view =
+                modelConfigs.set(request.scope(), request.scopeId(), request.provider(),
+                        request.modelName(), request.baseUrl(), request.apiKey());
+        return Map.of("configId", view.configId(), "scope", view.scope(), "scopeId", view.scopeId(),
+                "provider", view.provider(), "modelName", view.modelName(), "keyConfigured", true);
+    }
+
+    @DeleteMapping("/model-config")
+    public Map<String, Object> deleteModelConfig(@RequestParam String scope,
+                                                 @RequestParam(required = false) String scopeId) {
+        return Map.of("deleted", modelConfigs.delete(scope, scopeId == null ? "*" : scopeId));
+    }
+
+    /**
+     * The terminal's own view of the configuration - with the key, because it has to call the
+     * model provider with it. Only a terminal may ask for its own.
+     */
+    @GetMapping("/terminal/{terminalId}/model")
+    public Map<String, Object> terminalModel(@PathVariable String terminalId) {
+        // A terminal that asks before it is registered gets an empty answer, not an error:
+        // it will ask again.
+        String agentId = null;
+        try {
+            agentId = terminals.get(terminalId).agentId();
+        } catch (IllegalArgumentException e) {
+            agentId = null;
+        }
+        return modelConfigs.forTerminal(terminalId, agentId)
+                .map(c -> Map.<String, Object>of(
+                        "provider", c.provider(),
+                        "modelName", c.modelName(),
+                        "baseUrl", c.baseUrl() == null ? "" : c.baseUrl(),
+                        "apiKey", c.apiKey()))
+                .orElse(Map.of("provider", "", "modelName", "", "baseUrl", "", "apiKey", ""));
+    }
+
     // ------------------------------------------------------------------ tasks (the console-to-terminal channel)
 
     public record CreateTaskRequest(@NotBlank String prompt) {
     }
 
-    public record TaskResultRequest(String status, String answer, Map<String, Object> transcript,
+    public record TaskResultRequest(String status, String answer,
+                                    List<Map<String, Object>> transcript,
                                     java.util.List<String> touched, String error) {
     }
 
@@ -447,8 +511,8 @@ public class ConsoleController {
         out.put("prompt", task.prompt());
         out.put("status", task.status());
         out.put("answer", task.answer() == null ? "" : task.answer());
-        out.put("transcript", com.fuao.harness.platform.repo.TaskRepository.parseJson(task.transcript()));
-        out.put("touched", com.fuao.harness.platform.repo.TaskRepository.parseJson(task.touched()));
+        out.put("transcript", com.fuao.harness.platform.repo.TaskRepository.parseJsonList(task.transcript()));
+        out.put("touched", com.fuao.harness.platform.repo.TaskRepository.parseJsonArray(task.touched()));
         out.put("error", task.error() == null ? "" : task.error());
         out.put("createdBy", task.createdBy());
         out.put("createdAt", task.createdAt().toString());
