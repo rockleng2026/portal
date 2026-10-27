@@ -2,14 +2,21 @@
 # =====================================================================================
 # Start / stop the harness platform.
 #
-#   harness-platform.sh start     start in the background, wait until it answers
+#   harness-platform.sh start     start it and wait until it answers
 #   harness-platform.sh stop      stop it
-#   harness-platform.sh status    is it running, what port, what is the health
 #   harness-platform.sh restart
+#   harness-platform.sh status    is it running, on which port, what is the health
 #   harness-platform.sh logs      tail the log
 #
 # The parameters (including the secrets) live in $HARNESS_ENV_FILE, by default
 # ~/.harness/platform.env - outside the repository, mode 0600. Secrets never enter git.
+#
+# Two ways to run it:
+#   * as a systemd **user** service (harness-platform.service) - the normal case;
+#   * as a plain background process - the fallback when there is no systemd.
+# The script picks the systemd one whenever the unit exists, so the two never fight over
+# the port: an instance that loses the port race must not report success just because
+# somebody else is answering on that port.
 # =====================================================================================
 set -euo pipefail
 
@@ -18,6 +25,7 @@ ENV_FILE="${HARNESS_ENV_FILE:-$HOME/.harness/platform.env}"
 RUN_DIR="$HOME/.harness/run"
 LOG_FILE="$HOME/.harness/platform.log"
 PID_FILE="$RUN_DIR/platform.pid"
+UNIT="harness-platform.service"
 JAR="$ROOT/harness-platform/target/harness-platform-0.1.0-SNAPSHOT.jar"
 
 load_env() {
@@ -38,12 +46,54 @@ port_of() {
   echo "${HARNESS_PORT:-8080}"
 }
 
+# The systemd unit exists?
+have_unit() {
+  command -v systemctl >/dev/null 2>&1 \
+    && [[ -f "$HOME/.config/systemd/user/$UNIT" ]] \
+    && systemctl --user cat "$UNIT" >/dev/null 2>&1
+}
+
+unit_active() {
+  have_unit && [[ "$(systemctl --user is-active "$UNIT" 2>/dev/null || true)" == "active" ]]
+}
+
 is_running() {
   [[ -f "$PID_FILE" ]] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null
 }
 
+# Is anybody listening on the port? Prints the owner if we can see it.
+port_busy() {
+  local port="$1"
+  if command -v ss >/dev/null 2>&1; then
+    ss -ltnp 2>/dev/null | grep -q ":${port} " && return 0
+  elif command -v lsof >/dev/null 2>&1; then
+    lsof -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1 && return 0
+  fi
+  return 1
+}
+
+healthy() {
+  curl -fsS -o /dev/null "http://127.0.0.1:$1/actuator/health" 2>/dev/null
+}
+
 start() {
   load_env
+  local port="${HARNESS_PORT:-8080}"
+
+  if have_unit; then
+    systemctl --user start "$UNIT" 2>/dev/null || true
+    for _ in $(seq 1 60); do
+      if unit_active && healthy "$port"; then
+        echo "harness-platform: up on port ${port} (systemd user service), log: $LOG_FILE"
+        return 0
+      fi
+      sleep 1
+    done
+    echo "harness-platform: the systemd service did not come up; last lines of $LOG_FILE:" >&2
+    tail -20 "$LOG_FILE" >&2
+    return 1
+  fi
+
   if is_running; then
     echo "harness-platform: already running (pid $(cat "$PID_FILE"))"
     return 0
@@ -52,14 +102,30 @@ start() {
     echo "harness-platform: $JAR is missing. Build it: (cd $ROOT && mvn -B clean package)" >&2
     exit 1
   fi
-  mkdir -p "$RUN_DIR" "$(dirname "$LOG_FILE")"
-  setsid nohup "$JAVA_HOME/bin/java" -jar "$JAR" >"$LOG_FILE" 2>&1 </dev/null &
-  echo $! > "$PID_FILE"
+  if port_busy "$port"; then
+    echo "harness-platform: port ${port} is already in use by another process." >&2
+    echo "  Find it:   ss -ltnp | grep ${port}" >&2
+    echo "  If that is the systemd service, use: systemctl --user stop ${UNIT}" >&2
+    echo "  If it is a stale instance, use:  $(basename "$0") stop" >&2
+    exit 1
+  fi
 
-  local port="${HARNESS_PORT:-8080}"
+  mkdir -p "$RUN_DIR" "$(dirname "$LOG_FILE")"
+  setsid nohup "$JAVA_HOME/bin/java" -jar "$JAR" >>"$LOG_FILE" 2>&1 </dev/null &
+  local pid=$!
+  echo "$pid" > "$PID_FILE"
+
+  # The health check alone proves nothing: another process may be answering on that port.
+  # Our own process has to still be alive *and* the port has to answer.
   for _ in $(seq 1 60); do
-    if curl -fsS -o /dev/null "http://127.0.0.1:${port}/actuator/health" 2>/dev/null; then
-      echo "harness-platform: up on port ${port} (pid $(cat "$PID_FILE")), log: $LOG_FILE"
+    if ! kill -0 "$pid" 2>/dev/null; then
+      rm -f "$PID_FILE"
+      echo "harness-platform: the process exited during startup; last lines of $LOG_FILE:" >&2
+      tail -20 "$LOG_FILE" >&2
+      exit 1
+    fi
+    if healthy "$port"; then
+      echo "harness-platform: up on port ${port} (pid ${pid}), log: $LOG_FILE"
       return 0
     fi
     sleep 1
@@ -70,6 +136,12 @@ start() {
 }
 
 stop() {
+  if have_unit; then
+    systemctl --user stop "$UNIT" 2>/dev/null || true
+    echo "harness-platform: stopped (systemd user service)"
+    rm -f "$PID_FILE"
+    return 0
+  fi
   if ! is_running; then
     echo "harness-platform: not running"
     rm -f "$PID_FILE"
@@ -90,7 +162,14 @@ stop() {
 status() {
   local port
   port="$(port_of)"
-  if is_running; then
+  if have_unit; then
+    local state
+    state="$(systemctl --user is-active "$UNIT" 2>/dev/null || true)"
+    echo "harness-platform: systemd user service is ${state} (port ${port})"
+    if [[ "$state" == "active" ]]; then
+      curl -fsS "http://127.0.0.1:${port}/actuator/health" && echo
+    fi
+  elif is_running; then
     echo "harness-platform: running (pid $(cat "$PID_FILE")) on port ${port}"
     curl -fsS "http://127.0.0.1:${port}/actuator/health" && echo
   else
