@@ -283,6 +283,7 @@ function renderAll() {
   renderSwitches();
   renderEvents();
   renderAudit();
+  renderTerminalPickers();
 }
 
 function renderOverview() {
@@ -462,15 +463,54 @@ function renderAudit() {
 const chat = { terminalId: null, agentKey: '', poll: null, shown: new Map() };
 
 function openChat(terminalId, title) {
+  if (!terminalId) {
+    toast('这台终端还没有绑定智能体，先在「终端」里绑定', 'bad');
+    return;
+  }
   chat.terminalId = terminalId;
   $('#chatTitle').textContent = '与智能体对话';
   $('#chatSubtitle').textContent = title || ('终端 ' + String(terminalId).slice(0, 8) + '…');
-  $('#chatHint').textContent = '终端需要配置 HARNESS_MODEL_API_KEY 才能处理自然语言。';
+  $('#chatHint').textContent = '回车发送。智能体只能用它被授予的能力做事。';
+  renderTerminalPickers();
   $('#chat').classList.remove('hidden');
   $('#chatLog').innerHTML = '';
+  chat.shown.clear();
   pollTasks();
   if (chat.poll) clearInterval(chat.poll);
   chat.poll = setInterval(pollTasks, 2000);
+  $('#chatPrompt').focus();
+}
+
+/** The terminal pickers: one in the chat header, one on the chat tab. */
+function renderTerminalPickers() {
+  const options = state.terminals.map(t =>
+    '<option value="' + esc(t.terminalId) + '"' + (t.terminalId === chat.terminalId ? ' selected' : '')
+    + '>' + esc((t.agentId ? t.agentId.slice(0, 8) : t.terminalId.slice(0, 8)) + ' · ' + t.status) + '</option>'
+  ).join('');
+  $('#chatTerminalPicker').innerHTML = options;
+  $('#chatTerminalSelect').innerHTML = options;
+  if (chat.terminalId) {
+    $('#chatTerminalPicker').value = chat.terminalId;
+    $('#chatTerminalSelect').value = chat.terminalId;
+  }
+}
+
+/** The recent tasks of the selected terminal, on the chat tab. */
+function renderChatRecent() {
+  const terminalId = $('#chatTerminalSelect').value || (state.terminals[0] && state.terminals[0].terminalId);
+  if (!terminalId) {
+    $('#chatRecent').innerHTML = '<div class="empty">还没有终端</div>';
+    return;
+  }
+  api('GET', '/api/harness/tasks?terminalId=' + encodeURIComponent(terminalId) + '&limit=8')
+    .then(tasks => {
+      $('#chatRecent').innerHTML = (tasks || []).length ? tasks.map(t =>
+        '<div class="row"><span class="dot ' + (t.status === 'done' ? 'ok' : t.status === 'failed' ? 'bad' : 'warn')
+        + '"></span><span class="grow">' + esc(t.prompt) + '</span>'
+        + '<span class="muted">' + esc(t.answer || t.error || t.status).slice(0, 60) + '</span></div>').join('')
+        : '<div class="empty">还没有对话记录</div>';
+    })
+    .catch(() => { $('#chatRecent').innerHTML = '<div class="empty">读不到记录</div>'; });
 }
 
 function closeChat() {
@@ -530,6 +570,10 @@ function bindEvents() {
     $$('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     $('#tab-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'chat') {
+      renderTerminalPickers();
+      renderChatRecent();
+    }
   }));
 
   $('#loginBtn').addEventListener('click', async () => {
@@ -560,6 +604,25 @@ function bindEvents() {
   });
 
   $('#refreshBtn').addEventListener('click', () => loadAll().then(() => toast('已刷新', 'ok')));
+
+  // The permanent entry point: ask the agent without hunting for a button.
+  $('#askBtn').addEventListener('click', () => {
+    const terminal = state.terminals.find(t => t.status === 'online') || state.terminals[0];
+    openChat(terminal && terminal.terminalId, terminal ? ('终端 ' + terminal.terminalId.slice(0, 8) + '…') : null);
+  });
+
+  $('#openChatBtn').addEventListener('click', () => {
+    const terminalId = $('#chatTerminalSelect').value;
+    openChat(terminalId, '终端 ' + String(terminalId || '').slice(0, 8) + '…');
+  });
+
+  $('#chatTerminalSelect').addEventListener('change', () => {
+    renderChatRecent();
+  });
+
+  $('#chatTerminalPicker').addEventListener('change', (e) => {
+    openChat(e.target.value, '终端 ' + e.target.value.slice(0, 8) + '…');
+  });
 
   $('#newAgentBtn').addEventListener('click', () => {
     modal('新建数字员工', [

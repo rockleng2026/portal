@@ -24,6 +24,7 @@
   <header class="topbar">
     <div class="brand">Harness 控制台</div>
     <div class="topbar-right">
+      <button id="askBtn" class="ask">问智能体</button>
       <span id="who" class="muted"></span>
       <button id="refreshBtn" class="ghost">刷新</button>
       <button id="logoutBtn" class="ghost">退出</button>
@@ -34,6 +35,7 @@
     <button class="tab active" data-tab="overview">总览</button>
     <button class="tab" data-tab="agents">数字员工</button>
     <button class="tab" data-tab="terminals">终端</button>
+    <button class="tab" data-tab="chat">对话</button>
     <button class="tab" data-tab="grants">授权</button>
     <button class="tab" data-tab="approvals">审批</button>
     <button class="tab" data-tab="models">模型配置</button>
@@ -80,6 +82,21 @@
       <div class="card" id="terminalDetailCard" style="display:none">
         <h3>终端详情</h3>
         <div id="terminalDetail"></div>
+      </div>
+    </section>
+
+    <!-- 对话 -->
+    <section class="panel" id="tab-chat">
+      <div class="card">
+        <h3>与终端里的智能体对话</h3>
+        <p class="muted">在下面选一台终端，说人话就行。智能体会用它被授予的能力去做事
+          （读文件、改文件、跑命令），做完把结果和改过的文件发回来。没被授权的动作会被拒绝——
+          这是设计如此，不是故障。</p>
+        <div class="toolbar">
+          <select id="chatTerminalSelect"></select>
+          <button class="primary" id="openChatBtn">打开对话</button>
+        </div>
+        <div id="chatRecent" class="list"></div>
       </div>
     </section>
 
@@ -143,7 +160,10 @@
         <div class="chat-title" id="chatTitle">与智能体对话</div>
         <div class="muted" id="chatSubtitle"></div>
       </div>
-      <button class="ghost" id="chatClose">关闭</button>
+      <div class="chat-head-actions">
+        <select id="chatTerminalPicker" title="换一台终端"></select>
+        <button class="ghost" id="chatClose">关闭</button>
+      </div>
     </div>
     <div class="chat-log" id="chatLog"></div>
     <form class="chat-input" id="chatForm">
