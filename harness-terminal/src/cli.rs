@@ -440,6 +440,7 @@ async fn serve(args: ServeArgs) -> Result<()> {
     };
 
     let mut served = 0usize;
+    let mut announced = false;
     loop {
         let task = match platform.next_task(&platform_config.terminal_id).await {
             Ok(task) => task,
@@ -452,6 +453,13 @@ async fn serve(args: ServeArgs) -> Result<()> {
             }
         };
         let Some(task) = task else {
+            if !announced {
+                announced = true;
+                println!(
+                    "waiting for requests. Open {} and use 终端 -> 对话.",
+                    console_url(&platform_config.base_url)
+                );
+            }
             tokio::time::sleep(std::time::Duration::from_secs(args.poll_seconds)).await;
             continue;
         };
@@ -481,6 +489,16 @@ async fn serve(args: ServeArgs) -> Result<()> {
         };
         if let Err(error) = platform.complete_task(&task_id, &result).await {
             eprintln!("cannot post the answer: {error}");
+        } else {
+            let first = result
+                .get("answer")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .lines()
+                .next()
+                .unwrap_or("")
+                .to_string();
+            println!("--- answered: {first}");
         }
         served += 1;
         if args.max_tasks > 0 && served >= args.max_tasks {
@@ -555,6 +573,11 @@ async fn answer(
     let transcript = serde_json::to_value(agent.transcript())?;
     Ok((outcome.answer, transcript, outcome.touched))
     }
+}
+
+/// The console URL for the platform this terminal serves.
+fn console_url(base_url: &str) -> String {
+    format!("{}/console/index.html", base_url.trim_end_matches('/'))
 }
 
 fn workspace_root(path: &std::path::Path) -> std::path::PathBuf {
