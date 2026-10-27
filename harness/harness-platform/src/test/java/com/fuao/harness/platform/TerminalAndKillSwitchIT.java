@@ -1,6 +1,7 @@
 package com.fuao.harness.platform;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,6 +55,31 @@ class TerminalAndKillSwitchIT extends PlatformTestBase {
                 .content(body);
         signAsHuman("POST", path, request, body);
         return request;
+    }
+
+    @Test
+    void aTerminalThatComesBackGoesGreenAgain() throws Exception {
+        // The heartbeat is the proof that the machine is there. A terminal that was marked
+        // offline because it stopped heartbeating has to be able to come back (A0-6:
+        // "恢复 → 自动回绿") - otherwise it stays degraded forever.
+        String code = hello("device-sha-comeback");
+        MockHttpServletRequestBuilder bind = humanPost("/api/harness/terminal/bind",
+                Map.of("bindingCode", code, "agentKey", AGENT_KEY));
+        String bindResponse = mvc.perform(bind).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String terminalId = String.valueOf(parse(bindResponse).get("terminalId"));
+
+        // The degradation job marks a silent terminal offline.
+        jdbc.sql("UPDATE harness_terminal SET status = 'offline' WHERE terminal_id = :id")
+                .param("id", terminalId).update();
+
+        MockHttpServletRequestBuilder beat = post("/api/harness/terminal/" + terminalId + "/heartbeat");
+        signAsService("POST", "/api/harness/terminal/" + terminalId + "/heartbeat", beat, "");
+        mvc.perform(beat).andExpect(status().isOk());
+
+        String status = jdbc.sql("SELECT status FROM harness_terminal WHERE terminal_id = :id")
+                .param("id", terminalId).query(String.class).single();
+        assertEquals("online", status, "a terminal that heartbeats again is online again");
     }
 
     @Test

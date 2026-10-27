@@ -162,6 +162,26 @@ impl PlatformClient {
         }
     }
 
+    /// One heartbeat.
+    ///
+    /// The device's liveness is what the platform uses to decide whether the machine is still
+    /// there. Fifteen minutes of silence demotes the terminal to read-only (red-team R-01), so
+    /// whatever runs on the machine has to say something.
+    pub async fn heartbeat(&self, terminal_id: &str) -> Result<String> {
+        let answer = self
+            .send(
+                "POST",
+                &format!("/api/harness/terminal/{terminal_id}/heartbeat"),
+                Some(&Value::Null),
+            )
+            .await?;
+        Ok(answer
+            .get("status")
+            .and_then(Value::as_str)
+            .unwrap_or("unknown")
+            .to_string())
+    }
+
     /// Posts the answer.
     pub async fn complete_task(&self, task_id: &str, answer: &Value) -> Result<()> {
         self.send(

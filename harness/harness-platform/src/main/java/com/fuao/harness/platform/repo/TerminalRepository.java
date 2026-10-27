@@ -91,11 +91,20 @@ public class TerminalRepository {
                 .update() == 1;
     }
 
+    /**
+     * One heartbeat from the device.
+     *
+     * <p>A terminal that was marked offline because it stopped heartbeating has to be able to
+     * come back: the heartbeat is the proof that it is there (04 §2.2 A0-6: "恢复 → 自动回绿").
+     * A terminal that is still waiting to be bound stays as it is, and a revoked one is not
+     * resurrected - the WHERE clause keeps it out.
+     */
     public boolean heartbeat(String terminalId, Instant at) {
         return jdbc.sql("""
                         UPDATE harness_terminal
                            SET last_heartbeat = :at,
-                               status = IF(status = 'online', 'online', status)
+                               status = CASE WHEN status IN ('unbound', 'binding') THEN status
+                                            ELSE 'online' END
                          WHERE terminal_id = :id AND status <> 'revoked'
                         """)
                 .param("id", terminalId)

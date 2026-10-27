@@ -441,7 +441,24 @@ async fn serve(args: ServeArgs) -> Result<()> {
 
     let mut served = 0usize;
     let mut announced = false;
+    let mut since_heartbeat = 0u64;
     loop {
+        // The heartbeat is the device's liveness. Whoever runs on the machine says it - the
+        // agent is usually the thing that stays up, so it says it.
+        since_heartbeat += 1;
+        if since_heartbeat * args.poll_seconds >= HEARTBEAT_INTERVAL_SECONDS {
+            since_heartbeat = 0;
+            match platform.heartbeat(&platform_config.terminal_id).await {
+                Ok(status) => {
+                    if status == "revoked" {
+                        println!("the terminal was revoked; stopping");
+                        return Ok(());
+                    }
+                }
+                Err(error) => eprintln!("heartbeat failed: {error:#}"),
+            }
+        }
+
         let task = match platform.next_task(&platform_config.terminal_id).await {
             Ok(task) => task,
             Err(error) => {
@@ -574,6 +591,9 @@ async fn answer(
     Ok((outcome.answer, transcript, outcome.touched))
     }
 }
+
+/// How often the terminal says it is alive (03 §3.1: heartbeat 10s).
+const HEARTBEAT_INTERVAL_SECONDS: u64 = 10;
 
 /// The console URL for the platform this terminal serves.
 fn console_url(base_url: &str) -> String {
