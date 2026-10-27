@@ -456,7 +456,10 @@ function renderAudit() {
 
 // ---------------------------------------------------------------- 聊天
 
-const chat = { terminalId: null, agentKey: '', poll: null, seen: new Set() };
+// What has been shown for each task, and the status it was shown in. A task is not "seen" -
+// it is shown again whenever its state changes, otherwise the answer would never appear:
+// the console looks at a task while it is still pending and then never looks again.
+const chat = { terminalId: null, agentKey: '', poll: null, shown: new Map() };
 
 function openChat(terminalId, title) {
   chat.terminalId = terminalId;
@@ -489,18 +492,31 @@ async function pollTasks() {
   if (!chat.terminalId) return;
   let tasks = [];
   try {
+    // The last 20 tasks: the chat shows the recent history, not everything ever asked.
     tasks = (await api('GET', '/api/harness/tasks?terminalId=' + encodeURIComponent(chat.terminalId) + '&limit=20')) || [];
   } catch (e) { return; }
   tasks.slice().reverse().forEach(task => {
-    if (chat.seen.has(task.taskId)) return;
-    chat.seen.add(task.taskId);
-    addChat('我', task.prompt, 'me');
+    const last = chat.shown.get(task.taskId);
+    if (last === task.status) {
+      return; // nothing changed since the last look
+    }
+    const first = last === undefined;
+    chat.shown.set(task.taskId, task.status);
+    if (first) {
+      addChat('我', task.prompt, 'me');
+    }
     if (task.status === 'done') {
       addChat('智能体', task.answer || '(没有回答)', 'agent');
       if (task.touched && task.touched.length) addChat('改动', task.touched.join('\n'), 'agent');
+      if (task.transcript && task.transcript.length) {
+        addChat('轨迹', task.transcript.map(t =>
+          (t.kind || '') + (t.tool ? ':' + t.tool : '') + (t.ok === false ? ' (被拒)' : '')).join('\n'), '');
+      }
     } else if (task.status === 'failed') {
       addChat('失败', task.error || '未知错误', 'err');
-    } else {
+    } else if (task.status === 'running') {
+      if (first) addChat('状态', '终端正在处理…', '');
+    } else if (first) {
       addChat('状态', task.status, '');
     }
   });
