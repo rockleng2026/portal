@@ -31,12 +31,14 @@ public class GovernanceScheduler {
 
     private final TerminalRepository terminals;
     private final ApprovalService approvals;
+    private final TaskService tasks;
     private final Duration degradeAfter;
 
     public GovernanceScheduler(TerminalRepository terminals, ApprovalService approvals,
-                               HarnessProperties properties) {
+                               TaskService tasks, HarnessProperties properties) {
         this.terminals = terminals;
         this.approvals = approvals;
+        this.tasks = tasks;
         this.degradeAfter = properties.terminal().degradeAfter() == null
                 ? Duration.ofMinutes(15)
                 : properties.terminal().degradeAfter();
@@ -67,6 +69,27 @@ public class GovernanceScheduler {
             log.warn("approval expiry scan failed: {}", e.getMessage());
         }
     }
+
+    /**
+     * Fails the tasks that were lost with their terminal.
+     *
+     * <p>A claimed task whose machine disappeared stays "running" for ever otherwise, and the
+     * answer that never came is nobody's fault but the timeout's.
+     */
+    @Scheduled(fixedDelayString = "${harness.scheduler.stale-task-ms:300000}")
+    public void failLostTasks() {
+        try {
+            int failed = tasks.failStaleRunning(STALE_TASK_MINUTES);
+            if (failed > 0) {
+                log.info("failed {} task(s) that were lost with their terminal", failed);
+            }
+        } catch (RuntimeException e) {
+            log.warn("stale task sweep failed: {}", e.getMessage());
+        }
+    }
+
+    /** How long a task may stay "running" without its terminal saying anything. */
+    public static final int STALE_TASK_MINUTES = 30;
 
     /** Exposed for the dashboard: how long a silent device keeps its authority. */
     public Duration degradeAfter() {

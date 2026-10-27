@@ -80,6 +80,9 @@ public abstract class PlatformTestBase {
     @Autowired
     protected JdbcClient jdbc;
 
+    @Autowired
+    protected org.springframework.context.ApplicationContext applicationContext;
+
     // ------------------------------------------------------------------ helpers
 
     protected String body(Object value) throws Exception {

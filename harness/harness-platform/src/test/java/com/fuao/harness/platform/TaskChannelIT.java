@@ -148,6 +148,43 @@ class TaskChannelIT extends PlatformTestBase {
     }
 
     @Test
+    void aTaskLostWithItsTerminalIsFailedRatherThanHanging() throws Exception {
+        String payload = body(Map.of("prompt", "echo hi"));
+        MockHttpServletRequestBuilder create = post("/api/harness/terminal/" + terminalId + "/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload);
+        signAsHuman("POST", "/api/harness/terminal/" + terminalId + "/tasks", create, payload);
+        String created = mvc.perform(create).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String taskId = String.valueOf(parse(created).get("taskId"));
+
+        // The terminal claims it and then disappears - the machine goes away.
+        MockHttpServletRequestBuilder next = get("/api/harness/terminal/" + terminalId + "/tasks/next");
+        signAsService("GET", "/api/harness/terminal/" + terminalId + "/tasks/next", next, "");
+        mvc.perform(next).andExpect(status().isOk());
+        // The claim happened two hours ago and nobody answered.
+        jdbc.sql("UPDATE harness_terminal_task SET claimed_at = DATE_SUB(NOW(), INTERVAL 2 HOUR) "
+                        + "WHERE task_id = :id")
+                .param("id", taskId).update();
+
+        // The sweep is what the scheduler runs; call it the same way.
+        int failed = staleSweep();
+        assertEquals(1, failed, "the lost task is failed, not left hanging");
+
+        MockHttpServletRequestBuilder list = get("/api/harness/tasks?terminalId=" + terminalId);
+        signAsHuman("GET", "/api/harness/tasks?terminalId=" + terminalId, list, "");
+        mvc.perform(list)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].status").value("failed"));
+    }
+
+    private int staleSweep() {
+        com.fuao.harness.platform.service.TaskService service = applicationContext
+                .getBean(com.fuao.harness.platform.service.TaskService.class);
+        return service.failStaleRunning(30);
+    }
+
+    @Test
     void anEmptyRequestIsRefused() throws Exception {
         String payload = body(Map.of("prompt", "   "));
         MockHttpServletRequestBuilder request = post("/api/harness/terminal/" + terminalId + "/tasks")

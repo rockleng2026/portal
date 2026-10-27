@@ -132,6 +132,42 @@ public class TaskRepository {
                 .update() == 1;
     }
 
+    /**
+     * The tasks that were claimed long ago and never answered.
+     *
+     * <p>A task that was claimed and then lost - the platform restarted, the machine went away,
+     * the model call died - would stay "running" for ever, and nothing would ever pick it up
+     * again. The answer is gone, so the task is failed with a reason instead of hanging.
+     *
+     * <p>The clock is the moment the task was <em>claimed</em>, not the terminal's heartbeat:
+     * a machine that is perfectly alive can still be sitting on a request that will never come
+     * back.
+     */
+    public List<String> staleRunning(Instant cutoff) {
+        return jdbc.sql("""
+                        SELECT task_id
+                          FROM harness_terminal_task
+                         WHERE status = 'running'
+                           AND claimed_at IS NOT NULL
+                           AND claimed_at < :cutoff
+                        """)
+                .param("cutoff", Timestamp.from(cutoff))
+                .query(String.class)
+                .list();
+    }
+
+    /** Fails a task that was lost. */
+    public boolean fail(String taskId, String reason) {
+        return jdbc.sql("""
+                        UPDATE harness_terminal_task
+                           SET status = 'failed', error = :reason, finished_at = NOW()
+                         WHERE task_id = :id AND status = 'running'
+                        """)
+                .param("id", taskId)
+                .param("reason", reason)
+                .update() == 1;
+    }
+
     /** A task that was never picked up. */
     public boolean cancel(String taskId, String reason) {
         return jdbc.sql("""

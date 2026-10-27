@@ -94,6 +94,29 @@ public class TaskService {
         return ok;
     }
 
+    /**
+     * Fails the tasks whose terminal stopped reporting.
+     *
+     * @param minutes how long a task may be "running" without its terminal saying anything
+     */
+    @Transactional
+    public int failStaleRunning(int minutes) {
+        List<String> stale = tasks.staleRunning(Instant.now().minusSeconds(minutes * 60L));
+        int failed = 0;
+        for (String taskId : stale) {
+            if (tasks.fail(taskId, "the terminal stopped reporting before it answered")) {
+                failed++;
+            }
+        }
+        if (failed > 0) {
+            audit.record(AuthenticatedClient.system("platform"), "task.fail_stale", "task.fail_stale",
+                    "task", "*", "allow", "TERMINAL_SILENT",
+                    failed + " task(s) were lost with their terminal and have been failed",
+                    Map.of("count", String.valueOf(failed)));
+        }
+        return failed;
+    }
+
     public List<TaskRepository.TaskRow> list(String terminalId, String status, int limit) {
         return tasks.list(terminalId, status, limit);
     }
