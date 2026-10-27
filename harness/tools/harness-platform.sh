@@ -76,21 +76,48 @@ healthy() {
   curl -fsS -o /dev/null "http://127.0.0.1:$1/actuator/health" 2>/dev/null
 }
 
+# The jar the service runs from. "mvn clean" deletes it, and then the service cannot start
+# with a very unhelpful "Unable to access jarfile". So the script builds it when it is missing
+# rather than leaving the operator with a log tail and no idea what to do.
+ensure_jar() {
+  if [[ -f "$JAR" ]]; then
+    return 0
+  fi
+  echo "harness-platform: $JAR is missing; building it"
+  if ! command -v mvn >/dev/null 2>&1; then
+    echo "harness-platform: mvn is not on the PATH. Put the JDK and Maven on the PATH, or build with:" >&2
+    echo "  (cd $ROOT && mvn -B -pl harness-platform -am package -DskipTests)" >&2
+    exit 1
+  fi
+  if ! (cd "$ROOT" && mvn -B -o -q -pl harness-platform -am package -DskipTests); then
+    echo "harness-platform: the build failed" >&2
+    exit 1
+  fi
+  if [[ ! -f "$JAR" ]]; then
+    echo "harness-platform: the build did not produce $JAR" >&2
+    exit 1
+  fi
+  echo "harness-platform: built"
+}
+
 start() {
   load_env
+  ensure_jar
   local port="${HARNESS_PORT:-8080}"
 
   if have_unit; then
     systemctl --user start "$UNIT" 2>/dev/null || true
-    for _ in $(seq 1 60); do
+    for _ in $(seq 1 120); do
       if unit_active && healthy "$port"; then
         echo "harness-platform: up on port ${port} (systemd user service), log: $LOG_FILE"
         return 0
       fi
       sleep 1
     done
-    echo "harness-platform: the systemd service did not come up; last lines of $LOG_FILE:" >&2
+    echo "harness-platform: the systemd service did not come up." >&2
+    echo "  last lines of $LOG_FILE:" >&2
     tail -20 "$LOG_FILE" >&2
+    echo "  if the jar is missing: (cd $ROOT && mvn -B -pl harness-platform -am package -DskipTests)" >&2
     return 1
   fi
 

@@ -36,9 +36,24 @@ start() {
     echo "harness-agent: already running (pid $(cat "$PID_FILE"))"
     return 0
   fi
+  # Same as the platform script: if the binary is missing ("cargo clean" deletes it), build it
+  # instead of leaving the operator with a log tail and no idea what to do.
   if [[ ! -x "$AGENT_BIN" ]]; then
-    echo "harness-agent: $AGENT_BIN is missing. Build it: (cd $ROOT/../harness-terminal && cargo build --release)" >&2
-    exit 1
+    echo "harness-agent: $AGENT_BIN is missing; building it"
+    if ! command -v cargo >/dev/null 2>&1; then
+      echo "harness-agent: cargo is not on the PATH. Put Rust on the PATH, or build with:" >&2
+      echo "  (cd $ROOT/../harness-terminal && cargo build --release)" >&2
+      exit 1
+    fi
+    if ! (cd "$ROOT/../harness-terminal" && cargo build --release); then
+      echo "harness-agent: the build failed" >&2
+      exit 1
+    fi
+    if [[ ! -x "$AGENT_BIN" ]]; then
+      echo "harness-agent: the build did not produce $AGENT_BIN" >&2
+      exit 1
+    fi
+    echo "harness-agent: built"
   fi
   mkdir -p "$RUN_DIR" "$(dirname "$LOG_FILE")"
   setsid nohup "$AGENT_BIN" serve \
