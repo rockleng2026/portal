@@ -9,7 +9,7 @@ import com.fuao.fajxc.dao.harness.HarnessAccountDao;
 import com.fuao.fajxc.util.HarnessJson;
 
 /**
- * The portal side of the harness API (03 Â§9).
+ * The portal side of the harness API (03 ¡ì9).
  *
  * <p>Three endpoints at M0, all of them things the platform cannot do by reading the database
  * alone:

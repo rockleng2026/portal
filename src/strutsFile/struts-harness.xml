@@ -4,9 +4,9 @@
 
   A separate package with its own namespace and its own interceptor stack. The portal's normal
   packages use LoginInterceptor, which identifies a human by a reversible cookie password and
-  resolves authority by scraping the request URL (01 Â§2.1 conclusion B). A digital employee must
+  resolves authority by scraping the request URL (01 ¡ì2.1 conclusion B). A digital employee must
   not travel on that machinery, so this namespace never touches the cookie session: it speaks
-  HMAC service-account authentication (03 Â§9) and nothing else (ADR-004).
+  HMAC service-account authentication (03 ¡ì9) and nothing else (ADR-004).
 
   One package per URL segment. This portal runs with
   "struts.mapper.alwaysSelectFullNamespace=true", which takes the namespace from everything

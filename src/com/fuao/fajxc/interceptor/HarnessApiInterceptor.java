@@ -24,7 +24,7 @@ import com.fuao.fajxc.util.HarnessJson;
  *
  * <p>This is a completely separate identity system from the portal's. Portal humans are
  * identified by a reversible cookie password and their authority is resolved by scraping the
- * request URL (01 Â§2.1 conclusion B). A digital employee must never travel on that machinery:
+ * request URL (01 ¡ì2.1 conclusion B). A digital employee must never travel on that machinery:
  * a leaked cookie would otherwise be the loss of a whole organisation's authority. So the
  * harness namespace speaks HMAC service-account authentication and never touches the cookie
  * session (ADR-004).

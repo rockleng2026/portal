@@ -10,7 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * HMAC signing for the harness API, byte-compatible with the platform side.
  *
- * <p>The canonical string is the contract (03 Â§9):
+ * <p>The canonical string is the contract (03 ¡ì9):
  *
  * <pre>
  *   METHOD \n PATH \n TIMESTAMP \n NONCE \n hex(sha256(body))

@@ -26,11 +26,11 @@ import com.fuao.fajxc.vo.WorkpositionEmployee;
  * <p>Two responsibilities, both narrow on purpose:
  * <ul>
  *   <li>answer "is this login name a digital employee?" so the login path can refuse it (A0-2);</li>
- *   <li>give the platform the permission snapshot and perform the onboarding write (01 Â§5.1).</li>
+ *   <li>give the platform the permission snapshot and perform the onboarding write (01 ¡ì5.1).</li>
  * </ul>
  *
  * <p>The permission snapshot deliberately returns the <em>raw</em> comma separated strings as
- * well as a parsed view. The platform parses the same strings on its own side (03 Â§8) and the two
+ * well as a parsed view. The platform parses the same strings on its own side (03 ¡ì8) and the two
  * results are compared (A0-3). If they disagree, the disagreement is the finding - which is the
  * whole point of having two independent parsers instead of one shared jar.
  */
@@ -160,7 +160,7 @@ public class HarnessAccountDao extends BaseDao {
 
     /**
      * Creates the portal side of a digital employee: the employee row, the login account and the
-     * position binding (01 Â§5.1, ADR-002).
+     * position binding (01 ¡ì5.1, ADR-002).
      *
      * <p>The account gets a random sentinel password and {@code isAI = 1}. The password is never
      * returned and never usable: the login path refuses AI accounts outright (A0-2), and the
@@ -203,7 +203,7 @@ public class HarnessAccountDao extends BaseDao {
         employee.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         employee.setIsLoginAccount(Integer.valueOf(1));
         // 0 = left the company, 1 = employed. The portal's own comment is counter-intuitive and
-        // so is this code; see 03 Â§8.
+        // so is this code; see 03 ¡ì8.
         employee.setIsLeave(Integer.valueOf(1));
         employee.setEmpNo(agentKey);
         employee.setDelflag(Integer.valueOf(0));
@@ -278,7 +278,7 @@ public class HarnessAccountDao extends BaseDao {
      *
      * <p>Every malformed entry produces a warning instead of being dropped: the portal's
      * permission strings are hand-edited comma lists, and silently ignoring a broken entry would
-     * quietly widen or narrow somebody's authority (03 Â§8).
+     * quietly widen or narrow somebody's authority (03 ¡ì8).
      */
     public static Map parsePermissions(String raw, String field, List warnings) {
         HarnessJson.HarnessMap parsed = new HarnessJson.HarnessMap();
