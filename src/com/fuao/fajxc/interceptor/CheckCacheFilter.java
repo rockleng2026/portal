@@ -52,6 +52,12 @@ public class CheckCacheFilter implements Filter {
 				
 				System.out.println(scheme+"://"+servername+":"+port+"/"+objectname+path);
 				String uri = request.getRequestURI();
+				if(uri.indexOf("/api/harness/")>=0){
+					// The harness namespace authenticates with an HMAC service account (ADR-004) and
+					// never has a portal session, so it must not be sent to the login page.
+					filterChain.doFilter(req, res);
+					return ;
+				}
 				logger.info("uri-l : "+uri);
 				String str = "/checkFiledCustomerServer.Action";
 				logger.info("test="+str.indexOf("/checkFiledCustomerServer.Action"));

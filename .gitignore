@@ -21,3 +21,7 @@ grails-app/conf/application*.yml
 bin/
 # Rust build output
 harness-terminal/target/
+
+# Python bytecode from the build tools
+__pycache__/
+*.pyc

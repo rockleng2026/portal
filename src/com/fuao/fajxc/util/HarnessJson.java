@@ -216,15 +216,34 @@ public final class HarnessJson {
             }
         }
 
-        Double readNumber() {
+        Object readNumber() {
             int start = pos;
-            while (pos < text.length() && "+-0123456789.eE".indexOf(text.charAt(pos)) >= 0) {
-                pos++;
+            boolean integral = true;
+            while (pos < text.length()) {
+                char c = text.charAt(pos);
+                if ("+-0123456789".indexOf(c) >= 0) {
+                    pos++;
+                } else if (c == '.' || c == 'e' || c == 'E') {
+                    integral = false;
+                    pos++;
+                } else {
+                    break;
+                }
             }
             if (start == pos) {
                 throw new IllegalStateException("not a number at " + pos);
             }
-            return Double.valueOf(text.substring(start, pos));
+            String literal = text.substring(start, pos);
+            // An integral number stays integral: "15" must not arrive as "15.0" and then fail
+            // every integer parse on the other side.
+            if (integral) {
+                try {
+                    return Long.valueOf(literal);
+                } catch (NumberFormatException e) {
+                    // too big for a long - fall through to the double
+                }
+            }
+            return Double.valueOf(literal);
         }
 
         void expect(char c) {

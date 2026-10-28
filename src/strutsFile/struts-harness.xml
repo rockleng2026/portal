@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
 <!--
   Harness API namespace (/api/harness/**).
 
   A separate package with its own namespace and its own interceptor stack. The portal's normal
   packages use LoginInterceptor, which identifies a human by a reversible cookie password and
-  resolves authority by scraping the request URL (01 ¡ì2.1 conclusion B). A digital employee must
+  resolves authority by scraping the request URL (01 Â§2.1 conclusion B). A digital employee must
   not travel on that machinery, so this namespace never touches the cookie session: it speaks
-  HMAC service-account authentication (03 ¡ì9) and nothing else (ADR-004).
+  HMAC service-account authentication (03 Â§9) and nothing else (ADR-004).
 
   One package per URL segment. This portal runs with
   "struts.mapper.alwaysSelectFullNamespace=true", which takes the namespace from everything
@@ -18,16 +21,29 @@
   The URLs carry the portal's action extension ("do"), like every other action in this
   application: the platform signs the exact path it requests, so the extension is part of the
   signature and both sides have to use the same one.
+
+  Every action names its interceptor stack explicitly. A stack that is only defined in the
+  package is not automatically the package's default, and an action that runs without the
+  harness authenticator would answer unsigned calls.
 -->
 <struts>
 	<package name="harness-api" extends="json-default" namespace="/api/harness">
 
+		<!-- The harness namespace does NOT use the portal's LoginInterceptor: it authenticates
+		     with an HMAC service account instead (01 Â§2.1 ç»“è®º B, ADR-004). The stack is the
+		     built-in defaultStack plus the harness authenticator in front of it. Note that
+		     "defaultStack" is a stack name, not a class - the portal's other packages build
+		     their stacks the same way. -->
 		<interceptors>
 			<interceptor name="harnessAuth" class="com.fuao.fajxc.interceptor.HarnessApiInterceptor"/>
-			<interceptor name="defaultStack" class="org.apache.struts2.interceptor.DefaultStack"/>
+			<interceptor-stack name="harnessStack">
+				<interceptor-ref name="harnessAuth"/>
+				<interceptor-ref name="defaultStack"/>
+			</interceptor-stack>
 		</interceptors>
 
 		<action name="health" class="HarnessApiAction" method="health">
+			<interceptor-ref name="harnessStack"/>
 			<result name="success" type="json">
 				<param name="root">payload</param>
 			</result>
@@ -42,10 +58,14 @@
 
 		<interceptors>
 			<interceptor name="harnessAuth" class="com.fuao.fajxc.interceptor.HarnessApiInterceptor"/>
-			<interceptor name="defaultStack" class="org.apache.struts2.interceptor.DefaultStack"/>
+			<interceptor-stack name="harnessStack">
+				<interceptor-ref name="harnessAuth"/>
+				<interceptor-ref name="defaultStack"/>
+			</interceptor-stack>
 		</interceptors>
 
 		<action name="snapshot" class="HarnessApiAction" method="permissionSnapshot">
+			<interceptor-ref name="harnessStack"/>
 			<result name="success" type="json">
 				<param name="root">payload</param>
 			</result>
@@ -60,10 +80,14 @@
 
 		<interceptors>
 			<interceptor name="harnessAuth" class="com.fuao.fajxc.interceptor.HarnessApiInterceptor"/>
-			<interceptor name="defaultStack" class="org.apache.struts2.interceptor.DefaultStack"/>
+			<interceptor-stack name="harnessStack">
+				<interceptor-ref name="harnessAuth"/>
+				<interceptor-ref name="defaultStack"/>
+			</interceptor-stack>
 		</interceptors>
 
 		<action name="onboard" class="HarnessApiAction" method="onboard">
+			<interceptor-ref name="harnessStack"/>
 			<result name="success" type="json">
 				<param name="root">payload</param>
 			</result>

@@ -1,0 +1,38 @@
+# The portal files this project changed or added.
+#
+# The deploy copies exactly these (plus everything they pull in), so a deploy never rewrites
+# the deployment's own files - the portal's web.xml and struts.xml are deployment specific and
+# are patched, not replaced.
+#
+# The list is the diff against the portal's original import; keep it in step with the changes.
+
+# --- the harness namespace (new) ---
+src/com/fuao/fajxc/util/HarnessJson.java
+src/com/fuao/fajxc/util/HarnessHmac.java
+src/com/fuao/fajxc/util/HarnessCachedBodyRequest.java
+src/com/fuao/fajxc/interceptor/HarnessApiInterceptor.java
+src/com/fuao/fajxc/action/harness/HarnessApiAction.java
+src/com/fuao/fajxc/dao/harness/HarnessAccountDao.java
+
+# --- the changed legacy classes (they carry the A0-2 changes) ---
+src/com/fuao/fajxc/action/LoginAction.java
+src/com/fuao/fajxc/action/sale/SaleOrderAction.java
+src/com/fuao/fajxc/action/GlobalVariables.java
+src/com/fuao/fajxc/interceptor/CheckCacheFilter.java
+src/com/fuao/fajxc/dao/impl/LoginDaoImpl.java
+src/com/fuao/fajxc/dao/impl/CommBaseDaoImpl.java
+src/com/fuao/fajxc/dao/impl/stockpile/WarehousingDaoImpl.java
+src/com/fuao/fajxc/dao/impl/system/FunctionInfoSystemDaoImpl.java
+src/com/fuao/fajxc/dao/impl/system/MenuInterceptorImpl.java
+src/com/fuao/fajxc/dao/impl/system/RoleSystemDaoImpl.java
+src/com/fuao/fajxc/vo/Users.java
+
+# --- the resources ---
+src/applicationContext-harness.xml
+src/applicationContext-login.xml
+src/struts.xml
+src/strutsFile/struts-harness.xml
+src/com/fuao/fajxc/vo/Users.hbm.xml
+src/com/fuao/fajxc/vo/Groups.hbm.xml
+WebRoot/WEB-INF/props/harness-api.properties
+WebRoot/WEB-INF/web.xml

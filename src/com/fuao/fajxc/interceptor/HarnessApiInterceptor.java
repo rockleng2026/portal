@@ -183,7 +183,10 @@ public class HarnessApiInterceptor implements Interceptor {
         }
 
         String key = HarnessHmac.deriveKey(secret);
-        if (!HarnessHmac.verify(key, signature, request.getMethod(), request.getRequestURI(),
+        // The signed path is the path INSIDE the web application - the servlet path plus the
+        // path info, without the context path. request.getRequestURI() would include
+        // "/portal", and the client signs what it sends, so the two would never agree.
+        if (!HarnessHmac.verify(key, signature, request.getMethod(), signedPath(request),
                 timestamp, nonce, cached.getBody())) {
             return reject(request, response, invocation, 401, "BAD_SIGNATURE",
                     "signature does not match");
@@ -204,6 +207,19 @@ public class HarnessApiInterceptor implements Interceptor {
             cached.setAttribute("harness.parameters", parsed);
         }
         return invocation.invoke();
+    }
+
+    /**
+     * The path the signature covers: the path inside the web application.
+     *
+     * <p>The platform (and every client of it) signs the path it sends, without the context
+     * path. Signing the full request URI would put "/portal" into the signature and every
+     * call would fail with BAD_SIGNATURE.
+     */
+    private static String signedPath(HttpServletRequest request) {
+        String servletPath = request.getServletPath() == null ? "" : request.getServletPath();
+        String pathInfo = request.getPathInfo() == null ? "" : request.getPathInfo();
+        return servletPath + pathInfo;
     }
 
     private boolean claimNonce(String nonce) {
