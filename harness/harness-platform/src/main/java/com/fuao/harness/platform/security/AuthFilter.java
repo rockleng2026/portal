@@ -64,6 +64,22 @@ public class AuthFilter extends OncePerRequestFilter {
                 throw new AuthenticationException(403, "SCOPE_NOT_ALLOWED",
                         "client " + client.clientId() + " may not call " + request.getRequestURI());
             }
+            // A device account may only speak for the device it is bound to. Until it has
+            // registered, the only thing it may do is register.
+            if (client.isTerminal()) {
+                String bound = client.terminalId();
+                String asked = terminalIdOf(request.getRequestURI());
+                boolean registering = request.getRequestURI().endsWith("/api/harness/terminal/hello");
+                if (bound == null || bound.isBlank()) {
+                    if (!registering) {
+                        throw new AuthenticationException(403, "NOT_YOUR_TERMINAL",
+                                "client " + client.clientId() + " has not registered a terminal yet");
+                    }
+                } else if (asked != null && !asked.equals(bound)) {
+                    throw new AuthenticationException(403, "NOT_YOUR_TERMINAL",
+                            "client " + client.clientId() + " may only speak for its own terminal");
+                }
+            }
 
             authContext.set(client);
             chain.doFilter(cached, response);
@@ -87,11 +103,33 @@ public class AuthFilter extends OncePerRequestFilter {
      * one.
      */
     static boolean withinScope(String scope, String path) {
-        String s = scope.trim();
-        if (s.endsWith("*")) {
-            String prefix = s.substring(0, s.length() - 1);
-            return path.startsWith(prefix);
+        // A principal may have several prefixes: "/api/harness/terminal/*,/api/harness/tasks/*".
+        for (String part : scope.split(",")) {
+            String s = part.trim();
+            if (s.isEmpty()) {
+                continue;
+            }
+            if (s.endsWith("*")) {
+                if (path.startsWith(s.substring(0, s.length() - 1))) {
+                    return true;
+                }
+            } else if (s.equals(path) || path.startsWith(s.endsWith("/") ? s : s + "/")) {
+                return true;
+            }
         }
-        return s.equals(path) || path.startsWith(s.endsWith("/") ? s : s + "/");
+        return false;
+    }
+
+    /** The terminal id a path names, if it names one: /api/harness/terminal/{id}/... */
+    static String terminalIdOf(String path) {
+        String marker = "/api/harness/terminal/";
+        int start = path.indexOf(marker);
+        if (start < 0) {
+            return null;
+        }
+        String rest = path.substring(start + marker.length());
+        int slash = rest.indexOf('/');
+        String id = slash < 0 ? rest : rest.substring(0, slash);
+        return id.isEmpty() ? null : id;
     }
 }

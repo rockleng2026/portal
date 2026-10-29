@@ -52,6 +52,7 @@ public class ConsoleController {
     private final com.fuao.harness.platform.repo.CapabilityRepository capabilities;
     private final com.fuao.harness.platform.service.ModelConfigService modelConfigs;
     private final com.fuao.harness.platform.security.ClientAuthenticator authenticator;
+    private final com.fuao.harness.platform.service.PrincipalService principalService;
 
     public ConsoleController(AgentService agents, GrantService grants,
                              com.fuao.harness.platform.service.ApprovalService approvals,
@@ -60,7 +61,8 @@ public class ConsoleController {
                              com.fuao.harness.platform.service.TaskService tasks,
                              com.fuao.harness.platform.repo.CapabilityRepository capabilities,
                              com.fuao.harness.platform.service.ModelConfigService modelConfigs,
-                             com.fuao.harness.platform.security.ClientAuthenticator authenticator) {
+                             com.fuao.harness.platform.security.ClientAuthenticator authenticator,
+                             com.fuao.harness.platform.service.PrincipalService principalService) {
         this.agents = agents;
         this.grants = grants;
         this.approvals = new ApprovalServiceHolder(approvals);
@@ -72,6 +74,7 @@ public class ConsoleController {
         this.capabilities = capabilities;
         this.modelConfigs = modelConfigs;
         this.authenticator = authenticator;
+        this.principalService = principalService;
     }
 
     /** Exists so the constructor signature stays readable while the approval service is injected. */
@@ -389,6 +392,27 @@ public class ConsoleController {
     }
 
     // ------------------------------------------------------------------ principals
+
+    public record CreatePrincipalRequest(String agentKey) {
+    }
+
+    /**
+     * Creates a machine account for a device.
+     *
+     * <p>The secret is in the answer and nowhere else: the platform keeps sha256(secret) and
+     * cannot show it again. The console passes it straight into the installation command.
+     */
+    @PostMapping("/principal")
+    public Map<String, Object> createPrincipal(@RequestBody(required = false) CreatePrincipalRequest request) {
+        String agentKey = request == null ? null : request.agentKey();
+        com.fuao.harness.platform.service.PrincipalService.DeviceAccount account =
+                principalService.createDeviceAccount(agentKey, null, agentKey);
+        return Map.of(
+                "clientId", account.clientId(),
+                "secret", account.secret(),
+                "agentId", account.agentId() == null ? "" : account.agentId(),
+                "agentKey", account.agentKey() == null ? "" : account.agentKey());
+    }
 
     /**
      * The machine identities this platform knows about.

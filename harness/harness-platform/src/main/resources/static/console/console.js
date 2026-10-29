@@ -365,6 +365,7 @@ function renderTerminals() {
     {
       title: '操作', render: t => '<div class="row-actions">'
         + '<button class="tiny" data-act="agent-install" data-id="' + esc(t.agentId || '') + '">安装命令</button>'
+        + '<button class="tiny" data-act="principal-new" data-id="' + esc(t.agentId || '') + '">新建设备账号</button>'
         + '<button class="tiny" data-act="terminal-chat" data-id="' + esc(t.terminalId) + '">对话</button>'
         + '<button class="tiny" data-act="terminal-model" data-id="' + esc(t.terminalId) + '">配置模型</button>'
         + '<button class="tiny" data-act="terminal-grant" data-id="' + esc(t.terminalId) + '">看授权</button>'
@@ -742,6 +743,7 @@ function bindEvents() {
       else if (act === 'grant') { openGrantModal(id); return; }
       else if (act === 'agent-model') { modelModal('agent', id); return; }
       else if (act === 'agent-install') { installWizard(id); return; }
+      else if (act === 'principal-new') { newDeviceAccount(id); return; }
       else if (act === 'chat') { const a = state.agents.find(x => x.agentId === id); openChat(terminalOfAgent(id), a ? (a.name || a.agentKey) : id); return; }
       else if (act === 'terminal-chat') { openChat(id, '终端 ' + id.slice(0, 8) + '…'); return; }
       else if (act === 'terminal-grant') { showGrant(id); return; }
@@ -875,6 +877,36 @@ function installWizard(agentId) {
     { name: 'after', label: '③ 装完这三步', type: 'textarea', value: after },
     { name: 'secret', label: '关于密钥', type: 'textarea', value: secret },
   ], async () => { });
+}
+
+/**
+ * Creates a machine account for a device.
+ *
+ * Every device gets its own account: a shared one would mean that one lost machine
+ * can impersonate all of them, and that revoking one device revokes all of them
+ * (red-team R-01). The secret is shown once, here, and the platform keeps only its
+ * sha256 - so the console can hand it to the installer but can never show it again.
+ */
+function newDeviceAccount(agentId) {
+  const agent = agentId ? state.agents.find(a => a.agentId === agentId) : null;
+  modal('新建设备账号', [
+    { name: 'agentKey', label: '这台设备服务哪个数字员工（可空）', value: agent ? agent.agentKey : '' },
+  ], async (v) => {
+    const created = await api('POST', '/api/harness/principal', { agentKey: v.agentKey || '' });
+    const command = [
+      './install.sh \\',
+      '    --platform ' + session.baseUrl + ' \\',
+      '    --agent-key ' + (v.agentKey || '<数字员工业务键>') + ' \\',
+      '    --client-id ' + created.clientId + ' \\',
+      '    --client-secret ' + created.secret,
+    ].join('\n');
+    modal('设备账号已创建（密钥只显示这一次）', [
+      { name: 'id', label: 'client id', type: 'textarea', value: created.clientId },
+      { name: 'cmd', label: '安装命令', type: 'textarea', value: command },
+    ], async () => {
+      await loadAll();
+    });
+  });
 }
 
 function modelModal(scope, scopeId) {

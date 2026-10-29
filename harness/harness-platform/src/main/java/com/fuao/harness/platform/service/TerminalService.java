@@ -29,6 +29,7 @@ public class TerminalService {
     private final TerminalRepository terminals;
     private final AgentRepository agents;
     private final com.fuao.harness.platform.repo.CapabilityRepository capabilityRepo;
+    private final com.fuao.harness.platform.service.PrincipalService principals;
     private final BindingCodeStore codes;
     private final AuditService audit;
     private final AuthContext authContext;
@@ -36,12 +37,14 @@ public class TerminalService {
 
     public TerminalService(TerminalRepository terminals, AgentRepository agents,
                            com.fuao.harness.platform.repo.CapabilityRepository capabilities,
+                           com.fuao.harness.platform.service.PrincipalService principals,
                            BindingCodeStore codes,
                            AuditService audit, AuthContext authContext,
                            com.fuao.harness.platform.config.HarnessProperties properties) {
         this.terminals = terminals;
         this.agents = agents;
         this.capabilityRepo = capabilities;
+        this.principals = principals;
         this.codes = codes;
         this.audit = audit;
         this.authContext = authContext;
@@ -83,6 +86,11 @@ public class TerminalService {
             throw new RevokedTerminalException(terminalId);
         }
 
+        // A device account is bound to the terminal it registered with, so that it can only
+        // ever speak for that one machine (red-team R-01).
+        if (actor.isTerminal() && actor.terminalId() == null) {
+            principals.bindToTerminal(actor.clientId(), terminalId);
+        }
         audit.record(actor, "terminal.hello", "terminal", terminalId, "allow",
                 isNew ? "REGISTERED" : null,
                 "hello from " + cmd.os() + " " + cmd.hostname(),
@@ -202,6 +210,11 @@ public class TerminalService {
      */
     @Transactional
     public TerminalGrant grant(String terminalId) {
+        AuthenticatedClient caller = authContext.require();
+        if (caller.isTerminal() && (caller.terminalId() == null || !caller.terminalId().equals(terminalId))) {
+            throw new IllegalArgumentException(
+                    "this account may only read the grant of its own terminal");
+        }
         PolicyInputs.TerminalRow row = terminals.findById(terminalId)
                 .orElseThrow(() -> new IllegalArgumentException("no such terminal: " + terminalId));
         if ("revoked".equals(row.status())) {

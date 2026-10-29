@@ -76,6 +76,15 @@ public class TaskService {
     public boolean complete(String taskId, String status, String answer,
                             List<Map<String, Object>> transcript, List<String> touched, String error) {
         AuthenticatedClient actor = authContext.require();
+        // A device account may only answer the tasks of its own terminal.
+        if (actor.isTerminal()) {
+            TaskRepository.TaskRow task = tasks.find(taskId).orElse(null);
+            String bound = actor.terminalId();
+            if (task == null || bound == null || !bound.equals(task.terminalId())) {
+                throw new IllegalArgumentException(
+                        "this account may only answer the tasks of its own terminal");
+            }
+        }
         boolean ok = tasks.complete(taskId, status == null ? "done" : status, answer,
                 transcript == null ? null : Json.canonical(transcript),
                 touched == null ? null : Json.canonical(touched), error, Instant.now());
