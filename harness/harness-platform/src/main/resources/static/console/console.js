@@ -853,7 +853,7 @@ function installWizard(agentId) {
 
   const bundle = [
     '# 1) 在构建机上打包（缺什么它会自己先编）',
-    './harness/tools/install-terminal.sh bundle /tmp/harness-terminal',
+    './harness/tools/install-terminal.sh bundle /tmp/harness-terminal /tmp/harness-terminal.tar.gz',
   ].join('\n');
 
   const install = [

@@ -37,6 +37,8 @@ usage() {
 }
 
 POSITIONAL=()
+TARBALL=""
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     bundle) MODE="bundle"; shift ;;
@@ -54,6 +56,9 @@ while [[ $# -gt 0 ]]; do
 done
 if [[ ${#POSITIONAL[@]} -gt 0 ]]; then
   BUNDLE_DIR="${POSITIONAL[0]}"
+fi
+if [[ ${#POSITIONAL[@]} -gt 1 ]]; then
+  TARBALL="${POSITIONAL[1]}"
 fi
 
 # ---------------------------------------------------------------- the bundle
@@ -137,11 +142,15 @@ systemctl --user disable --now harness-agent
 rm -rf ~/.harness/terminal ~/.config/systemd/user/harness-agent.service ~/.harness/agent.log
 ```
 EOF
-  # The archive contains the directory itself, so that "tar xzf ... && cd harness-terminal"
-  # works on the target machine.
-  (cd "$(dirname "$BUNDLE_DIR")" && tar czf "$BUNDLE_DIR.tar.gz" "$(basename "$BUNDLE_DIR")")
-  echo "install-terminal: bundle in $BUNDLE_DIR.tar.gz"
-  echo "  copy it to the target machine and run: tar xzf harness-terminal-bundle.tar.gz && cd harness-terminal-bundle && ./install.sh --help"
+  # The archive contains the directory itself, so that "tar xzf ... && cd <dir>" works on the
+  # target machine.
+  [[ -z "$TARBALL" ]] && TARBALL="${BUNDLE_DIR}.tar.gz"
+  (cd "$(dirname "$BUNDLE_DIR")" && tar czf "$TARBALL" "$(basename "$BUNDLE_DIR")")
+  tar_name="$(basename "$TARBALL")"
+  dir_name="$(basename "$BUNDLE_DIR")"
+  echo "install-terminal: bundle in $TARBALL"
+  echo "  copy it to the target machine and run:"
+  echo "    tar xzf $tar_name && cd $dir_name && ./install.sh --help"
   exit 0
 fi
 
