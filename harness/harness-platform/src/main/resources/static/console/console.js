@@ -638,8 +638,15 @@ function bindEvents() {
       { name: 'agentKey', label: '业务键（唯一）', value: 'agent:' },
       { name: 'name', label: '显示名', value: 'leon' },
       { name: 'deptId', label: '部门 ID', value: '91' },
-      { name: 'ownerId', label: '责任人（portal 员工 ID）', value: '1' },
-      { name: 'level', label: '自主等级上限', type: 'select', options: [0, 1, 2, 3].map(v => ({ value: String(v), label: 'L' + v })) },
+      { name: 'ownerId', label: '责任人（portal 员工 ID，必须是真人）', value: '1' },
+      {
+        name: 'level', label: '自主等级（它能自己做到哪一步）', type: 'select', options: [
+          { value: '0', label: 'L0 观察 —— 只读、只汇报，不改任何东西' },
+          { value: '1', label: 'L1 建议 —— 出建议/草稿，人来执行' },
+          { value: '2', label: 'L2 低风险写 —— 改自己的工单、草稿、测试环境' },
+          { value: '3', label: 'L3 中风险写 —— 动生产但可回滚，事后要报备' },
+        ],
+      },
     ], async (v) => {
       await api('POST', '/api/harness/agent', {
         agentKey: v.agentKey, name: v.name, deptId: Number(v.deptId),
