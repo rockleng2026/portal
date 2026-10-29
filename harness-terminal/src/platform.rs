@@ -233,6 +233,25 @@ impl PlatformClient {
         .await
         .map(|_| ())
     }
+
+    /// The skills this terminal has been given.
+    ///
+    /// The platform answers with the skill's text, its digest and its signature. The terminal
+    /// checks the digest before it writes anything: a skill that does not match what the
+    /// platform published is not the skill the platform published.
+    ///
+    /// The platform is asked, not a local file: the machine may be offline for hours, and the
+    /// shelf changes while it is away.
+    pub async fn skills(&self, terminal_id: &str) -> Result<Vec<Value>> {
+        let answer = self
+            .send("GET", &format!("/api/harness/terminal/{terminal_id}/skills"), None)
+            .await?;
+        Ok(match answer {
+            Value::Array(list) => list,
+            Value::Null => Vec::new(),
+            other => vec![other],
+        })
+    }
 }
 
 /// Undoes the escaping that Java's `Properties.store` applies to a value.

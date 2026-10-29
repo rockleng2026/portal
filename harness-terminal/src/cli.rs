@@ -43,6 +43,39 @@ enum Command {
     Serve(ServeArgs),
     /// The device side: register, fetch the grant, heartbeat.
     Device(DeviceArgs),
+    /// The skills: fetch them from the platform and install them locally.
+    Skills(SkillsArgs),
+}
+
+#[derive(Parser, Debug)]
+struct SkillsArgs {
+    #[command(subcommand)]
+    command: SkillsCommand,
+}
+
+#[derive(Subcommand, Debug)]
+enum SkillsCommand {
+    /// Fetch the skills this terminal has been given and install them.
+    Sync(SkillsSyncArgs),
+    /// Show the skills that are installed.
+    List(SkillsListArgs),
+}
+
+#[derive(Parser, Debug)]
+struct SkillsSyncArgs {
+    /// The directory the skills are installed into.
+    #[arg(long)]
+    dir: Option<PathBuf>,
+    /// The configuration file of the terminal (platform.url, client.id, secret).
+    #[arg(long)]
+    config: Option<PathBuf>,
+}
+
+#[derive(Parser, Debug)]
+struct SkillsListArgs {
+    /// The directory the skills are installed into.
+    #[arg(long)]
+    dir: Option<PathBuf>,
 }
 
 #[derive(Parser, Debug)]
@@ -145,6 +178,9 @@ struct ServeArgs {
     /// Stop after this many requests (0 = never stop).
     #[arg(long, default_value_t = 0)]
     max_tasks: usize,
+    /// The directory the skills are installed into.
+    #[arg(long)]
+    skills: Option<PathBuf>,
 }
 
 #[derive(Parser, Debug)]
@@ -187,6 +223,7 @@ pub async fn main() -> Result<()> {
         Command::Replay(args) => replay(args).await,
         Command::Serve(args) => serve(args).await,
         Command::Device(args) => device(args).await,
+        Command::Skills(args) => skills(args).await,
     };
     result
 }
@@ -394,6 +431,79 @@ async fn replay(args: ReplayArgs) -> Result<()> {
     Ok(())
 }
 
+/// The skills: fetch them from the platform and install them locally.
+///
+/// The platform is the shelf; this machine is the copy. A skill the platform withdrew is
+/// removed from the disk, because a skill that is not on the shelf any more must not keep
+/// running here.
+async fn skills(args: SkillsArgs) -> Result<()> {
+    match args.command {
+        SkillsCommand::Sync(sync_args) => {
+            let config_path = sync_args
+                .config
+                .clone()
+                .unwrap_or_else(crate::platform::PlatformConfig::default_path);
+            let config = crate::platform::PlatformConfig::read(&config_path)?;
+            if config.terminal_id.is_empty() {
+                return Err(anyhow::anyhow!(
+                    "the configuration {} has no terminal.id - run 'harness-terminal device hello' first",
+                    config_path.display()
+                ));
+            }
+            let platform = crate::platform::PlatformClient::new(&config)?;
+            let root = sync_args
+                .dir
+                .clone()
+                .unwrap_or_else(crate::skills::default_skills_dir);
+            let report = sync_skills(&platform, &config.terminal_id, &root).await?;
+            println!("skills: {}", root.display());
+            for name in &report.installed {
+                println!("  installed {name}");
+            }
+            for name in &report.removed {
+                println!("  removed {name}");
+            }
+            for (name, reason) in &report.rejected {
+                eprintln!("  refused {name}: {reason}");
+            }
+            Ok(())
+        }
+        SkillsCommand::List(list_args) => {
+            let root = list_args
+                .dir
+                .clone()
+                .unwrap_or_else(crate::skills::default_skills_dir);
+            let library = SkillLibrary::load_from(&root)?;
+            println!("# Skills ({}):", library.len());
+            for name in library.names() {
+                let skill = library.get(&name).expect("skill");
+                println!("  {name}: {}", skill.description);
+            }
+            Ok(())
+        }
+    }
+}
+
+/// Fetches the skills from the platform and puts them on disk.
+///
+/// The digest is checked before anything is written, and a skill that does not load is refused
+/// rather than left behind.
+async fn sync_skills(
+    platform: &crate::platform::PlatformClient,
+    terminal_id: &str,
+    root: &std::path::Path,
+) -> Result<crate::skills::InstallReport> {
+    let answer = platform.skills(terminal_id).await?;
+    let mut packages = Vec::new();
+    for item in answer {
+        match crate::skills::SkillPackage::from_json(&item) {
+            Ok(package) => packages.push(package),
+            Err(error) => eprintln!("the platform sent a skill that cannot be read: {error:#}"),
+        }
+    }
+    crate::skills::install_all(root, &packages)
+}
+
 /// Serves the console: takes requests from the platform, answers them.
 ///
 /// The loop is the whole point of the terminal being a *digital employee* rather than a
@@ -469,6 +579,34 @@ async fn serve(args: ServeArgs) -> Result<()> {
     // The policy is re-read from the grant, not held from the start: the platform can take a
     // capability away or give one at any moment.
     let mut policy = policy;
+
+    // The skills live on the platform's shelf. The terminal keeps a copy, checks the copy
+    // against the digest the platform published, and takes back the skills the platform
+    // withdrew - a withdrawn skill must not keep running here.
+    let skills_dir = args
+        .skills
+        .clone()
+        .unwrap_or_else(crate::skills::default_skills_dir);
+    let mut library = match sync_skills(&platform, &platform_config.terminal_id, &skills_dir).await {
+        Ok(report) => {
+            if !report.installed.is_empty() || !report.removed.is_empty() {
+                println!(
+                    "skills: {} installed, {} removed ({})",
+                    report.installed.len(),
+                    report.removed.len(),
+                    skills_dir.display()
+                );
+            }
+            for (name, reason) in &report.rejected {
+                eprintln!("the skill {name} was refused: {reason}");
+            }
+            SkillLibrary::load_from(&skills_dir)?
+        }
+        Err(error) => {
+            eprintln!("cannot fetch the skills: {error:#}");
+            SkillLibrary::new()
+        }
+    };
     loop {
         // The heartbeat is the device's liveness. Whoever runs on the machine says it - the
         // agent is usually the thing that stays up, so it says it.
@@ -519,6 +657,21 @@ async fn serve(args: ServeArgs) -> Result<()> {
                 }
                 Err(error) => eprintln!("heartbeat failed: {error:#}"),
             }
+            // The shelf changes while the machine is running: a skill is published, withdrawn
+            // or upgraded. The copy on the disk follows, the same way the grant does.
+            match sync_skills(&platform, &platform_config.terminal_id, &skills_dir).await {
+                Ok(report) => {
+                    if !report.installed.is_empty() || !report.removed.is_empty() {
+                        println!(
+                            "skills changed: {} installed, {} removed",
+                            report.installed.len(),
+                            report.removed.len()
+                        );
+                        library = SkillLibrary::load_from(&skills_dir)?;
+                    }
+                }
+                Err(error) => eprintln!("cannot fetch the skills: {error:#}"),
+            }
         }
 
         let task = match platform.next_task(&platform_config.terminal_id).await {
@@ -554,7 +707,16 @@ async fn serve(args: ServeArgs) -> Result<()> {
             .to_string();
         println!("--- task {task_id}: {prompt}");
 
-        let outcome = answer(&prompt, &args, &brain, workspace.clone(), tools.clone(), policy.clone()).await;
+        let outcome = answer(
+            &prompt,
+            &args,
+            &brain,
+            &library,
+            workspace.clone(),
+            tools.clone(),
+            policy.clone(),
+        )
+        .await;
         let result = match outcome {
             Ok((answer, transcript, touched)) => {
                 crate::platform::task_result(&answer, transcript, touched, None)
@@ -787,6 +949,7 @@ async fn answer(
     prompt: &str,
     args: &ServeArgs,
     brain: &Brain,
+    skills: &SkillLibrary,
     workspace: Arc<Workspace>,
     tools: ToolRegistry,
     policy: Arc<LocalPolicy>,
@@ -830,6 +993,17 @@ async fn answer(
         AgentConfig {
             task: prompt.to_string(),
             max_steps: args.max_steps,
+            // The skills that match the request go into the system prompt. They are content,
+            // not authority: whatever they say, every action still goes through the policy.
+            system_prompt: {
+                let mut system = crate::agent::DEFAULT_SYSTEM_PROMPT.to_string();
+                let skill_text = skills.render(prompt, 3);
+                if !skill_text.is_empty() {
+                    system.push_str("\n\n");
+                    system.push_str(&skill_text);
+                }
+                system
+            },
             ..Default::default()
         },
         model.clone(),

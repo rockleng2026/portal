@@ -254,6 +254,176 @@ pub fn digest_of(content: &str, scripts: &[String]) -> String {
     hex::encode(hasher.finalize())
 }
 
+/// The digest of a skill's text alone.
+///
+/// This is the digest the platform publishes: sha256 over the SKILL.md it handed out, so the
+/// terminal can check that what arrived is what the platform meant to send. It is a plain
+/// digest, not a signature - the terminal has no copy of the platform's signing key, and
+/// giving it one would let a compromised machine mint skills of its own.
+pub fn content_digest(content: &str) -> String {
+    hex::encode(Sha256::digest(content.as_bytes()))
+}
+
+/// The directory the skills live in by default.
+pub fn default_skills_dir() -> PathBuf {
+    let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
+    PathBuf::from(home).join(".harness").join("skills")
+}
+
+/// A skill the platform handed out.
+#[derive(Debug, Clone)]
+pub struct SkillPackage {
+    /// The skill's name - the frontmatter's name, which is what the agent sees.
+    pub name: String,
+    /// The version the platform published.
+    pub version: i64,
+    /// The SKILL.md, frontmatter and all.
+    pub content: String,
+    /// The digest the platform published for this content.
+    pub digest: String,
+    /// The scripts that travel with the skill: (name, content).
+    pub scripts: Vec<(String, String)>,
+}
+
+impl SkillPackage {
+    /// Reads a package out of the platform's answer.
+    ///
+    /// A package without a name or without content is refused: it would be written to disk as
+    /// a directory nobody can use.
+    pub fn from_json(value: &serde_json::Value) -> Result<Self> {
+        let name = value
+            .get("name")
+            .and_then(|v| v.as_str())
+            .filter(|n| !n.is_empty())
+            .ok_or_else(|| anyhow!("the platform sent a skill without a name"))?
+            .to_string();
+        let content = value
+            .get("content")
+            .and_then(|v| v.as_str())
+            .ok_or_else(|| anyhow!("the platform sent the skill '{name}' without its content"))?
+            .to_string();
+        let digest = value
+            .get("digest")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .to_string();
+        let version = value.get("version").and_then(|v| v.as_i64()).unwrap_or(0);
+        let mut scripts = Vec::new();
+        if let Some(list) = value.get("scripts").and_then(|v| v.as_array()) {
+            for script in list {
+                let Some(script_name) = script.get("name").and_then(|v| v.as_str()) else {
+                    continue;
+                };
+                let script_content = script
+                    .get("content")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                scripts.push((script_name.to_string(), script_content.to_string()));
+            }
+        }
+        Ok(Self {
+            name,
+            version,
+            content,
+            digest,
+            scripts,
+        })
+    }
+}
+
+/// What an install run did.
+#[derive(Debug, Default)]
+pub struct InstallReport {
+    /// The skills that were written.
+    pub installed: Vec<String>,
+    /// The skills that were taken off the disk because the platform withdrew them.
+    pub removed: Vec<String>,
+    /// The skills that were refused, with the reason.
+    pub rejected: Vec<(String, String)>,
+}
+
+/// Installs the skills the platform handed out.
+///
+/// The rules:
+/// - the digest is checked before anything is written, so a corrupted download never lands;
+/// - a skill the platform no longer lists is removed from the disk, because a withdrawn skill
+///   must not keep running on a machine (the platform withdraws the installations too, and the
+///   two must agree);
+/// - a skill that does not load is removed rather than kept: a directory whose SKILL.md cannot
+///   be read is a skill that does nothing, and a skill that does nothing silently is worse
+///   than a missing one.
+pub fn install_all(root: &Path, packages: &[SkillPackage]) -> Result<InstallReport> {
+    let mut report = InstallReport::default();
+    std::fs::create_dir_all(root)
+        .with_context(|| format!("cannot create the skills directory {}", root.display()))?;
+
+    let mut wanted: Vec<String> = Vec::new();
+    for package in packages {
+        if !package.digest.is_empty() {
+            let actual = content_digest(&package.content);
+            if actual != package.digest {
+                report.rejected.push((
+                    package.name.clone(),
+                    format!(
+                        "the content does not match the digest the platform published (expected {}, got {})",
+                        package.digest, actual
+                    ),
+                ));
+                continue;
+            }
+        }
+        let directory = root.join(&package.name);
+        std::fs::create_dir_all(&directory)
+            .with_context(|| format!("cannot create {}", directory.display()))?;
+        let skill_file = directory.join("SKILL.md");
+        std::fs::write(&skill_file, &package.content)
+            .with_context(|| format!("cannot write {}", skill_file.display()))?;
+        if !package.scripts.is_empty() {
+            let scripts_dir = directory.join("scripts");
+            std::fs::create_dir_all(&scripts_dir)
+                .with_context(|| format!("cannot create {}", scripts_dir.display()))?;
+            for (name, content) in &package.scripts {
+                let path = scripts_dir.join(name);
+                std::fs::write(&path, content)
+                    .with_context(|| format!("cannot write {}", path.display()))?;
+            }
+        }
+        // The skill has to load. A skill the agent cannot read would be in the directory and
+        // not in the prompt - the exact "looks like it works" failure.
+        if let Err(error) = Skill::load(&skill_file) {
+            report.rejected.push((package.name.clone(), error.to_string()));
+            let _ = std::fs::remove_dir_all(&directory);
+            continue;
+        }
+        wanted.push(package.name.clone());
+        report.installed.push(package.name.clone());
+    }
+
+    // Whatever the platform no longer lists goes away.
+    if let Ok(entries) = std::fs::read_dir(root) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if !path.is_dir() {
+                continue;
+            }
+            let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
+                continue;
+            };
+            if wanted.iter().any(|w| w == name) {
+                continue;
+            }
+            // Only a directory that holds a SKILL.md is a skill of ours; anything else in the
+            // directory belongs to somebody else and stays.
+            if path.join("SKILL.md").exists() {
+                let _ = std::fs::remove_dir_all(&path);
+                report.removed.push(name.to_string());
+            }
+        }
+    }
+
+    Ok(report)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -306,5 +476,83 @@ mod tests {
         let rendered = library.render("cut a release please", 5);
         assert!(rendered.contains("release"));
         assert!(!rendered.contains("database"));
+    }
+
+    fn package(name: &str, body: &str) -> SkillPackage {
+        let content = format!("---\nname: {name}\ndescription: what it is for\n---\n\n{body}\n");
+        SkillPackage {
+            name: name.to_string(),
+            version: 1,
+            digest: content_digest(&content),
+            content,
+            scripts: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn installs_the_skill_the_platform_handed_out() {
+        let dir = tempfile::tempdir().unwrap();
+        let report = install_all(dir.path(), &[package("release", "1. run the tests")]).unwrap();
+        assert_eq!(report.installed, vec!["release".to_string()]);
+        assert!(report.rejected.is_empty());
+
+        let library = SkillLibrary::load_from(dir.path()).unwrap();
+        assert_eq!(library.len(), 1);
+        assert!(library.get("release").unwrap().instructions.contains("run the tests"));
+    }
+
+    #[test]
+    fn refuses_a_skill_whose_content_does_not_match_the_digest() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut skill = package("release", "1. run the tests");
+        skill.digest = "0".repeat(64);
+
+        let report = install_all(dir.path(), &[skill]).unwrap();
+        assert!(report.installed.is_empty());
+        assert_eq!(report.rejected.len(), 1);
+        assert!(report.rejected[0].1.contains("digest"));
+        // Nothing landed on the disk.
+        assert!(!dir.path().join("release").exists());
+    }
+
+    #[test]
+    fn takes_back_a_skill_the_platform_withdrew() {
+        let dir = tempfile::tempdir().unwrap();
+        install_all(dir.path(), &[package("release", "steps")]).unwrap();
+        assert!(dir.path().join("release").exists());
+
+        // The platform no longer lists it: it left the shelf, so it leaves the disk.
+        let report = install_all(dir.path(), &[]).unwrap();
+        assert_eq!(report.removed, vec!["release".to_string()]);
+        assert!(!dir.path().join("release").exists());
+    }
+
+    #[test]
+    fn refuses_a_skill_the_agent_could_not_load() {
+        let dir = tempfile::tempdir().unwrap();
+        // No frontmatter: the terminal would not load it, so the platform must not install it.
+        let content = "just text, no frontmatter";
+        let skill = SkillPackage {
+            name: "broken".to_string(),
+            version: 1,
+            digest: content_digest(content),
+            content: content.to_string(),
+            scripts: Vec::new(),
+        };
+
+        let report = install_all(dir.path(), &[skill]).unwrap();
+        assert!(report.installed.is_empty());
+        assert_eq!(report.rejected.len(), 1);
+        assert!(!dir.path().join("broken").exists());
+    }
+
+    #[test]
+    fn keeps_a_directory_that_is_not_a_skill() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::create_dir_all(dir.path().join("notes")).unwrap();
+        std::fs::write(dir.path().join("notes/readme.txt"), "mine").unwrap();
+
+        install_all(dir.path(), &[package("release", "steps")]).unwrap();
+        assert!(dir.path().join("notes/readme.txt").exists());
     }
 }

@@ -132,6 +132,27 @@ harness-agent replay --script turns.json --workspace /path/to/repo
 技能按任务描述匹配后进入系统提示。**frontmatter 坏了会报错，不会被静默忽略**——
 一份读不懂的技能等于没有。
 
+### 从公司的技能市场拉取
+
+技能市场的货架在平台那边，机器上放的是副本：
+
+```bash
+~/.harness/terminal/harness-agent skills sync    # 从平台取技能，核对摘要，写进 ~/.harness/skills
+~/.harness/terminal/harness-agent skills list    # 看装了什么
+```
+
+`sync` 做三件事：
+
+1. **核对摘要**——平台给出 `sha256(content)`，对不上就不写。装一个坏包比不装更糟；
+2. **撤下被收回的**——平台不再列出的技能从磁盘上删掉。平台撤了安装，机器也得撤；
+   两边不一致，就等于有一个技能还在偷偷跑；
+3. **只留读得懂的**——frontmatter 坏了的技能装完就删，不留在目录里装样子。
+
+`serve` 每十秒跟平台对一次账（和心跳一起），所以技能的上架、下架、升级不用重启机器。
+匹配到的技能会进系统提示。
+
+> 技能是**内容**，不是授权：它能告诉智能体"该做什么"，但每一步动作照样过策略（见上面那行）。
+
 ## MCP
 
 ```rust
