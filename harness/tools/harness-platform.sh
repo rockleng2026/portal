@@ -20,13 +20,19 @@
 # =====================================================================================
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# No external commands here: the systemd unit runs this script with a minimal PATH, and
+# "dirname: command not found" is a confusing way to learn that.
+SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+[[ "$SCRIPT_DIR" == "${BASH_SOURCE[0]}" ]] && SCRIPT_DIR="."
+ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ENV_FILE="${HARNESS_ENV_FILE:-$HOME/.harness/platform.env}"
 RUN_DIR="$HOME/.harness/run"
 LOG_FILE="$HOME/.harness/platform.log"
 PID_FILE="$RUN_DIR/platform.pid"
 UNIT="harness-platform.service"
 JAR="$ROOT/harness-platform/target/harness-platform-0.1.0-SNAPSHOT.jar"
+EXPLODED="$ROOT/harness-platform/target/exploded"
+MAIN_CLASS="com.fuao.harness.platform.PlatformApplication"
 
 load_env() {
   if [[ ! -f "$ENV_FILE" ]]; then
@@ -100,6 +106,43 @@ ensure_jar() {
   echo "harness-platform: built"
 }
 
+# The platform must not run as a fat jar.
+#
+# A Spring Boot fat jar keeps its dependencies in BOOT-INF/lib and loads them with its own
+# class loader. Threads that Tomcat, Netty or the connection pool create on their own do
+# not use that loader, so classes like logback's ThrowableProxy or netty's PoolArena come
+# up "not found" - and the thread dies with it. A dead Lettuce event loop means every
+# request that touches Redis (the nonce check on every signed call) waits for ever, and the
+# browser sees a network error instead of an answer.
+#
+# So the jar is unpacked and the platform runs with a plain classpath: every class is then
+# visible to every thread, whoever created it.
+explode() {
+  local classpath="$EXPLODED/application/BOOT-INF/classes"
+  classpath="$classpath:$EXPLODED/application/BOOT-INF/lib/*:$EXPLODED/dependencies/BOOT-INF/lib/*"
+  echo "$classpath"
+}
+
+ensure_exploded() {
+  ensure_jar
+  if [[ -d "$EXPLODED/application/BOOT-INF/classes" && ! "$JAR" -nt "$EXPLODED/.stamp" ]]; then
+    return 0
+  fi
+  rm -rf "$EXPLODED"
+  "$JAVA_HOME/bin/java" -Djarmode=layertools -jar "$JAR" extract --destination "$EXPLODED" >/dev/null 2>&1
+  if [[ ! -d "$EXPLODED/application/BOOT-INF/classes" ]]; then
+    echo "harness-platform: cannot unpack $JAR" >&2
+    exit 1
+  fi
+  touch "$EXPLODED/.stamp"
+}
+
+run() {
+  load_env
+  ensure_exploded
+  exec "$JAVA_HOME/bin/java" -cp "$(explode)" "$MAIN_CLASS" "$@"
+}
+
 start() {
   load_env
   ensure_jar
@@ -133,12 +176,13 @@ start() {
     echo "harness-platform: port ${port} is already in use by another process." >&2
     echo "  Find it:   ss -ltnp | grep ${port}" >&2
     echo "  If that is the systemd service, use: systemctl --user stop ${UNIT}" >&2
-    echo "  If it is a stale instance, use:  $(basename "$0") stop" >&2
+    echo "  If it is a stale instance, use:  ${0##*/} stop" >&2
     exit 1
   fi
 
+  ensure_exploded
   mkdir -p "$RUN_DIR" "$(dirname "$LOG_FILE")"
-  setsid nohup "$JAVA_HOME/bin/java" -jar "$JAR" >>"$LOG_FILE" 2>&1 </dev/null &
+  setsid nohup "$JAVA_HOME/bin/java" -cp "$(explode)" "$MAIN_CLASS" >>"$LOG_FILE" 2>&1 </dev/null &
   local pid=$!
   echo "$pid" > "$PID_FILE"
 
@@ -205,10 +249,11 @@ status() {
 }
 
 case "${1:-status}" in
+  run) shift; run "$@" ;;
   start) start ;;
   stop) stop ;;
   restart) stop; start ;;
   status) status ;;
   logs) tail -f "$LOG_FILE" ;;
-  *) echo "usage: $(basename "$0") {start|stop|restart|status|logs}" >&2; exit 2 ;;
+  *) echo "usage: ${0##*/} {start|stop|restart|status|logs|run}" >&2; exit 2 ;;
 esac
