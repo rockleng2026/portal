@@ -103,7 +103,9 @@ class TerminalAndKillSwitchIT extends PlatformTestBase {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.terminalId").value(terminalId))
                 .andExpect(jsonPath("$.agentId").value(agentId))
-                .andExpect(jsonPath("$.autonomyLevel").value("2"))
+                // The number, not a quoted number: the device reads this file, and a string
+                // that looks like a number is a grant that grants nothing.
+                .andExpect(jsonPath("$.autonomyLevel").value(2))
                 .andExpect(jsonPath("$.capabilities").isArray());
     }
 

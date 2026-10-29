@@ -379,7 +379,7 @@ public class ConsoleController {
         return Map.of(
                 "terminalId", grant.terminalId(),
                 "agentId", grant.agentId() == null ? "" : grant.agentId(),
-                "autonomyLevel", String.valueOf(grant.autonomyLevel()),
+                "autonomyLevel", grant.autonomyLevel(),
                 "capabilities", grant.capabilities(),
                 "deptIds", grant.deptIds(),
                 "grantedAt", grant.grantedAt().toString(),

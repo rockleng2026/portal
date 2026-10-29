@@ -33,6 +33,10 @@ pub struct Grant {
     #[serde(default)]
     pub agent_id: String,
     #[serde(default)]
+    /// The autonomy level. The platform sends a number, but a string is accepted too: a grant
+    /// that cannot be read is a grant that grants nothing, and the failure would look like
+    /// "no grant" rather than "the number was quoted".
+    #[serde(deserialize_with = "lenient_u8")]
     pub autonomy_level: u8,
     #[serde(default)]
     pub capabilities: Vec<String>,
@@ -49,6 +53,26 @@ pub struct Grant {
 /// Where the grant lives on this machine.
 pub fn grant_file(identity_directory: &Path) -> PathBuf {
     identity_directory.join(FILE_NAME)
+}
+
+/// Reads a number that may have been sent as a string.
+fn lenient_u8<'de, D>(deserializer: D) -> Result<u8, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    use serde::Deserialize;
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum NumberOrString {
+        Number(u8),
+        Text(String),
+    }
+    match NumberOrString::deserialize(deserializer)? {
+        NumberOrString::Number(value) => Ok(value),
+        NumberOrString::Text(text) => text.trim().parse::<u8>().map_err(|_| {
+            serde::de::Error::custom(format!("autonomy level is not a number: {}", text))
+        }),
+    }
 }
 
 /// Reads the grant, or `None` when there is none.
@@ -145,6 +169,22 @@ mod tests {
         assert!(grant.is_none());
         assert!(policy.capabilities().is_empty());
         assert_eq!(policy.autonomy_level(), AutonomyLevel::L0);
+    }
+
+    #[test]
+    fn a_quoted_autonomy_level_is_still_read() {
+        // The platform sends a number; an older deployment sent it quoted. A grant that cannot
+        // be read is a grant that grants nothing, and the failure looks like "no grant".
+        let dir = tempfile::tempdir().unwrap();
+        let file = grant_file(dir.path());
+        std::fs::write(
+            &file,
+            r#"{"terminalId":"t1","autonomyLevel":"3","capabilities":["cap:file.read"]}"#,
+        )
+        .unwrap();
+        let grant = read(&file).expect("the grant must be readable");
+        assert_eq!(grant.autonomy_level, 3);
+        assert_eq!(grant.capabilities, vec!["cap:file.read".to_string()]);
     }
 
     #[test]

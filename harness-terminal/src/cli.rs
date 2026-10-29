@@ -11,7 +11,7 @@ use crate::grant;
 use crate::skills::SkillLibrary;
 use crate::tools::{ToolRegistry, ToolResult};
 use crate::workspace::Workspace;
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use clap::{Parser, Subcommand};
 use serde_json::{json, Value};
 use std::io::Write;
@@ -400,18 +400,16 @@ async fn replay(args: ReplayArgs) -> Result<()> {
 /// tool: somebody asks a question in the console, and the machine that is bound to that
 /// digital employee answers it - under its own policy, with its own grant.
 async fn serve(args: ServeArgs) -> Result<()> {
-    // --identity is the directory with the device identity and the grant; the shell's
-    // configuration file (platform.url, client.id, secret) sits next to it.
-    let identity_dir = args.identity.clone().unwrap_or_else(|| {
-        crate::platform::PlatformConfig::default_path()
-            .parent()
-            .map(|p| p.to_path_buf())
-            .unwrap_or_default()
-    });
-    let config_path = args.config.clone().unwrap_or_else(|| {
-        identity_dir.join("terminal.properties")
-    });
+    // --identity is the directory with the device identity and the grant; the configuration
+    // file (platform.url, client.id, secret) sits next to it.
+    let config_path = args.config.clone().unwrap_or_else(crate::platform::PlatformConfig::default_path);
     let platform_config = crate::platform::PlatformConfig::read(&config_path)?;
+    // The configuration knows where the identity is; fall back to the standard place.
+    let identity_dir = args
+        .identity
+        .clone()
+        .or_else(|| platform_config.identity_dir.clone())
+        .unwrap_or_else(crate::device::default_identity_dir);
     if platform_config.terminal_id.is_empty() {
         return Err(anyhow::anyhow!(
             "the configuration {} has no terminal.id - run 'harness-terminal hello' first",
@@ -420,10 +418,13 @@ async fn serve(args: ServeArgs) -> Result<()> {
     }
     let platform = Arc::new(crate::platform::PlatformClient::new(&platform_config)?);
 
+    // The roots the command line narrows the grant to. The startup and the refresh must use
+    // the same list, or a refresh would quietly widen what the agent may touch.
+    let roots: Vec<std::path::PathBuf> = Vec::new();
     let (workspace, tools, policy, authority) = build_environment(
         &args.workspace,
         2,
-        &[],
+        &roots,
         Some(&identity_dir),
     )?;
     println!("authority: {authority}");
@@ -464,12 +465,36 @@ async fn serve(args: ServeArgs) -> Result<()> {
     let mut served = 0usize;
     let mut announced = false;
     let mut since_heartbeat = 0u64;
+    let mut policy_fingerprint = String::new();
+    // The policy is re-read from the grant, not held from the start: the platform can take a
+    // capability away or give one at any moment.
+    let mut policy = policy;
     loop {
         // The heartbeat is the device's liveness. Whoever runs on the machine says it - the
         // agent is usually the thing that stays up, so it says it.
         since_heartbeat += 1;
         if since_heartbeat * args.poll_seconds >= HEARTBEAT_INTERVAL_SECONDS {
             since_heartbeat = 0;
+            // The grant can change at any time - the platform can take a capability away or
+            // give one. An agent that read it once at startup would keep acting with the
+            // authority it had then, which is the hole R-01 is about.
+            //
+            // The platform is asked, not the file on the machine: the file is only a copy of
+            // the platform's answer, and a copy that nobody refreshes is the hole itself.
+            match refresh_grant(
+                &platform,
+                &platform_config,
+                &identity_dir,
+                &roots,
+                &mut policy,
+                &mut policy_fingerprint,
+            )
+            .await
+            {
+                Ok(true) => {}
+                Ok(false) => {}
+                Err(error) => eprintln!("cannot refresh the grant: {error:#}"),
+            }
             // The model configuration may have changed in the console. Pick it up without a
             // restart - an operator should not have to touch the machine to change the brain.
             if let Ok(Some(config)) = platform.model_config(&platform_config.terminal_id).await {
@@ -609,6 +634,77 @@ fn brain_from_environment(args: &ServeArgs) -> Result<Option<Brain>> {
         args.base_url.as_deref().unwrap_or(""),
         &key,
     )?)))
+}
+
+/// Asks the platform what this machine may do right now, and applies the answer.
+///
+/// The grant is the authority (01 §5.2). It changes when the platform grants or revokes
+/// something, so the agent has to look again - otherwise it keeps acting with the
+/// authority it had when it started.
+///
+/// Returns whether the grant changed. The file on the machine is rewritten from the platform's
+/// answer, so the shell and the agent enforce the same decision and the next start does not
+/// need a shell command to be up to date.
+async fn refresh_grant(
+    platform: &crate::platform::PlatformClient,
+    config: &crate::platform::PlatformConfig,
+    identity_dir: &std::path::Path,
+    roots: &[std::path::PathBuf],
+    policy: &mut Arc<LocalPolicy>,
+    fingerprint: &mut String,
+) -> Result<bool> {
+    let answer = platform
+        .send(
+            "GET",
+            &format!("/api/harness/terminal/{}/grant", config.terminal_id),
+            None,
+        )
+        .await?;
+    let grant: grant::Grant = serde_json::from_value(answer)
+        .with_context(|| "the platform's grant cannot be read")?;
+    let current = format!(
+        "{}|{}|{}",
+        grant.autonomy_level,
+        grant.capabilities.join(","),
+        grant
+            .dept_ids
+            .iter()
+            .map(|id| id.to_string())
+            .collect::<Vec<_>>()
+            .join(",")
+    );
+    if current == *fingerprint {
+        return Ok(false);
+    }
+    *fingerprint = current;
+
+    // Written through a temporary name: the agent reads this file while it runs, and a
+    // half-written file would read as "no grant" for one moment.
+    let path = grant::grant_file(identity_dir);
+    let temporary = path.with_extension("json.tmp");
+    std::fs::write(&temporary, serde_json::to_string_pretty(&grant)?)?;
+    restrict(&temporary);
+    std::fs::rename(&temporary, &path)?;
+    restrict(&path);
+
+    println!(
+        "grant changed: autonomy L{}, capabilities [{}]",
+        grant.autonomy_level,
+        grant.capabilities.join(", ")
+    );
+    *policy = Arc::new(grant::policy_from(&grant, roots));
+    Ok(true)
+}
+
+/// Makes a file readable by its owner only.
+fn restrict(path: &std::path::Path) {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let _ = std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600));
+    }
+    #[cfg(not(unix))]
+    let _ = path;
 }
 
 /// The device side of the terminal.
