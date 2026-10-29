@@ -469,9 +469,15 @@ const chat = { terminalId: null, agentKey: '', poll: null, shown: new Map() };
 
 function openChat(terminalId, title) {
   if (!terminalId) {
+    // There is nobody to talk to. The panel must not keep showing the last conversation,
+    // or every employee looks the same - the title still says the last one's name.
+    closeChat();
     toast('这台终端还没有绑定智能体，先在「终端」里绑定', 'bad');
     return;
   }
+  // The old poll is stopped before the new one starts: a poll that is still in flight
+  // belongs to the previous terminal and would answer with the wrong conversation.
+  if (chat.poll) { clearInterval(chat.poll); chat.poll = null; }
   chat.terminalId = terminalId;
   $('#chatTitle').textContent = '与智能体对话';
   $('#chatSubtitle').textContent = title || ('终端 ' + String(terminalId).slice(0, 8) + '…');
@@ -481,7 +487,6 @@ function openChat(terminalId, title) {
   $('#chatLog').innerHTML = '';
   chat.shown.clear();
   pollTasks();
-  if (chat.poll) clearInterval(chat.poll);
   chat.poll = setInterval(pollTasks, 2000);
   $('#chatPrompt').focus();
 }
@@ -522,6 +527,12 @@ function closeChat() {
   $('#chat').classList.add('hidden');
   if (chat.poll) clearInterval(chat.poll);
   chat.poll = null;
+  // The log goes with the panel: a conversation that stays behind the next one is the
+  // next one's first impression.
+  $('#chatLog').innerHTML = '';
+  $('#chatSubtitle').textContent = '';
+  chat.terminalId = null;
+  chat.shown.clear();
 }
 
 function addChat(who, text, kind) {
@@ -539,6 +550,9 @@ async function pollTasks() {
   try {
     // The last 20 tasks: the chat shows the recent history, not everything ever asked.
     tasks = (await api('GET', '/api/harness/tasks?terminalId=' + encodeURIComponent(chat.terminalId) + '&limit=20')) || [];
+    // Only this terminal's tasks. The request already filters, but a response that was
+    // on its way when the user switched terminals must not be shown under the new one.
+    tasks = tasks.filter(t => !t.terminalId || t.terminalId === chat.terminalId);
     chat.lastError = null;
   } catch (e) {
     // A failing poll used to be swallowed, so the panel said "pending" for ever while the
@@ -752,7 +766,20 @@ function bindEvents() {
       else if (act === 'agent-model') { modelModal('agent', id); return; }
       else if (act === 'agent-install') { installWizard(id); return; }
       else if (act === 'principal-new') { newDeviceAccount(id); return; }
-      else if (act === 'chat') { const a = state.agents.find(x => x.agentId === id); openChat(terminalOfAgent(id), a ? (a.name || a.agentKey) : id); return; }
+      else if (act === 'chat') {
+        const a = state.agents.find(x => x.agentId === id);
+        const name = a ? (a.name || a.agentKey) : id;
+        const terminalId = terminalOfAgent(id);
+        if (!terminalId) {
+          // This employee has no device yet. Say which one - and take the previous
+          // conversation off the screen, so the panel never shows somebody else's chat.
+          closeChat();
+          toast('数字员工 ' + name + ' 还没有绑定终端。先在「终端」页签把这台设备绑定给它。', 'bad');
+          return;
+        }
+        openChat(terminalId, name);
+        return;
+      }
       else if (act === 'terminal-chat') { openChat(id, '终端 ' + id.slice(0, 8) + '…'); return; }
       else if (act === 'terminal-grant') { showGrant(id); return; }
       else if (act === 'terminal-model') { modelModal('terminal', id); return; }
@@ -803,9 +830,24 @@ function modelConfigOf(terminalId) {
   return null;
 }
 
+/**
+ * The terminal to talk to for one employee.
+ *
+ * An employee can have more than one terminal - a new machine replaces an old one. The one
+ * that is actually talking is the online one, and among those the one that spoke last;
+ * picking the first row of the list would open the conversation of a machine that is gone.
+ */
 function terminalOfAgent(agentId) {
-  const t = state.terminals.find(x => x.agentId === agentId);
-  return t ? t.terminalId : null;
+  // The platform says which terminal is speaking for this employee - it owns the data and
+  // the rule. The list below is the fallback for a platform that does not say yet.
+  const agent = state.agents.find(a => a.agentId === agentId);
+  if (agent && agent.terminalId) return agent.terminalId;
+  const mine = state.terminals.filter(x => x.agentId === agentId);
+  if (!mine.length) return null;
+  const alive = mine.filter(t => t.status === 'online');
+  const pool = (alive.length ? alive : mine).slice();
+  pool.sort((a, b) => String(b.lastHeartbeat || '').localeCompare(String(a.lastHeartbeat || '')));
+  return pool[0].terminalId;
 }
 
 function openGrantModal(agentId) {

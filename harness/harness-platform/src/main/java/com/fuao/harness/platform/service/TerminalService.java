@@ -8,6 +8,7 @@ import com.fuao.harness.platform.security.AuthContext;
 import com.fuao.harness.platform.security.AuthenticatedClient;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -245,6 +246,26 @@ public class TerminalService {
     public PolicyInputs.TerminalRow get(String terminalId) {
         return terminals.findById(terminalId)
                 .orElseThrow(() -> new IllegalArgumentException("no such terminal: " + terminalId));
+    }
+
+    /**
+     * The terminal that is currently speaking for one agent.
+     *
+     * <p>An agent can have more than one terminal - a new machine replaces an old one. The one
+     * that is talking is the online one, and among those the one that spoke last. Picking the
+     * first row of the list would open the conversation of a machine that is already gone.
+     *
+     * @return the terminal id, or {@code null} when the agent has no terminal
+     */
+    public String liveTerminalOf(String agentId) {
+        List<PolicyInputs.TerminalRow> mine = terminals.list(500).stream()
+                .filter(row -> agentId.equals(row.agentId()))
+                .sorted(Comparator
+                        .comparing((PolicyInputs.TerminalRow row) -> "online".equals(row.status()) ? 0 : 1)
+                        .thenComparing(PolicyInputs.TerminalRow::lastHeartbeat,
+                                Comparator.nullsLast(Comparator.reverseOrder())))
+                .toList();
+        return mine.isEmpty() ? null : mine.get(0).terminalId();
     }
 
     /** Dashboard helper: which machines are quiet, and for how long. */

@@ -96,12 +96,20 @@ public class ConsoleController {
 
     public record AgentView(String agentId, String agentKey, String name, String agentType, String status,
                             int autonomyLevel, Integer deptId, Integer workpositionId, Integer portalEmployeeId,
-                            Integer ownerId, String modelId, Instant createdAt) {
+                            Integer ownerId, String modelId, Instant createdAt, String terminalId) {
 
         static AgentView of(AgentRecord a) {
+            return of(a, null);
+        }
+
+        /**
+         * @param terminalId the terminal that is currently speaking for this agent, so the
+         *                   console does not have to guess which of the agent's machines is live
+         */
+        static AgentView of(AgentRecord a, String terminalId) {
             return new AgentView(a.agentId(), a.agentKey(), a.name(), a.agentType().wire(), a.status().wire(),
                     a.autonomyLevel(), a.deptId(), a.portalWorkpositionId(), a.portalEmployeeId(), a.ownerId(),
-                    a.modelId(), a.createdAt());
+                    a.modelId(), a.createdAt(), terminalId);
         }
     }
 
@@ -117,12 +125,14 @@ public class ConsoleController {
     public List<AgentView> listAgents(@RequestParam(required = false) String status,
                                       @RequestParam(required = false) Integer deptId,
                                       @RequestParam(defaultValue = "200") int limit) {
-        return agents.list(status, deptId, limit).stream().map(AgentView::of).toList();
+        return agents.list(status, deptId, limit).stream()
+                .map(a -> AgentView.of(a, terminals.liveTerminalOf(a.agentId())))
+                .toList();
     }
 
     @GetMapping("/agent/{agentId}")
     public AgentView getAgent(@PathVariable String agentId) {
-        return AgentView.of(agents.get(agentId));
+        return AgentView.of(agents.get(agentId), terminals.liveTerminalOf(agentId));
     }
 
     public record TransitionRequest(@NotBlank String to, @NotBlank String reason) {

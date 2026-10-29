@@ -110,6 +110,61 @@ class TerminalAndKillSwitchIT extends PlatformTestBase {
     }
 
     @Test
+    void anAgentPointsAtTheTerminalThatIsSpeaking() throws Exception {
+        // An agent can have more than one terminal - a new machine replaces an old one. The
+        // console asks the platform which one to talk to, so the platform has to answer with
+        // the one that is actually talking, not with the first row of a list.
+        String quietCode = hello("device-sha-quiet");
+        MockHttpServletRequestBuilder quietBind = humanPost("/api/harness/terminal/bind",
+                Map.of("bindingCode", quietCode, "agentKey", AGENT_KEY));
+        String quietTerminal = String.valueOf(
+                parse(mvc.perform(quietBind).andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString()).get("terminalId"));
+
+        String talkingCode = hello("device-sha-talking");
+        MockHttpServletRequestBuilder talkingBind = humanPost("/api/harness/terminal/bind",
+                Map.of("bindingCode", talkingCode, "agentKey", AGENT_KEY));
+        String talkingTerminal = String.valueOf(
+                parse(mvc.perform(talkingBind).andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString()).get("terminalId"));
+
+        // The old machine went quiet - the degradation job marks it offline, and it stays bound.
+        jdbc.sql("UPDATE harness_terminal SET status = 'offline' WHERE terminal_id = :id")
+                .param("id", quietTerminal).update();
+
+        // Only this one has spoken since.
+        MockHttpServletRequestBuilder beat = post("/api/harness/terminal/" + talkingTerminal + "/heartbeat");
+        signAsService("POST", "/api/harness/terminal/" + talkingTerminal + "/heartbeat", beat, "");
+        mvc.perform(beat).andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder request = get("/api/harness/agent");
+        signAsHuman("GET", "/api/harness/agent", request, "");
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.agentKey == '" + AGENT_KEY + "')].terminalId")
+                        .value(talkingTerminal));
+
+        // The quiet terminal is still bound - the agent must point at the one that is alive.
+        assertEquals(2, jdbc.sql("SELECT COUNT(*) FROM harness_terminal WHERE agent_id = "
+                        + "(SELECT agent_id FROM harness_agent WHERE agent_key = :key)")
+                .param("key", AGENT_KEY).query(Integer.class).single());
+        assertEquals("offline", jdbc.sql("SELECT status FROM harness_terminal WHERE terminal_id = :id")
+                .param("id", quietTerminal).query(String.class).single());
+    }
+
+    @Test
+    void anAgentWithoutATerminalHasNothingToPointAt() throws Exception {
+        MockHttpServletRequestBuilder request = get("/api/harness/agent");
+        signAsHuman("GET", "/api/harness/agent", request, "");
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.agentKey == '" + AGENT_KEY + "')].terminalId").doesNotExist());
+        assertEquals(null, jdbc.sql("SELECT terminal_id FROM harness_terminal"
+                        + " WHERE agent_id = (SELECT agent_id FROM harness_agent WHERE agent_key = :key)")
+                .param("key", AGENT_KEY).query(String.class).optional().orElse(null));
+    }
+
+    @Test
     void aRevokedTerminalGetsNoGrantAtAll() throws Exception {
         String code = hello("device-sha-revoked-grant");
         MockHttpServletRequestBuilder bind = humanPost("/api/harness/terminal/bind",
