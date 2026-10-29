@@ -59,32 +59,34 @@ fi
 # ---------------------------------------------------------------- the bundle
 if [[ "$MODE" == "bundle" ]]; then
   REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-  JAR="$REPO/harness/harness-terminal/target/harness-terminal-0.1.0-SNAPSHOT.jar"
   AGENT="$REPO/harness-terminal/target/release/harness-agent"
-  if [[ ! -f "$JAR" ]]; then
-    echo "install-terminal: $JAR is missing. Build it: (cd $REPO/harness && mvn -B -pl harness-terminal -am package)" >&2
-    exit 1
-  fi
+  # Build what is missing - "bundle" should produce a bundle, not an error message.
   if [[ ! -x "$AGENT" ]]; then
-    echo "install-terminal: $AGENT is missing. Build it: (cd $REPO/harness-terminal && cargo build --release)" >&2
-    exit 1
+    echo "install-terminal: building the agent ($AGENT is missing)"
+    if ! command -v cargo >/dev/null 2>&1; then
+      echo "install-terminal: cargo is not on the PATH. Install Rust first:" >&2
+      echo "  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh" >&2
+      exit 1
+    fi
+    (cd "$REPO/harness-terminal" && cargo build --release) || {
+      echo "install-terminal: the build failed" >&2; exit 1; }
   fi
   rm -rf "$BUNDLE_DIR"
   mkdir -p "$BUNDLE_DIR"
-  cp "$JAR" "$BUNDLE_DIR/harness-terminal.jar"
+  # The terminal is ONE binary: the device side (identity, registration, the grant) and the
+  # agent that does the work are both in it. The target machine needs no JRE.
   cp "$AGENT" "$BUNDLE_DIR/harness-agent"
   cp "${BASH_SOURCE[0]}" "$BUNDLE_DIR/install.sh"
   chmod +x "$BUNDLE_DIR/install.sh" "$BUNDLE_DIR/harness-agent"
   cat > "$BUNDLE_DIR/README.md" <<'EOF'
 # Harness 终端安装包
 
+终端是**一个二进制** `harness-agent`：设备侧（身份、报到、绑定码、授权交接）和干活的智能体
+（上下文、工具、验证循环）都在里面。目标机器**不需要装 Java**。
+
 ## 这台机器上要做什么
 
-1. 装 Java（终端外壳是 Java 6 的 class，Java 8 及以上都能跑）：
-   ```bash
-   sudo apt-get update && sudo apt-get install -y openjdk-17-jre-headless
-   ```
-2. 解压并安装：
+1. 解压并安装：
    ```bash
    tar xzf harness-terminal-bundle.tar.gz
    cd harness-terminal-bundle
@@ -93,16 +95,16 @@ if [[ "$MODE" == "bundle" ]]; then
                 --client-id harness-bootstrap \
                 --client-secret <平台的 HARNESS_BOOTSTRAP_SECRET>
    ```
-3. 报到，拿绑定码（10 分钟有效）：
+2. 报到，拿绑定码（10 分钟有效）：
    ```bash
-   ~/.harness/terminal/harness-terminal.jar hello
+   ~/.harness/terminal/harness-agent device hello
    ```
-4. **请自然人在管理台**输入绑定码，把这台设备绑到某个数字员工或员工账号上。
-5. 取回授权（平台 → 外壳 → 智能体读同一份文件）：
+3. **请自然人在管理台**输入绑定码，把这台设备绑到某个数字员工或员工账号上。
+4. 取回授权（平台 → 这台机器 → 智能体读同一份文件）：
    ```bash
-   ~/.harness/terminal/harness-terminal.jar grant
+   ~/.harness/terminal/harness-agent device grant
    ```
-6. 智能体常驻（安装脚本已经注册了 systemd 用户服务）：
+5. 智能体常驻（安装脚本已经注册了 systemd 用户服务）：
    ```bash
    systemctl --user status harness-agent
    tail -f ~/.harness/agent.log
@@ -112,8 +114,7 @@ if [[ "$MODE" == "bundle" ]]; then
 
 | 路径 | 是什么 |
 |---|---|
-| `~/.harness/terminal/harness-terminal.jar` | 设备外壳：设备身份、绑定码、心跳、授权交接 |
-| `~/.harness/terminal/harness-agent` | 智能体运行时：上下文、工具、验证循环 |
+| `~/.harness/terminal/harness-agent` | 终端：设备侧 + 智能体 |
 | `~/.harness/terminal/terminal.properties` | 配置（含密钥，0600） |
 | `~/.harness/terminal/identity/device.key` | 设备私钥（0600，**不出这台机器**） |
 | `~/.harness/terminal/identity/grant.json` | 平台给的授权（智能体读它） |
@@ -135,26 +136,12 @@ fi
 # ---------------------------------------------------------------- the install
 echo "install-terminal: installing into $INSTALL_DIR"
 
-if ! command -v java >/dev/null 2>&1; then
-  echo "install-terminal: java is not on the PATH." >&2
-  echo "  sudo apt-get update && sudo apt-get install -y openjdk-17-jre-headless" >&2
-  exit 1
-fi
-JAVA_MAJOR=$(java -version 2>&1 | head -1 | sed -E 's/.*"([0-9]+).*/\1/')
-if [[ -n "$JAVA_MAJOR" && "$JAVA_MAJOR" -lt 8 ]]; then
-  echo "install-terminal: java $JAVA_MAJOR is too old (the terminal needs 8 or newer)" >&2
-  exit 1
-fi
-
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 mkdir -p "$INSTALL_DIR"
-for artifact in harness-terminal.jar harness-agent; do
-  if [[ ! -f "$HERE/$artifact" ]]; then
-    echo "install-terminal: $HERE/$artifact is missing - is this the bundle?" >&2
-    exit 1
-  fi
-done
-cp "$HERE/harness-terminal.jar" "$INSTALL_DIR/harness-terminal.jar"
+if [[ ! -f "$HERE/harness-agent" ]]; then
+  echo "install-terminal: $HERE/harness-agent is missing - is this the bundle?" >&2
+  exit 1
+fi
 cp "$HERE/harness-agent" "$INSTALL_DIR/harness-agent"
 chmod +x "$INSTALL_DIR/harness-agent"
 mkdir -p "$INSTALL_DIR/identity" "$INSTALL_DIR/workspace"
@@ -200,11 +187,9 @@ props.chmod(0o600)
 print(f"install-terminal: wrote {props}")
 PYEOF
 
-# the device identity (the jar is run with java, not executed directly)
-if ! java -jar "$INSTALL_DIR/harness-terminal.jar" --config "$INSTALL_DIR/terminal.properties" \
-        --identity "$INSTALL_DIR/identity" install "$PLATFORM_URL" ${AGENT_KEY:+"$AGENT_KEY"} \
-        "$CLIENT_ID" "$CLIENT_SECRET" >/dev/null; then
-  echo "install-terminal: the device identity could not be created - check the log" >&2
+# the device identity is generated on this machine and never leaves it
+if ! "$INSTALL_DIR/harness-agent" device hello >/dev/null 2>&1; then
+  echo "install-terminal: the device identity could not be created - check the platform address" >&2
   exit 1
 fi
 
@@ -223,6 +208,7 @@ ExecStart=$INSTALL_DIR/harness-agent serve \\
   --workspace $WORKSPACE \\
   --identity $INSTALL_DIR/identity \\
   --config $INSTALL_DIR/terminal.properties
+Environment=HARNESS_TERMINAL_CONFIG=$INSTALL_DIR/terminal.properties
 Restart=always
 RestartSec=10
 StandardOutput=append:$HOME/.harness/agent.log
@@ -241,10 +227,10 @@ fi
 
 echo
 echo "install-terminal: done. Next:"
-echo "  1. java -jar $INSTALL_DIR/harness-terminal.jar --config $INSTALL_DIR/terminal.properties --identity $INSTALL_DIR/identity hello"
+echo "  1. $INSTALL_DIR/harness-agent device hello"
 echo "     (拿绑定码，10 分钟有效)"
 echo "  2. 请自然人在管理台输入绑定码，绑定这台设备"
-echo "  3. java -jar $INSTALL_DIR/harness-terminal.jar --config $INSTALL_DIR/terminal.properties --identity $INSTALL_DIR/identity grant"
+echo "  3. $INSTALL_DIR/harness-agent device grant"
 echo "     (取回平台给的授权，智能体读同一份文件)"
 echo
 echo "  日志: ~/.harness/agent.log"

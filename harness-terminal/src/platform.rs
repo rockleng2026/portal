@@ -25,6 +25,10 @@ pub struct PlatformConfig {
     pub client_id: String,
     pub secret: String,
     pub terminal_id: String,
+    /// Where the configuration itself lives, so it can be written back.
+    pub config_file: Option<std::path::PathBuf>,
+    /// The directory with the device identity and the grant.
+    pub identity_dir: Option<std::path::PathBuf>,
 }
 
 impl PlatformConfig {
@@ -32,6 +36,8 @@ impl PlatformConfig {
     pub fn read(path: &Path) -> Result<Self> {
         let text = std::fs::read_to_string(path)
             .with_context(|| format!("cannot read {}", path.display()))?;
+        let mut config = Self::default();
+        config.config_file = Some(path.to_path_buf());
         let mut values: HashMap<String, String> = HashMap::new();
         for line in text.lines() {
             let line = line.trim();
@@ -42,12 +48,14 @@ impl PlatformConfig {
                 values.insert(key.trim().to_string(), unescape_java(value.trim()));
             }
         }
-        Ok(Self {
-            base_url: values.get("platform.url").cloned().unwrap_or_default(),
-            client_id: values.get("client.id").cloned().unwrap_or_default(),
-            secret: values.get("secret").cloned().unwrap_or_default(),
-            terminal_id: values.get("terminal.id").cloned().unwrap_or_default(),
-        })
+        config.base_url = values.get("platform.url").cloned().unwrap_or_default();
+        config.client_id = values.get("client.id").cloned().unwrap_or_default();
+        config.secret = values.get("secret").cloned().unwrap_or_default();
+        config.terminal_id = values.get("terminal.id").cloned().unwrap_or_default();
+        if let Some(identity) = values.get("identity.directory") {
+            config.identity_dir = Some(std::path::PathBuf::from(identity));
+        }
+        Ok(config)
     }
 
     /// The configuration the shell writes next to the device identity.

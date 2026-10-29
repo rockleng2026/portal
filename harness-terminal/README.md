@@ -1,4 +1,17 @@
-# harness-agent — 终端智能体运行时
+# harness-agent — 终端（设备侧 + 智能体）
+
+> **一个二进制**。设备侧（身份、报到、绑定码、授权交接、心跳）和干活的智能体
+> （上下文、工具、验证循环）都在这里。目标机器只需要这一个文件，**不需要 Java**。
+>
+> ```bash
+> harness-agent device hello        # 报到，拿绑定码（10 分钟有效）
+> harness-agent device grant        # 取回平台给的授权
+> harness-agent device heartbeat   # 心跳
+> harness-agent device status      # 平台现在允许什么
+> harness-agent serve              # 智能体常驻，接管理台的活
+> ```
+>
+> 安装包：`harness/tools/install-terminal.sh bundle <目录>`
 
 > 这是"第一版功能"里那个 Rust 工程的**完成版**。它不是终端的设备外壳（那是
 > `harness/harness-terminal`，Java，负责设备身份 / 绑定码 / 心跳 / 本地策略），

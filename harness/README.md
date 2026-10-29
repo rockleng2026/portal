@@ -26,7 +26,7 @@ mvn -B -o package       # 离线
 | `harness-protocol` | UUIDv7（RFC 9562）、TCP 帧编解码与命令码表、能力令牌、事件信封与去重指纹、规范化 JSON | ✅ 42 tests |
 | `harness-policy` | `能力 ∩ 作用域 ∩ TTL` 决策引擎、自治等级、审批状态机（自然人锚点）、升级路由（2 跳上限）、自动降级 | ✅ 49 tests |
 | `harness-platform` | Spring Boot 3：HMAC 身份、Agent 注册与生命周期、授权、事件总线、审批、终端接入、Kill-Switch、审计、看板 API | ✅ 52 tests（真实 MySQL 8.4） |
-| `harness-terminal` | 终端运行时：设备身份、绑定码流程、平台客户端、本地拒绝策略、审批验签 | ✅ 17 tests |
+| `harness-terminal` | 终端的**设备外壳**（Java）：设备身份、绑定码流程、平台客户端、本地拒绝策略、审批验签。**部署时不用它**——终端是一个 Rust 二进制（见下） | ✅ 23 tests |
 | `harness-adapter-portal` | portal 只读同步、规范化镜像、权限串/时间严格解析、脏数据队列 | ✅ 20 tests（双 MySQL 容器） |
 | `tools/` | 跨系统契约校验（portal ↔ platform HMAC 互认） | ✅ |
 | `db/portal/` | portal 侧仅 3 处 ALTER 的**手工**脚本（禁止自动执行） | ✅ |

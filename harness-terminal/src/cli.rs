@@ -41,6 +41,26 @@ enum Command {
     Replay(ReplayArgs),
     /// Serve the console: pick up requests from the platform and answer them.
     Serve(ServeArgs),
+    /// The device side: register, fetch the grant, heartbeat.
+    Device(DeviceArgs),
+}
+
+#[derive(Parser, Debug)]
+struct DeviceArgs {
+    #[command(subcommand)]
+    command: DeviceCommand,
+}
+
+#[derive(Subcommand, Debug)]
+enum DeviceCommand {
+    /// Register this machine and ask for a binding code.
+    Hello,
+    /// Fetch the grant from the platform and write it where the agent reads it.
+    Grant,
+    /// Send one heartbeat.
+    Heartbeat,
+    /// What the platform currently says this machine may do.
+    Status,
 }
 
 #[derive(Parser, Debug)]
@@ -166,6 +186,7 @@ pub async fn main() -> Result<()> {
         }
         Command::Replay(args) => replay(args).await,
         Command::Serve(args) => serve(args).await,
+        Command::Device(args) => device(args).await,
     };
     result
 }
@@ -588,6 +609,73 @@ fn brain_from_environment(args: &ServeArgs) -> Result<Option<Brain>> {
         args.base_url.as_deref().unwrap_or(""),
         &key,
     )?)))
+}
+
+/// The device side of the terminal.
+///
+/// These are the four operations a machine needs from the platform before it can work: register
+/// (and get a binding code a human redeems), fetch the grant, heartbeat, and say what the
+/// platform currently allows.
+async fn device(args: DeviceArgs) -> Result<()> {
+    let config_path = std::env::var("HARNESS_TERMINAL_CONFIG")
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|_| crate::device::default_config_path());
+    let config = crate::platform::PlatformConfig::read(&config_path)?;
+    let identity_dir = config
+        .identity_dir
+        .clone()
+        .unwrap_or_else(crate::device::default_identity_dir);
+    let identity = crate::device::DeviceIdentity::load_or_create(&identity_dir)?;
+
+    match args.command {
+        DeviceCommand::Hello => {
+            let hello = crate::device::hello(&config, &identity).await?;
+            println!("terminalId: {}", hello.terminal_id);
+            println!("status: {}", hello.status);
+            if hello.binding_code.is_empty() {
+                println!("this device is already registered; nothing to bind");
+            } else {
+                println!(
+                    "binding code (valid {}s): {}",
+                    hello.binding_code_ttl_seconds, hello.binding_code
+                );
+                println!("A natural human has to enter it in the console to bind this device.");
+            }
+        }
+        DeviceCommand::Grant => {
+            let grant = crate::device::grant(&config).await?;
+            let path = crate::device::grant_path(&config)?;
+            println!("grant written to {}", path.display());
+            let capabilities = grant
+                .get("capabilities")
+                .and_then(Value::as_array)
+                .map(|items| {
+                    items
+                        .iter()
+                        .filter_map(Value::as_str)
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                })
+                .unwrap_or_default();
+            println!("  capabilities: {}", capabilities);
+            println!(
+                "  autonomyLevel: {}",
+                grant.get("autonomyLevel").and_then(Value::as_str).unwrap_or("0")
+            );
+        }
+        DeviceCommand::Heartbeat => {
+            let status = crate::device::heartbeat(&config).await?;
+            println!("status: {status}");
+            if status == "revoked" {
+                std::process::exit(3);
+            }
+        }
+        DeviceCommand::Status => {
+            let grant = crate::device::status(&config).await?;
+            println!("{}", serde_json::to_string_pretty(&grant)?);
+        }
+    }
+    Ok(())
 }
 
 /// What answers a request: a language model, or the command pass-through.
