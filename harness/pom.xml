@@ -26,6 +26,8 @@
   </modules>
 
   <properties>
+    <!-- A stable timestamp for the build; it is stamped into the jar. -->
+    <maven.build.timestamp>2026-10-29T00:00:00Z</maven.build.timestamp>
     <java.version>21</java.version>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -90,6 +92,15 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.4.1</version>
+          <configuration>
+            <archive>
+              <manifestEntries>
+                <!-- The console shows this, so a stale browser page can be told apart
+                     from a current one. -->
+                <Harness-Build-Time>${maven.build.timestamp}</Harness-Build-Time>
+              </manifestEntries>
+            </archive>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

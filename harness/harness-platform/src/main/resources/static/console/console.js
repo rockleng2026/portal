@@ -680,6 +680,14 @@ function bindEvents() {
     });
   });
 
+  $('#newDeviceAccountBtn').addEventListener('click', () => {
+    newDeviceAccount('');
+  });
+
+  $('#installCommandBtn').addEventListener('click', () => {
+    installWizard('');
+  });
+
   $('#newModelBtn').addEventListener('click', () => {
     modelModal('brain', '*');
   });
@@ -970,6 +978,13 @@ async function showGrant(terminalId) {
 
 (async function start() {
   bindEvents();
+  // The version stamp tells a stale page from a current one. If this says "控制台" without a
+  // build time, the browser is running an old copy of the script - a hard refresh fixes it.
+  api('GET', '/api/harness/version').then((version) => {
+    $('#consoleVersion').textContent =
+      '控制台 v' + (version.version || '?') + ' · 构建于 ' + (version.builtAt || '?');
+  }).catch(() => { $('#consoleVersion').textContent = '控制台（版本未知）'; });
+
   try {
     const saved = JSON.parse(sessionStorage.getItem('harness-console') || 'null');
     if (saved) {

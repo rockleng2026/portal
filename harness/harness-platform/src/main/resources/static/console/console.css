@@ -209,3 +209,11 @@ button.tiny { padding: .2rem .5rem; font-size: .75rem; }
 }
 .toast.bad { background: var(--error); }
 .toast.ok { background: var(--success); }
+
+/* The version stamp: a stale page shows no build time, which is the tell. */
+.console-foot {
+  padding: .5rem 1.25rem 1.25rem;
+  text-align: right;
+  font-size: .72rem;
+  color: var(--text-light);
+}

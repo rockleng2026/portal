@@ -76,7 +76,9 @@
     <!-- 终端 -->
     <section class="panel" id="tab-terminals">
       <div class="toolbar">
-        <span class="muted">吊销 ≤30s 生效；绑定与吊销只能由自然人操作。</span>
+        <button class="primary" id="newDeviceAccountBtn">新建设备账号</button>
+        <button class="ghost" id="installCommandBtn">安装命令</button>
+        <span class="muted">每台设备一个账号（dev-xxxxxx），吊销只失效它自己；绑定与吊销只能由自然人操作。</span>
       </div>
       <div id="terminalsTable" class="table-wrap"></div>
       <div class="card" id="terminalDetailCard" style="display:none">
@@ -188,6 +190,10 @@
   </div>
 
   <div id="toast" class="toast hidden"></div>
+
+  <div class="console-foot">
+    <span id="consoleVersion">控制台</span>
+  </div>
 
   <script src="console.js"></script>
 </body>

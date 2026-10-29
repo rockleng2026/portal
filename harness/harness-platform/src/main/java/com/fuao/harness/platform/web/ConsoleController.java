@@ -391,6 +391,35 @@ public class ConsoleController {
         return terminals.list(limit);
     }
 
+    // ------------------------------------------------------------------ version
+
+    /**
+     * The build of this platform.
+     *
+     * <p>The console shows it, so that a browser running an old copy of the script can be
+     * told apart from a current one.
+     */
+    @GetMapping("/version")
+    public Map<String, Object> version() {
+        Map<String, Object> out = new java.util.LinkedHashMap<>();
+        out.put("version", "0.1.0");
+        out.put("builtAt", buildTime());
+        return out;
+    }
+
+    /** When this jar was built - from the manifest the build stamped into it. */
+    private static String buildTime() {
+        // When this platform started. It is what tells a stale browser page (one that shows no
+        // build time at all) apart from a current one, and it is always available - unlike the
+        // jar manifest, which the Spring Boot loader hides.
+        try {
+            long started = java.lang.management.ManagementFactory.getRuntimeMXBean().getStartTime();
+            return java.time.Instant.ofEpochMilli(started).toString();
+        } catch (Exception e) {
+            return "unknown";
+        }
+    }
+
     // ------------------------------------------------------------------ principals
 
     public record CreatePrincipalRequest(String agentKey) {
