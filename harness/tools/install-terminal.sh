@@ -88,13 +88,23 @@ if [[ "$MODE" == "bundle" ]]; then
 
 1. 解压并安装：
    ```bash
-   tar xzf harness-terminal-bundle.tar.gz
-   cd harness-terminal-bundle
+   tar xzf harness-terminal.tar.gz
+   cd harness-terminal
    ./install.sh --platform http://<平台地址>:18080 \
                 --agent-key agent:leon:sales:sh001 \
                 --client-id harness-bootstrap \
                 --client-secret <平台的 HARNESS_BOOTSTRAP_SECRET>
    ```
+
+   这几个值从哪来：
+   - `--platform`  平台地址（部署平台时定的）
+   - `--agent-key`  数字员工的业务键，控制台「数字员工」页签能看到
+   - `--client-id`  平台给机器账号起的名字。**控制台的「安装命令」按钮会直接填好**；
+     也可以问平台：GET /api/harness/principal（不含密钥）
+   - `--client-secret`  那个账号的密钥明文。**平台给不出来**（它只存 sha256(secret)），
+     在平台的部署配置里，例如 ~/.harness/platform.env 的 HARNESS_BOOTSTRAP_SECRET
+
+   填错了平台会直接告诉你：unknown client: harness-test / signature does not match。
 2. 报到，拿绑定码（10 分钟有效）：
    ```bash
    ~/.harness/terminal/harness-agent device hello
@@ -127,7 +137,9 @@ systemctl --user disable --now harness-agent
 rm -rf ~/.harness/terminal ~/.config/systemd/user/harness-agent.service ~/.harness/agent.log
 ```
 EOF
-  (cd "$BUNDLE_DIR" && tar czf "$BUNDLE_DIR.tar.gz" .)
+  # The archive contains the directory itself, so that "tar xzf ... && cd harness-terminal"
+  # works on the target machine.
+  (cd "$(dirname "$BUNDLE_DIR")" && tar czf "$BUNDLE_DIR.tar.gz" "$(basename "$BUNDLE_DIR")")
   echo "install-terminal: bundle in $BUNDLE_DIR.tar.gz"
   echo "  copy it to the target machine and run: tar xzf harness-terminal-bundle.tar.gz && cd harness-terminal-bundle && ./install.sh --help"
   exit 0
@@ -188,8 +200,15 @@ print(f"install-terminal: wrote {props}")
 PYEOF
 
 # the device identity is generated on this machine and never leaves it
-if ! "$INSTALL_DIR/harness-agent" device hello >/dev/null 2>&1; then
-  echo "install-terminal: the device identity could not be created - check the platform address" >&2
+# The platform's answer is shown as it is: a wrong client id, a wrong secret and an
+# unreachable platform look the same otherwise.
+if ! "$INSTALL_DIR/harness-agent" device hello; then
+  echo
+  echo "install-terminal: the device could not register." >&2
+  echo "  the platform answered with the error above - check:" >&2
+  echo "    --platform      the address of the platform (this one: $PLATFORM_URL)" >&2
+  echo "    --client-id     a machine account the platform knows (GET /api/harness/principal)" >&2
+  echo "    --client-secret the secret of that account, from the platform's own configuration" >&2
   exit 1
 fi
 
