@@ -51,6 +51,7 @@ public class ConsoleController {
     private final com.fuao.harness.platform.service.TaskService tasks;
     private final com.fuao.harness.platform.repo.CapabilityRepository capabilities;
     private final com.fuao.harness.platform.service.ModelConfigService modelConfigs;
+    private final com.fuao.harness.platform.security.ClientAuthenticator authenticator;
 
     public ConsoleController(AgentService agents, GrantService grants,
                              com.fuao.harness.platform.service.ApprovalService approvals,
@@ -58,7 +59,8 @@ public class ConsoleController {
                              TerminalService terminals, AuditService audit,
                              com.fuao.harness.platform.service.TaskService tasks,
                              com.fuao.harness.platform.repo.CapabilityRepository capabilities,
-                             com.fuao.harness.platform.service.ModelConfigService modelConfigs) {
+                             com.fuao.harness.platform.service.ModelConfigService modelConfigs,
+                             com.fuao.harness.platform.security.ClientAuthenticator authenticator) {
         this.agents = agents;
         this.grants = grants;
         this.approvals = new ApprovalServiceHolder(approvals);
@@ -69,6 +71,7 @@ public class ConsoleController {
         this.tasks = tasks;
         this.capabilities = capabilities;
         this.modelConfigs = modelConfigs;
+        this.authenticator = authenticator;
     }
 
     /** Exists so the constructor signature stays readable while the approval service is injected. */
@@ -383,6 +386,19 @@ public class ConsoleController {
     @GetMapping("/terminal")
     public List<PolicyInputs.TerminalRow> terminals(@RequestParam(defaultValue = "200") int limit) {
         return terminals.list(limit);
+    }
+
+    // ------------------------------------------------------------------ principals
+
+    /**
+     * The machine identities this platform knows about.
+     *
+     * <p>Without their secrets: the platform only stores sha256(secret), so it cannot produce
+     * one. An operator who needs it has it in the platform's own configuration.
+     */
+    @GetMapping("/principal")
+    public List<Map<String, Object>> principals() {
+        return authenticator.listPrincipals();
     }
 
     // ------------------------------------------------------------------ model configuration

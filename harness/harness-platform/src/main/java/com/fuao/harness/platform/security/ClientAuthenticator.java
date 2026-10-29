@@ -70,6 +70,36 @@ public class ClientAuthenticator {
     }
 
     /**
+     * The principals this platform knows about.
+     *
+     * <p>No secrets: the platform only keeps {@code sha256(secret)}, so it could not hand the
+     * secret out even if it wanted to. The console lists the client ids so an operator can put
+     * the right one into an installation command.
+     */
+    public java.util.List<java.util.Map<String, Object>> listPrincipals() {
+        return jdbc.sql("""
+                        SELECT client_id, principal_type, agent_id, terminal_id, employee_id,
+                               api_scope, status, created_by, created_at
+                          FROM harness_principal
+                         ORDER BY client_id
+                        """)
+                .query((rs, i) -> {
+                    java.util.Map<String, Object> row = new java.util.LinkedHashMap<>();
+                    row.put("clientId", rs.getString("client_id"));
+                    row.put("principalType", rs.getString("principal_type"));
+                    row.put("agentId", rs.getString("agent_id"));
+                    row.put("terminalId", rs.getString("terminal_id"));
+                    row.put("employeeId", rs.getObject("employee_id"));
+                    row.put("apiScope", rs.getString("api_scope"));
+                    row.put("status", rs.getString("status"));
+                    row.put("createdBy", rs.getString("created_by"));
+                    row.put("createdAt", rs.getString("created_at"));
+                    return row;
+                })
+                .list();
+    }
+
+    /**
      * @param secret supplied by the caller in plain text; only its hash is ever stored
      * @throws AuthenticationException when any single check fails
      */

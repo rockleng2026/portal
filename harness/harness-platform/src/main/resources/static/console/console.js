@@ -251,7 +251,7 @@ function confirmBox(title, message, onOk) {
 const state = { agents: [], terminals: [], approvals: [], grants: [], switches: [], events: [], audit: [], tasks: [] };
 
 async function loadAll() {
-  const [agents, terminals, approvals, grants, switches, audit, modelConfigs] = await Promise.all([
+  const [agents, terminals, approvals, grants, switches, audit, modelConfigs, principals] = await Promise.all([
     api('GET', '/api/harness/agent'),
     api('GET', '/api/harness/terminal'),
     api('GET', '/api/harness/approval?limit=50'),
@@ -259,6 +259,7 @@ async function loadAll() {
     api('GET', '/api/harness/killswitch'),
     api('GET', '/api/harness/audit?limit=50'),
     api('GET', '/api/harness/model-config'),
+    api('GET', '/api/harness/principal').catch(() => []),
   ]);
   state.agents = agents || [];
   state.terminals = terminals || [];
@@ -267,6 +268,7 @@ async function loadAll() {
   state.switches = switches || [];
   state.audit = audit || [];
   state.modelConfigs = modelConfigs || [];
+  state.principals = principals || [];
   try {
     state.events = (await api('GET', '/api/harness/event/poll?limit=100')) || [];
   } catch (e) { state.events = []; }
@@ -338,6 +340,7 @@ function renderAgents() {
         + (a.status === 'active' ? '<button class="tiny" data-act="pause" data-id="' + esc(a.agentId) + '">暂停</button>' : '')
         + '<button class="tiny" data-act="grant" data-id="' + esc(a.agentId) + '">授权</button>'
         + '<button class="tiny" data-act="agent-model" data-id="' + esc(a.agentId) + '">配置模型</button>'
+        + '<button class="tiny" data-act="agent-install" data-id="' + esc(a.agentId) + '">安装命令</button>'
         + '<button class="tiny" data-act="chat" data-id="' + esc(a.agentId) + '">对话</button>'
         + '</div>'
     },
@@ -361,6 +364,7 @@ function renderTerminals() {
     },
     {
       title: '操作', render: t => '<div class="row-actions">'
+        + '<button class="tiny" data-act="agent-install" data-id="' + esc(t.agentId || '') + '">安装命令</button>'
         + '<button class="tiny" data-act="terminal-chat" data-id="' + esc(t.terminalId) + '">对话</button>'
         + '<button class="tiny" data-act="terminal-model" data-id="' + esc(t.terminalId) + '">配置模型</button>'
         + '<button class="tiny" data-act="terminal-grant" data-id="' + esc(t.terminalId) + '">看授权</button>'
@@ -737,6 +741,7 @@ function bindEvents() {
       else if (act === 'onboard') { await onboardModal(id); return; }
       else if (act === 'grant') { openGrantModal(id); return; }
       else if (act === 'agent-model') { modelModal('agent', id); return; }
+      else if (act === 'agent-install') { installWizard(id); return; }
       else if (act === 'chat') { const a = state.agents.find(x => x.agentId === id); openChat(terminalOfAgent(id), a ? (a.name || a.agentKey) : id); return; }
       else if (act === 'terminal-chat') { openChat(id, '终端 ' + id.slice(0, 8) + '…'); return; }
       else if (act === 'terminal-grant') { showGrant(id); return; }
@@ -820,6 +825,56 @@ function decideApproval(approvalId, decision) {
     toast(decision === 'approved' ? '已签字' : '已驳回', 'ok');
     await loadAll();
   });
+}
+
+/**
+ * The installation command for another machine.
+ *
+ * The platform knows the platform address, the client ids and the agent's business key. It does
+ * NOT know the secret - it only stores sha256(secret) - so that part is a placeholder the
+ * operator fills in from the platform's own configuration.
+ */
+function installWizard(agentId) {
+  const agent = agentId ? state.agents.find(a => a.agentId === agentId) : state.agents[0];
+  const client = state.principals.find(p => p.principalType === 'service')
+    || state.principals[0] || { clientId: 'harness-bootstrap' };
+  const agentKey = agent ? agent.agentKey : 'agent:<业务键>';
+  const platform = session.baseUrl;
+
+  const bundle = [
+    '# 1) 在构建机上打包（缺什么它会自己先编）',
+    './harness/tools/install-terminal.sh bundle /tmp/harness-terminal',
+  ].join('\n');
+
+  const install = [
+    '# 2) 拷到目标机器（Ubuntu 24.04）后安装',
+    'tar xzf harness-terminal.tar.gz && cd harness-terminal',
+    './install.sh \\',
+    '    --platform ' + platform + ' \\',
+    '    --agent-key ' + agentKey + ' \\',
+    '    --client-id ' + client.clientId + ' \\',
+    '    --client-secret <平台的 HARNESS_BOOTSTRAP_SECRET>',
+  ].join('\n');
+
+  const after = [
+    '# 3) 报到，拿绑定码（10 分钟有效）',
+    '~/.harness/terminal/harness-agent device hello',
+    '',
+    '# 4) 请自然人在管理台输入绑定码，绑定这台设备',
+    '',
+    '# 5) 取回授权（平台 → 这台机器 → 智能体读同一份文件）',
+    '~/.harness/terminal/harness-agent device grant',
+  ].join('\n');
+
+  const secret = '客户端密钥：平台只存 sha256(secret)，平台自己给不出来。\n'
+    + '它在平台的部署配置里（本机是 ~/.harness/platform.env 的 HARNESS_BOOTSTRAP_SECRET）。';
+
+  modal('安装命令 · ' + (agent ? (agent.name || agent.agentKey) : '终端'), [
+    { name: 'bundle', label: '① 在构建机上打包', type: 'textarea', value: bundle },
+    { name: 'install', label: '② 在目标机器上安装', type: 'textarea', value: install },
+    { name: 'after', label: '③ 装完这三步', type: 'textarea', value: after },
+    { name: 'secret', label: '关于密钥', type: 'textarea', value: secret },
+  ], async () => { });
 }
 
 function modelModal(scope, scopeId) {
