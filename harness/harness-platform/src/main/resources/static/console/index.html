@@ -37,6 +37,7 @@
     <button class="tab" data-tab="terminals">终端</button>
     <button class="tab" data-tab="chat">对话</button>
     <button class="tab" data-tab="grants">授权</button>
+    <button class="tab" data-tab="skills">技能市场</button>
     <button class="tab" data-tab="approvals">审批</button>
     <button class="tab" data-tab="models">模型配置</button>
     <button class="tab" data-tab="killswitch">Kill-Switch</button>
@@ -109,6 +110,32 @@
         <span class="muted">临时授权 TTL ≤ 24h，超限会被拒绝（不是截短）。</span>
       </div>
       <div id="grantsTable" class="table-wrap"></div>
+    </section>
+
+    <!-- 技能市场 -->
+    <section class="panel" id="tab-skills">
+      <div class="toolbar">
+        <button class="primary" id="newSkillBtn">新建技能</button>
+        <button class="ghost" id="pullSkillBtn">从外部市场拉取</button>
+        <input id="skillSearch" placeholder="按名称 / 键 / 发布者搜索" style="max-width:280px">
+        <span class="muted">技能是内容不是授权：装上去也不会多出任何能力，每一步动作照样过策略。</span>
+      </div>
+      <div id="skillsTable" class="table-wrap"></div>
+      <div class="card">
+        <h3>已拉取部署</h3>
+        <p class="muted">装在哪个部门 / 数字员工 / 终端上。终端每隔十秒跟平台对一次账，
+          平台撤下的技能会从机器上一起撤掉。</p>
+        <div id="skillInstallsTable" class="table-wrap"></div>
+      </div>
+      <div class="card">
+        <h3>外部注册源</h3>
+        <p class="muted">外部内容一律先进候选池，要另一个人评审过才能上架。
+          跨组织的共享从显式授权开始，不做自动发现。</p>
+        <div class="toolbar">
+          <button class="ghost" id="newRegistryBtn">登记注册源</button>
+        </div>
+        <div id="skillRegistriesTable" class="table-wrap"></div>
+      </div>
     </section>
 
     <!-- 审批 -->

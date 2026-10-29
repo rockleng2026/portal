@@ -51,6 +51,9 @@ harness:
   model:
     # 加密模型密钥用的平台密钥；不设置则从 bootstrap secret 派生
     encryption-key: ${HARNESS_MODEL_ENCRYPTION_KEY:}
+  skill:
+    # 技能版本签名的平台密钥；不设置则从 bootstrap secret 派生
+    signing-key: ${HARNESS_SKILL_SIGNING_KEY:}
   scheduler:
     terminal-scan-ms: 60000
     approval-expiry-ms: 300000

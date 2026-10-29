@@ -44,10 +44,12 @@ for i in $(seq 1 60); do
 done
 
 echo "==> applying migrations"
-for f in "$SCRIPT_DIR"/../harness-db/src/main/resources/db/migration/V*.sql; do
+# Version order, not lexicographic. The shell sorts V1, V10, V11, V2 ... and V11 alters a table
+# V1 creates - so the wrong order fails with "table doesn't exist" instead of checking anything.
+while IFS= read -r f; do
   echo "    $(basename "$f")"
   docker exec -i "$CONTAINER" mysql -uroot harness < "$f"
-done
+done < <(ls -1 "$SCRIPT_DIR"/../harness-db/src/main/resources/db/migration/V*.sql | sort -V)
 
 echo "==> asserting contracts"
 docker exec -i "$CONTAINER" mysql -uroot harness <<'SQL'
@@ -112,6 +114,34 @@ SELECT CASE WHEN COUNT(DISTINCT index_name) = 6
   FROM information_schema.statistics
  WHERE table_schema = 'harness' AND index_name IN
    ('idx_agent_cap','idx_exp','idx_pending','idx_trace','idx_open','uk_fp_window');
+
+-- V11: the skill market. The market columns are what a skill needs to be on the shelf at all
+-- (where it came from, whether it is listed, who may see it, and the text the terminal loads).
+SELECT CASE WHEN COUNT(DISTINCT column_name) = 12
+            THEN 'OK   the skill market columns are on harness_skill (V11)'
+            ELSE CONCAT('FAIL expected 12 market columns, found ', COUNT(DISTINCT column_name))
+       END AS assert_skill_market_columns
+  FROM information_schema.columns
+ WHERE table_schema = 'harness' AND table_name = 'harness_skill'
+   AND column_name IN ('source','source_ref','source_url','publisher','dept_id','listing_status',
+                       'visibility','content','content_digest','scripts','install_count','updated_at');
+
+-- a skill is installed at most once per target: the unique key is what makes "pull it again"
+-- an upgrade rather than a second copy. information_schema has one row per index column, so
+-- the index is counted by name and the uniqueness is read off any of its rows.
+SELECT CASE WHEN COUNT(DISTINCT index_name) = 1 AND MIN(non_unique) = 0
+            THEN 'OK   a skill is installed at most once per target'
+            ELSE 'FAIL uk_install_target does not hold' END AS assert_install_unique
+  FROM information_schema.statistics
+ WHERE table_schema = 'harness' AND table_name = 'harness_skill_install'
+   AND index_name = 'uk_install_target';
+
+-- the market's own tables carry the harness_ prefix like everything else
+SELECT CASE WHEN (SELECT COUNT(*) FROM information_schema.tables
+                   WHERE table_schema = 'harness'
+                     AND table_name IN ('harness_skill_install','harness_skill_registry')) = 2
+            THEN 'OK   the skill market tables exist'
+            ELSE 'FAIL the skill market tables are missing' END AS assert_skill_market_tables;
 SQL
 
 echo "==> done"

@@ -153,6 +153,32 @@ public abstract class PlatformTestBase {
     }
 
     /**
+     * A principal that speaks for a digital employee.
+     *
+     * <p>An agent principal carries the agent's id, and that id is what the services read when
+     * they ask "is this the agent that wrote the skill?" - so it has to be the real one.
+     */
+    protected void createAgentPrincipal(String clientId, String secret, String agentId, Integer deptId) {
+        jdbc.sql("""
+                        INSERT INTO harness_principal
+                          (principal_id, client_id, principal_type, secret_hash, agent_id, employee_id,
+                           api_scope, status, role, dept_id, created_by, created_at)
+                        VALUES (:id, :clientId, 'agent', :hash, :agentId, NULL,
+                                '/api/harness/*', 'active', 'agent', :deptId, 'system:test', NOW())
+                        ON DUPLICATE KEY UPDATE secret_hash = VALUES(secret_hash),
+                                                agent_id = VALUES(agent_id),
+                                                principal_type = VALUES(principal_type),
+                                                dept_id = VALUES(dept_id)
+                        """)
+                .param("id", "0198f500-0000-7000-8000-" + UUID.randomUUID().toString().substring(0, 12))
+                .param("clientId", clientId)
+                .param("agentId", agentId)
+                .param("hash", HmacSigner.deriveKey(secret))
+                .param("deptId", deptId)
+                .update();
+    }
+
+    /**
      * An agent row, ready for lifecycle tests. Re-seeding the same key replaces the previous row
      * so tests stay independent of execution order.
      */

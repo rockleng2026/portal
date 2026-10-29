@@ -175,6 +175,9 @@ function statusTag(status) {
     draft: 'grey', pending: 'warn', running: 'info', offline: 'bad', revoked: 'bad', failed: 'bad',
     denied: 'bad', reject: 'bad', retired: 'grey', paused: 'warn', suspected: 'bad', unbound: 'grey',
     binding: 'warn', expired: 'grey', cancelled: 'grey', used: 'info',
+    // The skill market's own vocabulary.
+    candidate: 'warn', evaluating: 'info', gray: 'info', deprecated: 'grey', rolled_back: 'grey',
+    published: 'ok', installed: 'ok', updated: 'ok', removed: 'grey',
   };
   const cls = map[String(status).toLowerCase()] || 'grey';
   return '<span class="tag ' + cls + '">' + esc(status) + '</span>';
@@ -248,7 +251,10 @@ function confirmBox(title, message, onOk) {
 
 // ---------------------------------------------------------------- 数据
 
-const state = { agents: [], terminals: [], approvals: [], grants: [], switches: [], events: [], audit: [], tasks: [] };
+const state = {
+  agents: [], terminals: [], approvals: [], grants: [], switches: [], events: [], audit: [], tasks: [],
+  skills: [], skillInstalls: [], skillRegistries: [],
+};
 
 async function loadAll() {
   const [agents, terminals, approvals, grants, switches, audit, modelConfigs, principals] = await Promise.all([
@@ -272,7 +278,24 @@ async function loadAll() {
   try {
     state.events = (await api('GET', '/api/harness/event/poll?limit=100')) || [];
   } catch (e) { state.events = []; }
+  await loadSkills();
+  // Without this the tables stay empty: loadAll fills the state, and something has to put
+  // it on the screen.
   renderAll();
+}
+
+async function loadSkills() {
+  // The market is a separate door: a principal without the skill scope still sees the rest of
+  // the console. A failure here must not take the whole console down.
+  try {
+    state.skills = (await api('GET', '/api/harness/skill')) || [];
+  } catch (e) { state.skills = []; }
+  try {
+    state.skillInstalls = (await api('GET', '/api/harness/skill/install')) || [];
+  } catch (e) { state.skillInstalls = []; }
+  try {
+    state.skillRegistries = (await api('GET', '/api/harness/skill/registry')) || [];
+  } catch (e) { state.skillRegistries = []; }
 }
 
 function renderAll() {
@@ -280,6 +303,9 @@ function renderAll() {
   renderAgents();
   renderTerminals();
   renderGrants();
+  renderSkills();
+  renderSkillInstalls();
+  renderSkillRegistries();
   renderApprovals();
   renderModels();
   renderSwitches();
@@ -389,8 +415,88 @@ function renderGrants() {
   ], state.grants, '还没有授权。');
 }
 
-function renderApprovals() {
-  $('#approvalsTable').innerHTML = table([
+// ---------------------------------------------------------------- 技能市场
+
+const SKILL_SOURCE_NAMES = { internal: '内部产出', external: '外部拉取' };
+const SKILL_VISIBILITY_NAMES = { private: '仅自己', dept: '本部门', org: '全公司' };
+const SKILL_STATUS_NAMES = {
+  candidate: '候选', evaluating: '评审中', approved: '评审通过', gray: '灰度',
+  released: '已发布', deprecated: '已下架', rolled_back: '已回滚',
+};
+
+/**
+ * The market.
+ *
+ * The row tells the whole story of a skill: where it came from, whether anybody looked at it,
+ * whether it is on the shelf, and who may see it. The buttons are what the caller's own
+ * rights allow - a reviewer gets 评审, the author gets 提交, a department gets 拉取部署.
+ */
+function renderSkills() {
+  const query = ($('#skillSearch') && $('#skillSearch').value || '').trim().toLowerCase();
+  const rows = state.skills.filter(s => !query
+    || (s.name || '').toLowerCase().includes(query)
+    || (s.skillKey || '').toLowerCase().includes(query)
+    || (s.publisher || '').toLowerCase().includes(query));
+
+  $('#skillsTable').innerHTML = table([
+    { title: '技能', render: s => esc(s.name || '-') + ' <span class="muted mono">' + esc(s.skillKey) + '</span>' },
+    { title: '来源', render: s => '<span class="tag ' + (s.source === 'external' ? 'info' : 'grey') + '">'
+        + esc(SKILL_SOURCE_NAMES[s.source] || s.source) + '</span>' },
+    { title: '状态', render: s => statusTag(s.status) + ' ' + esc(SKILL_STATUS_NAMES[s.status] || '') },
+    { title: '上架', render: s => s.listingStatus === 'published' ? '<span class="tag ok">在架</span>' : '<span class="tag grey">不在架</span>' },
+    { title: '可见', render: s => '<span class="tag grey">' + esc(SKILL_VISIBILITY_NAMES[s.visibility] || s.visibility) + '</span>' },
+    { title: '版本', render: s => 'v' + esc(s.version) },
+    { title: '被拉取', render: s => esc(s.installCount) + ' 次' },
+    {
+      title: '操作', render: s => {
+        let html = '<div class="row-actions">';
+        html += '<button class="tiny" data-act="skill-view" data-id="' + esc(s.skillKey) + '">查看</button>';
+        if (s.status === 'candidate') {
+          html += '<button class="tiny" data-act="skill-submit" data-id="' + esc(s.skillKey) + '">提交评审</button>';
+        }
+        if (s.status === 'evaluating') {
+          html += '<button class="tiny" data-act="skill-approve" data-id="' + esc(s.skillKey) + '">评审通过</button>';
+          html += '<button class="tiny" data-act="skill-reject" data-id="' + esc(s.skillKey) + '">驳回</button>';
+        }
+        if (s.status === 'approved') {
+          html += '<button class="tiny" data-act="skill-publish" data-id="' + esc(s.skillKey) + '">上架</button>';
+        }
+        if (s.listingStatus === 'published') {
+          html += '<button class="tiny" data-act="skill-install" data-id="' + esc(s.skillKey) + '">拉取部署</button>';
+          html += '<button class="tiny" data-act="skill-unlist" data-id="' + esc(s.skillKey) + '">下架</button>';
+        }
+        html += '</div>';
+        return html;
+      }
+    },
+  ], rows, '技能市场还是空的。新建一个，或者从外部市场拉一个进来。');
+}
+
+function renderSkillInstalls() {
+  const targetNames = { agent: '数字员工', terminal: '终端', dept: '部门' };
+  $('#skillInstallsTable').innerHTML = table([
+    { title: '技能', render: i => '<span class="mono">' + esc(i.skillKey) + '</span> v' + esc(i.version) },
+    { title: '装在', render: i => '<span class="tag info">' + esc(targetNames[i.targetType] || i.targetType) + '</span> '
+        + '<span class="mono">' + esc(String(i.targetId || '').slice(0, 12)) + '</span>' },
+    { title: '状态', render: i => statusTag(i.status) },
+    { title: '操作人', render: i => '<span class="mono">' + esc(i.installedBy || '-') + '</span>' },
+    { title: '时间', render: i => esc(when(i.updatedAt)) },
+    {
+      title: '操作', render: i => '<button class="tiny" data-act="skill-uninstall" data-id="' + esc(i.installId) + '">卸载</button>'
+    },
+  ], state.skillInstalls, '还没有拉取过任何技能。');
+}
+
+function renderSkillRegistries() {
+  $('#skillRegistriesTable').innerHTML = table([
+    { title: '注册源', render: r => esc(r.name) + ' <span class="muted mono">' + esc(r.registryKey) + '</span>' },
+    { title: '搜索地址', render: r => '<span class="mono">' + esc(r.searchUrl || '-') + '</span>' },
+    { title: '状态', render: r => r.enabled ? '<span class="tag ok">启用</span>' : '<span class="tag grey">停用</span>' },
+    { title: '操作', render: r => '<button class="tiny" data-act="skill-search-registry" data-id="' + esc(r.registryKey) + '">搜索</button>' },
+  ], state.skillRegistries, '还没有登记外部注册源。');
+}
+
+function renderApprovals() {  $('#approvalsTable').innerHTML = table([
     { title: '能力', render: a => '<span class="mono">' + esc(a.requestedCap) + '</span>' },
     { title: 'Agent', render: a => '<span class="mono">' + esc((a.agentId || '').slice(0, 8)) + '…</span>' },
     { title: '理由', render: a => esc((a.justification || '').slice(0, 80)) },
@@ -633,6 +739,18 @@ function bindEvents() {
 
   $('#refreshBtn').addEventListener('click', () => loadAll().then(() => toast('已刷新', 'ok')));
 
+  // The skill market's own buttons.
+  $('#newSkillBtn').addEventListener('click', newSkillModal);
+  $('#newRegistryBtn').addEventListener('click', newRegistryModal);
+  $('#pullSkillBtn').addEventListener('click', () => {
+    if (!state.skillRegistries.length) {
+      toast('还没有外部注册源。先登记一个，再从里面拉。', 'warn');
+      return;
+    }
+    searchRegistry(state.skillRegistries[0].registryKey);
+  });
+  $('#skillSearch').addEventListener('input', renderSkills);
+
   // The permanent entry point: ask the agent without hunting for a button.
   $('#askBtn').addEventListener('click', () => {
     const terminal = state.terminals.find(t => t.status === 'online') || state.terminals[0];
@@ -796,6 +914,15 @@ function bindEvents() {
       else if (act === 'reject') { decideApproval(id, 'rejected'); return; }
       else if (act === 'grant-revoke') { await api('POST', '/api/harness/grant/' + id + '/revoke', { reason: '控制台吊销' }); toast('已吊销授权', 'ok'); }
       else if (act === 'switch-release') { await api('DELETE', '/api/harness/killswitch/' + id + '?reason=' + encodeURIComponent('控制台解除')); toast('已解除', 'ok'); }
+      else if (act === 'skill-view') { showSkill(id); return; }
+      else if (act === 'skill-submit') { await api('POST', '/api/harness/skill/' + id + '/submit', { reason: '控制台提交评审' }); toast('已提交评审', 'ok'); }
+      else if (act === 'skill-approve') { skillReason('评审通过', '通过的理由', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/approve', { reason }); toast('已评审通过', 'ok'); }); return; }
+      else if (act === 'skill-reject') { skillReason('驳回', '驳回的理由（作者要看得懂为什么）', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/reject', { reason }); toast('已驳回', 'ok'); }); return; }
+      else if (act === 'skill-publish') { skillReason('上架', '上架的理由', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/publish', { reason }); toast('已上架', 'ok'); }); return; }
+      else if (act === 'skill-unlist') { skillReason('下架', '下架的理由（会写进审计）', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/unlist', { reason }); toast('已下架，已装的地方也会撤掉', 'ok'); }); return; }
+      else if (act === 'skill-install') { installSkillModal(id); return; }
+      else if (act === 'skill-uninstall') { await api('DELETE', '/api/harness/skill/install/' + id + '?reason=' + encodeURIComponent('控制台卸载')); toast('已卸载', 'ok'); }
+      else if (act === 'skill-search-registry') { searchRegistry(id); return; }
       await loadAll();
     } catch (err) {
       toast(err.message, 'bad');
@@ -1016,8 +1143,186 @@ async function showGrant(terminalId) {
   }
 }
 
-// ---------------------------------------------------------------- 启动
+/**
+ * Shows a skill: its text, its versions and where it is installed.
+ *
+ * The text is shown as it is - the skill is content, and content can be hostile. It is never
+ * rendered as HTML, and it never becomes a tool argument (02 R-05, ADR-011).
+ */
+async function showSkill(skillKey) {
+  try {
+    const detail = await api('GET', '/api/harness/skill/' + encodeURIComponent(skillKey));
+    const lines = [];
+    lines.push('技能：' + (detail.skill.name || detail.skill.skillKey));
+    lines.push('键：' + detail.skill.skillKey);
+    lines.push('来源：' + (SKILL_SOURCE_NAMES[detail.skill.source] || detail.skill.source)
+      + (detail.skill.sourceRef ? '（' + detail.skill.sourceRef + '）' : ''));
+    lines.push('发布者：' + (detail.skill.publisher || '-'));
+    lines.push('状态：' + (SKILL_STATUS_NAMES[detail.skill.status] || detail.skill.status)
+      + ' / ' + (detail.skill.listingStatus === 'published' ? '在架' : '不在架'));
+    lines.push('可见范围：' + (SKILL_VISIBILITY_NAMES[detail.skill.visibility] || detail.skill.visibility));
+    lines.push('摘要：' + (detail.skill.contentDigest || '-'));
+    lines.push('签名：' + (detail.skill.signature || '-'));
+    lines.push('版本：' + (detail.versions || []).map(v => 'v' + v.version).join(', '));
+    lines.push('');
+    lines.push('---- SKILL.md ----');
+    lines.push(detail.content || '');
+    modal('技能 · ' + detail.skill.skillKey, [
+      { name: 'info', label: '内容', type: 'textarea', value: lines.join('\n') },
+    ], async () => { });
+  } catch (e) {
+    toast(e.message, 'bad');
+  }
+}
 
+/** Asks for a reason before a decision that ends up in the audit trail. */
+function skillReason(title, label, onOk) {
+  modal(title, [
+    { name: 'reason', label: label, type: 'textarea' },
+  ], async (v) => {
+    if (!v.reason || !v.reason.trim()) {
+      throw new Error('得写清楚为什么');
+    }
+    await onOk(v.reason.trim());
+    await loadAll();
+  });
+}
+
+/**
+ * Installs a skill somewhere.
+ *
+ * The target decides who gets it: a department (every machine of that department), a digital
+ * employee, or one machine. Only a skill that is on the shelf can be installed.
+ */
+function installSkillModal(skillKey) {
+  const deptIds = Array.from(new Set(state.agents.map(a => a.deptId).filter(Boolean)));
+  const hint = '部门填部门号（如 ' + (deptIds[0] || '42') + '）；数字员工填 agentId；终端填 terminalId。'
+    + '装在部门上，该部门每台机器都会拿到。';
+
+  modal('拉取部署 · ' + skillKey, [
+    {
+      name: 'targetType', label: '装到哪', type: 'select',
+      options: [
+        { value: 'dept', label: '部门（该部门所有机器都会拿到）' },
+        { value: 'agent', label: '数字员工' },
+        { value: 'terminal', label: '终端' },
+      ],
+    },
+    { name: 'targetId', label: hint, value: deptIds[0] || '' },
+    { name: 'reason', label: '理由', type: 'textarea', value: '控制台拉取部署' },
+  ], async (v) => {
+    await api('POST', '/api/harness/skill/install', {
+      skillKey, targetType: v.targetType, targetId: v.targetId, reason: v.reason,
+    });
+    toast('已拉取部署', 'ok');
+    await loadAll();
+  });
+}
+
+/**
+ * Searches an upstream registry and pulls a package in.
+ *
+ * What comes back is third-party text: it is shown, it is not executed, and it lands in the
+ * market as a candidate that somebody has to review before it can be installed.
+ */
+async function searchRegistry(registryKey) {
+  modal('在 ' + registryKey + ' 里搜索', [
+    { name: 'query', label: '搜索词', value: '' },
+  ], async (v) => {
+    if (!v.query || !v.query.trim()) {
+      throw new Error('得给个搜索词');
+    }
+    const found = await api('POST', '/api/harness/skill/registry/search', {
+      registryKey, query: v.query.trim(), limit: 20,
+    });
+    if (!found || !found.length) {
+      toast('没找到', 'warn');
+      return;
+    }
+    const lines = found.map(f => f.package + (f.installs ? '  ·  ' + f.installs + ' 次安装' : ''));
+    modal('搜到的技能（选一个拉进来）', [
+      { name: 'picked', label: '包引用', type: 'textarea', value: lines.join('\n') },
+    ], async (pick) => {
+      const packageRef = (pick.picked || '').trim().split('\n')[0];
+      if (!packageRef) throw new Error('选一个');
+      await api('POST', '/api/harness/skill/pull', { registryKey, packageRef });
+      toast('已拉进候选池，等人评审', 'ok');
+      await loadAll();
+    });
+  });
+}
+
+/**
+ * Writes a new skill.
+ *
+ * The content is a SKILL.md: frontmatter with a name and a description, then the steps. A
+ * document the terminal could not load is refused by the platform too - a skill that cannot be
+ * read is a skill that silently does nothing.
+ */
+function newSkillModal() {
+  const template = [
+    '---',
+    'name: my-skill',
+    'description: 这个技能是干什么的，agent 什么时候该用它',
+    'tools: exec',
+    '---',
+    '',
+    '# 我的技能',
+    '',
+    '1. 第一步',
+    '2. 第二步',
+    '',
+  ].join('\n');
+  modal('新建技能', [
+    { name: 'skillKey', label: '技能键（唯一）', value: '' },
+    { name: 'name', label: '显示名（可空，取 frontmatter 里的 name）', value: '' },
+    { name: 'description', label: '一句话说明（可空）', value: '' },
+    {
+      name: 'visibility', label: '可见范围', type: 'select',
+      options: [
+        { value: 'dept', label: '本部门' },
+        { value: 'org', label: '全公司（要管理员）' },
+        { value: 'private', label: '仅自己' },
+      ],
+    },
+    { name: 'content', label: 'SKILL.md', type: 'textarea', value: template },
+  ], async (v) => {
+    if (!v.skillKey || !v.skillKey.trim()) {
+      throw new Error('技能键不能空');
+    }
+    await api('POST', '/api/harness/skill', {
+      skillKey: v.skillKey.trim(),
+      name: v.name || null,
+      description: v.description || null,
+      visibility: v.visibility,
+      content: v.content,
+    });
+    toast('已建好，是候选状态，还没人评审', 'ok');
+    await loadAll();
+  });
+}
+
+/** Registers an upstream registry. */
+function newRegistryModal() {
+  modal('登记外部注册源', [
+    { name: 'registryKey', label: '标识（唯一）', value: '' },
+    { name: 'name', label: '显示名', value: '' },
+    { name: 'searchUrl', label: '搜索地址（{query} / {limit} 是占位符）', value: '' },
+    { name: 'packageUrl', label: '取包地址（{package} 是占位符）', value: '' },
+  ], async (v) => {
+    if (!v.registryKey || !v.searchUrl || !v.packageUrl) {
+      throw new Error('标识、搜索地址、取包地址都要填');
+    }
+    await api('POST', '/api/harness/skill/registry', {
+      registryKey: v.registryKey.trim(), name: v.name || v.registryKey,
+      searchUrl: v.searchUrl.trim(), packageUrl: v.packageUrl.trim(),
+    });
+    toast('已登记', 'ok');
+    await loadAll();
+  });
+}
+
+// ---------------------------------------------------------------- 启动
 (async function start() {
   bindEvents();
   // The version stamp tells a stale page from a current one. If this says "控制台" without a

@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "harness")
 public record HarnessProperties(Security security, Terminal terminal, Bootstrap bootstrap,
-                                Federation federation, Model model) {
+                                Federation federation, Model model, Skill skill) {
 
     /**
      * @param encryptionKey the key the model credentials are encrypted with. When it is not set,
@@ -14,6 +14,15 @@ public record HarnessProperties(Security security, Terminal terminal, Bootstrap 
      *                       not be blocked from configuring a model.
      */
     public record Model(String encryptionKey) {
+    }
+
+    /**
+     * @param signingKey the key skill versions are signed with. It proves the platform issued a
+     *                   version; the terminal does not hold it and does not need it - the
+     *                   terminal checks the content digest instead. Derived from the bootstrap
+     *                   secret when it is not set.
+     */
+    public record Skill(String signingKey) {
     }
 
     public record Security(Duration clockSkew, Duration nonceTtl, Duration bindingCodeTtl) {

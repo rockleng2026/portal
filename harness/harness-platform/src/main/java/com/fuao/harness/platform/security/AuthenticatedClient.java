@@ -39,6 +39,11 @@ public record AuthenticatedClient(
         return "service".equals(principalType);
     }
 
+    /** The platform itself: schedulers, expiry jobs, the policy engine. */
+    public boolean isSystem() {
+        return "system".equals(principalType);
+    }
+
     /**
      * Whether this caller is a natural human.
      *

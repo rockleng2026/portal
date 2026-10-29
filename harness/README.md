@@ -22,10 +22,10 @@ mvn -B -o package       # 离线
 
 | 模块 | 内容 | 状态 |
 |---|---|---|
-| `harness-db` | Flyway 迁移：`03 §2` 冻结 schema + 治理/种子/修正增量 | ✅ 已在 MySQL 8.4 验证 |
+| `harness-db` | Flyway 迁移：`03 §2` 冻结 schema + 治理/种子/修正增量 + V11 技能市场 | ✅ 已在 MySQL 8.4 验证 |
 | `harness-protocol` | UUIDv7（RFC 9562）、TCP 帧编解码与命令码表、能力令牌、事件信封与去重指纹、规范化 JSON | ✅ 42 tests |
 | `harness-policy` | `能力 ∩ 作用域 ∩ TTL` 决策引擎、自治等级、审批状态机（自然人锚点）、升级路由（2 跳上限）、自动降级 | ✅ 49 tests |
-| `harness-platform` | Spring Boot 3：HMAC 身份、Agent 注册与生命周期、授权、事件总线、审批、终端接入、Kill-Switch、审计、看板 API | ✅ 52 tests（真实 MySQL 8.4） |
+| `harness-platform` | Spring Boot 3：HMAC 身份、Agent 注册与生命周期、授权、事件总线、审批、终端接入、Kill-Switch、审计、看板 API、**技能市场** | ✅ 103 tests（真实 MySQL 8.4） |
 | `harness-terminal` | 终端的**设备外壳**（Java）：设备身份、绑定码流程、平台客户端、本地拒绝策略、审批验签。**部署时不用它**——终端是一个 Rust 二进制（见下） | ✅ 23 tests |
 | `harness-adapter-portal` | portal 只读同步、规范化镜像、权限串/时间严格解析、脏数据队列 | ✅ 20 tests（双 MySQL 容器） |
 | `tools/` | 跨系统契约校验（portal ↔ platform HMAC 互认） | ✅ |
@@ -65,6 +65,35 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 | `POST/DELETE /api/harness/killswitch` | **仅自然人** | 5 粒度，理由必填 |
 | `GET /api/harness/audit`、`/audit/verify` | 服务账号 | 按 trace 回放 + 哈希链自检 |
 | `GET /api/harness/template`、`/agent`、`/terminal` | 服务账号 | 看板数据源 |
+
+### 技能市场（V11）
+
+公司的内部技能市场：技能从这里新增、修改、下架，也从外部注册源拉进来；数字员工在任务里
+整理出来的技能可以推上来；部门人员和数字员工都能浏览和拉取部署。
+
+| 端点 | 谁能调 | 说明 |
+|---|---|---|
+| `GET /api/harness/skill` | 所有人（按可见范围过滤） | 浏览市场 |
+| `GET /api/harness/skill/{key}`、`/{key}/versions` | 所有人 | 详情与版本史 |
+| `POST /api/harness/skill` | **自然人或数字员工** | 新建；数字员工只能推本部门的，落 `candidate` |
+| `PUT /api/harness/skill/{key}` | 作者（他人须是自然人） | 改＝出新版本，旧版本留着 |
+| `POST /api/harness/skill/{key}/submit\|approve\|reject\|publish\|unlist` | 评审与上架**仅自然人** | 评审人不能是作者 |
+| `DELETE /api/harness/skill/{key}` | **仅自然人** | 默认下架（撤掉所有安装）；`purge=true` 才物理删，且只允许没发布过的 |
+| `GET/POST /api/harness/skill/registry` | 读任意；登记**仅自然人** | 外部注册源（pi-web 的 `skills.sh` 形状） |
+| `POST /api/harness/skill/registry/search`、`/pull` | 搜索任意；拉取**仅自然人** | 外部包进候选池，要人评审 |
+| `GET/POST /api/harness/skill/install`、`DELETE /install/{id}` | 部署：自然人（本部门）或数字员工（自己） | 装到部门 / 数字员工 / 终端 |
+| `GET /api/harness/terminal/{id}/skills`、`/agent/{id}/skills` | 终端只能取自己的 | 内容 + 摘要 + 签名 |
+
+四条不可破的规则（写在 `SkillMarketService` 里，不是写在文档里）：
+
+1. **技能是内容，不是授权**——装一个技能不增加任何 capability；
+2. **没评审过的技能装不上**——`install` 只接受 `released` + `published`；
+3. **评审人不能是作者**——作者自评返回 `REVIEWER_IS_THE_AUTHOR`（02 R-02）；
+4. **版本不可变**——改一次是新版本，回滚是指针移动（04 A2-2）。
+
+终端侧（`harness-terminal`，Rust）：`skills sync` 从平台取技能 → 核 `sha256(content)` →
+写进 `~/.harness/skills/<name>/SKILL.md` → 平台撤下的技能从磁盘上一起撤掉；
+`serve` 每十秒跟平台对一次账，并把匹配到的技能放进系统提示。
 
 ### 为什么 protocol 与 policy 不依赖 Spring
 

@@ -187,3 +187,48 @@ V1–V3 的库与新库收敛到同一 schema。
 
 03 §8.1 要求 harness 库"一律避开 MySQL 保留字"。portal 侧 `groups` 是保留字（`Groups.hbm.xml` 已加反引号修复）。harness 库全部表名以 `harness_` 前缀开头，天然避开 `groups`/`order`/`system`/`usage`。
 `db/verify.sh` 的 `assert_reserved_words` 会持续守护这一点。
+
+---
+
+## E-13 `harness_skill` 说得清技能是什么，说不清技能怎么进公司（高，功能缺口）
+
+**规格原文（03 §2.4）**：`harness_skill` 只有 `skill_key / version / definition / signature /
+author_* / eval_result / status / rollout_pct / scope / created_at`。
+
+**现象**：这张表把**程序记忆**（01 §14.1：可复用的技能/流程，版本化 + 签名）描述得很完整，
+但一个"技能市场"要用的东西一个都没有：
+
+- 没有**来源**：这个技能是数字员工在任务里整理的，还是从外面拉进来的？
+- 没有**上架状态**：`status` 说的是技能的成熟度（candidate → released），不是"在不在架上"。
+- 没有**正文**：只有 `definition`（结构化的 steps/tools），终端实际加载的是 SKILL.md 全文。
+- 没有**摘要**：终端装机时要核对自己拿到的东西和平台发布的是不是同一个。
+- 没有**安装记录**：装在哪个部门、哪个数字员工、哪台终端上，无处可查。
+
+**影响**：01 §8.1.3.4 的"经验体 → 技能 → 发布流水线"与 04 的 M2 范围项 2「技能库与签名：
+终端验签加载，版本可回滚」都落在这张表上，不补就只能另起炉灶——那样 §2.4 的冻结契约就成了
+一句空话。
+
+**修法**（见 `V11__harness_skill_market.sql`）：**不新建平行表**，而是给 `harness_skill` 增补
+市场列，另加两张表。
+
+- 增补列：`source`（internal/external）、`source_ref`、`source_url`、`publisher`、`dept_id`、
+  `listing_status`（draft/published/unlisted）、`visibility`、`content`、`content_digest`、
+  `scripts`、`install_count`、`created_by`、`updated_at`。
+- 新表 `harness_skill_install`：装在哪个目标上、装的哪个版本、谁装的、为什么。
+- 新表 `harness_skill_registry`：外部注册源（pi-web 的 `skills.sh` 形状：搜索模板 + 取包模板）。
+
+**两处需要文档方确认的取舍**：
+
+1. **`visibility` 与 V1 的 `scope` 重复。** V1 的 `scope` 是 JSON（`private/agent/dept/org`），
+   不好建索引；V11 加了可索引的 `visibility` 列。两者说的是同一件事，`visibility` 是 `scope`
+   的投影。**建议**：保留两列，`scope` 继续按 V1 的形状写，`visibility` 只做过滤用。
+2. **终端核的是摘要，不是签名。** V1 的 `signature` 注释写的是"内容签名，终端校验后才加载"。
+   但终端没有平台密钥；把密钥给终端，等于允许一台被攻陷的机器自己造技能。
+   **本实现的做法**：平台用平台密钥 HMAC 签 `signature`（供平台自检与审计），
+   终端核 `content_digest = sha256(content)`（终端自己就能算）。
+   **建议文档方把 V1 那句注释改成"平台签名 + 终端核摘要"**。
+
+**已回写**：03 §2.4.1 记录了市场列、两张新表、两个来源、两个出口和四条不可破的规则；
+03 §9 记录了技能市场的端点清单。
+
+---

@@ -1,6 +1,9 @@
 package com.fuao.harness.platform.web;
 
 import com.fuao.harness.platform.service.AgentService;
+import com.fuao.harness.platform.service.SkillDocument;
+import com.fuao.harness.platform.service.SkillInstallService;
+import com.fuao.harness.platform.service.SkillMarketService;
 import com.fuao.harness.platform.service.TerminalService;
 import com.fuao.harness.platform.security.ClientAuthenticator.AuthenticationException;
 import java.util.Map;
@@ -52,6 +55,62 @@ public class ApiExceptionHandler {
     public ResponseEntity<Map<String, Object>> revoked(TerminalService.RevokedTerminalException e) {
         return ResponseEntity.status(HttpStatus.GONE)
                 .body(ApiError.of("TERMINAL_REVOKED", e.getMessage()).enveloped());
+    }
+
+    // ------------------------------------------------------------------ the skill market
+
+    @ExceptionHandler(SkillMarketService.NotAHumanException.class)
+    public ResponseEntity<Map<String, Object>> skillNotAHuman(SkillMarketService.NotAHumanException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiError.of("HUMAN_REQUIRED", e.getMessage()).enveloped());
+    }
+
+    @ExceptionHandler(SkillMarketService.ReviewerIsTheAuthorException.class)
+    public ResponseEntity<Map<String, Object>> reviewerIsTheAuthor(
+            SkillMarketService.ReviewerIsTheAuthorException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiError.of("REVIEWER_IS_THE_AUTHOR", e.getMessage()).enveloped());
+    }
+
+    @ExceptionHandler({SkillMarketService.NotTheAuthorException.class,
+            SkillMarketService.NotAllowedException.class,
+            SkillInstallService.NotAllowedException.class})
+    public ResponseEntity<Map<String, Object>> skillForbidden(RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiError.of("SKILL_NOT_ALLOWED", e.getMessage()).enveloped());
+    }
+
+    @ExceptionHandler(SkillMarketService.SkillNotFound.class)
+    public ResponseEntity<Map<String, Object>> skillNotFound(SkillMarketService.SkillNotFound e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiError.of("SKILL_NOT_FOUND", e.getMessage()).enveloped());
+    }
+
+    @ExceptionHandler(SkillMarketService.DuplicateSkillKeyException.class)
+    public ResponseEntity<Map<String, Object>> duplicateSkillKey(
+            SkillMarketService.DuplicateSkillKeyException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiError.of("DUPLICATE_SKILL_KEY", e.getMessage()).enveloped());
+    }
+
+    @ExceptionHandler(SkillMarketService.IllegalLifecycleException.class)
+    public ResponseEntity<Map<String, Object>> illegalSkillTransition(
+            SkillMarketService.IllegalLifecycleException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiError.of("ILLEGAL_SKILL_TRANSITION", e.getMessage()).enveloped());
+    }
+
+    @ExceptionHandler(SkillMarketService.ConcurrentModificationException.class)
+    public ResponseEntity<Map<String, Object>> skillConcurrent(
+            SkillMarketService.ConcurrentModificationException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiError.of("CONCURRENT_MODIFICATION", e.getMessage()).enveloped());
+    }
+
+    @ExceptionHandler(SkillDocument.MalformedSkillException.class)
+    public ResponseEntity<Map<String, Object>> malformedSkill(SkillDocument.MalformedSkillException e) {
+        return ResponseEntity.badRequest()
+                .body(ApiError.of("MALFORMED_SKILL", e.getMessage()).enveloped());
     }
 
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
