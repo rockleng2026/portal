@@ -98,8 +98,26 @@ public class SkillMarketService {
             List<ScriptContent> scripts) {
     }
 
-    /** A script that travels with the skill. */
-    public record ScriptContent(String name, String content) {
+    /**
+     * A file that travels with the skill.
+     *
+     * @param path where the file sits inside the skill's own directory, e.g.
+     *             {@code scripts/check.sh} or {@code reference/audit.md}. The path is always
+     *             relative: a file may not point outside the skill, and the check is on the
+     *             path, not on the name.
+     */
+    public record ScriptContent(String path, String content) {
+
+        /** A file in the skill's own {@code scripts/} directory. */
+        public static ScriptContent named(String name, String content) {
+            return new ScriptContent("scripts/" + name, content);
+        }
+
+        /** The file's name without its directory. */
+        public String name() {
+            int slash = path == null ? -1 : path.lastIndexOf('/');
+            return slash < 0 ? path : path.substring(slash + 1);
+        }
     }
     /**
      * Pulls a skill out of an upstream registry into the market.
@@ -115,7 +133,7 @@ public class SkillMarketService {
     @Transactional
     public SkillRecord importExternal(String skillKey, String content, String publisher, String sourceRef,
                                       String sourceUrl, Integer deptId, SkillRecord.Visibility visibility,
-                                      List<ScriptContent> scripts) {
+                                      List<ScriptContent> scripts, Map<String, Object> evaluation) {
         AuthenticatedClient actor = authContext.require();
         requireHuman(actor, "skill.pull");
 
@@ -134,7 +152,11 @@ public class SkillMarketService {
                 visibility == null ? SkillRecord.Visibility.DEPT : visibility,
                 deptId == null ? deptOf(actor) : deptId,
                 version, parentVersion, now);
+        // The registry's verdict - what the security scanners said about this package - is
+        // kept with the skill. The reviewer should see it before they decide, and it should
+        // survive the pull.
         SkillRecord external = withSource(skill, SkillRecord.Source.EXTERNAL, sourceRef, sourceUrl, publisher);
+        external = withEvaluation(external, evaluation);
         skills.insert(external);
 
         audit.record(actor, "skill.pull", "skill", external.skillId(), "allow", null,
@@ -142,6 +164,20 @@ public class SkillMarketService {
                 AuditService.evidence("skillKey", skillKey, "version", String.valueOf(version),
                         "sourceRef", String.valueOf(sourceRef), "digest", external.contentDigest()));
         return external;
+    }
+
+    /** A copy of the skill carrying the registry's security verdict. */
+    private static SkillRecord withEvaluation(SkillRecord skill, Map<String, Object> evaluation) {
+        if (evaluation == null || evaluation.isEmpty()) {
+            return skill;
+        }
+        return new SkillRecord(
+                skill.skillId(), skill.skillKey(), skill.version(), skill.parentVersion(), skill.name(),
+                skill.definition(), skill.signature(), skill.authorAgent(), skill.authorHuman(),
+                evaluation, skill.status(), skill.rolloutPct(), skill.scope(), skill.source(),
+                skill.sourceRef(), skill.sourceUrl(), skill.publisher(), skill.deptId(),
+                skill.listingStatus(), skill.visibility(), skill.content(), skill.contentDigest(),
+                skill.scripts(), skill.installCount(), skill.createdBy(), skill.createdAt(), skill.updatedAt());
     }
 
     private static SkillRecord withSource(SkillRecord skill, SkillRecord.Source source, String sourceRef,
@@ -452,15 +488,21 @@ public class SkillMarketService {
         List<Map<String, Object>> scripts = new ArrayList<>();
         if (cmd.scripts() != null) {
             for (ScriptContent script : cmd.scripts()) {
-                if (script == null || script.name() == null || script.name().isBlank()) {
-                    throw new IllegalArgumentException("a script needs a name");
+                if (script == null || script.path() == null || script.path().isBlank()) {
+                    throw new IllegalArgumentException("a file needs a path");
                 }
-                if (script.name().contains("/") || script.name().contains("\\") || script.name().contains("..")) {
-                    throw new IllegalArgumentException("a script name may not contain a path: " + script.name());
+                String path = script.path().trim();
+                // The file has to stay inside the skill's own directory. A path that climbs
+                // out of it is not a file of the skill - it is an attempt to write somewhere
+                // else, and it is refused before anything is written.
+                if (path.contains("..") || path.startsWith("/") || path.contains("\\")
+                        || path.contains("//") || path.contains(":")) {
+                    throw new IllegalArgumentException(
+                            "a file's path must stay inside the skill: " + path);
                 }
                 Map<String, Object> entry = new LinkedHashMap<>();
                 entry.put("name", script.name());
-                entry.put("path", "scripts/" + script.name());
+                entry.put("path", path);
                 entry.put("digest", Digests.sha256Hex(
                         (script.content() == null ? "" : script.content()).getBytes(StandardCharsets.UTF_8)));
                 entry.put("content", script.content() == null ? "" : script.content());

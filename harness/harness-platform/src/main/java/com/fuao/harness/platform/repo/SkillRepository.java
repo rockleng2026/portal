@@ -414,11 +414,11 @@ public class SkillRepository {
     public void insertRegistry(RegistryRow r) {
         jdbc.sql("""
                         INSERT INTO harness_skill_registry
-                          (registry_id, registry_key, name, kind, search_url, package_url, enabled,
-                           created_by, created_at, updated_at)
+                          (registry_id, registry_key, name, kind, search_url, package_url, catalog_url,
+                           audit_url, enabled, created_by, created_at, updated_at)
                         VALUES
-                          (:id, :key, :name, :kind, :searchUrl, :packageUrl, :enabled,
-                           :createdBy, :createdAt, :updatedAt)
+                          (:id, :key, :name, :kind, :searchUrl, :packageUrl, :catalogUrl,
+                           :auditUrl, :enabled, :createdBy, :createdAt, :updatedAt)
                         """)
                 .param("id", r.registryId())
                 .param("key", r.registryKey())
@@ -426,6 +426,8 @@ public class SkillRepository {
                 .param("kind", r.kind())
                 .param("searchUrl", r.searchUrl())
                 .param("packageUrl", r.packageUrl())
+                .param("catalogUrl", r.catalogUrl())
+                .param("auditUrl", r.auditUrl())
                 .param("enabled", r.enabled() ? 1 : 0)
                 .param("createdBy", r.createdBy())
                 .param("createdAt", Timestamp.from(r.createdAt()))
@@ -433,44 +435,67 @@ public class SkillRepository {
                 .update();
     }
 
+    /**
+     * Changes a registry.
+     *
+     * <p>The addresses are data, not code, so an operator can point a registry at another
+     * host - or switch a search registry to a catalogue - without a new release.
+     */
+    public void updateRegistry(String registryKey, String name, String kind, String searchUrl,
+                                String packageUrl, String catalogUrl, String auditUrl, boolean enabled,
+                                String changedBy) {
+        jdbc.sql("""
+                        UPDATE harness_skill_registry
+                           SET name = :name, kind = :kind, search_url = :searchUrl,
+                               package_url = :packageUrl, catalog_url = :catalogUrl,
+                               audit_url = :auditUrl, enabled = :enabled, updated_at = NOW()
+                         WHERE registry_key = :key
+                        """)
+                .param("name", name)
+                .param("kind", kind)
+                .param("searchUrl", searchUrl)
+                .param("packageUrl", packageUrl)
+                .param("catalogUrl", catalogUrl)
+                .param("auditUrl", auditUrl)
+                .param("enabled", enabled ? 1 : 0)
+                .param("key", registryKey)
+                .update();
+    }
+
+    private static RegistryRow mapRegistry(java.sql.ResultSet rs) throws java.sql.SQLException {
+        return new RegistryRow(
+                rs.getString("registry_id"),
+                rs.getString("registry_key"),
+                rs.getString("name"),
+                rs.getString("kind"),
+                rs.getString("search_url"),
+                rs.getString("package_url"),
+                rs.getString("catalog_url"),
+                rs.getString("audit_url"),
+                rs.getInt("enabled") == 1,
+                rs.getString("created_by"),
+                rs.getTimestamp("created_at").toInstant(),
+                rs.getTimestamp("updated_at").toInstant());
+    }
+
     public List<RegistryRow> listRegistries() {
         return jdbc.sql("""
-                        SELECT registry_id, registry_key, name, kind, search_url, package_url, enabled,
-                               created_by, created_at, updated_at
+                        SELECT registry_id, registry_key, name, kind, search_url, package_url, catalog_url,
+                               audit_url, enabled, created_by, created_at, updated_at
                           FROM harness_skill_registry ORDER BY registry_key
                         """)
-                .query((rs, i) -> new RegistryRow(
-                        rs.getString("registry_id"),
-                        rs.getString("registry_key"),
-                        rs.getString("name"),
-                        rs.getString("kind"),
-                        rs.getString("search_url"),
-                        rs.getString("package_url"),
-                        rs.getInt("enabled") == 1,
-                        rs.getString("created_by"),
-                        rs.getTimestamp("created_at").toInstant(),
-                        rs.getTimestamp("updated_at").toInstant()))
+                .query((rs, i) -> mapRegistry(rs))
                 .list();
     }
 
     public Optional<RegistryRow> findRegistry(String registryKey) {
         return jdbc.sql("""
-                        SELECT registry_id, registry_key, name, kind, search_url, package_url, enabled,
-                               created_by, created_at, updated_at
+                        SELECT registry_id, registry_key, name, kind, search_url, package_url, catalog_url,
+                               audit_url, enabled, created_by, created_at, updated_at
                           FROM harness_skill_registry WHERE registry_key = :key
                         """)
                 .param("key", registryKey)
-                .query((rs, i) -> new RegistryRow(
-                        rs.getString("registry_id"),
-                        rs.getString("registry_key"),
-                        rs.getString("name"),
-                        rs.getString("kind"),
-                        rs.getString("search_url"),
-                        rs.getString("package_url"),
-                        rs.getInt("enabled") == 1,
-                        rs.getString("created_by"),
-                        rs.getTimestamp("created_at").toInstant(),
-                        rs.getTimestamp("updated_at").toInstant()))
+                .query((rs, i) -> mapRegistry(rs))
                 .optional();
     }
 
@@ -482,6 +507,8 @@ public class SkillRepository {
             String kind,
             String searchUrl,
             String packageUrl,
+            String catalogUrl,
+            String auditUrl,
             boolean enabled,
             String createdBy,
             Instant createdAt,

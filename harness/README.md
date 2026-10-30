@@ -79,7 +79,7 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 | `PUT /api/harness/skill/{key}` | 作者（他人须是自然人） | 改＝出新版本，旧版本留着 |
 | `POST /api/harness/skill/{key}/submit\|approve\|reject\|publish\|unlist` | 评审与上架**仅自然人** | 评审人不能是作者 |
 | `DELETE /api/harness/skill/{key}` | **仅自然人** | 默认下架（撤掉所有安装）；`purge=true` 才物理删，且只允许没发布过的 |
-| `GET/POST /api/harness/skill/registry` | 读任意；登记**仅自然人** | 外部注册源（pi-web 的 `skills.sh` 形状） |
+| `GET/POST /api/harness/skill/registry`、`PUT /registry/{key}` | 读任意；登记与改**仅自然人** | 外部注册源 |
 | `POST /api/harness/skill/registry/search`、`/pull` | 搜索任意；拉取**仅自然人** | 外部包进候选池，要人评审 |
 | `GET/POST /api/harness/skill/install`、`DELETE /install/{id}` | 部署：自然人（本部门）或数字员工（自己） | 装到部门 / 数字员工 / 终端 |
 | `GET /api/harness/terminal/{id}/skills`、`/agent/{id}/skills` | 终端只能取自己的 | 内容 + 摘要 + 签名 |
@@ -92,8 +92,36 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 4. **版本不可变**——改一次是新版本，回滚是指针移动（04 A2-2）。
 
 终端侧（`harness-terminal`，Rust）：`skills sync` 从平台取技能 → 核 `sha256(content)` →
-写进 `~/.harness/skills/<name>/SKILL.md` → 平台撤下的技能从磁盘上一起撤掉；
-`serve` 每十秒跟平台对一次账，并把匹配到的技能放进系统提示。
+写进 `~/.harness/skills/<name>/SKILL.md`（随技能带的文件保持它自己的相对路径）→
+平台撤下的技能从磁盘上一起撤掉；`serve` 每十秒跟平台对一次账，并把匹配到的技能放进系统提示。
+
+### 外部注册源：三种协议（V12）
+
+注册源是**数据**不是代码——登记一行地址，平台就懂它。世上真正在跑的是三种协议，
+`SkillRegistryClient` 三种都会说：
+
+| 协议 | 形状 | 谁在用 |
+|---|---|---|
+| **搜索型** | `GET {searchUrl}?q={query}&limit={limit}` → `{"skills":[...]}` 或 `{"data":[...]}`；取包 `GET {packageUrl}` → `{"files":[{"path","contents"}]}` | skills.sh（pi-web 用的就是它） |
+| **目录型** | `GET {catalogUrl}` → RFC 8615 的 `/.well-known/agent-skills/index.json`（旧版是 `/.well-known/skills/index.json`）；两种形状：新版 `{name,description,type,url,digest}`，旧版 `{name,description,files[]}` | vercel、飞书、Uizze 等 |
+| **安全审计** | `GET {auditUrl}` → 各扫描器的结论 | skills.sh 的 `/api/v1/skills/audit/{id}`（免令牌） |
+
+**审计结论会留在技能身上**（`harness_skill.eval_result`）：拉下来的技能带着"谁查过它、
+结论是什么"，评审的人在决定之前就能看到。skills.sh 那边五个扫描器的结论原样存下来。
+
+已登记的注册源（`harness_skill_registry`）：
+
+| 标识 | 协议 | 地址 |
+|---|---|---|
+| `skills-sh` | 搜索型 | `skills.sh/api/search` + `skills.sh/api/download/{package}` + 审计 |
+| `vercel` | 目录型 | `vercel.com/.well-known/agent-skills/index.json`（v0.2.0，自带 sha256 摘要） |
+| `feishu` | 目录型 | `open.feishu.cn/.well-known/skills/index.json`（飞书官方 28 个） |
+| `uizze` | 目录型 | `uizze.sh/.well-known/agent-skills/index.json` |
+
+> **出网代理**：注册源客户端读 `https_proxy` / `http_proxy` / `no_proxy`（跟 curl 一个规矩）。
+> JDK 的 HTTP 客户端不读这些环境变量，所以平台以服务方式跑的时候，代理必须写进
+> `~/.harness/platform.env`——否则它会直连出去，在只有代理能到的那些主机上一直等到超时。
+> 终端自己的控制通道**不走**代理：那是另一个决定，由终端那侧做。
 
 ### 为什么 protocol 与 policy 不依赖 Spring
 

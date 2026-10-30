@@ -500,11 +500,21 @@ function renderSkillInstalls() {
 }
 
 function renderSkillRegistries() {
+  const kindNames = { search: '搜索型', catalog: '目录型' };
   $('#skillRegistriesTable').innerHTML = table([
     { title: '注册源', render: r => esc(r.name) + ' <span class="muted mono">' + esc(r.registryKey) + '</span>' },
-    { title: '搜索地址', render: r => '<span class="mono">' + esc(r.searchUrl || '-') + '</span>' },
+    { title: '协议', render: r => '<span class="tag ' + (r.kind === 'catalog' ? 'info' : 'grey') + '">'
+        + esc(kindNames[r.kind] || r.kind) + '</span>' },
+    { title: '地址', render: r => '<span class="mono">' + esc(r.catalogUrl || r.searchUrl || '-') + '</span>' },
+    { title: '安全审计', render: r => r.auditUrl ? '<span class="tag ok">有</span>' : '<span class="tag grey">无</span>' },
     { title: '状态', render: r => r.enabled ? '<span class="tag ok">启用</span>' : '<span class="tag grey">停用</span>' },
-    { title: '操作', render: r => '<button class="tiny" data-act="skill-search-registry" data-id="' + esc(r.registryKey) + '">搜索</button>' },
+    {
+      title: '操作', render: r => '<div class="row-actions">'
+        + '<button class="tiny" data-act="skill-search-registry" data-id="' + esc(r.registryKey) + '">搜索</button>'
+        + '<button class="tiny" data-act="skill-registry-toggle" data-id="' + esc(r.registryKey) + '"'
+        + ' data-enabled="' + (r.enabled ? 'false' : 'true') + '">' + (r.enabled ? '停用' : '启用') + '</button>'
+        + '</div>'
+    },
   ], state.skillRegistries, '还没有登记外部注册源。');
 }
 
@@ -1039,6 +1049,16 @@ function bindEvents() {
       else if (act === 'skill-install') { installSkillModal(id); return; }
       else if (act === 'skill-uninstall') { await api('DELETE', '/api/harness/skill/install/' + id + '?reason=' + encodeURIComponent('控制台卸载')); toast('已卸载', 'ok'); }
       else if (act === 'skill-search-registry') { searchRegistry(id); return; }
+      else if (act === 'skill-registry-toggle') {
+        const registry = state.skillRegistries.find(r => r.registryKey === id);
+        await api('PUT', '/api/harness/skill/registry/' + encodeURIComponent(id), {
+          registryKey: id, name: registry ? registry.name : id, kind: registry ? registry.kind : 'search',
+          searchUrl: registry ? registry.searchUrl : null, packageUrl: registry ? registry.packageUrl : null,
+          catalogUrl: registry ? registry.catalogUrl : null, auditUrl: registry ? registry.auditUrl : null,
+          enabled: btn.dataset.enabled === 'true',
+        });
+        toast('已更新', 'ok');
+      }
       await loadAll();
     } catch (err) {
       toast(err.message, 'bad');
@@ -1494,20 +1514,45 @@ function newSkillModal() {
   });
 }
 
-/** Registers an upstream registry. */
+/**
+ * Registers an upstream registry.
+ *
+ * Two protocols are in the wild, and the form asks which one this is:
+ *
+ * - 搜索型：注册源回答查询，给出包的引用（skills.sh 就是这种）；
+ * - 目录型：注册源把全部清单放在一个 well-known 地址上，由本地过滤（RFC 8615 的标准做法）。
+ *
+ * 安全审计地址是可选的——填了它，拉下来的技能就会带上扫描器的结论，评审的人能先看到。
+ */
 function newRegistryModal() {
   modal('登记外部注册源', [
     { name: 'registryKey', label: '标识（唯一）', value: '' },
     { name: 'name', label: '显示名', value: '' },
-    { name: 'searchUrl', label: '搜索地址（{query} / {limit} 是占位符）', value: '' },
-    { name: 'packageUrl', label: '取包地址（{package} 是占位符）', value: '' },
+    {
+      name: 'kind', label: '协议', type: 'select',
+      options: [
+        { value: 'search', label: '搜索型（注册源回答查询）' },
+        { value: 'catalog', label: '目录型（well-known 清单，本地过滤）' },
+      ],
+    },
+    { name: 'searchUrl', label: '搜索地址（{query} / {limit} 是占位符；搜索型必填）', value: '' },
+    { name: 'packageUrl', label: '取包地址（{package} 是占位符；搜索型必填）', value: '' },
+    { name: 'catalogUrl', label: '清单地址（index.json；目录型必填）', value: '' },
+    { name: 'auditUrl', label: '安全审计地址（{package} 是占位符；可空）', value: '' },
   ], async (v) => {
-    if (!v.registryKey || !v.searchUrl || !v.packageUrl) {
-      throw new Error('标识、搜索地址、取包地址都要填');
+    if (!v.registryKey) {
+      throw new Error('标识不能空');
+    }
+    if (v.kind === 'catalog' && !v.catalogUrl) {
+      throw new Error('目录型注册源要填清单地址');
+    }
+    if (v.kind === 'search' && (!v.searchUrl || !v.packageUrl)) {
+      throw new Error('搜索型注册源要填搜索地址和取包地址');
     }
     await api('POST', '/api/harness/skill/registry', {
-      registryKey: v.registryKey.trim(), name: v.name || v.registryKey,
+      registryKey: v.registryKey.trim(), name: v.name || v.registryKey, kind: v.kind,
       searchUrl: v.searchUrl.trim(), packageUrl: v.packageUrl.trim(),
+      catalogUrl: v.catalogUrl.trim(), auditUrl: v.auditUrl.trim(),
     });
     toast('已登记', 'ok');
     await loadAll();

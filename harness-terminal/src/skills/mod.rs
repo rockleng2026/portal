@@ -281,7 +281,7 @@ pub struct SkillPackage {
     pub content: String,
     /// The digest the platform published for this content.
     pub digest: String,
-    /// The scripts that travel with the skill: (name, content).
+    /// The files that travel with the skill: (path inside the skill, content).
     pub scripts: Vec<(String, String)>,
 }
 
@@ -327,7 +327,23 @@ impl SkillPackage {
                     .get("content")
                     .and_then(|v| v.as_str())
                     .unwrap_or_default();
-                scripts.push((script_name.to_string(), script_content.to_string()));
+                // The path is relative to the skill's own directory. A path that climbs out
+                // of it is refused: a file of a skill may not be written anywhere else.
+                let path = script
+                    .get("path")
+                    .and_then(|v| v.as_str())
+                    .filter(|p| !p.is_empty())
+                    .unwrap_or(script_name);
+                if path.contains("..")
+                    || path.starts_with('/')
+                    || path.contains('\\')
+                    || path.contains("//")
+                {
+                    return Err(anyhow!(
+                        "the platform sent the skill '{name}' a file with an unsafe path: {path}"
+                    ));
+                }
+                scripts.push((path.to_string(), script_content.to_string()));
             }
         }
         Ok(Self {
@@ -401,15 +417,17 @@ pub fn install_all(root: &Path, packages: &[SkillPackage]) -> Result<InstallRepo
         let skill_file = directory.join("SKILL.md");
         std::fs::write(&skill_file, &package.content)
             .with_context(|| format!("cannot write {}", skill_file.display()))?;
-        if !package.scripts.is_empty() {
-            let scripts_dir = directory.join("scripts");
-            std::fs::create_dir_all(&scripts_dir)
-                .with_context(|| format!("cannot create {}", scripts_dir.display()))?;
-            for (name, content) in &package.scripts {
-                let path = scripts_dir.join(name);
-                std::fs::write(&path, content)
-                    .with_context(|| format!("cannot write {}", path.display()))?;
+        // The files keep the paths the skill gave them: a skill that ships
+        // `reference/audit.md` has that file at `reference/audit.md`, not in a scripts
+        // directory the skill knows nothing about.
+        for (relative, content) in &package.scripts {
+            let path = directory.join(relative);
+            if let Some(parent) = path.parent() {
+                std::fs::create_dir_all(parent)
+                    .with_context(|| format!("cannot create {}", parent.display()))?;
             }
+            std::fs::write(&path, content)
+                .with_context(|| format!("cannot write {}", path.display()))?;
         }
         // The skill has to load. A skill the agent cannot read would be in the directory and
         // not in the prompt - the exact "looks like it works" failure.
@@ -598,6 +616,42 @@ mod tests {
         install_all(dir.path(), &[package]).unwrap();
         assert!(dir.path().join("portal-maintenance/SKILL.md").exists());
         assert!(!dir.path().join("portal 维护").exists());
+    }
+
+    #[test]
+    fn a_file_keeps_the_path_the_skill_gave_it() {
+        // A skill that ships `reference/audit.md` has that file at `reference/audit.md`.
+        // Putting everything into a scripts/ directory the skill knows nothing about would
+        // change the skill.
+        let content = "---\nname: ui-taste\ndescription: x\n---\n\n1. step\n";
+        let package = SkillPackage::from_json(&serde_json::json!({
+            "name": "ui-taste",
+            "content": content,
+            "digest": content_digest(content),
+            "scripts": [
+                { "name": "audit.md", "path": "reference/audit.md", "content": "# the audit" },
+                { "name": "check.sh", "path": "scripts/check.sh", "content": "#!/bin/sh\n" },
+            ],
+        }))
+        .unwrap();
+
+        let dir = tempfile::tempdir().unwrap();
+        let report = install_all(dir.path(), &[package]).unwrap();
+        assert!(report.rejected.is_empty());
+        assert!(dir.path().join("ui-taste/reference/audit.md").exists());
+        assert!(dir.path().join("ui-taste/scripts/check.sh").exists());
+    }
+
+    #[test]
+    fn a_file_that_climbs_out_of_the_skill_is_refused() {
+        let content = "---\nname: evil\ndescription: x\n---\n\n1. step\n";
+        let result = SkillPackage::from_json(&serde_json::json!({
+            "name": "evil",
+            "content": content,
+            "digest": content_digest(content),
+            "scripts": [ { "name": "passwd", "path": "../../etc/passwd", "content": "x" } ],
+        }));
+        assert!(result.is_err(), "a file outside the skill must be refused");
     }
 
     #[test]

@@ -40,10 +40,24 @@ public class SkillRegistryService {
         return skills.listRegistries();
     }
 
-    /** Registers an upstream registry. Only a human may point the platform at the internet. */
+    /**
+     * Registers an upstream registry. Only a human may point the platform at the internet.
+     *
+     * <p>Two kinds, because two protocols are in the wild:
+     * <ul>
+     *   <li>{@code search} - the registry answers a query and hands back package references.
+     *       It needs a search url ({@code {query}} and {@code {limit}}) and a package url
+     *       ({@code {package}});</li>
+     *   <li>{@code catalog} - the registry publishes everything at a well-known address
+     *       (RFC 8615) and the platform filters it locally. It needs a catalog url.</li>
+     * </ul>
+     *
+     * <p>An audit url is optional and worth having: it is where the registry says whether
+     * anybody has checked the skill, and that verdict is kept next to the skill.
+     */
     @Transactional
-    public SkillRepository.RegistryRow register(String registryKey, String name, String searchUrl,
-                                               String packageUrl) {
+    public SkillRepository.RegistryRow register(String registryKey, String name, String kind, String searchUrl,
+                                               String packageUrl, String catalogUrl, String auditUrl) {
         AuthenticatedClient actor = authContext.require();
         if (!actor.isHuman()) {
             throw new SkillMarketService.NotAHumanException("skill.registry.register requires a natural human, "
@@ -55,21 +69,72 @@ public class SkillRegistryService {
         if (skills.findRegistry(registryKey).isPresent()) {
             throw new IllegalStateException("registry already registered: " + registryKey);
         }
-        if (searchUrl == null || searchUrl.isBlank() || packageUrl == null || packageUrl.isBlank()) {
-            throw new IllegalArgumentException("a registry needs a search url and a package url");
+        String kindOf = kind == null || kind.isBlank() ? "search" : kind.trim();
+        if (!"search".equals(kindOf) && !"catalog".equals(kindOf)) {
+            throw new IllegalArgumentException("a registry is a 'search' or a 'catalog', not '" + kindOf + "'");
+        }
+        if ("catalog".equals(kindOf)) {
+            if (catalogUrl == null || catalogUrl.isBlank()) {
+                throw new IllegalArgumentException("a catalogue registry needs a catalog url");
+            }
+        } else if (searchUrl == null || searchUrl.isBlank() || packageUrl == null || packageUrl.isBlank()) {
+            throw new IllegalArgumentException("a search registry needs a search url and a package url");
         }
 
         Instant now = Instant.now();
         SkillRepository.RegistryRow row = new SkillRepository.RegistryRow(
                 Ids.newId(), registryKey.trim(),
                 name == null || name.isBlank() ? registryKey.trim() : name.trim(),
-                "external", searchUrl.trim(), packageUrl.trim(), true,
-                actor.actorId(), now, now);
+                kindOf,
+                blankToNull(searchUrl), blankToNull(packageUrl), blankToNull(catalogUrl), blankToNull(auditUrl),
+                true, actor.actorId(), now, now);
         skills.insertRegistry(row);
         audit.record(actor, "skill.registry.register", "skill_registry", row.registryId(), "allow", null,
                 "registered the registry " + registryKey,
-                AuditService.evidence("registryKey", registryKey, "searchUrl", searchUrl));
+                AuditService.evidence("registryKey", registryKey, "kind", kindOf,
+                        "searchUrl", String.valueOf(searchUrl), "catalogUrl", String.valueOf(catalogUrl),
+                        "auditUrl", String.valueOf(auditUrl)));
         return row;
+    }
+
+    /**
+     * Changes a registry.
+     *
+     * <p>The addresses are data, so an operator can point a registry at another host - or
+     * switch a search registry to a catalogue - without a new release.
+     */
+    @Transactional
+    public SkillRepository.RegistryRow update(String registryKey, String name, String kind, String searchUrl,
+                                             String packageUrl, String catalogUrl, String auditUrl,
+                                             Boolean enabled) {
+        AuthenticatedClient actor = authContext.require();
+        if (!actor.isHuman()) {
+            throw new SkillMarketService.NotAHumanException("skill.registry.update requires a natural human, "
+                    + "caller was " + actor.actorType() + " (" + actor.clientId() + ")");
+        }
+        SkillRepository.RegistryRow current = registry(registryKey);
+        String kindOf = kind == null || kind.isBlank() ? current.kind() : kind.trim();
+        if (!"search".equals(kindOf) && !"catalog".equals(kindOf)) {
+            throw new IllegalArgumentException("a registry is a 'search' or a 'catalog', not '" + kindOf + "'");
+        }
+        boolean isEnabled = enabled == null ? current.enabled() : enabled;
+        skills.updateRegistry(current.registryKey(),
+                name == null || name.isBlank() ? current.name() : name.trim(),
+                kindOf,
+                searchUrl == null ? current.searchUrl() : blankToNull(searchUrl),
+                packageUrl == null ? current.packageUrl() : blankToNull(packageUrl),
+                catalogUrl == null ? current.catalogUrl() : blankToNull(catalogUrl),
+                auditUrl == null ? current.auditUrl() : blankToNull(auditUrl),
+                isEnabled, actor.actorId());
+        audit.record(actor, "skill.registry.update", "skill_registry", current.registryId(), "allow", null,
+                "changed the registry " + current.registryKey(),
+                AuditService.evidence("registryKey", current.registryKey(), "kind", kindOf,
+                        "enabled", String.valueOf(isEnabled)));
+        return skills.findRegistry(current.registryKey()).orElseThrow();
+    }
+
+    private static String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
     }
 
     /**
@@ -117,7 +182,7 @@ public class SkillRegistryService {
         String key = skillKey == null || skillKey.isBlank() ? deriveKey(pulled.packageRef()) : skillKey.trim();
 
         SkillRecord skill = market.importExternal(key, pulled.content(), pulled.name(),
-                pulled.packageRef(), null, deptId, visibility, pulled.scripts());
+                pulled.packageRef(), null, deptId, visibility, pulled.scripts(), pulled.audit());
         audit.record(actor, "skill.pull", "skill", skill.skillId(), "allow", null,
                 "pulled " + pulled.packageRef() + " from " + registryKey,
                 AuditService.evidence("registryKey", registryKey, "package", pulled.packageRef(),
@@ -160,6 +225,8 @@ public class SkillRegistryService {
                     m.put("kind", r.kind());
                     m.put("searchUrl", r.searchUrl());
                     m.put("packageUrl", r.packageUrl());
+                    m.put("catalogUrl", r.catalogUrl());
+                    m.put("auditUrl", r.auditUrl());
                     m.put("enabled", r.enabled());
                     return m;
                 })

@@ -142,6 +142,16 @@ SELECT CASE WHEN (SELECT COUNT(*) FROM information_schema.tables
                      AND table_name IN ('harness_skill_install','harness_skill_registry')) = 2
             THEN 'OK   the skill market tables exist'
             ELSE 'FAIL the skill market tables are missing' END AS assert_skill_market_tables;
+
+-- V12: a registry has to be able to speak the two protocols that are really out there -
+-- the catalogue address and the security-audit address.
+SELECT CASE WHEN COUNT(DISTINCT column_name) = 2
+            THEN 'OK   the registry speaks the catalogue and audit protocols (V12)'
+            ELSE CONCAT('FAIL expected 2 registry protocol columns, found ', COUNT(DISTINCT column_name))
+       END AS assert_registry_protocol_columns
+  FROM information_schema.columns
+ WHERE table_schema = 'harness' AND table_name = 'harness_skill_registry'
+   AND column_name IN ('catalog_url','audit_url');
 SQL
 
 echo "==> done"

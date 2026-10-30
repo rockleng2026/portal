@@ -203,8 +203,9 @@ public class SkillController {
 
     // ------------------------------------------------------------------ upstream registries
 
-    public record RegistryRequest(@NotBlank String registryKey, String name, @NotBlank String searchUrl,
-                                  @NotBlank String packageUrl) {
+    public record RegistryRequest(@NotBlank String registryKey, String name, String kind,
+                                  String searchUrl, String packageUrl, String catalogUrl, String auditUrl,
+                                  Boolean enabled) {
     }
 
     public record SearchRequest(@NotBlank String registryKey, @NotBlank String query,
@@ -223,18 +224,33 @@ public class SkillController {
     @PostMapping("/skill/registry")
     public Map<String, Object> registerRegistry(@Valid @RequestBody RegistryRequest request) {
         SkillRepositoryRegistryView view = SkillRepositoryRegistryView.of(registries.register(
-                request.registryKey(), request.name(), request.searchUrl(), request.packageUrl()));
-        return Maps.of("registryKey", view.registryKey(), "name", view.name(),
-                "searchUrl", view.searchUrl(), "packageUrl", view.packageUrl(), "enabled", view.enabled());
+                request.registryKey(), request.name(), request.kind(), request.searchUrl(),
+                request.packageUrl(), request.catalogUrl(), request.auditUrl()));
+        return Maps.of("registryKey", view.registryKey(), "name", view.name(), "kind", view.kind(),
+                "searchUrl", view.searchUrl(), "packageUrl", view.packageUrl(),
+                "catalogUrl", view.catalogUrl(), "auditUrl", view.auditUrl(), "enabled", view.enabled());
+    }
+
+    /** Points a registry at another address, or switches it on and off. */
+    @PutMapping("/skill/registry/{registryKey}")
+    public Map<String, Object> updateRegistry(@PathVariable String registryKey,
+                                              @RequestBody RegistryRequest request) {
+        SkillRepositoryRegistryView view = SkillRepositoryRegistryView.of(registries.update(
+                registryKey, request.name(), request.kind(), request.searchUrl(), request.packageUrl(),
+                request.catalogUrl(), request.auditUrl(), request.enabled()));
+        return Maps.of("registryKey", view.registryKey(), "name", view.name(), "kind", view.kind(),
+                "searchUrl", view.searchUrl(), "packageUrl", view.packageUrl(),
+                "catalogUrl", view.catalogUrl(), "auditUrl", view.auditUrl(), "enabled", view.enabled());
     }
 
     /** A registry row, flattened for the console. */
-    public record SkillRepositoryRegistryView(String registryKey, String name, String searchUrl,
-                                              String packageUrl, boolean enabled) {
+    public record SkillRepositoryRegistryView(String registryKey, String name, String kind, String searchUrl,
+                                              String packageUrl, String catalogUrl, String auditUrl,
+                                              boolean enabled) {
 
         static SkillRepositoryRegistryView of(com.fuao.harness.platform.repo.SkillRepository.RegistryRow r) {
-            return new SkillRepositoryRegistryView(r.registryKey(), r.name(), r.searchUrl(), r.packageUrl(),
-                    r.enabled());
+            return new SkillRepositoryRegistryView(r.registryKey(), r.name(), r.kind(), r.searchUrl(),
+                    r.packageUrl(), r.catalogUrl(), r.auditUrl(), r.enabled());
         }
     }
 
@@ -334,7 +350,7 @@ public class SkillController {
             return List.of();
         }
         return request.scripts().stream()
-                .map(s -> new SkillMarketService.ScriptContent(s.name(), s.content()))
+                .map(s -> SkillMarketService.ScriptContent.named(s.name(), s.content()))
                 .toList();
     }
 }
