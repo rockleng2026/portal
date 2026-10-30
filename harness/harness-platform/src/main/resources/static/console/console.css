@@ -218,6 +218,52 @@ button.tiny { padding: .2rem .5rem; font-size: .75rem; }
 }
 .modal-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1rem; }
 
+/* ---------- 技能市场：左边去哪里看，右边看什么 ---------- */
+.skill-market { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; align-items: start; }
+@media (max-width: 1000px) { .skill-market { grid-template-columns: 1fr; } }
+
+.skill-side { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
+.side-group {
+  background: var(--card); border: 1px solid var(--border); border-radius: 4px;
+  padding: .6rem .7rem; box-shadow: var(--shadow);
+}
+.side-head {
+  display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+  font-size: .78rem; font-weight: 600; color: var(--primary); margin-bottom: .35rem;
+}
+.side-group .list { max-height: 220px; overflow: auto; }
+.side-group .row { cursor: pointer; border-radius: 3px; padding: .25rem .3rem; }
+.side-group .row:hover { background: #f4f6f8; }
+.side-group .row-active { background: rgba(52, 152, 219, .12); color: var(--primary); }
+.side-group .row .grow { white-space: normal; overflow: visible; }
+.side-group .row .label { font-size: .82rem; }
+
+.skill-main { display: flex; flex-direction: column; gap: .6rem; min-width: 0; }
+.skill-main .toolbar input {
+  padding: .4rem .5rem; font-size: .82rem; border: 1px solid var(--border);
+  border-radius: 3px; font-family: inherit;
+}
+
+/* The detail: the skill's text has to be readable, so it gets its own scroll box
+   instead of a popup with a textarea in it. */
+.skill-detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.skill-detail-title { font-size: 1rem; font-weight: 600; color: var(--primary); }
+.skill-detail-sub { font-size: .78rem; color: var(--text-light); margin-top: .15rem; }
+.skill-detail-note {
+  margin: .6rem 0; padding: .5rem .7rem; background: #fbfcfd; border-left: 3px solid var(--secondary);
+  font-size: .85rem; border-radius: 0 3px 3px 0;
+}
+.skill-md {
+  margin-top: .6rem; max-height: 420px; overflow: auto; background: #fbfcfd;
+  border: 1px solid var(--border); border-radius: 4px; padding: .75rem .9rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word;
+}
+.skill-files { margin-top: .5rem; }
+.skill-files .file { display: flex; gap: .5rem; font-size: .78rem; padding: .15rem 0; }
+.skill-files .file .mono { color: var(--text-light); }
+
+
 .toast {
   position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%);
   background: var(--primary); color: #fff; padding: .55rem 1rem; border-radius: 4px;

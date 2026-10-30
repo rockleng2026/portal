@@ -261,7 +261,8 @@ function confirmBox(title, message, onOk) {
 
 const state = {
   agents: [], terminals: [], approvals: [], grants: [], switches: [], events: [], audit: [], tasks: [],
-  skills: [], skillInstalls: [], skillRegistries: [],
+  skills: [], skillInstalls: [], skillRegistries: [], skillCategories: [],
+  skillRegistryResults: [],
   capabilities: [],
 };
 
@@ -308,6 +309,17 @@ async function loadSkills() {
   try {
     state.skillRegistries = (await api('GET', '/api/harness/skill/registry')) || [];
   } catch (e) { state.skillRegistries = []; }
+  try {
+    state.skillCategories = (await api('GET', '/api/harness/skill/categories')) || [];
+  } catch (e) { state.skillCategories = []; }
+}
+
+/** Reloads the market and puts it on the screen. */
+async function loadSkillsAndRender() {
+  await loadSkills();
+  renderSkillSide();
+  renderSkillMain();
+  renderSkillDetail();
 }
 
 function renderAll() {
@@ -315,9 +327,9 @@ function renderAll() {
   renderAgents();
   renderTerminals();
   renderGrants();
-  renderSkills();
-  renderSkillInstalls();
-  renderSkillRegistries();
+  renderSkillSide();
+  renderSkillMain();
+  renderSkillDetail();
   renderApprovals();
   renderModels();
   renderSwitches();
@@ -428,6 +440,12 @@ function renderGrants() {
 }
 
 // ---------------------------------------------------------------- 技能市场
+//
+// 左边是"去哪里看"，右边是"看什么"：左边选市场 / 已安装 / 分类 / 外部注册源，
+// 右边是列表，选中一个技能就在下面展开详情。
+//
+// 技能多起来以后，一个弹窗装不下一个技能列表——所以列表在右边，详情在下面，
+// 外部注册源的搜索结果也在右边，不再弹窗。
 
 const SKILL_SOURCE_NAMES = { internal: '内部产出', external: '外部拉取' };
 const SKILL_VISIBILITY_NAMES = { private: '仅自己', dept: '本部门', org: '全公司' };
@@ -435,88 +453,191 @@ const SKILL_STATUS_NAMES = {
   candidate: '候选', evaluating: '评审中', approved: '评审通过', gray: '灰度',
   released: '已发布', deprecated: '已下架', rolled_back: '已回滚',
 };
+const SKILL_KIND_NAMES = { search: '搜索型', catalog: '目录型' };
 
-/**
- * The market.
- *
- * The row tells the whole story of a skill: where it came from, whether anybody looked at it,
- * whether it is on the shelf, and who may see it. The buttons are what the caller's own
- * rights allow - a reviewer gets 评审, the author gets 提交, a department gets 拉取部署.
- */
-function renderSkills() {
-  const query = ($('#skillSearch') && $('#skillSearch').value || '').trim().toLowerCase();
-  const rows = state.skills.filter(s => !query
-    || (s.name || '').toLowerCase().includes(query)
-    || (s.skillKey || '').toLowerCase().includes(query)
-    || (s.publisher || '').toLowerCase().includes(query));
+// 右边正在看什么：market（市场）、drafts（候选）、installed（已安装）、registry（某个外部注册源）
+const skillView = { mode: 'market', category: null, registryKey: null, selected: null };
+
+function renderSkillSide() {
+  const published = state.skills.filter(s => s.listingStatus === 'published');
+  const drafts = state.skills.filter(s => s.listingStatus !== 'published');
+  $('#marketCount').textContent = published.length + (drafts.length ? ' + ' + drafts.length + ' 草稿' : '');
+  $('#installedCount').textContent = state.skillInstalls.length;
+
+  const sideRow = (label, count, active, attrs) =>
+    '<div class="row ' + (active ? 'row-active' : '') + '" ' + attrs + '>'
+    + '<span class="grow label">' + esc(label) + '</span>'
+    + '<span class="muted">' + esc(count) + '</span></div>';
+
+  $('#sideMarket').innerHTML =
+    sideRow('市场（已上架）', published.length, skillView.mode === 'market' && !skillView.category,
+      'data-view="market"')
+    + (drafts.length ? sideRow('候选与草稿', drafts.length, skillView.mode === 'drafts', 'data-view="drafts"') : '');
+
+  const installedBySkill = {};
+  state.skillInstalls.forEach(i => {
+    installedBySkill[i.skillKey] = (installedBySkill[i.skillKey] || 0) + 1;
+  });
+  $('#sideInstalled').innerHTML = state.skillInstalls.length
+    ? state.skillInstalls.map(i =>
+        '<div class="row" data-view="installed" data-skill="' + esc(i.skillKey) + '">'
+        + '<span class="grow label">' + esc(i.skillKey) + '</span>'
+        + '<span class="muted">' + esc(installedBySkill[i.skillKey] || 1) + ' 处</span></div>').join('')
+    : '<div class="empty" style="padding:.6rem">还没装过</div>';
+
+  const counts = {};
+  state.skills.forEach(s => { if (s.category) counts[s.category] = (counts[s.category] || 0) + 1; });
+  $('#sideCategories').innerHTML = state.skillCategories.length
+    ? state.skillCategories.map(c =>
+        '<div class="row ' + (skillView.category === c.name ? 'row-active' : '') + '" '
+        + 'data-view="market" data-category="' + esc(c.name) + '">'
+        + '<span class="grow label">' + esc(c.name) + '</span>'
+        + '<span class="muted">' + esc(counts[c.name] || 0) + '</span>'
+        + '<button class="tiny" data-act="skill-category-edit" data-id="' + esc(c.categoryId) + '"'
+        + ' data-name="' + esc(c.name) + '">改</button>'
+        + '</div>').join('')
+    : '<div class="empty" style="padding:.6rem">还没有分类</div>';
+
+  $('#sideRegistries').innerHTML = state.skillRegistries.length
+    ? state.skillRegistries.map(r =>
+        '<div class="row ' + (skillView.mode === 'registry' && skillView.registryKey === r.registryKey
+          ? 'row-active' : '') + '" data-view="registry" data-registry="' + esc(r.registryKey) + '">'
+        + '<span class="grow label">' + esc(r.name) + '</span>'
+        + '<span class="muted">' + esc(SKILL_KIND_NAMES[r.kind] || r.kind) + '</span></div>').join('')
+    : '<div class="empty" style="padding:.6rem">还没有外部注册源</div>';
+}
+
+/** The skills of the current view, after the search box and the category filter. */
+function skillRowsForView() {
+  if (skillView.mode === 'installed') {
+    return state.skillInstalls.map(i => ({
+      skillKey: i.skillKey, version: i.version, status: 'installed',
+      listingStatus: 'installed', visibility: '', source: '',
+      note: '', category: '', publisher: '', installCount: 0,
+    }));
+  }
+  let rows = state.skills;
+  if (skillView.mode === 'drafts') {
+    rows = rows.filter(s => s.listingStatus !== 'published');
+  } else if (!skillView.category) {
+    rows = rows.filter(s => s.listingStatus === 'published');
+  }
+  if (skillView.category) {
+    rows = rows.filter(s => s.category === skillView.category);
+  }
+  const query = ($('#skillSearch') ? $('#skillSearch').value : '').trim().toLowerCase();
+  if (query) {
+    rows = rows.filter(s => [s.name, s.skillKey, s.note, s.publisher, s.category]
+      .some(v => String(v || '').toLowerCase().includes(query)));
+  }
+  return rows;
+}
+
+function renderSkillMain() {
+  const registryMode = skillView.mode === 'registry';
+  $('#registryPane').classList.toggle('hidden', !registryMode);
+  $('#skillsTable').classList.toggle('hidden', registryMode);
+  $('#skillSearch').classList.toggle('hidden', registryMode);
+
+  if (registryMode) {
+    renderRegistryResults();
+    return;
+  }
+
+  const rows = skillRowsForView();
+  $('#skillCount').textContent = rows.length + ' 个';
+  $('#skillViewHint').textContent = skillView.mode === 'installed'
+    ? '装在部门 / 数字员工 / 终端上的技能'
+    : (skillView.mode === 'drafts' ? '还没上架的候选'
+      : (skillView.category ? '分类：' + skillView.category : '市场上架的技能'));
 
   $('#skillsTable').innerHTML = table([
-    { title: '技能', render: s => esc(s.name || '-') + ' <span class="muted mono">' + esc(s.skillKey) + '</span>' },
-    { title: '来源', render: s => '<span class="tag ' + (s.source === 'external' ? 'info' : 'grey') + '">'
-        + esc(SKILL_SOURCE_NAMES[s.source] || s.source) + '</span>' },
-    { title: '状态', render: s => statusTag(s.status) + ' ' + esc(SKILL_STATUS_NAMES[s.status] || '') },
-    { title: '上架', render: s => s.listingStatus === 'published' ? '<span class="tag ok">在架</span>' : '<span class="tag grey">不在架</span>' },
-    { title: '可见', render: s => '<span class="tag grey">' + esc(SKILL_VISIBILITY_NAMES[s.visibility] || s.visibility) + '</span>' },
+    {
+      title: '技能', render: s => '<span class="label">' + esc(s.name || '-') + '</span> '
+        + '<span class="muted mono">' + esc(s.skillKey) + '</span>',
+    },
+    { title: '分类', render: s => s.category ? '<span class="tag info">' + esc(s.category) + '</span>' : '<span class="muted">—</span>' },
+    { title: '备注', render: s => '<span class="muted">' + esc(s.note || '') + '</span>' },
+    { title: '来源', render: s => s.source ? '<span class="tag ' + (s.source === 'external' ? 'info' : 'grey') + '">'
+        + esc(SKILL_SOURCE_NAMES[s.source] || s.source) + '</span>' : '' },
+    { title: '状态', render: s => statusTag(s.status) },
     { title: '版本', render: s => 'v' + esc(s.version) },
-    { title: '被拉取', render: s => esc(s.installCount) + ' 次' },
     {
-      title: '操作', render: s => {
-        let html = '<div class="row-actions">';
-        html += '<button class="tiny" data-act="skill-view" data-id="' + esc(s.skillKey) + '">查看</button>';
-        if (s.status === 'candidate') {
-          html += '<button class="tiny" data-act="skill-submit" data-id="' + esc(s.skillKey) + '">提交评审</button>';
-        }
-        if (s.status === 'evaluating') {
-          html += '<button class="tiny" data-act="skill-approve" data-id="' + esc(s.skillKey) + '">评审通过</button>';
-          html += '<button class="tiny" data-act="skill-reject" data-id="' + esc(s.skillKey) + '">驳回</button>';
-        }
-        if (s.status === 'approved') {
-          html += '<button class="tiny" data-act="skill-publish" data-id="' + esc(s.skillKey) + '">上架</button>';
-        }
-        if (s.listingStatus === 'published') {
-          html += '<button class="tiny" data-act="skill-install" data-id="' + esc(s.skillKey) + '">拉取部署</button>';
-          html += '<button class="tiny" data-act="skill-unlist" data-id="' + esc(s.skillKey) + '">下架</button>';
-        }
-        html += '</div>';
-        return html;
-      }
+      title: '', render: s => '<button class="tiny" data-act="skill-open" data-id="' + esc(s.skillKey) + '">详情</button>',
     },
-  ], rows, '技能市场还是空的。新建一个，或者从外部市场拉一个进来。');
+  ], rows, skillView.mode === 'installed' ? '还没有拉取部署过任何技能。' : '这里还没有技能。新建一个，或者从外部注册源拉一个进来。');
 }
 
-function renderSkillInstalls() {
-  const targetNames = { agent: '数字员工', terminal: '终端', dept: '部门' };
-  $('#skillInstallsTable').innerHTML = table([
-    { title: '技能', render: i => '<span class="mono">' + esc(i.skillKey) + '</span> v' + esc(i.version) },
-    { title: '装在', render: i => '<span class="tag info">' + esc(targetNames[i.targetType] || i.targetType) + '</span> '
-        + '<span class="mono">' + esc(String(i.targetId || '').slice(0, 12)) + '</span>' },
-    { title: '状态', render: i => statusTag(i.status) },
-    { title: '操作人', render: i => '<span class="mono">' + esc(i.installedBy || '-') + '</span>' },
-    { title: '时间', render: i => esc(when(i.updatedAt)) },
-    {
-      title: '操作', render: i => '<button class="tiny" data-act="skill-uninstall" data-id="' + esc(i.installId) + '">卸载</button>'
-    },
-  ], state.skillInstalls, '还没有拉取过任何技能。');
+/** The detail: everything about one skill, and its text, in a box that scrolls. */
+function renderSkillDetail() {
+  const card = $('#skillDetail');
+  if (!skillView.selected) {
+    card.classList.add('hidden');
+    return;
+  }
+  const s = skillView.selected;
+  const versions = s.versions || [];
+  const files = s.scripts || [];
+
+  const kv = (label, value) =>
+    '<tr><th>' + esc(label) + '</th><td>' + (value === null || value === undefined || value === ''
+      ? '<span class="muted">—</span>' : value) + '</td></tr>';
+
+  card.classList.remove('hidden');
+  card.innerHTML =
+    '<div class="skill-detail-head">'
+    + '<div>'
+    + '<div class="skill-detail-title">' + esc(s.name || s.skillKey) + '</div>'
+    + '<div class="skill-detail-sub mono">' + esc(s.skillKey) + ' · v' + esc(s.version)
+    + ' · ' + esc(SKILL_STATUS_NAMES[s.status] || s.status)
+    + ' · ' + (s.listingStatus === 'published' ? '在架' : '不在架')
+    + (s.visibility ? ' · ' + esc(SKILL_VISIBILITY_NAMES[s.visibility] || s.visibility) : '')
+    + '</div></div>'
+    + '<div class="row-actions">'
+    + '<button class="tiny" data-act="skill-details-edit" data-id="' + esc(s.skillKey) + '">备注与分类</button>'
+    + (s.status === 'candidate' ? '<button class="tiny" data-act="skill-submit" data-id="' + esc(s.skillKey) + '">提交评审</button>' : '')
+    + (s.status === 'evaluating' ? '<button class="tiny" data-act="skill-approve" data-id="' + esc(s.skillKey) + '">评审通过</button>'
+        + '<button class="tiny" data-act="skill-reject" data-id="' + esc(s.skillKey) + '">驳回</button>' : '')
+    + (s.status === 'approved' ? '<button class="tiny" data-act="skill-publish" data-id="' + esc(s.skillKey) + '">上架</button>' : '')
+    + (s.listingStatus === 'published' ? '<button class="tiny" data-act="skill-install" data-id="' + esc(s.skillKey) + '">拉取部署</button>' : '')
+    + '<button class="tiny" data-act="skill-close">收起</button>'
+    + '</div></div>'
+    + (s.note ? '<div class="skill-detail-note">' + esc(s.note) + '</div>' : '')
+    + '<table class="kv">'
+    + kv('分类', s.category ? '<span class="tag info">' + esc(s.category) + '</span>' : null)
+    + kv('来源', s.source ? esc(SKILL_SOURCE_NAMES[s.source] || s.source)
+        + (s.sourceRef ? ' <span class="muted mono">' + esc(s.sourceRef) + '</span>' : '') : null)
+    + kv('发布者', s.publisher ? '<span class="mono">' + esc(s.publisher) + '</span>' : null)
+    + kv('作者', s.authorHuman ? 'human:' + esc(s.authorHuman)
+        : (s.authorAgent ? 'agent:' + esc(s.authorAgent) : null))
+    + kv('摘要', '<span class="mono">' + esc(s.contentDigest) + '</span>')
+    + kv('签名', '<span class="mono">' + esc(s.signature) + '</span>')
+    + kv('版本', versions.length ? versions.map(v => 'v' + v.version).join('、') : null)
+    + kv('更新', s.updatedAt ? esc(when(s.updatedAt)) : null)
+    + '</table>'
+    + (files.length ? '<div class="skill-files"><h3 style="font-size:.78rem;margin:.6rem 0 .2rem">随附文件（'
+        + files.length + '）</h3>' + files.map(f =>
+            '<div class="file"><span class="mono">' + esc(f.path || f.name) + '</span>'
+            + '<span class="muted mono">' + esc((f.digest || '').slice(0, 12)) + '</span></div>').join('')
+        + '</div>' : '')
+    + '<div class="skill-md">' + esc(s.content || '') + '</div>';
 }
 
-function renderSkillRegistries() {
-  const kindNames = { search: '搜索型', catalog: '目录型' };
-  $('#skillRegistriesTable').innerHTML = table([
-    { title: '注册源', render: r => esc(r.name) + ' <span class="muted mono">' + esc(r.registryKey) + '</span>' },
-    { title: '协议', render: r => '<span class="tag ' + (r.kind === 'catalog' ? 'info' : 'grey') + '">'
-        + esc(kindNames[r.kind] || r.kind) + '</span>' },
-    { title: '地址', render: r => '<span class="mono">' + esc(r.catalogUrl || r.searchUrl || '-') + '</span>' },
-    { title: '安全审计', render: r => r.auditUrl ? '<span class="tag ok">有</span>' : '<span class="tag grey">无</span>' },
-    { title: '状态', render: r => r.enabled ? '<span class="tag ok">启用</span>' : '<span class="tag grey">停用</span>' },
+/** The results of an upstream registry - here, not in a popup. */
+function renderRegistryResults() {
+  const results = state.skillRegistryResults || [];
+  $('#registryResults').innerHTML = table([
+    { title: '技能', render: r => esc(r.name || '-') },
+    { title: '来源', render: r => '<span class="mono">' + esc(r.source || r.id || '') + '</span>' },
+    { title: '说明', render: r => '<span class="muted">' + esc((r.description || '').slice(0, 80)) + '</span>' },
+    { title: '安装量', render: r => r.installs ? '<span class="muted">' + esc(r.installs) + '</span>' : '' },
     {
-      title: '操作', render: r => '<div class="row-actions">'
-        + '<button class="tiny" data-act="skill-search-registry" data-id="' + esc(r.registryKey) + '">搜索</button>'
-        + '<button class="tiny" data-act="skill-registry-toggle" data-id="' + esc(r.registryKey) + '"'
-        + ' data-enabled="' + (r.enabled ? 'false' : 'true') + '">' + (r.enabled ? '停用' : '启用') + '</button>'
-        + '</div>'
+      title: '', render: r => '<button class="tiny" data-act="skill-pull" data-id="'
+        + esc(r.package) + '">拉进候选池</button>',
     },
-  ], state.skillRegistries, '还没有登记外部注册源。');
+  ], results, '还没搜。上面输个词，按回车。');
 }
+
 
 function renderApprovals() {  $('#approvalsTable').innerHTML = table([
     { title: '能力', render: a => '<span class="mono">' + esc(a.requestedCap) + '</span>' },
@@ -813,6 +934,11 @@ function bindEvents() {
     $$('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     $('#tab-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'skills') {
+      renderSkillSide();
+      renderSkillMain();
+      renderSkillDetail();
+    }
     if (tab.dataset.tab === 'chat') {
       renderTerminalPickers();
       renderChatRecent();
@@ -855,14 +981,38 @@ function bindEvents() {
   // The skill market's own buttons.
   $('#newSkillBtn').addEventListener('click', newSkillModal);
   $('#newRegistryBtn').addEventListener('click', newRegistryModal);
-  $('#pullSkillBtn').addEventListener('click', () => {
-    if (!state.skillRegistries.length) {
-      toast('还没有外部注册源。先登记一个，再从里面拉。', 'warn');
-      return;
+  $('#newCategoryBtn').addEventListener('click', () => categoryModal(null, null));
+  $('#skillSearch').addEventListener('input', renderSkillMain);
+  $('#registrySearchBtn').addEventListener('click', () => searchRegistry(skillView.registryKey));
+  $('#registryQuery').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      searchRegistry(skillView.registryKey);
     }
-    searchRegistry(state.skillRegistries[0].registryKey);
   });
-  $('#skillSearch').addEventListener('input', renderSkills);
+
+  // The left column: where to look.
+  $('#tab-skills').addEventListener('click', (e) => {
+    const row = e.target.closest('.side-group .row[data-view]');
+    if (!row) return;
+    const view = row.dataset.view;
+    skillView.mode = view;
+    skillView.category = row.dataset.category || null;
+    if (view === 'registry') {
+      skillView.registryKey = row.dataset.registry;
+      skillView.selected = null;
+      const registry = state.skillRegistries.find(r => r.registryKey === skillView.registryKey);
+      if (registry) {
+        $('#registryQuery').value = '';
+        state.skillRegistryResults = [];
+        $('#registryHint').textContent = '在 ' + registry.name
+          + ' 里搜。搜到的技能拉进来只是候选，要人评审过才能上架。';
+      }
+    }
+    renderSkillSide();
+    renderSkillMain();
+    renderSkillDetail();
+  });
+
 
   // The permanent entry point: ask the agent without hunting for a button.
   $('#askBtn').addEventListener('click', () => {
@@ -1040,7 +1190,18 @@ function bindEvents() {
       else if (act === 'reject') { decideApproval(id, 'rejected'); return; }
       else if (act === 'grant-revoke') { await api('POST', '/api/harness/grant/' + id + '/revoke', { reason: '控制台吊销' }); toast('已吊销授权', 'ok'); }
       else if (act === 'switch-release') { await api('DELETE', '/api/harness/killswitch/' + id + '?reason=' + encodeURIComponent('控制台解除')); toast('已解除', 'ok'); }
-      else if (act === 'skill-view') { showSkill(id); return; }
+      else if (act === 'skill-open') { openSkill(id); return; }
+      else if (act === 'skill-close') { skillView.selected = null; renderSkillDetail(); return; }
+      else if (act === 'skill-details-edit') { skillDetailsModal(id); return; }
+      else if (act === 'skill-category-edit') { categoryModal(id, btn.dataset.name); return; }
+      else if (act === 'skill-pull') {
+        await api('POST', '/api/harness/skill/pull', {
+          registryKey: skillView.registryKey, packageRef: id, deptId: null,
+        });
+        toast('已拉进候选池，等人评审', 'ok');
+        await loadSkillsAndRender();
+        return;
+      }
       else if (act === 'skill-submit') { await api('POST', '/api/harness/skill/' + id + '/submit', { reason: '控制台提交评审' }); toast('已提交评审', 'ok'); }
       else if (act === 'skill-approve') { skillReason('评审通过', '通过的理由', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/approve', { reason }); toast('已评审通过', 'ok'); }); return; }
       else if (act === 'skill-reject') { skillReason('驳回', '驳回的理由（作者要看得懂为什么）', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/reject', { reason }); toast('已驳回', 'ok'); }); return; }
@@ -1048,7 +1209,13 @@ function bindEvents() {
       else if (act === 'skill-unlist') { skillReason('下架', '下架的理由（会写进审计）', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/unlist', { reason }); toast('已下架，已装的地方也会撤掉', 'ok'); }); return; }
       else if (act === 'skill-install') { installSkillModal(id); return; }
       else if (act === 'skill-uninstall') { await api('DELETE', '/api/harness/skill/install/' + id + '?reason=' + encodeURIComponent('控制台卸载')); toast('已卸载', 'ok'); }
-      else if (act === 'skill-search-registry') { searchRegistry(id); return; }
+      else if (act === 'skill-search-registry') {
+        skillView.mode = 'registry';
+        skillView.registryKey = id;
+        renderSkillSide();
+        renderSkillMain();
+        return;
+      }
       else if (act === 'skill-registry-toggle') {
         const registry = state.skillRegistries.find(r => r.registryKey === id);
         await api('PUT', '/api/harness/skill/registry/' + encodeURIComponent(id), {
@@ -1356,36 +1523,66 @@ async function showGrant(terminalId) {
 }
 
 /**
- * Shows a skill: its text, its versions and where it is installed.
+ * Opens one skill's detail.
  *
- * The text is shown as it is - the skill is content, and content can be hostile. It is never
- * rendered as HTML, and it never becomes a tool argument (02 R-05, ADR-011).
+ * The detail is a panel under the list, not a popup: a skill's text is a document, and a
+ * document does not belong in a textarea in a 460-pixel box.
  */
-async function showSkill(skillKey) {
+async function openSkill(skillKey) {
   try {
-    const detail = await api('GET', '/api/harness/skill/' + encodeURIComponent(skillKey));
-    const lines = [];
-    lines.push('技能：' + (detail.skill.name || detail.skill.skillKey));
-    lines.push('键：' + detail.skill.skillKey);
-    lines.push('来源：' + (SKILL_SOURCE_NAMES[detail.skill.source] || detail.skill.source)
-      + (detail.skill.sourceRef ? '（' + detail.skill.sourceRef + '）' : ''));
-    lines.push('发布者：' + (detail.skill.publisher || '-'));
-    lines.push('状态：' + (SKILL_STATUS_NAMES[detail.skill.status] || detail.skill.status)
-      + ' / ' + (detail.skill.listingStatus === 'published' ? '在架' : '不在架'));
-    lines.push('可见范围：' + (SKILL_VISIBILITY_NAMES[detail.skill.visibility] || detail.skill.visibility));
-    lines.push('摘要：' + (detail.skill.contentDigest || '-'));
-    lines.push('签名：' + (detail.skill.signature || '-'));
-    lines.push('版本：' + (detail.versions || []).map(v => 'v' + v.version).join(', '));
-    lines.push('');
-    lines.push('---- SKILL.md ----');
-    lines.push(detail.content || '');
-    modal('技能 · ' + detail.skill.skillKey, [
-      { name: 'info', label: '内容', type: 'textarea', value: lines.join('\n') },
-    ], async () => { });
+    skillView.selected = await api('GET', '/api/harness/skill/' + encodeURIComponent(skillKey));
+    renderSkillDetail();
+    const card = $('#skillDetail');
+    if (card.scrollIntoView) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   } catch (e) {
     toast(e.message, 'bad');
   }
 }
+
+/**
+ * Edits the note and the category of a skill.
+ *
+ * Neither of them is part of the content, so neither of them makes a new version.
+ */
+function skillDetailsModal(skillKey) {
+  const skill = skillView.selected;
+  modal('备注与分类 · ' + skillKey, [
+    { name: 'note', label: '备注：干什么用的、什么时候该用它', type: 'textarea', value: skill ? skill.note || '' : '' },
+    {
+      name: 'category', label: '分类', type: 'select',
+      options: [{ value: '', label: '（不分类）' }].concat(
+        state.skillCategories.map(c => ({ value: c.name, label: c.name }))),
+    },
+  ], async (v) => {
+    await api('PUT', '/api/harness/skill/' + encodeURIComponent(skillKey) + '/details', {
+      note: v.note || null, category: v.category || null,
+    });
+    toast('已保存', 'ok');
+    await loadSkillsAndRender();
+    await openSkill(skillKey);
+  });
+}
+
+/** Adds or renames a category. */
+function categoryModal(categoryId, currentName) {
+  modal(currentName ? '改分类 · ' + currentName : '加一个分类', [
+    { name: 'name', label: '分类名', value: currentName || '' },
+  ], async (v) => {
+    if (!v.name || !v.name.trim()) {
+      throw new Error('分类名不能空');
+    }
+    if (categoryId) {
+      await api('PUT', '/api/harness/skill/categories/' + encodeURIComponent(categoryId), {
+        name: v.name.trim(),
+      });
+    } else {
+      await api('POST', '/api/harness/skill/categories', { name: v.name.trim() });
+    }
+    toast('已保存', 'ok');
+    await loadSkillsAndRender();
+  });
+}
+
 
 /** Asks for a reason before a decision that ends up in the audit trail. */
 function skillReason(title, label, onOk) {
@@ -1396,7 +1593,7 @@ function skillReason(title, label, onOk) {
       throw new Error('得写清楚为什么');
     }
     await onOk(v.reason.trim());
-    await loadAll();
+    await loadSkillsAndRender();
   });
 }
 
@@ -1427,42 +1624,38 @@ function installSkillModal(skillKey) {
       skillKey, targetType: v.targetType, targetId: v.targetId, reason: v.reason,
     });
     toast('已拉取部署', 'ok');
-    await loadAll();
+    await loadSkillsAndRender();
   });
 }
 
 /**
- * Searches an upstream registry and pulls a package in.
+ * Searches an upstream registry.
+ *
+ * The results land in the right pane - a list of skills does not belong in a popup, and a
+ * popup holding a textarea full of package names is not a list anybody can read.
  *
  * What comes back is third-party text: it is shown, it is not executed, and it lands in the
  * market as a candidate that somebody has to review before it can be installed.
  */
 async function searchRegistry(registryKey) {
-  modal('在 ' + registryKey + ' 里搜索', [
-    { name: 'query', label: '搜索词', value: '' },
-  ], async (v) => {
-    if (!v.query || !v.query.trim()) {
-      throw new Error('得给个搜索词');
-    }
-    const found = await api('POST', '/api/harness/skill/registry/search', {
-      registryKey, query: v.query.trim(), limit: 20,
-    });
-    if (!found || !found.length) {
-      toast('没找到', 'warn');
-      return;
-    }
-    const lines = found.map(f => f.package + (f.installs ? '  ·  ' + f.installs + ' 次安装' : ''));
-    modal('搜到的技能（选一个拉进来）', [
-      { name: 'picked', label: '包引用', type: 'textarea', value: lines.join('\n') },
-    ], async (pick) => {
-      const packageRef = (pick.picked || '').trim().split('\n')[0];
-      if (!packageRef) throw new Error('选一个');
-      await api('POST', '/api/harness/skill/pull', { registryKey, packageRef });
-      toast('已拉进候选池，等人评审', 'ok');
-      await loadAll();
-    });
-  });
+  if (!registryKey) {
+    return;
+  }
+  const query = ($('#registryQuery') ? $('#registryQuery').value : '').trim();
+  if (!query) {
+    toast('得给个搜索词', 'warn');
+    return;
+  }
+  try {
+    state.skillRegistryResults = await api('POST', '/api/harness/skill/registry/search', {
+      registryKey, query, limit: 30,
+    }) || [];
+    renderRegistryResults();
+  } catch (e) {
+    toast(e.message, 'bad');
+  }
 }
+
 
 /**
  * Writes a new skill.
@@ -1497,6 +1690,12 @@ function newSkillModal() {
         { value: 'private', label: '仅自己' },
       ],
     },
+    {
+      name: 'category', label: '分类', type: 'select',
+      options: [{ value: '', label: '（不分类）' }].concat(
+        state.skillCategories.map(c => ({ value: c.name, label: c.name }))),
+    },
+    { name: 'note', label: '备注：干什么用的、什么时候该用它', type: 'textarea', value: '' },
     { name: 'content', label: 'SKILL.md', type: 'textarea', value: template },
   ], async (v) => {
     if (!v.skillKey || !v.skillKey.trim()) {
@@ -1507,10 +1706,12 @@ function newSkillModal() {
       name: v.name || null,
       description: v.description || null,
       visibility: v.visibility,
+      category: v.category || null,
+      note: v.note || null,
       content: v.content,
     });
     toast('已建好，是候选状态，还没人评审', 'ok');
-    await loadAll();
+    await loadSkillsAndRender();
   });
 }
 

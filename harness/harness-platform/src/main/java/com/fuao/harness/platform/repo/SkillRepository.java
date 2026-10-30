@@ -34,7 +34,7 @@ public class SkillRepository {
             skill_id, skill_key, version, parent_version, name, definition, signature, author_agent,
             author_human, eval_result, status, rollout_pct, scope, source, source_ref, source_url,
             publisher, dept_id, listing_status, visibility, content, content_digest, scripts,
-            install_count, created_by, created_at, updated_at
+            install_count, note, category, created_by, created_at, updated_at
             """;
 
     public void insert(SkillRecord s) {
@@ -43,12 +43,14 @@ public class SkillRepository {
                           (skill_id, skill_key, version, parent_version, name, definition, signature,
                            author_agent, author_human, eval_result, status, rollout_pct, scope,
                            source, source_ref, source_url, publisher, dept_id, listing_status, visibility,
-                           content, content_digest, scripts, install_count, created_by, created_at, updated_at)
+                           content, content_digest, scripts, install_count, note, category,
+                           created_by, created_at, updated_at)
                         VALUES
                           (:skillId, :skillKey, :version, :parentVersion, :name, :definition, :signature,
                            :authorAgent, :authorHuman, :evalResult, :status, :rolloutPct, :scope,
                            :source, :sourceRef, :sourceUrl, :publisher, :deptId, :listingStatus, :visibility,
-                           :content, :contentDigest, :scripts, :installCount, :createdBy, :createdAt, :updatedAt)
+                           :content, :contentDigest, :scripts, :installCount, :note, :category,
+                           :createdBy, :createdAt, :updatedAt)
                         """)
                 .param("skillId", s.skillId())
                 .param("skillKey", s.skillKey())
@@ -75,6 +77,8 @@ public class SkillRepository {
                 .param("scripts", s.scripts() == null || s.scripts().isEmpty()
                         ? null : Json.canonical(s.scripts()))
                 .param("installCount", s.installCount())
+                .param("note", s.note())
+                .param("category", s.category())
                 .param("createdBy", s.createdBy())
                 .param("createdAt", Timestamp.from(s.createdAt()))
                 .param("updatedAt", Timestamp.from(s.updatedAt()))
@@ -138,14 +142,15 @@ public class SkillRepository {
      * the history is one drill-down away.
      */
     public List<SkillRecord> listMarket(String query, String source, String listingStatus, String status,
-                                         String visibility, Integer deptId, Integer ownerDeptId,
-                                         String authorAgentId, Integer authorHumanId, Integer limit) {
+                                         String visibility, String category, Integer deptId,
+                                         Integer ownerDeptId, String authorAgentId, Integer authorHumanId,
+                                         Integer limit) {
         StringBuilder sql = new StringBuilder("""
                 SELECT s.skill_id, s.skill_key, s.version, s.parent_version, s.name, s.definition,
                        s.signature, s.author_agent, s.author_human, s.eval_result, s.status, s.rollout_pct,
                        s.scope, s.source, s.source_ref, s.source_url, s.publisher, s.dept_id,
                        s.listing_status, s.visibility, s.content, s.content_digest, s.scripts,
-                       s.install_count, s.created_by, s.created_at, s.updated_at
+                       s.install_count, s.note, s.category, s.created_by, s.created_at, s.updated_at
                   FROM harness_skill s
                   JOIN (SELECT skill_key, MAX(version) AS version FROM harness_skill GROUP BY skill_key) newest
                     ON newest.skill_key = s.skill_key AND newest.version = s.version
@@ -172,6 +177,10 @@ public class SkillRepository {
         if (visibility != null && !visibility.isBlank()) {
             sql.append(" AND s.visibility = :visibility");
             params.put("visibility", SkillRecord.Visibility.fromWire(visibility.trim()).wire());
+        }
+        if (category != null && !category.isBlank()) {
+            sql.append(" AND s.category = :category");
+            params.put("category", category.trim());
         }
         if (deptId != null) {
             sql.append(" AND s.dept_id = :deptId");
@@ -235,6 +244,25 @@ public class SkillRepository {
             spec = spec.param(p.getKey(), p.getValue());
         }
         return spec.update();
+    }
+
+    /**
+     * Changes a skill's note and category - on every version of it.
+     *
+     * <p>The note and the category are about the skill, not about one version of it. Editing
+     * them must not bump the version: a version bump means "the content changed", and it did
+     * not (01 P6 - the version is what the terminal checks its digest against).
+     */
+    public void updateDetails(String skillKey, String note, String category) {
+        jdbc.sql("""
+                        UPDATE harness_skill
+                           SET note = :note, category = :category, updated_at = NOW()
+                         WHERE skill_key = :skillKey
+                        """)
+                .param("note", note)
+                .param("category", category)
+                .param("skillKey", skillKey)
+                .update();
     }
 
     /** Changes the shelf state without touching the lifecycle status. */
@@ -515,6 +543,113 @@ public class SkillRepository {
             Instant updatedAt) {
     }
 
+    // ------------------------------------------------------------------ categories
+
+    /** One category of the market. */
+    public record CategoryRow(
+            String categoryId,
+            String name,
+            boolean builtin,
+            int sortOrder,
+            String createdBy,
+            Instant createdAt,
+            Instant updatedAt) {
+    }
+
+    public List<CategoryRow> listCategories() {
+        return jdbc.sql("""
+                        SELECT category_id, name, builtin, sort_order, created_by, created_at, updated_at
+                          FROM harness_skill_category ORDER BY sort_order, name
+                        """)
+                .query((rs, i) -> new CategoryRow(
+                        rs.getString("category_id"),
+                        rs.getString("name"),
+                        rs.getInt("builtin") == 1,
+                        rs.getInt("sort_order"),
+                        rs.getString("created_by"),
+                        rs.getTimestamp("created_at").toInstant(),
+                        rs.getTimestamp("updated_at").toInstant()))
+                .list();
+    }
+
+    public Optional<CategoryRow> findCategory(String name) {
+        return jdbc.sql("""
+                        SELECT category_id, name, builtin, sort_order, created_by, created_at, updated_at
+                          FROM harness_skill_category WHERE name = :name
+                        """)
+                .param("name", name)
+                .query((rs, i) -> new CategoryRow(
+                        rs.getString("category_id"),
+                        rs.getString("name"),
+                        rs.getInt("builtin") == 1,
+                        rs.getInt("sort_order"),
+                        rs.getString("created_by"),
+                        rs.getTimestamp("created_at").toInstant(),
+                        rs.getTimestamp("updated_at").toInstant()))
+                .optional();
+    }
+
+    public Optional<CategoryRow> findCategoryById(String categoryId) {
+        return jdbc.sql("""
+                        SELECT category_id, name, builtin, sort_order, created_by, created_at, updated_at
+                          FROM harness_skill_category WHERE category_id = :id
+                        """)
+                .param("id", categoryId)
+                .query((rs, i) -> new CategoryRow(
+                        rs.getString("category_id"),
+                        rs.getString("name"),
+                        rs.getInt("builtin") == 1,
+                        rs.getInt("sort_order"),
+                        rs.getString("created_by"),
+                        rs.getTimestamp("created_at").toInstant(),
+                        rs.getTimestamp("updated_at").toInstant()))
+                .optional();
+    }
+
+    public void insertCategory(CategoryRow c) {
+        jdbc.sql("""
+                        INSERT INTO harness_skill_category
+                          (category_id, name, builtin, sort_order, created_by, created_at, updated_at)
+                        VALUES
+                          (:id, :name, :builtin, :sortOrder, :createdBy, :createdAt, :updatedAt)
+                        """)
+                .param("id", c.categoryId())
+                .param("name", c.name())
+                .param("builtin", c.builtin() ? 1 : 0)
+                .param("sortOrder", c.sortOrder())
+                .param("createdBy", c.createdBy())
+                .param("createdAt", Timestamp.from(c.createdAt()))
+                .param("updatedAt", Timestamp.from(c.updatedAt()))
+                .update();
+    }
+
+    public void renameCategory(String categoryId, String name) {
+        jdbc.sql("UPDATE harness_skill_category SET name = :name, updated_at = NOW()"
+                        + " WHERE category_id = :id")
+                .param("name", name)
+                .param("id", categoryId)
+                .update();
+    }
+
+    public void deleteCategory(String categoryId) {
+        jdbc.sql("DELETE FROM harness_skill_category WHERE category_id = :id")
+                .param("id", categoryId)
+                .update();
+    }
+
+    /**
+     * Moves the skills of one category to another - or off the list when the category is gone.
+     *
+     * @return how many skills moved
+     */
+    public int recategorise(String from, String to) {
+        return jdbc.sql("UPDATE harness_skill SET category = :to, updated_at = NOW()"
+                        + " WHERE category = :from")
+                .param("to", to)
+                .param("from", from)
+                .update();
+    }
+
     // ------------------------------------------------------------------ mapping
 
     static SkillRecord mapSkill(java.sql.ResultSet rs) throws java.sql.SQLException {
@@ -543,6 +678,8 @@ public class SkillRepository {
                 rs.getString("content_digest"),
                 readList(rs.getString("scripts")),
                 rs.getInt("install_count"),
+                rs.getString("note"),
+                rs.getString("category"),
                 rs.getString("created_by"),
                 rs.getTimestamp("created_at").toInstant(),
                 rs.getTimestamp("updated_at").toInstant());

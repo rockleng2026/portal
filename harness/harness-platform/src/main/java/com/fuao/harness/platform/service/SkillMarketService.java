@@ -95,6 +95,8 @@ public class SkillMarketService {
             String visibility,
             Integer deptId,
             String publisher,
+            String note,
+            String category,
             List<ScriptContent> scripts) {
     }
 
@@ -147,7 +149,7 @@ public class SkillMarketService {
         SkillRecord skill = build(actor,
                 new SkillCommand(skillKey, document.name(), document.description(), content,
                         visibility == null ? SkillRecord.Visibility.DEPT.wire() : visibility.wire(),
-                        deptId, publisher, scripts),
+                        deptId, publisher, null, null, scripts),
                 document,
                 visibility == null ? SkillRecord.Visibility.DEPT : visibility,
                 deptId == null ? deptOf(actor) : deptId,
@@ -177,7 +179,8 @@ public class SkillMarketService {
                 evaluation, skill.status(), skill.rolloutPct(), skill.scope(), skill.source(),
                 skill.sourceRef(), skill.sourceUrl(), skill.publisher(), skill.deptId(),
                 skill.listingStatus(), skill.visibility(), skill.content(), skill.contentDigest(),
-                skill.scripts(), skill.installCount(), skill.createdBy(), skill.createdAt(), skill.updatedAt());
+                skill.scripts(), skill.installCount(), skill.note(), skill.category(),
+                skill.createdBy(), skill.createdAt(), skill.updatedAt());
     }
 
     private static SkillRecord withSource(SkillRecord skill, SkillRecord.Source source, String sourceRef,
@@ -188,7 +191,8 @@ public class SkillMarketService {
                 skill.evalResult(), skill.status(), skill.rolloutPct(), skill.scope(), source, sourceRef,
                 sourceUrl, publisher == null ? skill.publisher() : publisher, skill.deptId(),
                 skill.listingStatus(), skill.visibility(), skill.content(), skill.contentDigest(),
-                skill.scripts(), skill.installCount(), skill.createdBy(), skill.createdAt(), skill.updatedAt());
+                skill.scripts(), skill.installCount(), skill.note(), skill.category(),
+                skill.createdBy(), skill.createdAt(), skill.updatedAt());
     }
 
     /**
@@ -269,7 +273,7 @@ public class SkillMarketService {
         // of that other skill by accident.
         SkillRecord next = build(actor,
                 new SkillCommand(skillKey, cmd.name(), cmd.description(), cmd.content(), cmd.visibility(),
-                        cmd.deptId(), cmd.publisher(), cmd.scripts()),
+                        cmd.deptId(), cmd.publisher(), cmd.note(), cmd.category(), cmd.scripts()),
                 document, visibility, deptId, version, current.version(), now);
         skills.insert(next);
 
@@ -420,10 +424,37 @@ public class SkillMarketService {
     // ------------------------------------------------------------------ reads
 
     public List<SkillRecord> list(String query, String source, String listingStatus, String status,
-                                  String visibility, Integer deptId, int limit) {
+                                  String visibility, String category, Integer deptId, int limit) {
         AuthenticatedClient actor = authContext.require();
-        return skills.listMarket(query, source, listingStatus, status, visibility, deptId,
+        return skills.listMarket(query, source, listingStatus, status, visibility, category, deptId,
                 deptOf(actor), actor.agentId(), actor.employeeId(), limit);
+    }
+
+    /**
+     * Changes a skill's note and category.
+     *
+     * <p>Neither of them is part of the content, so neither of them makes a new version: the
+     * version is what the terminal checks its digest against, and the content did not change.
+     * The author may edit their own skill; so may a human in the same department, because a
+     * department knows better than its author what to call its own procedures.
+     */
+    @Transactional
+    public SkillRecord setDetails(String skillKey, String note, String category) {
+        AuthenticatedClient actor = authContext.require();
+        SkillRecord current = get(skillKey);
+        if (!isAuthor(actor, current) && !actor.isHuman()) {
+            throw new NotTheAuthorException("only the author may edit " + skillKey + ", caller was "
+                    + actor.actorType() + " (" + actor.clientId() + ")");
+        }
+        String trimmedNote = note == null || note.isBlank() ? null : note.trim();
+        if (trimmedNote != null && trimmedNote.length() > 512) {
+            throw new IllegalArgumentException("a note is at most 512 characters");
+        }
+        skills.updateDetails(skillKey, trimmedNote, category);
+        audit.record(actor, "skill.details", "skill", current.skillId(), "allow", null,
+                "changed the note and the category of " + skillKey,
+                AuditService.evidence("skillKey", skillKey, "category", String.valueOf(category)));
+        return latest(skillKey);
     }
 
     public SkillRecord get(String skillKey) {
@@ -549,6 +580,8 @@ public class SkillMarketService {
                 digest,
                 List.copyOf(scripts),
                 0,
+                cmd.note(),
+                cmd.category(),
                 actor.actorId(),
                 now,
                 now);

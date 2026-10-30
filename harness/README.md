@@ -80,6 +80,8 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 | `POST /api/harness/skill/{key}/submit\|approve\|reject\|publish\|unlist` | 评审与上架**仅自然人** | 评审人不能是作者 |
 | `DELETE /api/harness/skill/{key}` | **仅自然人** | 默认下架（撤掉所有安装）；`purge=true` 才物理删，且只允许没发布过的 |
 | `GET/POST /api/harness/skill/registry`、`PUT /registry/{key}` | 读任意；登记与改**仅自然人** | 外部注册源 |
+| `GET /api/harness/skill/categories`、`POST`、`PUT /{id}`、`DELETE /{id}` | 读任意；增改删**仅自然人** | 分类（内置 13 个，可以自己加和改） |
+| `PUT /api/harness/skill/{key}/details` | 作者或自然人 | 改备注和分类——**不产生新版本**（内容没变） |
 | `POST /api/harness/skill/registry/search`、`/pull` | 搜索任意；拉取**仅自然人** | 外部包进候选池，要人评审 |
 | `GET/POST /api/harness/skill/install`、`DELETE /install/{id}` | 部署：自然人（本部门）或数字员工（自己） | 装到部门 / 数字员工 / 终端 |
 | `GET /api/harness/terminal/{id}/skills`、`/agent/{id}/skills` | 终端只能取自己的 | 内容 + 摘要 + 签名 |
@@ -90,6 +92,16 @@ Flyway 在启动时自动建表并灌入 12 个内置 Agent 模板与 16 个内�
 2. **没评审过的技能装不上**——`install` 只接受 `released` + `published`；
 3. **评审人不能是作者**——作者自评返回 `REVIEWER_IS_THE_AUTHOR`（02 R-02）；
 4. **版本不可变**——改一次是新版本，回滚是指针移动（04 A2-2）。
+
+**备注与分类**：备注是写给**人**看的（"这个技能干什么用的、什么时候该用它"），frontmatter 里的
+description 是写给智能体看的。分类让几百个技能不至于摊成一张没人读的清单：内置 13 个常用分类
+（通用/开发/前端/后端/数据库/运维/测试/文档/流程规范/数据分析/设计/沟通协作/安全），
+分类表是**数据**——只有对**这一个公司**有意义的分类（比如「飞书」）不该进迁移。
+改分类名时，分类底下的技能跟着走：改了一半、另一半还挂在旧名字下面的分类，是找不到东西的分类。
+
+**控制台**：左边是"去哪里看"（市场 / 已安装 / 分类 / 外部注册源），右边是列表，
+点一个技能就在下面展开详情——**不再弹窗**。技能多起来以后，弹窗里那个 460 像素的框
+装不下一个技能列表，搜索结果也是。
 
 终端侧（`harness-terminal`，Rust）：`skills sync` 从平台取技能 → 核 `sha256(content)` →
 写进 `~/.harness/skills/<name>/SKILL.md`（随技能带的文件保持它自己的相对路径）→

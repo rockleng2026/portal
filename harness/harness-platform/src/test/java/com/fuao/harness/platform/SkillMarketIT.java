@@ -544,6 +544,122 @@ class SkillMarketIT extends PlatformTestBase {
     // ------------------------------------------------------------------ the trail
 
     @Test
+    void aSkillCarriesANoteAndACategory() throws Exception {
+        String key = "annotated-" + UUID.randomUUID().toString().substring(0, 8);
+        String payload = body(Map.of(
+                "skillKey", key,
+                "note", "改 portal 之前先读这个，坑都在手册第 8 节",
+                "category", "流程规范",
+                "content", skillDocument("annotated", "a procedure with a note")));
+        MockHttpServletRequestBuilder create = post("/api/harness/skill")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload);
+        signAsHuman("POST", "/api/harness/skill", create, payload);
+        mvc.perform(create).andExpect(status().isOk())
+                .andExpect(jsonPath("$.note").value("改 portal 之前先读这个，坑都在手册第 8 节"))
+                .andExpect(jsonPath("$.category").value("流程规范"));
+    }
+
+    @Test
+    void anUnknownCategoryIsRefusedAndTheKnownOnesAreListed() throws Exception {
+        String payload = body(Map.of(
+                "skillKey", "bad-category-" + UUID.randomUUID().toString().substring(0, 8),
+                "category", "不存在的分类",
+                "content", skillDocument("bad", "x")));
+        MockHttpServletRequestBuilder create = post("/api/harness/skill")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload);
+        signAsHuman("POST", "/api/harness/skill", create, payload);
+        mvc.perform(create).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error.message").value(org.hamcrest.Matchers.containsString("流程规范")));
+    }
+
+    @Test
+    void editingTheNoteAndTheCategoryDoesNotMakeANewVersion() throws Exception {
+        String key = "details-" + UUID.randomUUID().toString().substring(0, 8);
+        createAsHuman(key, "a procedure");
+
+        String payload = body(Map.of("note", "写给下一个人看的", "category", "运维"));
+        MockHttpServletRequestBuilder details = put("/api/harness/skill/" + key + "/details")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload);
+        signAsHuman("PUT", "/api/harness/skill/" + key + "/details", details, payload);
+        mvc.perform(details).andExpect(status().isOk())
+                .andExpect(jsonPath("$.note").value("写给下一个人看的"))
+                .andExpect(jsonPath("$.category").value("运维"))
+                // The content did not change, so the version did not move.
+                .andExpect(jsonPath("$.version").value(1));
+
+        Integer versions = jdbc.sql("SELECT COUNT(*) FROM harness_skill WHERE skill_key = :key")
+                .param("key", key).query(Integer.class).single();
+        assertEquals(1, versions, "a note is not a new version");
+    }
+
+    @Test
+    void theCategoriesCanBeAddedAndRenamedAndTheSkillsFollow() throws Exception {
+        String key = "recategorised-" + UUID.randomUUID().toString().substring(0, 8);
+        createAsHuman(key, "a procedure");
+
+        String add = body(Map.of("name", "临时分类"));
+        MockHttpServletRequestBuilder addRequest = post("/api/harness/skill/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(add);
+        signAsHuman("POST", "/api/harness/skill/categories", addRequest, add);
+        String added = mvc.perform(addRequest).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String categoryId = String.valueOf(parse(added).get("categoryId"));
+
+        String payload = body(Map.of("category", "临时分类"));
+        MockHttpServletRequestBuilder details = put("/api/harness/skill/" + key + "/details")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload);
+        signAsHuman("PUT", "/api/harness/skill/" + key + "/details", details, payload);
+        mvc.perform(details).andExpect(status().isOk())
+                .andExpect(jsonPath("$.category").value("临时分类"));
+
+        // Renaming the category moves the skills with it.
+        String rename = body(Map.of("name", "常用分类"));
+        MockHttpServletRequestBuilder renameRequest = put("/api/harness/skill/categories/" + categoryId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(rename);
+        signAsHuman("PUT", "/api/harness/skill/categories/" + categoryId, renameRequest, rename);
+        mvc.perform(renameRequest).andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("常用分类"));
+
+        String category = jdbc.sql("SELECT category FROM harness_skill WHERE skill_key = :key")
+                .param("key", key).query(String.class).single();
+        assertEquals("常用分类", category, "a renamed category takes its skills with it");
+    }
+
+    @Test
+    void theMarketCanBeFilteredByCategory() throws Exception {
+        String key = "filtered-" + UUID.randomUUID().toString().substring(0, 8);
+        String payload = body(Map.of(
+                "skillKey", key, "category", "数据库",
+                "content", skillDocument("filtered", "a procedure about databases")));
+        MockHttpServletRequestBuilder create = post("/api/harness/skill")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload);
+        signAsHuman("POST", "/api/harness/skill", create, payload);
+        mvc.perform(create).andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder list = get("/api/harness/skill?category=" + "数据库");
+        signAsHuman("GET", "/api/harness/skill?category=" + "数据库", list, "");
+        String listed = mvc.perform(list).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertTrue(listed.contains(key), "the category filter must find the skill");
+    }
+
+    @Test
+    void theBuiltInCategoriesAreThereToStartWith() throws Exception {
+        MockHttpServletRequestBuilder list = get("/api/harness/skill/categories");
+        signAsHuman("GET", "/api/harness/skill/categories", list, "");
+        String listed = mvc.perform(list).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertTrue(listed.contains("流程规范"), "the common categories must be there: " + listed);
+    }
+
+    @Test
     void everyMarketActionLeavesATrail() throws Exception {
         String key = "audited-" + UUID.randomUUID().toString().substring(0, 8);
         createAsHuman(key, "a procedure");

@@ -43,6 +43,8 @@ public record SkillRecord(
         String contentDigest,
         List<Map<String, Object>> scripts,
         int installCount,
+        String note,
+        String category,
         String createdBy,
         Instant createdAt,
         Instant updatedAt) {

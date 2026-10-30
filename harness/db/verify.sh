@@ -152,6 +152,21 @@ SELECT CASE WHEN COUNT(DISTINCT column_name) = 2
   FROM information_schema.columns
  WHERE table_schema = 'harness' AND table_name = 'harness_skill_registry'
    AND column_name IN ('catalog_url','audit_url');
+
+-- V13: a skill carries a note and a category, and the categories are a list somebody can
+-- manage - so they are a table of their own, not a column of free text.
+SELECT CASE WHEN (SELECT COUNT(*) FROM information_schema.columns
+                   WHERE table_schema = 'harness' AND table_name = 'harness_skill'
+                     AND column_name IN ('note','category')) = 2
+             AND (SELECT COUNT(*) FROM information_schema.tables
+                   WHERE table_schema = 'harness' AND table_name = 'harness_skill_category') = 1
+            THEN 'OK   skills carry a note and a category, and the categories are managed (V13)'
+            ELSE 'FAIL the note, the category or the category table is missing' END AS assert_skill_categories;
+
+-- the built-in categories are seeded, so a fresh market is not an empty one
+SELECT CASE WHEN (SELECT COUNT(*) FROM harness_skill_category WHERE builtin = 1) >= 10
+            THEN 'OK   the common categories are seeded'
+            ELSE 'FAIL the common categories are not seeded' END AS assert_builtin_categories;
 SQL
 
 echo "==> done"

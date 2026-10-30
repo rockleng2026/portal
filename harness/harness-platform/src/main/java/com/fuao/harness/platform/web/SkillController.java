@@ -3,6 +3,7 @@ package com.fuao.harness.platform.web;
 import com.fuao.harness.platform.domain.SkillRecord;
 import com.fuao.harness.platform.security.AuthContext;
 import com.fuao.harness.platform.security.AuthenticatedClient;
+import com.fuao.harness.platform.service.SkillCategoryService;
 import com.fuao.harness.platform.service.SkillInstallService;
 import com.fuao.harness.platform.service.SkillMarketService;
 import com.fuao.harness.platform.service.SkillRegistryClient;
@@ -46,13 +47,16 @@ public class SkillController {
     private final SkillMarketService market;
     private final SkillRegistryService registries;
     private final SkillInstallService installs;
+    private final SkillCategoryService categories;
     private final AuthContext authContext;
 
     public SkillController(SkillMarketService market, SkillRegistryService registries,
-                           SkillInstallService installs, AuthContext authContext) {
+                           SkillInstallService installs, SkillCategoryService categories,
+                           AuthContext authContext) {
         this.market = market;
         this.registries = registries;
         this.installs = installs;
+        this.categories = categories;
         this.authContext = authContext;
     }
 
@@ -69,7 +73,13 @@ public class SkillController {
             String visibility,
             Integer deptId,
             String publisher,
+            String note,
+            String category,
             List<ScriptRequest> scripts) {
+    }
+
+    /** The note and the category - the two things that say what a skill is *for*. */
+    public record DetailsRequest(String note, String category) {
     }
 
     public record ReasonRequest(@NotBlank String reason) {
@@ -99,6 +109,8 @@ public class SkillController {
             String signature,
             Map<String, Object> definition,
             List<Map<String, Object>> scripts,
+            String note,
+            String category,
             Instant createdAt,
             Instant updatedAt) {
 
@@ -111,7 +123,7 @@ public class SkillController {
                     s.source().wire(), s.sourceRef(), s.publisher(), s.deptId(),
                     s.authorAgent(), s.authorHuman(), s.createdBy(),
                     s.installCount(), s.rolloutPct(), s.contentDigest(), s.signature(),
-                    s.definition(), s.scripts(), s.createdAt(), s.updatedAt());
+                    s.definition(), s.scripts(), s.note(), s.category(), s.createdAt(), s.updatedAt());
         }
     }
 
@@ -125,11 +137,25 @@ public class SkillController {
                                 @RequestParam(required = false) String listingStatus,
                                 @RequestParam(required = false) String status,
                                 @RequestParam(required = false) String visibility,
+                                @RequestParam(required = false) String category,
                                 @RequestParam(required = false) Integer deptId,
                                 @RequestParam(defaultValue = "100") int limit) {
-        return market.list(q, source, listingStatus, status, visibility, deptId, limit).stream()
+        return market.list(q, source, listingStatus, status, visibility, category, deptId, limit).stream()
                 .map(SkillView::of)
                 .toList();
+    }
+
+    /**
+     * Changes a skill's note and category.
+     *
+     * <p>Neither is part of the content, so neither makes a new version.
+     */
+    @PutMapping("/skill/{skillKey}/details")
+    public SkillView setDetails(@PathVariable String skillKey, @RequestBody DetailsRequest request) {
+        String category = request.category() == null || request.category().isBlank()
+                ? null
+                : categories.requireKnown(request.category());
+        return SkillView.of(market.setDetails(skillKey, request.note(), category));
     }
 
     @GetMapping("/skill/{skillKey}")
@@ -145,7 +171,8 @@ public class SkillController {
     public SkillView create(@Valid @RequestBody SkillRequest request) {
         return SkillView.of(market.create(new SkillMarketService.SkillCommand(
                 request.skillKey(), request.name(), request.description(), request.content(),
-                request.visibility(), request.deptId(), request.publisher(), scripts(request))));
+                request.visibility(), request.deptId(), request.publisher(), request.note(),
+                category(request.category()), scripts(request))));
     }
 
     @PutMapping("/skill/{skillKey}")
@@ -153,7 +180,8 @@ public class SkillController {
         return SkillView.of(market.update(skillKey, new SkillMarketService.SkillCommand(
                 request.skillKey() == null || request.skillKey().isBlank() ? skillKey : request.skillKey(),
                 request.name(), request.description(), request.content(), request.visibility(),
-                request.deptId(), request.publisher(), scripts(request))));
+                request.deptId(), request.publisher(), request.note(), category(request.category()),
+                scripts(request))));
     }
 
     /**
@@ -275,6 +303,41 @@ public class SkillController {
                 : SkillRecord.Visibility.fromWire(request.visibility().trim());
         return SkillView.of(registries.pull(request.registryKey(), request.packageRef(), request.skillKey(),
                 request.deptId(), visibility));
+    }
+
+    // ------------------------------------------------------------------ categories
+
+    @GetMapping("/skill/categories")
+    public List<Map<String, Object>> listCategories() {
+        return SkillCategoryService.describe(categories.list());
+    }
+
+    public record CategoryRequest(@NotBlank String name) {
+    }
+
+    @PostMapping("/skill/categories")
+    public Map<String, Object> addCategory(@Valid @RequestBody CategoryRequest request) {
+        com.fuao.harness.platform.repo.SkillRepository.CategoryRow row = categories.add(request.name());
+        return Maps.of("categoryId", row.categoryId(), "name", row.name(), "builtin", row.builtin());
+    }
+
+    @PutMapping("/skill/categories/{categoryId}")
+    public Map<String, Object> renameCategory(@PathVariable String categoryId,
+                                              @RequestBody CategoryRequest request) {
+        com.fuao.harness.platform.repo.SkillRepository.CategoryRow row =
+                categories.rename(categoryId, request.name());
+        return Maps.of("categoryId", row.categoryId(), "name", row.name(), "builtin", row.builtin());
+    }
+
+    @DeleteMapping("/skill/categories/{categoryId}")
+    public Map<String, Object> removeCategory(@PathVariable String categoryId) {
+        categories.remove(categoryId);
+        return Maps.of("categoryId", categoryId, "removed", true);
+    }
+
+    /** The category a request names, if it is one the market knows. */
+    private String category(String name) {
+        return name == null || name.isBlank() ? null : categories.requireKnown(name);
     }
 
     // ------------------------------------------------------------------ installation
