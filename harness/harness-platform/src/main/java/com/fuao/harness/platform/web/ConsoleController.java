@@ -5,6 +5,7 @@ import com.fuao.harness.platform.domain.PolicyInputs;
 import com.fuao.harness.platform.repo.KillSwitchRepository;
 import com.fuao.harness.platform.service.AgentService;
 import com.fuao.harness.platform.service.AuditService;
+import com.fuao.harness.platform.service.BrainService;
 import com.fuao.harness.platform.service.GrantService;
 import com.fuao.harness.platform.service.KillSwitchService;
 import com.fuao.harness.platform.service.PolicyFacade;
@@ -17,6 +18,7 @@ import com.fuao.harness.protocol.event.ContentTrust;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +45,7 @@ public class ConsoleController {
 
     private final AgentService agents;
     private final com.fuao.harness.platform.service.OnboardingService onboarding;
+    private final com.fuao.harness.platform.service.BrainService brain;
     private final GrantService grants;
     private final ApprovalServiceHolder approvals;
     private final KillSwitchService killSwitches;
@@ -64,9 +67,11 @@ public class ConsoleController {
                              com.fuao.harness.platform.service.ModelConfigService modelConfigs,
                              com.fuao.harness.platform.security.ClientAuthenticator authenticator,
                              com.fuao.harness.platform.service.PrincipalService principalService,
-                             com.fuao.harness.platform.service.OnboardingService onboarding) {
+                             com.fuao.harness.platform.service.OnboardingService onboarding,
+                             com.fuao.harness.platform.service.BrainService brain) {
         this.agents = agents;
         this.onboarding = onboarding;
+        this.brain = brain;
         this.grants = grants;
         this.approvals = new ApprovalServiceHolder(approvals);
         this.killSwitches = killSwitches;
@@ -168,6 +173,50 @@ public class ConsoleController {
     public AgentView transition(@PathVariable String agentId, @RequestBody TransitionRequest request) {
         AgentRecord updated = agents.transition(agentId, AgentState.fromWire(request.to()), request.reason());
         return AgentView.of(updated);
+    }
+
+    // ------------------------------------------------------------------ the brain
+
+    /**
+     * The platform's own conversation about the platform.
+     *
+     * <p>A separate entry from the terminal chat: that one talks to the agent on a machine,
+     * this one talks to the platform about the machines, the digital employees, the grants and
+     * the rest. The brain's tools are read-only - it observes and advises, and every change
+     * still goes through the console, where a natural human presses the button.
+     */
+    @PostMapping("/brain/chat")
+    public Map<String, Object> brainChat(@RequestBody BrainChatRequest request) {
+        BrainService.Answer answer = brain.ask(request.sessionId(), request.message());
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("sessionId", answer.sessionId());
+        body.put("answer", answer.answer());
+        body.put("toolsUsed", answer.toolsUsed());
+        body.put("turns", answer.turns());
+        return body;
+    }
+
+    @GetMapping("/brain/sessions")
+    public List<BrainService.SessionView> brainSessions() {
+        return brain.sessions();
+    }
+
+    @GetMapping("/brain/sessions/{sessionId}")
+    public Map<String, Object> brainSession(@PathVariable String sessionId) {
+        BrainService.SessionView view = brain.session(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("no such session: " + sessionId));
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("session", view);
+        body.put("turns", brain.turns(sessionId));
+        return body;
+    }
+
+    @DeleteMapping("/brain/sessions/{sessionId}")
+    public Map<String, Object> brainForget(@PathVariable String sessionId) {
+        return Map.of("sessionId", sessionId, "forgotten", brain.forget(sessionId));
+    }
+
+    public record BrainChatRequest(String sessionId, @NotBlank String message) {
     }
 
     /**

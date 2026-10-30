@@ -25,3 +25,8 @@ harness-terminal/target/
 # Python bytecode from the build tools
 __pycache__/
 *.pyc
+
+# The portal writes its log to "D:/log.txt" (a Windows path left over from the original
+# development machine). On Linux that is a relative path, so the file lands in whatever
+# directory Tomcat was started from - usually the repository root.
+D:/

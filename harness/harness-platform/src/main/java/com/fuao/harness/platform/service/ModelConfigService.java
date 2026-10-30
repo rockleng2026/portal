@@ -130,6 +130,18 @@ public class ModelConfigService {
         return view(configs.find(scopeName, id).orElseThrow());
     }
 
+    /**
+     * The brain's configuration: the global one, with the key.
+     *
+     * <p>The brain is the platform's own conversation about the platform, so it uses the
+     * "brain" scope (the console calls it "大脑（平台默认）").
+     */
+    public Optional<TerminalModelConfig> forBrain() {
+        return configs.find("brain", "*")
+                .map(row -> new TerminalModelConfig(row.provider(), row.modelName(), row.baseUrl(),
+                        decrypt(row.apiKeyCipher())));
+    }
+
     /** The configuration of a terminal, with the key - only for the terminal itself. */
     public Optional<TerminalModelConfig> forTerminal(String terminalId, String agentId) {
         for (ModelConfigRepository.ConfigRow row : configs.resolveFor(terminalId, agentId)) {

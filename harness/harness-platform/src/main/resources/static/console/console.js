@@ -585,6 +585,10 @@ function renderAudit() {
 // the console looks at a task while it is still pending and then never looks again.
 const chat = { terminalId: null, agentKey: '', poll: null, shown: new Map() };
 
+// The platform's brain: a conversation about the platform, kept apart from the terminal
+// chat (that one talks to an agent on a machine).
+const brain = { sessionId: null, sending: false, sessions: [] };
+
 function openChat(terminalId, title) {
   if (!terminalId) {
     // There is nobody to talk to. The panel must not keep showing the last conversation,
@@ -708,10 +712,93 @@ async function pollTasks() {
   });
 }
 
+// ---------------------------------------------------------------- 大脑（平台自己）
+
+/** The conversation list on the left. */
+async function renderBrainSessions() {
+  brain.sessions = await api('GET', '/api/harness/brain/sessions').catch(() => []);
+  const list = $('#brainSessions');
+  if (!brain.sessions.length) {
+    list.innerHTML = '<div class="empty">还没有会话</div>';
+    return;
+  }
+  list.innerHTML = brain.sessions.map(s =>
+    '<div class="row' + (s.sessionId === brain.sessionId ? ' row-active' : '') + '"'
+    + ' data-session="' + esc(s.sessionId) + '">'
+    + '<span class="grow">' + esc(s.title || '(无题)') + '</span>'
+    + '<span class="muted small">' + esc(when(s.touchedAt)) + '</span></div>').join('');
+}
+
+/** Opens a session: its turns are put back into the log. */
+async function openBrainSession(sessionId) {
+  brain.sessionId = sessionId;
+  $('#brainLog').innerHTML = '';
+  $('#brainTools').textContent = '';
+  if (!sessionId) {
+    $('#brainTitle').textContent = '与平台大脑对话';
+    $('#brainSubtitle').textContent = '它回答关于这个平台的问题';
+    await renderBrainSessions();
+    $('#brainPrompt').focus();
+    return;
+  }
+  const answer = await api('GET', '/api/harness/brain/sessions/' + encodeURIComponent(sessionId));
+  $('#brainTitle').textContent = (answer.session && answer.session.title) || '与平台大脑对话';
+  $('#brainSubtitle').textContent = '会话 ' + sessionId.slice(0, 8);
+  (answer.turns || []).forEach(turn => {
+    addBrain(turn.role === 'user' ? '我' : '大脑', turn.content);
+  });
+  await renderBrainSessions();
+  $('#brainPrompt').focus();
+}
+
+/** One message in the brain's log. */
+function addBrain(who, text) {
+  const log = $('#brainLog');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + (who === '我' ? 'me' : 'agent');
+  div.innerHTML = '<div class="who">' + esc(who) + '</div><div class="bubble">' + esc(text) + '</div>';
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+/** Sends a question to the brain. */
+async function askBrain() {
+  const prompt = $('#brainPrompt').value.trim();
+  if (!prompt || brain.sending) return;
+  brain.sending = true;
+  $('#brainSend').disabled = true;
+  $('#brainPrompt').value = '';
+  addBrain('我', prompt);
+  const pending = document.createElement('div');
+  pending.className = 'chat-msg agent';
+  pending.innerHTML = '<div class="who">大脑</div><div class="bubble">正在查…</div>';
+  $('#brainLog').appendChild(pending);
+  if (pending.scrollIntoView) pending.scrollIntoView();
+  try {
+    const answer = await api('POST', '/api/harness/brain/chat', {
+      sessionId: brain.sessionId, message: prompt,
+    });
+    brain.sessionId = answer.sessionId;
+    pending.remove();
+    addBrain('大脑', answer.answer);
+    $('#brainTools').textContent = (answer.toolsUsed || []).length
+      ? '查了：' + answer.toolsUsed.join('、') : '';
+    $('#brainTitle').textContent = prompt.slice(0, 24);
+    await renderBrainSessions();
+  } catch (e) {
+    pending.remove();
+    addBrain('大脑', '没答上来：' + e.message);
+  } finally {
+    brain.sending = false;
+    $('#brainSend').disabled = false;
+    $('#brainPrompt').focus();
+  }
+}
+
 // ---------------------------------------------------------------- 事件绑定
 
 function bindEvents() {
-  $$('#tabs .tab').forEach(tab => tab.addEventListener('click', () => {
+  $$('#tabs .tab').forEach(tab => tab.addEventListener('click', async () => {
     $$('#tabs .tab').forEach(t => t.classList.remove('active'));
     $$('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
@@ -719,6 +806,10 @@ function bindEvents() {
     if (tab.dataset.tab === 'chat') {
       renderTerminalPickers();
       renderChatRecent();
+    }
+    if (tab.dataset.tab === 'brain') {
+      await renderBrainSessions();
+      $('#brainPrompt').focus();
     }
   }));
 
@@ -780,6 +871,19 @@ function bindEvents() {
 
   $('#chatTerminalPicker').addEventListener('change', (e) => {
     openChat(e.target.value, '终端 ' + e.target.value.slice(0, 8) + '…');
+  });
+
+  $('#brainNewBtn').addEventListener('click', async () => {
+    await openBrainSession(null);
+  });
+  $('#brainForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await askBrain();
+  });
+  $('#brainSessions').addEventListener('click', async (e) => {
+    const row = e.target.closest('[data-session]');
+    if (!row) return;
+    await openBrainSession(row.dataset.session);
   });
 
   $('#newAgentBtn').addEventListener('click', () => {

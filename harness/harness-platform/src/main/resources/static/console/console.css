@@ -196,6 +196,16 @@ button.tiny { padding: .2rem .5rem; font-size: .75rem; }
 }
 .modal-box h3 { margin: 0 0 .75rem; color: var(--primary); font-size: 1rem; }
 .modal-box label { display: block; margin-bottom: .6rem; font-size: .78rem; color: var(--text-light); }
+/* The brain's page: a conversation list on the left, the conversation on the right. */
+.brain { display: grid; grid-template-columns: 260px 1fr; gap: 1rem; align-items: start; }
+.brain-side { display: flex; flex-direction: column; gap: .6rem; }
+.brain-side .list { max-height: 60vh; overflow: auto; }
+.brain-side .row-active { background: var(--primary-soft, rgba(37, 99, 235, .08)); }
+.brain-main { display: flex; flex-direction: column; gap: .6rem; min-width: 0; }
+.brain-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.brain-title { font-weight: 600; color: var(--text); }
+.brain .chat-log { min-height: 320px; max-height: 58vh; }
+
 /* The hint under a field: what the value means. Without it a form is a guessing game. */
 .modal-box .field-hint { margin: -.35rem 0 .6rem; font-size: .72rem; line-height: 1.45; color: var(--text-light); }
 .modal-box .field-static { padding: .5rem 0 .1rem; }

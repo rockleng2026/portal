@@ -1,6 +1,7 @@
 package com.fuao.harness.platform.web;
 
 import com.fuao.harness.platform.service.AgentService;
+import com.fuao.harness.platform.service.BrainService;
 import com.fuao.harness.platform.service.SkillDocument;
 import com.fuao.harness.platform.service.SkillInstallService;
 import com.fuao.harness.platform.service.SkillMarketService;
@@ -41,6 +42,17 @@ public class ApiExceptionHandler {
                 : HttpStatus.BAD_GATEWAY;
         return ResponseEntity.status(status)
                 .body(ApiError.of(e.code(), e.getMessage()).enveloped());
+    }
+
+    /**
+     * The brain has no model yet.
+     *
+     * <p>That is a configuration gap, not a crash: the console says which page to go to.
+     */
+    @ExceptionHandler(BrainService.BrainNotConfigured.class)
+    public ResponseEntity<Map<String, Object>> brainNotConfigured(BrainService.BrainNotConfigured e) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(ApiError.of("BRAIN_NOT_CONFIGURED", e.getMessage()).enveloped());
     }
 
     @ExceptionHandler(AgentService.NotAHumanException.class)

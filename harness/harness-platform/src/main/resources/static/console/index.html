@@ -36,6 +36,7 @@
     <button class="tab" data-tab="agents">数字员工</button>
     <button class="tab" data-tab="terminals">终端</button>
     <button class="tab" data-tab="chat">对话</button>
+    <button class="tab" data-tab="brain">大脑</button>
     <button class="tab" data-tab="grants">授权</button>
     <button class="tab" data-tab="skills">技能市场</button>
     <button class="tab" data-tab="approvals">审批</button>
@@ -100,6 +101,36 @@
           <button class="primary" id="openChatBtn">打开对话</button>
         </div>
         <div id="chatRecent" class="list"></div>
+      </div>
+    </section>
+
+    <!-- 大脑 -->
+    <section class="panel" id="tab-brain">
+      <div class="brain">
+        <aside class="brain-side">
+          <button class="primary" id="brainNewBtn">＋ 新会话</button>
+          <p class="muted small">大脑是平台自己的运维助手：数字员工、终端、授权、审批、事件、
+            审计，它都能查。它只看不动——要改的事它会告诉你在控制台哪里点。</p>
+          <div id="brainSessions" class="list"></div>
+        </aside>
+        <div class="brain-main">
+          <div class="brain-head">
+            <div>
+              <div class="brain-title" id="brainTitle">与平台大脑对话</div>
+              <div class="muted" id="brainSubtitle">它回答关于这个平台的问题</div>
+            </div>
+            <span class="muted small" id="brainTools"></span>
+          </div>
+          <div class="chat-log" id="brainLog"></div>
+          <form class="chat-input" id="brainForm">
+            <textarea id="brainPrompt" rows="3"
+              placeholder="例：现在有哪些终端掉线了？zhangshan 被授了哪些能力？有哪些审批还压着？"></textarea>
+            <div class="chat-actions">
+              <span class="muted" id="brainHint">回车发送。它会自己去查数据，回答基于平台当前状态。</span>
+              <button class="primary" id="brainSend" type="submit">发送</button>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
 
