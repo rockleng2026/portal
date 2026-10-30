@@ -48,6 +48,12 @@ harness:
     human-employee-id: ${HARNESS_HUMAN_EMPLOYEE_ID:}
   federation:
     local-fed-id: ${HARNESS_FED_ID:}
+  portal:
+    # portal 的根地址（含 context path）。没配置就不能入职——控制台会说明原因，
+    # 而不是让人手填一个查不到的 employee id。
+    base-url: ${HARNESS_PORTAL_BASE_URL:}
+    client-id: ${HARNESS_PORTAL_CLIENT_ID:harness-bootstrap}
+    secret: ${HARNESS_PORTAL_SECRET:${HARNESS_BOOTSTRAP_SECRET:}}
   model:
     # 加密模型密钥用的平台密钥；不设置则从 bootstrap secret 派生
     encryption-key: ${HARNESS_MODEL_ENCRYPTION_KEY:}

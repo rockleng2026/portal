@@ -9,7 +9,7 @@ import com.fuao.fajxc.dao.harness.HarnessAccountDao;
 import com.fuao.fajxc.util.HarnessJson;
 
 /**
- * The portal side of the harness API (03 ¡ì9).
+ * The portal side of the harness API (03 ï¿½ï¿½9).
  *
  * <p>Three endpoints at M0, all of them things the platform cannot do by reading the database
  * alone:
@@ -55,6 +55,11 @@ public class HarnessApiAction {
 
     /** Liveness plus the identity the namespace accepted. */
     public String health() {
+        // This action is a Spring bean, and a bean is a singleton: the payload of one
+        // request would still be in here when the next one arrives. Every request starts
+        // with an empty answer.
+        payload.clear();
+        error.clear();
         payload.put("status", "ok");
         payload.put("service", "portal-harness-api");
         payload.put("timestamp", new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
@@ -67,6 +72,11 @@ public class HarnessApiAction {
      * @param employeeId portal.employee.id
      */
     public String permissionSnapshot() {
+        // This action is a Spring bean, and a bean is a singleton: the payload of one
+        // request would still be in here when the next one arrives. Every request starts
+        // with an empty answer.
+        payload.clear();
+        error.clear();
         String raw = parameter("employeeId");
         int employeeId;
         try {
@@ -93,7 +103,44 @@ public class HarnessApiAction {
      *
      * <p>Parameters: agentKey, name, deptId, workpositionId, groupId, roleId, loginName (optional).
      */
+    /**
+     * What hiring this digital employee would write into the portal.
+     *
+     * <p>Nothing is written. The platform shows this before it asks for a confirmation, so
+     * the operator sees the department and the employee number that will really be used.
+     */
+    public String onboardPreview() {
+        // This action is a Spring bean, and a bean is a singleton: the payload of one
+        // request would still be in here when the next one arrives. Every request starts
+        // with an empty answer.
+        payload.clear();
+        error.clear();
+        Map command = new HashMap();
+        command.put("agentKey", parameter("agentKey"));
+        command.put("deptId", parameter("deptId"));
+        try {
+            Map result = harnessAccountDao.onboardPreview(command);
+            payload.putAll(result);
+            if (Boolean.FALSE.equals(result.get("ok"))) {
+                error.put("code", "REJECTED");
+                error.put("message", String.valueOf(result.get("error")));
+                return "harnessRejected";
+            }
+            return "success";
+        } catch (Exception e) {
+            logger.error("harness onboarding preview failed for agent " + parameter("agentKey"), e);
+            error.put("code", "ONBOARD_FAILED");
+            error.put("message", e.getMessage());
+            return "harnessRejected";
+        }
+    }
+
     public String onboard() {
+        // This action is a Spring bean, and a bean is a singleton: the payload of one
+        // request would still be in here when the next one arrives. Every request starts
+        // with an empty answer.
+        payload.clear();
+        error.clear();
         Map command = new HashMap();
         command.put("agentKey", parameter("agentKey"));
         command.put("name", parameter("name"));
@@ -102,6 +149,12 @@ public class HarnessApiAction {
         command.put("groupId", parameter("groupId"));
         command.put("roleId", parameter("roleId"));
         command.put("loginName", parameter("loginName"));
+        if (integer(command, "roleId") <= 0) {
+            // The portal's user row has a NOT NULL role column, so a digital employee cannot
+            // be created without one. It cannot log in anyway (A0-2), so the role only has to
+            // be the most limited one there is - the operator names it in the configuration.
+            command.put("roleId", Integer.valueOf(digitalRoleId()));
+        }
         try {
             Map result = harnessAccountDao.onboard(command);
             payload.putAll(result);
@@ -116,6 +169,53 @@ public class HarnessApiAction {
             error.put("code", "ONBOARD_FAILED");
             error.put("message", e.getMessage());
             return "harnessRejected";
+        }
+    }
+
+    /**
+     * The role a digital employee gets when the caller does not name one.
+     *
+     * <p>Read from {@code harness.api.digitalRoleId}. The file lives under WEB-INF, so it can
+     * only be read through the servlet context.
+     */
+    private int digitalRoleId() {
+        java.io.InputStream in = null;
+        try {
+            javax.servlet.ServletContext context = org.apache.struts2.ServletActionContext.getServletContext();
+            if (context != null) {
+                in = context.getResourceAsStream("/WEB-INF/props/harness-api.properties");
+            }
+            if (in == null) {
+                return 0;
+            }
+            java.util.Properties properties = new java.util.Properties();
+            properties.load(in);
+            String value = properties.getProperty("harness.api.digitalRoleId", "").trim();
+            return value.length() == 0 ? 0 : Integer.parseInt(value);
+        } catch (Exception e) {
+            logger.error("cannot read harness.api.digitalRoleId", e);
+            return 0;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Exception ignored) {
+                    // nothing to do
+                }
+            }
+        }
+    }
+
+    /** A parameter as a number, or 0 when it is missing. */
+    private int integer(Map command, String name) {
+        Object value = command.get(name);
+        if (value == null) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(String.valueOf(value).trim());
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 

@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConsoleController {
 
     private final AgentService agents;
+    private final com.fuao.harness.platform.service.OnboardingService onboarding;
     private final GrantService grants;
     private final ApprovalServiceHolder approvals;
     private final KillSwitchService killSwitches;
@@ -62,8 +63,10 @@ public class ConsoleController {
                              com.fuao.harness.platform.repo.CapabilityRepository capabilities,
                              com.fuao.harness.platform.service.ModelConfigService modelConfigs,
                              com.fuao.harness.platform.security.ClientAuthenticator authenticator,
-                             com.fuao.harness.platform.service.PrincipalService principalService) {
+                             com.fuao.harness.platform.service.PrincipalService principalService,
+                             com.fuao.harness.platform.service.OnboardingService onboarding) {
         this.agents = agents;
+        this.onboarding = onboarding;
         this.grants = grants;
         this.approvals = new ApprovalServiceHolder(approvals);
         this.killSwitches = killSwitches;
@@ -121,6 +124,29 @@ public class ConsoleController {
         return AgentView.of(agent);
     }
 
+    /**
+     * The capability catalogue.
+     *
+     * <p>The console's grant dialog offers these as a list with their name, their effect and
+     * the autonomy level they need - a grant is a decision about authority, and it should not
+     * be made by typing a key from memory.
+     */
+    @GetMapping("/capability")
+    public List<CapabilityView> listCapabilities() {
+        return capabilities.listAll().stream().map(CapabilityView::of).toList();
+    }
+
+    public record CapabilityView(String capKey, String name, String kind, String sideEffect,
+                                 int blastRadius, boolean requiresHuman, int minLevel,
+                                 String riskClass, boolean destructive, String approvalPolicy) {
+
+        static CapabilityView of(com.fuao.harness.platform.repo.CapabilityRepository.CapabilityRow row) {
+            return new CapabilityView(row.capKey(), row.name(), row.kind(), row.sideEffect(),
+                    row.blastRadius(), row.requiresHuman(), row.minLevel(), row.riskClass(),
+                    row.destructive(), row.approvalPolicy());
+        }
+    }
+
     @GetMapping("/agent")
     public List<AgentView> listAgents(@RequestParam(required = false) String status,
                                       @RequestParam(required = false) Integer deptId,
@@ -144,12 +170,28 @@ public class ConsoleController {
         return AgentView.of(updated);
     }
 
-    public record OnboardRequest(@NotNull int portalEmployeeId, @NotNull int portalUserId) {
+    /**
+     * What hiring this digital employee into the portal would write.
+     *
+     * <p>The console shows this before anything is written: the name, the department, the
+     * employee number and where they go are the operator's decision to see, not to guess.
+     */
+    @GetMapping("/agent/{agentId}/onboard/preview")
+    public Map<String, Object> onboardPreview(@PathVariable String agentId) {
+        return onboarding.preview(agentId);
     }
 
+    /**
+     * Hires the digital employee into the portal.
+     *
+     * <p>The platform writes the portal's employee row: it is the only party that knows the
+     * agent's name, its department and its agent key. The department is the agent's own - a
+     * digital employee in the root department belongs to nobody - and the employee number
+     * carries the digital-employee prefix, so it cannot be mistaken for a colleague's number.
+     */
     @PostMapping("/agent/{agentId}/onboard")
-    public AgentView onboard(@PathVariable String agentId, @RequestBody OnboardRequest request) {
-        return AgentView.of(agents.attachPortalIdentity(agentId, request.portalEmployeeId(), request.portalUserId()));
+    public Map<String, Object> onboard(@PathVariable String agentId) {
+        return onboarding.onboard(agentId);
     }
 
     public record AutonomyRequest(@NotNull int level, @NotBlank String reason) {

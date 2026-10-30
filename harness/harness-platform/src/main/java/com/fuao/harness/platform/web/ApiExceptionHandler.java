@@ -26,6 +26,23 @@ public class ApiExceptionHandler {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ApiExceptionHandler.class);
 
+    /**
+     * The portal refused to hire the digital employee, or could not be reached.
+     *
+     * <p>That is not a bug on the platform's side, so it is not a 500: the operator has to
+     * see what the portal said and fix it there.
+     */
+    @ExceptionHandler(com.fuao.harness.platform.service.PortalClient.PortalRefusedException.class)
+    public ResponseEntity<Map<String, Object>> portalRefused(
+            com.fuao.harness.platform.service.PortalClient.PortalRefusedException e) {
+        log.warn("the portal refused: code={} reason={}", e.code(), e.getMessage());
+        HttpStatus status = "NOT_CONFIGURED".equals(e.code())
+                ? HttpStatus.SERVICE_UNAVAILABLE
+                : HttpStatus.BAD_GATEWAY;
+        return ResponseEntity.status(status)
+                .body(ApiError.of(e.code(), e.getMessage()).enveloped());
+    }
+
     @ExceptionHandler(AgentService.NotAHumanException.class)
     public ResponseEntity<Map<String, Object>> notAHuman(AgentService.NotAHumanException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)

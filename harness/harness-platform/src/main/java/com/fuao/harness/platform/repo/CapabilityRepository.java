@@ -40,6 +40,41 @@ public class CapabilityRepository {
                 .optional();
     }
 
+    /**
+     * The whole catalogue, in the order an operator should read it.
+     *
+     * <p>The console's grant dialog offers these instead of a free-text field: nobody should
+     * have to know the key of a capability to grant it, and a typo in a free-text field is a
+     * grant to nothing at all.
+     */
+    public List<CapabilityRow> listAll() {
+        return jdbc.sql("""
+                        SELECT cap_key, name, kind, side_effect, blast_radius, requires_human,
+                               min_level, risk_class, destructive, approval_policy
+                          FROM harness_capability
+                         WHERE status = 'active'
+                         ORDER BY min_level, side_effect, cap_key
+                        """)
+                .query((rs, i) -> new CapabilityRow(
+                        rs.getString("cap_key"),
+                        rs.getString("name"),
+                        rs.getString("kind"),
+                        rs.getString("side_effect"),
+                        rs.getInt("blast_radius"),
+                        rs.getInt("requires_human") != 0,
+                        rs.getInt("min_level"),
+                        rs.getString("risk_class"),
+                        rs.getInt("destructive") != 0,
+                        rs.getString("approval_policy")))
+                .list();
+    }
+
+    /** One row of the capability catalogue, with the words a human needs. */
+    public record CapabilityRow(String capKey, String name, String kind, String sideEffect,
+                                 int blastRadius, boolean requiresHuman, int minLevel,
+                                 String riskClass, boolean destructive, String approvalPolicy) {
+    }
+
     /** The cap key of a capability id, or the id itself when the capability is unknown. */
     public String capKeyOf(String capId) {
         if (capId == null || capId.isBlank()) {

@@ -86,6 +86,16 @@
 			</interceptor-stack>
 		</interceptors>
 
+		<action name="onboard-preview" class="HarnessApiAction" method="onboardPreview">
+			<interceptor-ref name="harnessStack"/>
+			<result name="success" type="json">
+				<param name="root">payload</param>
+			</result>
+			<result name="harnessRejected" type="json">
+				<param name="root">error</param>
+			</result>
+		</action>
+
 		<action name="onboard" class="HarnessApiAction" method="onboard">
 			<interceptor-ref name="harnessStack"/>
 			<result name="success" type="json">

@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "harness")
 public record HarnessProperties(Security security, Terminal terminal, Bootstrap bootstrap,
-                                Federation federation, Model model, Skill skill) {
+                                Federation federation, Model model, Skill skill, Portal portal) {
 
     /**
      * @param encryptionKey the key the model credentials are encrypted with. When it is not set,
@@ -42,5 +42,18 @@ public record HarnessProperties(Security security, Terminal terminal, Bootstrap 
     }
 
     public record Federation(String localFedId) {
+    }
+
+    /**
+     * The portal this platform hires its digital employees into.
+     *
+     * <p>Without it the platform cannot onboard anybody, and the console says so instead of
+     * asking the operator for an employee id nobody can look up.
+     *
+     * @param baseUrl  the portal's root, including the context path
+     * @param clientId the client id the portal accepts
+     * @param secret   the shared secret; the portal verifies the signature with it
+     */
+    public record Portal(String baseUrl, String clientId, String secret) {
     }
 }

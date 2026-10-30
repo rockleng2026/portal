@@ -26,11 +26,11 @@ import com.fuao.fajxc.vo.WorkpositionEmployee;
  * <p>Two responsibilities, both narrow on purpose:
  * <ul>
  *   <li>answer "is this login name a digital employee?" so the login path can refuse it (A0-2);</li>
- *   <li>give the platform the permission snapshot and perform the onboarding write (01 ��5.1).</li>
+ *   <li>give the platform the permission snapshot and perform the onboarding write (01 ��5.1).</li>
  * </ul>
  *
  * <p>The permission snapshot deliberately returns the <em>raw</em> comma separated strings as
- * well as a parsed view. The platform parses the same strings on its own side (03 ��8) and the two
+ * well as a parsed view. The platform parses the same strings on its own side (03 ��8) and the two
  * results are compared (A0-3). If they disagree, the disagreement is the finding - which is the
  * whole point of having two independent parsers instead of one shared jar.
  */
@@ -160,12 +160,45 @@ public class HarnessAccountDao extends BaseDao {
 
     /**
      * Creates the portal side of a digital employee: the employee row, the login account and the
-     * position binding (01 ��5.1, ADR-002).
+     * position binding (01 ��5.1, ADR-002).
      *
      * <p>The account gets a random sentinel password and {@code isAI = 1}. The password is never
      * returned and never usable: the login path refuses AI accounts outright (A0-2), and the
      * sentinel is random so that even a bug in that check would not be exploitable.
      */
+    /**
+     * What hiring this digital employee would write - and nothing more.
+     *
+     * <p>The employee number is decided here, because the portal owns the department codes
+     * and the sequence. The platform asks before it writes, so the operator sees the number
+     * the employee will really carry instead of a guess.
+     */
+    public Map onboardPreview(Map command) {
+        HarnessJson.HarnessMap result = new HarnessJson.HarnessMap();
+        Session session = getSession();
+        String agentKey = string(command, "agentKey");
+        int deptId = integer(command, "deptId");
+
+        if (agentKey == null || deptId <= 0) {
+            result.put("ok", Boolean.FALSE);
+            result.put("error", "agentKey and deptId are required");
+            return result;
+        }
+        Department target = (Department) session.createQuery("from Department where id = ?")
+                .setInteger(0, Integer.valueOf(deptId)).uniqueResult();
+        if (target == null) {
+            result.put("ok", Boolean.FALSE);
+            result.put("error", "no such department: " + deptId);
+            return result;
+        }
+        result.put("ok", Boolean.TRUE);
+        result.put("deptId", Integer.valueOf(deptId));
+        result.put("deptName", target.getName());
+        result.put("employeeNumber", digitalEmployeeNo(session, target, agentKey));
+        result.put("employeeNumberRule", "AI + 地域码 + 部门码 + 序号（与正常员工的纯数字工号区分）");
+        return result;
+    }
+
     public Map onboard(Map command) {
         HarnessJson.HarnessMap result = new HarnessJson.HarnessMap();
         Session session = getSession();
@@ -187,6 +220,17 @@ public class HarnessAccountDao extends BaseDao {
             loginName = agentKey;
         }
 
+        // The department has to exist. Writing a row that points at a department nobody has is
+        // how a digital employee ends up in the root department and shows up in every org
+        // report as if it were nobody's colleague.
+        Department target = (Department) session.createQuery("from Department where id = ?")
+                .setInteger(0, Integer.valueOf(deptId)).uniqueResult();
+        if (target == null) {
+            result.put("ok", Boolean.FALSE);
+            result.put("error", "no such department: " + deptId);
+            return result;
+        }
+
         List existing = session.createQuery("from Employee where uuid = ?").setString(0, agentKey).list();
         if (existing != null && !existing.isEmpty()) {
             Employee employee = (Employee) existing.get(0);
@@ -197,15 +241,23 @@ public class HarnessAccountDao extends BaseDao {
             return result;
         }
 
+        // One transaction for both rows. An employee row without its login account is a
+        // half-created digital employee: it shows up in the org tree and cannot be reached.
+        org.hibernate.Transaction transaction = session.beginTransaction();
+        try {
         Employee employee = new Employee();
         employee.setUuid(agentKey);
         employee.setName(name);
         employee.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         employee.setIsLoginAccount(Integer.valueOf(1));
         // 0 = left the company, 1 = employed. The portal's own comment is counter-intuitive and
-        // so is this code; see 03 ��8.
+        // so is this code; see 03 ��8.
         employee.setIsLeave(Integer.valueOf(1));
-        employee.setEmpNo(agentKey);
+        // The employee number. A normal employee's number is a string of digits - region,
+        // department, sequence - and a digital employee must never be mistaken for one, so it
+        // gets a prefix: the number is recognisable at a glance in every list, and no import
+        // can read it as a colleague's number.
+        employee.setEmpNo(digitalEmployeeNo(session, target, agentKey));
         employee.setDelflag(Integer.valueOf(0));
         Department department = new Department();
         department.setId(Integer.valueOf(deptId));
@@ -237,6 +289,12 @@ public class HarnessAccountDao extends BaseDao {
         user.setStatus(Integer.valueOf(0));
         user.setDelflag("0");
         user.setIsAI(Integer.valueOf(1));
+        if (roleId <= 0) {
+            // The portal's user row has a NOT NULL role column, so a digital employee without
+            // a role cannot be created at all. It cannot log in anyway (A0-2), so the role
+            // only has to be the most limited one there is.
+            roleId = digitalRoleId();
+        }
         if (roleId > 0) {
             Roles role = new Roles();
             role.setRoleId(Integer.valueOf(roleId));
@@ -254,6 +312,7 @@ public class HarnessAccountDao extends BaseDao {
         }
 
         session.flush();
+        transaction.commit();
 
         result.put("ok", Boolean.TRUE);
         result.put("created", Boolean.TRUE);
@@ -261,7 +320,127 @@ public class HarnessAccountDao extends BaseDao {
         result.put("userId", user.getUserId());
         result.put("uuid", agentKey);
         result.put("loginName", loginName);
+        result.put("employeeNumber", employee.getEmpNo());
+        result.put("deptId", Integer.valueOf(deptId));
         return result;
+        } catch (RuntimeException e) {
+            try {
+                transaction.rollback();
+            } catch (Exception ignored) {
+                // The original failure is the interesting one.
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * The role a digital employee gets when the caller does not name one.
+     *
+     * <p>Read from the harness configuration ({@code harness.api.digitalRoleId}).
+     */
+    private int digitalRoleId() {
+        try {
+            java.io.InputStream in = getClass().getResourceAsStream("/WEB-INF/props/harness-api.properties");
+            if (in == null) {
+                return 0;
+            }
+            try {
+                java.util.Properties properties = new java.util.Properties();
+                properties.load(in);
+                String value = properties.getProperty("harness.api.digitalRoleId", "");
+                return Integer.parseInt(value.trim());
+            } finally {
+                in.close();
+            }
+        } catch (Exception e) {
+            logger.error("cannot read harness.api.digitalRoleId", e);
+            return 0;
+        }
+    }
+
+    /**
+     * The employee number of a digital employee.
+     *
+     * <p>Shape: the prefix, then the region code, then the department code, then the sequence
+     * inside that department - the same pieces a normal employee's number is made of, so the
+     * two sorts of number can be read the same way, with the prefix telling them apart.
+     *
+     * <p>The sequence counts the digital employees already in that department, so the number
+     * is stable and readable: "AI" + 11 + 05 + 003 is the third digital employee of
+     * department 11.05 in region 11.
+     */
+    private String digitalEmployeeNo(Session session, Department department, String agentKey) {
+        String region = regionCode(session, department);
+        String dept = digitsOf(department.getDepNo());
+        if (dept.length() == 0) {
+            dept = String.valueOf(department.getId());
+        }
+        // The count comes back as a Long on MySQL and as an Integer elsewhere, so it is read
+        // as a Number rather than cast to one of them.
+        Number count = (Number) session.createQuery(
+                        "select count(*) from Users u, Employee e"
+                                + " where u.customerOrEmployeeId = e.id and u.isAI = 1"
+                                + " and e.department.id = ?")
+                .setInteger(0, department.getId()).uniqueResult();
+        int sequence = (count == null ? 0 : count.intValue()) + 1;
+        String number = "AI" + region + dept + pad(sequence, 3);
+        // Two digital employees must never share a number.
+        if (employeeNoTaken(session, number)) {
+            number = number + "-" + Math.abs(agentKey.hashCode() % 1000);
+        }
+        return number;
+    }
+
+    /**
+     * The region code: the topmost department above this one, if it has a numeric code.
+     *
+     * <p>The region is the root of the department tree. The portal keeps the parent as an id
+     * only, so the chain is walked one query at a time.
+     */
+    private String regionCode(Session session, Department department) {
+        Integer currentId = department.getId();
+        int guard = 0;
+        while (guard++ < 16) {
+            Department current = (Department) session.createQuery("from Department where id = ?")
+                    .setInteger(0, currentId).uniqueResult();
+            if (current == null || current.getParentId() == null) {
+                String code = current == null ? "" : digitsOf(current.getDepNo());
+                return code.length() == 0 ? "0" : code;
+            }
+            currentId = current.getParentId();
+        }
+        return "0";
+    }
+
+    /** Keeps the digits of a code and drops everything else. */
+    private String digitsOf(String code) {
+        if (code == null) {
+            return "";
+        }
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < code.length(); i++) {
+            char c = code.charAt(i);
+            if (c >= '0' && c <= '9') {
+                text.append(c);
+            }
+        }
+        return text.toString();
+    }
+
+    /** A sequence with leading zeros. */
+    private String pad(int value, int width) {
+        String text = String.valueOf(value);
+        StringBuilder padded = new StringBuilder();
+        for (int i = text.length(); i < width; i++) {
+            padded.append('0');
+        }
+        return padded.append(text).toString();
+    }
+
+    /** Is this employee number already taken by somebody else? */
+    private boolean employeeNoTaken(Session session, String empNo) {
+        List existing = session.createQuery("from Employee where empNo = ?").setString(0, empNo).list();
+        return existing != null && !existing.isEmpty();
     }
 
     private Users findUserByEmployeeId(Session session, int employeeId) {
@@ -278,7 +457,7 @@ public class HarnessAccountDao extends BaseDao {
      *
      * <p>Every malformed entry produces a warning instead of being dropped: the portal's
      * permission strings are hand-edited comma lists, and silently ignoring a broken entry would
-     * quietly widen or narrow somebody's authority (03 ��8).
+     * quietly widen or narrow somebody's authority (03 ��8).
      */
     public static Map parsePermissions(String raw, String field, List warnings) {
         HarnessJson.HarnessMap parsed = new HarnessJson.HarnessMap();

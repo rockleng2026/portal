@@ -208,18 +208,26 @@ function table(columns, rows, emptyText) {
 function modal(title, fields, onOk) {
   $('#modalTitle').textContent = title;
   const body = $('#modalBody');
+  // A hint under a field: what the value means, where it comes from, what happens with it.
+  // A field nobody understands is a field somebody guesses at.
+  const hint = (text) => text ? '<div class="field-hint">' + esc(text) + '</div>' : '';
   body.innerHTML = fields.map(f => {
     if (f.type === 'select') {
       return '<label>' + esc(f.label) + '<select id="f-' + f.name + '">'
         + f.options.map(o => '<option value="' + esc(o.value) + '"' + (o.selected ? ' selected' : '') + '>'
-        + esc(o.label) + '</option>').join('') + '</select></label>';
+        + esc(o.label) + '</option>').join('') + '</select></label>' + hint(f.hint);
     }
     if (f.type === 'textarea') {
       return '<label>' + esc(f.label) + '<textarea id="f-' + f.name + '" rows="3">'
-        + esc(f.value || '') + '</textarea></label>';
+        + esc(f.value || '') + '</textarea></label>' + hint(f.hint);
+    }
+    if (f.type === 'static') {
+      return '<label>' + esc(f.label) + '<div class="field-static">' + (f.value || '') + '</div></label>'
+        + hint(f.hint);
     }
     return '<label>' + esc(f.label) + '<input id="f-' + f.name + '" type="'
-      + (f.type || 'text') + '" value="' + esc(f.value === undefined ? '' : f.value) + '"></label>';
+      + (f.type || 'text') + '" value="' + esc(f.value === undefined ? '' : f.value) + '"></label>'
+      + hint(f.hint);
   }).join('');
   $('#modal').classList.remove('hidden');
   $('#modalOk').onclick = async () => {
@@ -254,6 +262,7 @@ function confirmBox(title, message, onOk) {
 const state = {
   agents: [], terminals: [], approvals: [], grants: [], switches: [], events: [], audit: [], tasks: [],
   skills: [], skillInstalls: [], skillRegistries: [],
+  capabilities: [],
 };
 
 async function loadAll() {
@@ -267,6 +276,8 @@ async function loadAll() {
     api('GET', '/api/harness/model-config'),
     api('GET', '/api/harness/principal').catch(() => []),
   ]);
+  // The capability catalogue: the grant dialog picks from it instead of asking for a key.
+  const capabilities = await api('GET', '/api/harness/capability').catch(() => []);
   state.agents = agents || [];
   state.terminals = terminals || [];
   state.approvals = approvals || [];
@@ -275,6 +286,7 @@ async function loadAll() {
   state.audit = audit || [];
   state.modelConfigs = modelConfigs || [];
   state.principals = principals || [];
+  state.capabilities = capabilities || [];
   try {
     state.events = (await api('GET', '/api/harness/event/poll?limit=100')) || [];
   } catch (e) { state.events = []; }
@@ -930,15 +942,50 @@ function bindEvents() {
   });
 }
 
-function onboardModal(agentId) {
-  modal('数字员工入职 portal', [
-    { name: 'portalEmployeeId', label: 'portal 员工 ID（employee.id）', value: '' },
-    { name: 'portalUserId', label: 'portal 用户 ID（users.UserID）', value: '' },
-  ], async (v) => {
-    await api('POST', '/api/harness/agent/' + agentId + '/onboard', {
-      portalEmployeeId: Number(v.portalEmployeeId), portalUserId: Number(v.portalUserId),
-    });
-    toast('已入职', 'ok');
+/**
+ * Hires a digital employee into the portal.
+ *
+ * <p>The portal has its own employee table; until the digital employee is in it, it does not
+ * exist for the people who work there. The platform writes the row - it knows the name, the
+ * department and the agent key. This dialog shows exactly what will be written before
+ * anything is written, because the write is not undone by clicking elsewhere.
+ */
+async function onboardModal(agentId) {
+  const agent = state.agents.find(a => a.agentId === agentId);
+  const name = agent ? (agent.name || agent.agentKey) : agentId;
+  let preview;
+  try {
+    preview = await api('GET', '/api/harness/agent/' + agentId + '/onboard/preview');
+  } catch (e) {
+    toast('看不到将要写入的内容：' + e.message, 'bad');
+    return;
+  }
+  if (!preview.portalConfigured) {
+    toast('平台没有配置 portal：' + (preview.portalMissing || ''), 'bad');
+    return;
+  }
+  if (preview.alreadyOnboarded) {
+    toast('已经入职过了（portal 员工 ID ' + preview.portalEmployeeId + '）', 'bad');
+    return;
+  }
+  const rows = [
+    ['姓名', preview.name],
+    ['所属部门', '部门 ID ' + preview.deptId + '（数字员工自己的部门，不是根部门）'],
+    ['工号', preview.employeeNumber + '（数字员工前缀，与正常员工的纯数字工号区分开）'],
+    ['登录名', preview.loginName],
+    ['业务键', preview.agentKey],
+  ];
+  modal('数字员工入职 portal：' + name, [
+    {
+      name: 'summary', label: '将写入 portal 的内容', type: 'static',
+      value: '<table class="kv">' + rows.map(r =>
+        '<tr><th>' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td></tr>').join('') + '</table>',
+      hint: 'portal 那边会新建一条员工记录和一个登录账号（账号是 AI，不能登录），'
+        + '并把它放进上面这个部门。确认后平台去写，并把返回的员工 ID 记到这个数字员工身上。',
+    },
+  ], async () => {
+    const result = await api('POST', '/api/harness/agent/' + agentId + '/onboard');
+    toast('已入职 portal：员工 ID ' + (result.employeeId || '?'), 'ok');
     await loadAll();
   });
 }
@@ -977,22 +1024,63 @@ function terminalOfAgent(agentId) {
   return pool[0].terminalId;
 }
 
+/**
+ * Grants one capability to one employee.
+ *
+ * <p>The capability is picked from the catalogue, not typed: the list says what each one
+ * does, whether it needs a human and which autonomy level it needs. The department says where
+ * the grant applies - the employee may only act on rows of those departments - and an empty
+ * list means "wherever the platform lets it".
+ */
 function openGrantModal(agentId) {
-  modal('给 Agent 授权', [
-    { name: 'agentId', label: 'Agent ID', value: agentId },
-    { name: 'capKey', label: '能力键', value: 'cap:file.read' },
-    { name: 'deptIds', label: '部门（逗号分隔）', value: '91' },
-    { name: 'ttl', label: 'TTL 秒（≤86400）', value: '3600' },
-    { name: 'reason', label: '理由', value: '控制台授权' },
+  const agent = state.agents.find(a => a.agentId === agentId);
+  const name = agent ? (agent.name || agent.agentKey) : agentId;
+  const catalog = (state.capabilities || []);
+  const options = catalog.length
+    ? catalog.map(c => ({
+      value: c.capKey,
+      label: c.capKey + ' — ' + (c.name || '') + '（' + sideEffectText(c.sideEffect)
+        + ' · ' + c.riskClass + ' · 至少 L' + c.minLevel + (c.requiresHuman ? ' · 需人工确认' : '') + '）',
+      selected: c.capKey === 'cap:file.read',
+    }))
+    : [{ value: '', label: '（能力目录读不到）' }];
+
+  modal('给数字员工授权：' + name, [
+    { name: 'agentId', label: '数字员工', value: name + '（' + agentId + '）' },
+    {
+      name: 'capKey', label: '能力（选一项）', type: 'select', options,
+      hint: '每条能力是一次授权。列表里写了这个能力做什么、会不会留下痕迹、风险等级、'
+        + '以及它至少需要多大的自主等级。',
+    },
+    {
+      name: 'deptIds', label: '生效部门（逗号分隔的部门 ID）',
+      value: agent && agent.deptId ? String(agent.deptId) : '',
+      hint: '这条授权只在这些部门的数据上生效——它决定「能改什么」，不是「人在哪个部门」。'
+        + '留空表示不限定部门（只受别的闸门限制）。',
+    },
+    {
+      name: 'ttl', label: '有效时长（秒）', value: '3600',
+      hint: '授权到期自动收回，上限 24 小时（86400）。临时授权填短一点。',
+    },
+    { name: 'reason', label: '理由', value: '控制台授权', hint: '会写进审计：谁、为什么、给了什么。' },
   ], async (v) => {
-    const deptIds = v.deptIds.split(',').map(s => Number(s.trim())).filter(n => !isNaN(n));
+    if (!v.capKey) throw new Error('先选一项能力');
+    const deptIds = v.deptIds.split(',').map(s => Number(s.trim())).filter(n => !isNaN(n) && n > 0);
+    const ttl = Number(v.ttl);
+    if (!ttl || ttl <= 0) throw new Error('有效时长要是正数');
     await api('POST', '/api/harness/grant', {
       agentId: v.agentId, capKey: v.capKey, scope: { deptIds },
-      ttlSeconds: Number(v.ttl), reason: v.reason,
+      ttlSeconds: ttl, reason: v.reason,
     });
-    toast('已授权', 'ok');
+    toast('已授权：' + v.capKey, 'ok');
     await loadAll();
   });
+}
+
+/** What a side effect means, in words. */
+function sideEffectText(sideEffect) {
+  return { read: '只读', write: '会改数据', exec: '会执行命令', irreversible: '不可逆' }[sideEffect]
+    || String(sideEffect || '');
 }
 
 function decideApproval(approvalId, decision) {

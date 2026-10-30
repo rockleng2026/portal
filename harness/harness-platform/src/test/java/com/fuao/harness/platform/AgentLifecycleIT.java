@@ -1,5 +1,6 @@
 package com.fuao.harness.platform;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -135,6 +136,45 @@ class AgentLifecycleIT extends PlatformTestBase {
         int stateRows = jdbc.sql("SELECT COUNT(*) FROM harness_agent_state_log WHERE agent_id = :id")
                 .param("id", agentId).query(Integer.class).single();
         assertEqualsOne(stateRows, "a refused transition must not leave a state log entry behind");
+    }
+
+    @Test
+    void theCapabilityCatalogueIsReadable() throws Exception {
+        // The grant dialog picks a capability from the catalogue; nobody should have to know
+        // a key by heart to grant it.
+        MockHttpServletRequestBuilder request = get("/api/harness/capability");
+        signAsHuman("GET", "/api/harness/capability", request, "");
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[?(@.capKey == 'cap:file.read')].name").isNotEmpty())
+                .andExpect(jsonPath("$[?(@.capKey == 'cap:file.read')].minLevel").value(0));
+    }
+
+    @Test
+    void theOnboardingPreviewSaysWhatWouldBeWritten() throws Exception {
+        String agentId = seedAgent("agent:onboard-preview", AGENT_OWNER_EMPLOYEE_ID, 91, 0);
+        MockHttpServletRequestBuilder request = get("/api/harness/agent/" + agentId + "/onboard/preview");
+        signAsHuman("GET", "/api/harness/agent/" + agentId + "/onboard/preview", request, "");
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                // The agent's own department, not the root of the org tree.
+                .andExpect(jsonPath("$.deptId").value(91))
+                .andExpect(jsonPath("$.name").isNotEmpty())
+                .andExpect(jsonPath("$.agentKey").isNotEmpty())
+                // Without a portal configured the preview says so, instead of pretending.
+                .andExpect(jsonPath("$.portalConfigured").value(false))
+                .andExpect(jsonPath("$.portalMissing").isNotEmpty());
+    }
+
+    @Test
+    void onboardingWithoutAPortalIsRefusedWithAReason() throws Exception {
+        String agentId = seedAgent("agent:onboard-no-portal", AGENT_OWNER_EMPLOYEE_ID, 91, 0);
+        MockHttpServletRequestBuilder request = post("/api/harness/agent/" + agentId + "/onboard");
+        signAsHuman("POST", "/api/harness/agent/" + agentId + "/onboard", request, "");
+        mvc.perform(request)
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.error.message").isNotEmpty());
     }
 
     @Test
