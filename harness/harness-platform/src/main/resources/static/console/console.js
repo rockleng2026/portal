@@ -548,7 +548,8 @@ function renderSkillMain() {
   $('#skillCount').textContent = rows.length + ' 个';
   $('#skillViewHint').textContent = skillView.mode === 'installed'
     ? '装在部门 / 数字员工 / 终端上的技能'
-    : (skillView.mode === 'drafts' ? '还没上架的候选'
+    : (skillView.mode === 'drafts'
+      ? '还没上架的：提交评审 → 别人评审通过 → 上架；不要的直接删掉'
       : (skillView.category ? '分类：' + skillView.category : '市场上架的技能'));
 
   $('#skillsTable').innerHTML = table([
@@ -556,16 +557,53 @@ function renderSkillMain() {
       title: '技能', render: s => '<span class="label">' + esc(s.name || '-') + '</span> '
         + '<span class="muted mono">' + esc(s.skillKey) + '</span>',
     },
-    { title: '分类', render: s => s.category ? '<span class="tag info">' + esc(s.category) + '</span>' : '<span class="muted">—</span>' },
+    {
+      // The category is a button, not a word: filing a skill under "运维" is something
+      // people do while they look at the list, not something they do in a separate form.
+      title: '分类', render: s => '<button class="tiny tag info" data-act="skill-category" data-id="'
+        + esc(s.skillKey) + '">' + esc(s.category || '（未分类）') + '</button>',
+    },
     { title: '备注', render: s => '<span class="muted">' + esc(s.note || '') + '</span>' },
     { title: '来源', render: s => s.source ? '<span class="tag ' + (s.source === 'external' ? 'info' : 'grey') + '">'
         + esc(SKILL_SOURCE_NAMES[s.source] || s.source) + '</span>' : '' },
     { title: '状态', render: s => statusTag(s.status) },
     { title: '版本', render: s => 'v' + esc(s.version) },
     {
-      title: '', render: s => '<button class="tiny" data-act="skill-open" data-id="' + esc(s.skillKey) + '">详情</button>',
+      // The actions a skill's own state allows, right where the skill is. A reviewer should
+      // not have to open a card to find the button that says 评审通过.
+      title: '操作', render: s => '<div class="row-actions">' + skillActionButtons(s) + '</div>',
     },
   ], rows, skillView.mode === 'installed' ? '还没有拉取部署过任何技能。' : '这里还没有技能。新建一个，或者从外部注册源拉一个进来。');
+}
+
+/**
+ * The buttons a skill's own state allows.
+ *
+ * The same set in the list and in the detail, so that what you can do is visible where the
+ * skill is. The flow is: 候选 → 提交评审 → 评审通过 → 上架；已上架的可以下架，
+ * 还没上架的可以删掉。
+ */
+function skillActionButtons(s) {
+  let html = '<button class="tiny" data-act="skill-open" data-id="' + esc(s.skillKey) + '">详情</button>';
+  if (s.status === 'candidate') {
+    html += '<button class="tiny" data-act="skill-submit" data-id="' + esc(s.skillKey) + '">提交评审</button>';
+  }
+  if (s.status === 'evaluating') {
+    html += '<button class="tiny" data-act="skill-approve" data-id="' + esc(s.skillKey) + '">评审通过</button>';
+    html += '<button class="tiny" data-act="skill-reject" data-id="' + esc(s.skillKey) + '">驳回</button>';
+  }
+  if (s.status === 'approved') {
+    html += '<button class="tiny" data-act="skill-publish" data-id="' + esc(s.skillKey) + '">上架</button>';
+  }
+  if (s.listingStatus === 'published') {
+    html += '<button class="tiny" data-act="skill-install" data-id="' + esc(s.skillKey) + '">拉取部署</button>';
+    html += '<button class="tiny" data-act="skill-unlist" data-id="' + esc(s.skillKey) + '">下架</button>';
+  } else if (s.status !== 'evaluating') {
+    // A candidate that nobody wants can go away for good; a published one cannot (that is
+    // what 下架 is for).
+    html += '<button class="tiny" data-act="skill-delete" data-id="' + esc(s.skillKey) + '">删除</button>';
+  }
+  return html;
 }
 
 /** The detail: everything about one skill, and its text, in a box that scrolls. */
@@ -575,8 +613,11 @@ function renderSkillDetail() {
     card.classList.add('hidden');
     return;
   }
-  const s = skillView.selected;
-  const versions = s.versions || [];
+  // The answer is the skill *and* its history: {skill, versions, content}. Reading the status
+  // off the wrong one of the two is how the detail panel ended up without a single button.
+  const detail = skillView.selected;
+  const s = detail.skill || detail;
+  const versions = detail.versions || s.versions || [];
   const files = s.scripts || [];
 
   const kv = (label, value) =>
@@ -589,17 +630,13 @@ function renderSkillDetail() {
     + '<div>'
     + '<div class="skill-detail-title">' + esc(s.name || s.skillKey) + '</div>'
     + '<div class="skill-detail-sub mono">' + esc(s.skillKey) + ' · v' + esc(s.version)
-    + ' · ' + esc(SKILL_STATUS_NAMES[s.status] || s.status)
+    + ' · ' + esc(SKILL_STATUS_NAMES[s.status] || s.status || '')
     + ' · ' + (s.listingStatus === 'published' ? '在架' : '不在架')
     + (s.visibility ? ' · ' + esc(SKILL_VISIBILITY_NAMES[s.visibility] || s.visibility) : '')
     + '</div></div>'
     + '<div class="row-actions">'
     + '<button class="tiny" data-act="skill-details-edit" data-id="' + esc(s.skillKey) + '">备注与分类</button>'
-    + (s.status === 'candidate' ? '<button class="tiny" data-act="skill-submit" data-id="' + esc(s.skillKey) + '">提交评审</button>' : '')
-    + (s.status === 'evaluating' ? '<button class="tiny" data-act="skill-approve" data-id="' + esc(s.skillKey) + '">评审通过</button>'
-        + '<button class="tiny" data-act="skill-reject" data-id="' + esc(s.skillKey) + '">驳回</button>' : '')
-    + (s.status === 'approved' ? '<button class="tiny" data-act="skill-publish" data-id="' + esc(s.skillKey) + '">上架</button>' : '')
-    + (s.listingStatus === 'published' ? '<button class="tiny" data-act="skill-install" data-id="' + esc(s.skillKey) + '">拉取部署</button>' : '')
+    + skillActionButtons(s)
     + '<button class="tiny" data-act="skill-close">收起</button>'
     + '</div></div>'
     + (s.note ? '<div class="skill-detail-note">' + esc(s.note) + '</div>' : '')
@@ -620,7 +657,7 @@ function renderSkillDetail() {
             '<div class="file"><span class="mono">' + esc(f.path || f.name) + '</span>'
             + '<span class="muted mono">' + esc((f.digest || '').slice(0, 12)) + '</span></div>').join('')
         + '</div>' : '')
-    + '<div class="skill-md">' + esc(s.content || '') + '</div>';
+    + '<div class="skill-md">' + esc(detail.content || s.content || '') + '</div>';
 }
 
 /** The results of an upstream registry - here, not in a popup. */
@@ -1193,6 +1230,17 @@ function bindEvents() {
       else if (act === 'skill-open') { openSkill(id); return; }
       else if (act === 'skill-close') { skillView.selected = null; renderSkillDetail(); return; }
       else if (act === 'skill-details-edit') { skillDetailsModal(id); return; }
+      else if (act === 'skill-category') { skillCategoryModal(id); return; }
+      else if (act === 'skill-delete') {
+        confirmBox('删除技能', '删掉「' + id + '」？这个技能还没有上架，删了就没了（留了审计记录）。', async () => {
+          await api('DELETE', '/api/harness/skill/' + encodeURIComponent(id)
+            + '?reason=' + encodeURIComponent('控制台删除') + '&purge=true');
+          toast('已删除', 'ok');
+          skillView.selected = null;
+          await loadSkillsAndRender();
+        });
+        return;
+      }
       else if (act === 'skill-category-edit') { categoryModal(id, btn.dataset.name); return; }
       else if (act === 'skill-pull') {
         await api('POST', '/api/harness/skill/pull', {
@@ -1202,7 +1250,14 @@ function bindEvents() {
         await loadSkillsAndRender();
         return;
       }
-      else if (act === 'skill-submit') { await api('POST', '/api/harness/skill/' + id + '/submit', { reason: '控制台提交评审' }); toast('已提交评审', 'ok'); }
+      else if (act === 'skill-submit') {
+        // Submitting for review is a step in the trail, so it says why - the reviewer reads it.
+        skillReason('提交评审', '交给评审的人看的一句话（这个人不是你）', async (reason) => {
+          await api('POST', '/api/harness/skill/' + id + '/submit', { reason });
+          toast('已提交评审', 'ok');
+        });
+        return;
+      }
       else if (act === 'skill-approve') { skillReason('评审通过', '通过的理由', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/approve', { reason }); toast('已评审通过', 'ok'); }); return; }
       else if (act === 'skill-reject') { skillReason('驳回', '驳回的理由（作者要看得懂为什么）', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/reject', { reason }); toast('已驳回', 'ok'); }); return; }
       else if (act === 'skill-publish') { skillReason('上架', '上架的理由', async (reason) => { await api('POST', '/api/harness/skill/' + id + '/publish', { reason }); toast('已上架', 'ok'); }); return; }
@@ -1560,6 +1615,27 @@ function skillDetailsModal(skillKey) {
     toast('已保存', 'ok');
     await loadSkillsAndRender();
     await openSkill(skillKey);
+  });
+}
+
+/** Files one skill under a category, without opening anything. */
+function skillCategoryModal(skillKey) {
+  const skill = state.skills.find(s => s.skillKey === skillKey);
+  modal('分类 · ' + skillKey, [
+    {
+      name: 'category', label: '分类', type: 'select',
+      options: [{ value: '', label: '（不分类）' }].concat(
+        state.skillCategories.map(c => ({ value: c.name, label: c.name }))),
+    },
+  ], async (v) => {
+    await api('PUT', '/api/harness/skill/' + encodeURIComponent(skillKey) + '/details', {
+      note: skill ? skill.note : null, category: v.category || null,
+    });
+    toast('已保存', 'ok');
+    await loadSkillsAndRender();
+    if (skillView.selected && skillView.selected.skillKey === skillKey) {
+      await openSkill(skillKey);
+    }
   });
 }
 

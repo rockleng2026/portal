@@ -49,7 +49,10 @@ function signed(method, pathname, body) {
   const timestamp = String(Math.floor(Date.now() / 1000));
   const nonce = crypto.randomBytes(16).toString('hex');
   const key = crypto.createHash('sha256').update(clientSecret, 'utf8').digest('hex');
-  const canonical = [method, pathname, timestamp, nonce,
+  // The signature covers the path WITHOUT the query string - that is what the platform
+  // signs (request.getRequestURI()). The query still goes on the wire.
+  const signedPath = pathname.split('?')[0];
+  const canonical = [method, signedPath, timestamp, nonce,
     crypto.createHash('sha256').update(payload, 'utf8').digest('hex')].join('\n');
   const signature = crypto.createHmac('sha256', key).update(canonical, 'utf8').digest('hex');
   const headers = {
@@ -154,6 +157,93 @@ setTimeout(async () => {
   check(htmlOf('#registryResults').length > 0, 'the registry search fills the right pane');
   check(!htmlOf('#registryResults').includes('还没有搜'),
     'the registry search found something');
+
+  // The buttons have to be where the skill is: a candidate that nobody can submit for
+  // review is a candidate that stays a candidate for ever.
+  //
+  // The check makes its own skill to click on, so it never touches what is really on the
+  // shelf and it can be run again and again.
+  const probe = 'console-check-' + Date.now().toString(36);
+  const created = JSON.parse(await signed('POST', '/api/harness/skill', JSON.stringify({
+    skillKey: probe,
+    description: '控制台回归检查用的临时技能',
+    content: '---\nname: ' + probe + '\ndescription: 控制台回归检查用的临时技能\n---\n\n1. 一步\n',
+  })));
+  check(!!created.skillKey, 'the check can make a skill of its own');
+
+  await window.__skillCheck.loadSkills();
+  window.__skillCheck.skillView.mode = 'drafts';
+  window.__skillCheck.skillView.category = null;
+  window.__skillCheck.renderSkillMain();
+  await new Promise(r => setTimeout(r, 200));
+
+  const rowHtml = htmlOf('#skillsTable');
+  check(rowHtml.includes('data-act="skill-submit"'),
+    'a candidate has a 提交评审 button in the list');
+  check(rowHtml.includes('data-act="skill-category"'),
+    'the category is editable from the list');
+  check(rowHtml.includes('data-act="skill-delete"'),
+    'a candidate that nobody wants can be deleted');
+
+  const buttonOf = act => window.document.querySelector(
+    '#skillsTable button[data-act="' + act + '"][data-id="' + probe + '"]');
+
+  // Clicking it has to work end to end: the button, the reason, the call, the new state.
+  const submit = buttonOf('skill-submit');
+  check(!!submit, 'the candidate\'s own row has the 提交评审 button');
+  if (submit) {
+    submit.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    await new Promise(r => setTimeout(r, 300));
+    const reason = window.document.querySelector('#f-reason');
+    check(!!reason, 'clicking 提交评审 asks for a reason');
+    if (reason) {
+      reason.value = '控制台回归检查';
+      window.document.querySelector('#modalOk').dispatchEvent(
+        new window.MouseEvent('click', { bubbles: true }));
+      await new Promise(r => setTimeout(r, 900));
+      const after = JSON.parse(await signed('GET', '/api/harness/skill/' + probe));
+      check(after.skill.status === 'evaluating',
+        'the skill really moved from candidate to evaluating (it was ' + after.skill.status + ')');
+    }
+  }
+
+  // And the category button files the skill under a category.
+  const category = buttonOf('skill-category');
+  check(!!category, 'the candidate\'s own row has the category button');
+  if (category) {
+    category.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    await new Promise(r => setTimeout(r, 300));
+    const picker = window.document.querySelector('#f-category');
+    check(!!picker, 'clicking the category opens the list of categories');
+    if (picker) {
+      picker.value = '文档';
+      window.document.querySelector('#modalOk').dispatchEvent(
+        new window.MouseEvent('click', { bubbles: true }));
+      await new Promise(r => setTimeout(r, 900));
+      const after = JSON.parse(await signed('GET', '/api/harness/skill/' + probe));
+      check(after.skill.category === '文档', 'the skill is filed under the category');
+    }
+  }
+
+  // A published skill has to have a 下架 button - that is how it leaves the shelf.
+  const published = JSON.parse(await signed('GET', '/api/harness/skill?listingStatus=published'));
+  if (published.length) {
+    const key = published[0].skillKey;
+    const detail = JSON.parse(await signed('GET', '/api/harness/skill/' + key));
+    await window.__skillCheck.openSkill(key);
+    await new Promise(r => setTimeout(r, 400));
+    check(htmlOf('#skillDetail').includes('data-act="skill-unlist"'),
+      'a published skill has a 下架 button');
+    check(htmlOf('#skillDetail').includes('data-act="skill-install"'),
+      'a published skill can be 拉取部署');
+    void detail;
+  }
+
+  // The check leaves nothing behind.
+  await signed('DELETE', '/api/harness/skill/' + probe + '?reason=' +
+    encodeURIComponent('控制台回归检查结束') + '&purge=true');
+  const left = JSON.parse(await signed('GET', '/api/harness/skill?q=' + probe));
+  check(left.length === 0, 'the check cleans up after itself');
 
   console.log('');
   if (failures.length) {
