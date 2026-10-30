@@ -7,6 +7,7 @@ import com.fuao.harness.platform.repo.SkillRepository;
 import com.fuao.harness.platform.repo.TerminalRepository;
 import com.fuao.harness.platform.security.AuthContext;
 import com.fuao.harness.platform.security.AuthenticatedClient;
+import com.fuao.harness.policy.AgentLookup;
 import com.fuao.harness.protocol.Ids;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -239,10 +240,24 @@ public class SkillInstallService {
      * Who may put this skill on this target.
      *
      * <p>The visibility of the skill decides the reach; the caller's identity decides whether it
-     * may act for the target.
+     * may act for the target. Every refusal is audited: "somebody tried to put a department's
+     * skill on another department's machines" is a line an operator wants to be able to find.
      */
     private void requireMayInstall(AuthenticatedClient actor, SkillRecord skill, TargetType targetType,
                                    String targetId, Integer targetDept) {
+        try {
+            checkMayInstall(actor, skill, targetType, targetId, targetDept);
+        } catch (NotAllowedException e) {
+            audit.record(actor, "skill.install", "skill", skill.skillId(), "deny", "SKILL_NOT_ALLOWED",
+                    e.getMessage(),
+                    AuditService.evidence("skillKey", skill.skillKey(), "targetType", targetType.wire(),
+                            "targetId", targetId, "visibility", skill.visibility().wire()));
+            throw e;
+        }
+    }
+
+    private void checkMayInstall(AuthenticatedClient actor, SkillRecord skill, TargetType targetType,
+                                 String targetId, Integer targetDept) {
         // A digital employee may install for itself, and for nothing else.
         if (actor.isAgent()) {
             if (targetType != TargetType.AGENT || !targetId.equals(actor.agentId())) {
@@ -284,18 +299,30 @@ public class SkillInstallService {
 
     /** The department a target belongs to. */
     private Integer deptOfTarget(TargetType targetType, String targetId) {
-        return switch (targetType) {
-            case DEPT -> parseDept(targetId);
-            case AGENT -> agents.lookupForPolicy(targetId)
-                    .map(a -> a.deptId() == null ? null : a.deptId())
-                    .orElseThrow(() -> new NotAllowedException("no such agent: " + targetId));
-            case TERMINAL -> terminals.findById(targetId)
-                    .map(t -> t.agentId() == null ? null
-                            : agents.lookupForPolicy(t.agentId())
-                                    .map(a -> a.deptId() == null ? null : a.deptId())
-                                    .orElse(null))
-                    .orElseThrow(() -> new NotAllowedException("no such terminal: " + targetId));
-        };
+        switch (targetType) {
+            case DEPT:
+                return parseDept(targetId);
+            case AGENT: {
+                AgentLookup agent = agents.lookupForPolicy(targetId)
+                        .orElseThrow(() -> new NotAllowedException("no such agent: " + targetId));
+                return agent.deptId();
+            }
+            case TERMINAL: {
+                // A terminal that is not bound to an agent yet has no department. That is not
+                // the same as "no such terminal", and the difference decides whether the
+                // caller is refused or simply gets a skill without a department.
+                PolicyInputs.TerminalRow terminal = terminals.findById(targetId)
+                        .orElseThrow(() -> new NotAllowedException("no such terminal: " + targetId));
+                if (terminal.agentId() == null) {
+                    return null;
+                }
+                return agents.lookupForPolicy(terminal.agentId())
+                        .map(AgentLookup::deptId)
+                        .orElse(null);
+            }
+            default:
+                return null;
+        }
     }
 
     private static Integer parseDept(String targetId) {

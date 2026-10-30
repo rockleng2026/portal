@@ -290,18 +290,27 @@ impl SkillPackage {
     ///
     /// A package without a name or without content is refused: it would be written to disk as
     /// a directory nobody can use.
+    ///
+    /// The name comes from the skill's own frontmatter, not from the label the platform
+    /// shows. The label may be Chinese ("portal 维护") and it may be changed by anybody with
+    /// the console; the skill's identity may not. A directory named after the label would
+    /// change under the agent's feet, and the skill would be re-installed under a new name
+    /// every time somebody tidied the display name.
     pub fn from_json(value: &serde_json::Value) -> Result<Self> {
-        let name = value
-            .get("name")
-            .and_then(|v| v.as_str())
-            .filter(|n| !n.is_empty())
-            .ok_or_else(|| anyhow!("the platform sent a skill without a name"))?
-            .to_string();
         let content = value
             .get("content")
             .and_then(|v| v.as_str())
-            .ok_or_else(|| anyhow!("the platform sent the skill '{name}' without its content"))?
+            .ok_or_else(|| anyhow!("the platform sent a skill without its content"))?
             .to_string();
+        let name = skill_name_of(&content)
+            .or_else(|| {
+                value
+                    .get("name")
+                    .and_then(|v| v.as_str())
+                    .filter(|n| !n.is_empty())
+                    .map(|n| n.to_string())
+            })
+            .ok_or_else(|| anyhow!("the platform sent a skill without a name"))?;
         let digest = value
             .get("digest")
             .and_then(|v| v.as_str())
@@ -328,6 +337,20 @@ impl SkillPackage {
             digest,
             scripts,
         })
+    }
+}
+
+/// The name a skill gives itself in its frontmatter.
+///
+/// The same rule the loader applies: a document without a frontmatter, or without a name in
+/// it, is a skill nobody can load - so there is no name to report either.
+pub fn skill_name_of(content: &str) -> Option<String> {
+    let (frontmatter, _) = split_frontmatter(content)?;
+    let name = frontmatter_value(&frontmatter, "name");
+    if name.is_empty() {
+        None
+    } else {
+        Some(name)
     }
 }
 
@@ -554,5 +577,35 @@ mod tests {
 
         install_all(dir.path(), &[package("release", "steps")]).unwrap();
         assert!(dir.path().join("notes/readme.txt").exists());
+    }
+
+    #[test]
+    fn the_directory_is_named_after_the_skill_not_after_the_display_name() {
+        // The platform may label the skill "portal 维护" - Chinese, and changeable by anybody
+        // with the console. The skill calls itself portal-maintenance, and that is the name
+        // its directory has to carry: a directory that changes under the agent's feet would
+        // re-install the skill every time somebody tidied the label.
+        let content = "---\nname: portal-maintenance\ndescription: what it is for\n---\n\n1. step\n";
+        let package = SkillPackage::from_json(&serde_json::json!({
+            "name": "portal 维护",
+            "content": content,
+            "digest": content_digest(content),
+        }))
+        .unwrap();
+        assert_eq!(package.name, "portal-maintenance");
+
+        let dir = tempfile::tempdir().unwrap();
+        install_all(dir.path(), &[package]).unwrap();
+        assert!(dir.path().join("portal-maintenance/SKILL.md").exists());
+        assert!(!dir.path().join("portal 维护").exists());
+    }
+
+    #[test]
+    fn a_package_without_a_name_anywhere_is_refused() {
+        let content = "no frontmatter, so no name either";
+        let result = SkillPackage::from_json(&serde_json::json!({
+            "content": content,
+        }));
+        assert!(result.is_err(), "a skill with no name cannot be put on disk");
     }
 }

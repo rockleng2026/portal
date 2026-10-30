@@ -139,7 +139,7 @@ public class SkillRepository {
      */
     public List<SkillRecord> listMarket(String query, String source, String listingStatus, String status,
                                          String visibility, Integer deptId, Integer ownerDeptId,
-                                         String authorAgentId, Integer limit) {
+                                         String authorAgentId, Integer authorHumanId, Integer limit) {
         StringBuilder sql = new StringBuilder("""
                 SELECT s.skill_id, s.skill_key, s.version, s.parent_version, s.name, s.definition,
                        s.signature, s.author_agent, s.author_human, s.eval_result, s.status, s.rollout_pct,
@@ -188,6 +188,13 @@ public class SkillRepository {
         if (authorAgentId != null && !authorAgentId.isBlank()) {
             sql.append(" OR (s.visibility = 'private' AND s.author_agent = :authorAgentId)");
             params.put("authorAgentId", authorAgentId);
+        }
+        // The author always sees their own skill, whatever the visibility and whatever
+        // department the caller belongs to - a principal that belongs to no department would
+        // otherwise lose sight of the thing it just wrote.
+        if (authorHumanId != null) {
+            sql.append(" OR s.author_human = :authorHumanId");
+            params.put("authorHumanId", authorHumanId);
         }
         sql.append(")");
         sql.append(" ORDER BY s.install_count DESC, s.updated_at DESC LIMIT :limit");

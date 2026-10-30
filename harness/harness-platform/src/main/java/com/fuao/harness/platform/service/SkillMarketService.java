@@ -268,7 +268,7 @@ public class SkillMarketService {
         AuthenticatedClient actor = authContext.require();
         requireHuman(actor, "skill.approve");
         SkillRecord current = get(skillKey);
-        requireDifferentReviewer(actor, current);
+        requireDifferentReviewer(actor, current, "skill.approve");
 
         transition(current, SkillRecord.Status.APPROVED, null, null, actor, "skill.approve",
                 reason == null ? "approved" : reason);
@@ -281,7 +281,7 @@ public class SkillMarketService {
         AuthenticatedClient actor = authContext.require();
         requireHuman(actor, "skill.reject");
         SkillRecord current = get(skillKey);
-        requireDifferentReviewer(actor, current);
+        requireDifferentReviewer(actor, current, "skill.reject");
         if (reason == null || reason.isBlank()) {
             throw new IllegalArgumentException("a rejection has to say why: the author has to learn something");
         }
@@ -387,7 +387,7 @@ public class SkillMarketService {
                                   String visibility, Integer deptId, int limit) {
         AuthenticatedClient actor = authContext.require();
         return skills.listMarket(query, source, listingStatus, status, visibility, deptId,
-                deptOf(actor), actor.agentId(), limit);
+                deptOf(actor), actor.agentId(), actor.employeeId(), limit);
     }
 
     public SkillRecord get(String skillKey) {
@@ -404,8 +404,13 @@ public class SkillMarketService {
      * Whether the caller may see this skill.
      *
      * <p>The same rule the market list applies, so that knowing a key does not get you past it.
+     * The author always sees their own skill - otherwise a principal that belongs to no
+     * department would lose sight of the thing it just wrote.
      */
     private static boolean maySee(AuthenticatedClient actor, SkillRecord skill) {
+        if (isAuthor(actor, skill)) {
+            return true;
+        }
         return switch (skill.visibility()) {
             case ORG -> true;
             case DEPT -> {
@@ -416,10 +421,7 @@ public class SkillMarketService {
                 yield sameDept || director || actor.isSystemAdmin()
                         || (actor.isAgent() && actorDept != null && actorDept.equals(dept));
             }
-            case PRIVATE -> {
-                boolean own = isAuthor(actor, skill);
-                yield own || actor.isSystemAdmin();
-            }
+            case PRIVATE -> actor.isSystemAdmin();
         };
     }
 
@@ -591,16 +593,23 @@ public class SkillMarketService {
      *
      * <p>Red-team R-02: the approver has to be the responsible person, not "anybody with a
      * console". A skill its own author approved would let an agent review itself.
+     *
+     * <p>The refusal is audited: losing the record of a refused action is exactly the failure
+     * the audit trail exists to prevent, and "the author tried to approve their own skill" is
+     * the line an operator wants to see.
      */
-    private static void requireDifferentReviewer(AuthenticatedClient actor, SkillRecord skill) {
-        if (skill.authorHuman() != null && skill.authorHuman().equals(actor.employeeId())) {
-            throw new ReviewerIsTheAuthorException("the author of " + skill.skillKey()
-                    + " may not review it: a skill reviewed by its own author is not reviewed");
+    private void requireDifferentReviewer(AuthenticatedClient actor, SkillRecord skill, String op) {
+        boolean selfReview = (skill.authorHuman() != null && skill.authorHuman().equals(actor.employeeId()))
+                || (skill.authorAgent() != null && skill.authorAgent().equals(actor.agentId()));
+        if (!selfReview) {
+            return;
         }
-        if (skill.authorAgent() != null && skill.authorAgent().equals(actor.agentId())) {
-            throw new ReviewerIsTheAuthorException("the author of " + skill.skillKey()
-                    + " may not review it: a skill reviewed by its own author is not reviewed");
-        }
+        audit.record(actor, op, "skill", skill.skillId(), "deny", "REVIEWER_IS_THE_AUTHOR",
+                "the author of " + skill.skillKey() + " tried to review it",
+                AuditService.evidence("skillKey", skill.skillKey(), "author", String.valueOf(
+                        skill.authorHuman() != null ? skill.authorHuman() : skill.authorAgent())));
+        throw new ReviewerIsTheAuthorException("the author of " + skill.skillKey()
+                + " may not review it: a skill reviewed by its own author is not reviewed");
     }
 
     private static void requireHuman(AuthenticatedClient actor, String op) {

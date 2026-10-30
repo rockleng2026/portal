@@ -117,6 +117,14 @@ class SkillMarketIT extends PlatformTestBase {
         mvc.perform(selfApprove).andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error.code").value("REVIEWER_IS_THE_AUTHOR"));
 
+        // The refusal is on the record: "the author tried to approve their own skill" is a
+        // line an operator wants to be able to find.
+        Integer denied = jdbc.sql("SELECT COUNT(*) FROM harness_audit WHERE op = 'skill.approve'"
+                        + " AND outcome = 'deny' AND reason_code = 'REVIEWER_IS_THE_AUTHOR'"
+                        + " AND JSON_EXTRACT(evidence, '$.skillKey') = :key")
+                .param("key", key).query(Integer.class).single();
+        assertEquals(1, denied, "a refused review must leave a trail");
+
         // Somebody else reviews it.
         String approveReason = body(Map.of("reason", "read it, it is fine"));
         MockHttpServletRequestBuilder approve = post("/api/harness/skill/" + key + "/approve")
@@ -295,6 +303,36 @@ class SkillMarketIT extends PlatformTestBase {
     }
 
     @Test
+    void anAuthorAlwaysSeesTheirOwnSkill() throws Exception {
+        // A principal that belongs to no department - a console account that was set up before
+        // the organisation was mirrored in. It must still see the skill it just wrote.
+        String clientId = "harness-test-nodepartment";
+        String secret = "no-department-secret-0123456789";
+        createPrincipal(clientId, secret, "human", 9003, "employee", null);
+
+        String key = "orphan-" + UUID.randomUUID().toString().substring(0, 8);
+        String payload = body(Map.of(
+                "skillKey", key,
+                "visibility", "dept",
+                "content", skillDocument("orphan", "written by somebody without a department")));
+        MockHttpServletRequestBuilder create = post("/api/harness/skill")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload);
+        signAs(clientId, secret, "POST", "/api/harness/skill", create, payload);
+        mvc.perform(create).andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder list = get("/api/harness/skill");
+        signAs(clientId, secret, "GET", "/api/harness/skill", list, "");
+        String listed = mvc.perform(list).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertTrue(listed.contains(key), "the author must see their own skill in the market");
+
+        MockHttpServletRequestBuilder detail = get("/api/harness/skill/" + key);
+        signAs(clientId, secret, "GET", "/api/harness/skill/" + key, detail, "");
+        mvc.perform(detail).andExpect(status().isOk());
+    }
+
+    @Test
     void aSkillWithoutFrontmatterIsRefused() throws Exception {
         String payload = body(Map.of(
                 "skillKey", "broken-" + UUID.randomUUID().toString().substring(0, 8),
@@ -427,6 +465,32 @@ class SkillMarketIT extends PlatformTestBase {
     }
 
     @Test
+    void aSkillCanBeInstalledOnATerminalThatIsNotBoundToAnAgentYet() throws Exception {
+        // A terminal without an agent has no department. That is not the same as "no such
+        // terminal", and the difference decides whether the caller is refused or simply gets
+        // a skill that belongs to no department.
+        String key = "spare-terminal-" + UUID.randomUUID().toString().substring(0, 8);
+        createAsHuman(key, "a procedure for a machine that is not in service yet");
+        publishAsOtherHuman(key);
+
+        String terminalId = registerUnboundTerminal();
+        String install = body(Map.of("skillKey", key, "targetType", "terminal", "targetId", terminalId));
+        MockHttpServletRequestBuilder installRequest = post("/api/harness/skill/install")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(install);
+        signAsHuman("POST", "/api/harness/skill/install", installRequest, install);
+        mvc.perform(installRequest).andExpect(status().isOk())
+                .andExpect(jsonPath("$.targetId").value(terminalId));
+
+        MockHttpServletRequestBuilder fetch = get("/api/harness/terminal/" + terminalId + "/skills");
+        signAsHuman("GET", "/api/harness/terminal/" + terminalId + "/skills", fetch, "");
+        String payload = mvc.perform(fetch).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertTrue(payload.contains("release-check"),
+                "the terminal must receive the skill it was given: " + payload);
+    }
+
+    @Test
     void takingASkillOffTheShelfWithdrawsItsInstallations() throws Exception {
         String key = "withdrawn-" + UUID.randomUUID().toString().substring(0, 8);
         createAsHuman(key, "a procedure that turns out to be wrong");
@@ -548,6 +612,24 @@ class SkillMarketIT extends PlatformTestBase {
                 .content(publish);
         signAsHuman("POST", "/api/harness/skill/" + key + "/publish", publishRequest, publish);
         mvc.perform(publishRequest).andExpect(status().isOk());
+    }
+
+    /**
+     * A terminal that is registered but not bound to any agent yet.
+     *
+     * <p>It has no department, and the platform has to say exactly that - not "no such
+     * terminal".
+     */
+    private String registerUnboundTerminal() throws Exception {
+        String hello = body(Map.of("deviceId", "device-spare-" + UUID.randomUUID(),
+                "os", "linux", "agentVersion", "0.1.0"));
+        MockHttpServletRequestBuilder request = post("/api/harness/terminal/hello")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(hello);
+        signAsService("POST", "/api/harness/terminal/hello", request, hello);
+        String response = mvc.perform(request).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        return String.valueOf(parse(response).get("terminalId"));
     }
 
     /**
