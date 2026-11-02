@@ -32,16 +32,36 @@ public class GovernanceScheduler {
     private final TerminalRepository terminals;
     private final ApprovalService approvals;
     private final TaskService tasks;
+    private final PortalTaskService portalTasks;
     private final Duration degradeAfter;
 
     public GovernanceScheduler(TerminalRepository terminals, ApprovalService approvals,
-                               TaskService tasks, HarnessProperties properties) {
+                               TaskService tasks, PortalTaskService portalTasks,
+                               HarnessProperties properties) {
         this.terminals = terminals;
         this.approvals = approvals;
         this.tasks = tasks;
+        this.portalTasks = portalTasks;
         this.degradeAfter = properties.terminal().degradeAfter() == null
                 ? Duration.ofMinutes(15)
                 : properties.terminal().degradeAfter();
+    }
+
+    /**
+     * Picks up the tasks the portal has assigned to a digital employee.
+     *
+     * <p>The portal is the one that owns the tasks, so the platform asks it every half minute
+     * (03 §9: "portal 任务 API 轮询", ≤ 30s). Without this the assignment sits in the portal
+     * and the digital employee never hears about it - which is the failure this whole bridge
+     * exists to remove.
+     */
+    @Scheduled(fixedDelayString = "${harness.scheduler.portal-task-poll-ms:30000}")
+    public void pickUpPortalTasks() {
+        try {
+            portalTasks.poll();
+        } catch (RuntimeException e) {
+            log.warn("the portal task poll failed: {}", e.getMessage());
+        }
     }
 
     @Scheduled(fixedDelayString = "${harness.scheduler.terminal-scan-ms:60000}")

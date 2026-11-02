@@ -92,6 +92,13 @@ pub enum Turn {
     Final(String),
     /// The model wants one or more tools to run.
     Tools(Vec<crate::tools::ToolCall>),
+    /// The model ran out of output tokens in the middle of a turn.
+    ///
+    /// <p>This is not an answer - it is the beginning of one, cut off. A reasoning model
+    /// spends most of its tokens thinking before it calls a tool, and a budget that is too
+    /// small turns the thinking into the answer: the task looks answered, nothing was written,
+    /// and nobody can tell the difference without reading the transcript.
+    Truncated(String),
 }
 
 /// A model the agent can talk to.
@@ -199,7 +206,10 @@ impl OpenAiModel {
             api_key: api_key.into(),
             model: model.into(),
             base_url: "https://api.openai.com/v1/chat/completions".to_string(),
-            max_tokens: 4096,
+            // The same budget the Anthropic client gets. A reasoning model spends most of
+            // its tokens thinking before it calls a tool; a budget that is too small turns
+            // the thinking into the answer and the task looks finished when nothing was done.
+            max_tokens: 8192,
         }
     }
 
@@ -314,6 +324,7 @@ impl Model for ScriptedModel {
 pub fn parse_anthropic_turn(response: &Value) -> Turn {
     let mut calls = Vec::new();
     let mut text = String::new();
+    let mut truncated = response.get("stop_reason").and_then(Value::as_str) == Some("max_tokens");
     if let Some(content) = response.get("content").and_then(Value::as_array) {
         for block in content {
             match block.get("type").and_then(Value::as_str) {
@@ -339,6 +350,9 @@ pub fn parse_anthropic_turn(response: &Value) -> Turn {
             }
         }
     }
+    if truncated {
+        return Turn::Truncated(text);
+    }
     if calls.is_empty() {
         Turn::Final(text)
     } else {
@@ -350,11 +364,15 @@ pub fn parse_anthropic_turn(response: &Value) -> Turn {
 pub fn parse_openai_turn(response: &Value) -> Turn {
     let mut calls = Vec::new();
     let mut text = String::new();
+    let mut truncated = false;
     if let Some(choice) = response
         .get("choices")
         .and_then(Value::as_array)
         .and_then(|choices| choices.first())
     {
+        if choice.get("finish_reason").and_then(Value::as_str) == Some("length") {
+            truncated = true;
+        }
         if let Some(message) = choice.get("message") {
             if let Some(chunk) = message.get("content").and_then(Value::as_str) {
                 text.push_str(chunk);
@@ -385,6 +403,9 @@ pub fn parse_openai_turn(response: &Value) -> Turn {
             }
         }
     }
+    if truncated {
+        return Turn::Truncated(text);
+    }
     if calls.is_empty() {
         Turn::Final(text)
     } else {
@@ -394,6 +415,56 @@ pub fn parse_openai_turn(response: &Value) -> Turn {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
+    #[test]
+    fn a_truncated_turn_is_not_the_answer() {
+        // A reasoning model that runs out of output tokens mid-thought used to look exactly
+        // like a model that had finished: the task looked done, nothing was done.
+        let response = json!({
+            "choices": [{
+                "finish_reason": "length",
+                "message": {"content": "I was working out the geometry of the orbit and then I ran out of"}
+            }]
+        });
+        match parse_openai_turn(&response) {
+            Turn::Truncated(text) => assert!(text.contains("ran out of")),
+            other => panic!("a cut-off turn must not be an answer: {other:?}"),
+        }
+    }
+
+    #[test]
+    fn a_finished_turn_is_the_answer() {
+        let response = json!({
+            "choices": [{
+                "finish_reason": "stop",
+                "message": {"content": "the file is written"}
+            }]
+        });
+        assert_eq!(parse_openai_turn(&response), Turn::Final("the file is written".to_string()));
+    }
+
+    #[test]
+    fn a_truncated_turn_with_a_tool_call_still_runs_the_tool() {
+        // The cut-off happens in the middle of a turn; a tool call that was already made is
+        // still a tool call.
+        let response = json!({
+            "choices": [{
+                "finish_reason": "length",
+                "message": {
+                    "content": "let me look at the files first",
+                    "tool_calls": [{
+                        "function": {"name": "list_files", "arguments": "{}"}
+                    }]
+                }
+            }]
+        });
+        match parse_openai_turn(&response) {
+            Turn::Truncated(text) => assert!(text.contains("look at the files")),
+            other => panic!("a cut-off turn must be reported as cut off: {other:?}"),
+        }
+    }
+
     use super::*;
 
     #[test]
@@ -412,6 +483,7 @@ mod tests {
                 assert_eq!(calls[0].arguments["path"], "a.txt");
             }
             Turn::Final(text) => panic!("expected a tool call, got {text}"),
+            Turn::Truncated(text) => panic!("expected a tool call, got a cut-off turn: {text}"),
         }
     }
 
@@ -440,6 +512,7 @@ mod tests {
                 assert_eq!(calls[0].arguments["path"], "src");
             }
             Turn::Final(text) => panic!("expected a tool call, got {text}"),
+            Turn::Truncated(text) => panic!("expected a tool call, got a cut-off turn: {text}"),
         }
     }
 }

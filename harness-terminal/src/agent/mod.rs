@@ -62,7 +62,11 @@ then check the result.
 Use the tools to look at the code (list_files, read_file, search_code), to change it
 (write_file, edit_file), and to find out whether your change worked (run_tests, shell_exec).
 When a tool returns an error, read the error and fix the cause rather than retrying the same
-call. When you are done, state what you changed and what you verified.";
+call. When you are done, state what you changed and what you verified.
+
+If the task asks for a new file, write it. Do not design the file in prose first - a design in
+prose is not a deliverable, and a model that thinks until it runs out of output has produced
+nothing. Write the file, look at it, then improve it.";
 
 /// Something that happened during the run.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -169,6 +173,13 @@ impl Agent {
         self.context.push(Message::user(self.config.task.clone()));
         let catalogue = self.tools.catalogue();
         let mut steps = 0usize;
+        // How many times in a row the model ran out of output tokens without acting.
+        //
+        // The step budget stops the run eventually, but forty long model calls is a lot of
+        // somebody else's money to spend on a model that will not act. Three cut-off turns in
+        // a row is not a model that is about to act - it is a model that is going to think
+        // until the machine is out of patience.
+        let mut cut_off_in_a_row = 0usize;
 
         while steps < self.config.max_steps {
             steps += 1;
@@ -192,6 +203,7 @@ impl Agent {
 
             match turn {
                 Turn::Final(answer) => {
+                    cut_off_in_a_row = 0;
                     self.transcript.push(AgentEvent::Model {
                         step: steps,
                         text: Some(answer.clone()),
@@ -210,7 +222,65 @@ impl Agent {
                         stop_reason: StopReason::Finished,
                     });
                 }
+                Turn::Truncated(partial) => {
+                    cut_off_in_a_row += 1;
+                    if cut_off_in_a_row > 3 {
+                        self.transcript.push(AgentEvent::Finished {
+                            steps,
+                            tokens: self.tokens(),
+                            outcome: "the model kept running out of output tokens without acting"
+                                .to_string(),
+                        });
+                        return Ok(TaskOutcome {
+                            answer: "the model kept running out of output tokens without acting, "
+                                .to_string() + "so the task was not finished",
+                            steps,
+                            tokens: self.tokens(),
+                            touched: self.touched.clone(),
+                            stop_reason: StopReason::Failed,
+                        });
+                    }
+                    // The model ran out of output tokens in the middle of a turn. That is
+                    // not an answer, it is the beginning of one: a reasoning model thinks
+                    // for most of its budget before it calls a tool, and a turn that was cut
+                    // off leaves the work undone while looking finished.
+                    //
+                    // So the partial text goes back into the conversation and the loop
+                    // continues - the step budget still applies, so a model that only ever
+                    // truncates still stops.
+                    self.transcript.push(AgentEvent::Model {
+                        step: steps,
+                        text: Some(partial.clone()),
+                        tools: Vec::new(),
+                    });
+                    // One assistant message at the end, not one per cut-off turn: an
+                    // OpenAI-compatible gateway refuses a conversation that ends with two
+                    // assistant messages ("Cannot have 2 or more assistant messages at the
+                    // end of the list"), so the text is added to the message that is
+                    // already there.
+                    match self.context.last_mut() {
+                        Some(last) if last.role == "assistant" => {
+                            last.content.push_str(&partial);
+                        }
+                        _ => self.context.push(Message::assistant(partial)),
+                    }
+                    if self.tokens() > self.config.max_context_tokens {
+                        self.transcript.push(AgentEvent::Finished {
+                            steps,
+                            tokens: self.tokens(),
+                            outcome: "the context budget ran out".to_string(),
+                        });
+                        return Ok(TaskOutcome {
+                            answer: "the context budget ran out".to_string(),
+                            steps,
+                            tokens: self.tokens(),
+                            touched: self.touched.clone(),
+                            stop_reason: StopReason::OutOfContext,
+                        });
+                    }
+                }
                 Turn::Tools(calls) => {
+                    cut_off_in_a_row = 0;
                     let names: Vec<String> = calls.iter().map(|c| c.name.clone()).collect();
                     self.transcript.push(AgentEvent::Model {
                         step: steps,
@@ -449,6 +519,47 @@ mod tests {
             matches!(event, AgentEvent::Tool { ok: false, reason_code: Some(code), .. } if code == "CAPABILITY_NOT_GRANTED")
         });
         assert!(has_refusal, "the refusal must be recorded: {:#?}", agent.transcript());
+    }
+
+    #[tokio::test]
+    async fn a_cut_off_turn_is_continued_rather_than_taken_for_the_answer() {
+        // A reasoning model that runs out of output tokens mid-thought used to look exactly
+        // like a model that had finished: the task looked done, nothing was done.
+        let dir = tempfile::tempdir().unwrap();
+        let model = Arc::new(ScriptedModel::new(vec![
+            Ok(Turn::Truncated("I was working out the geometry and then I ran out of".to_string())),
+            Ok(Turn::Tools(vec![ToolCall {
+                name: "list_files".into(),
+                arguments: json!({}),
+            }])),
+            Ok(Turn::Final("the file is written".to_string())),
+        ]));
+        let mut tools = ToolRegistry::new();
+        crate::tools::fs_ops::register(&mut tools);
+        let mut agent = Agent::new(
+            AgentConfig {
+                task: "build a demo".into(),
+                max_steps: 6,
+                ..Default::default()
+            },
+            model.clone(),
+            tools,
+            Arc::new(crate::policy::LocalPolicy::empty()),
+        );
+        let outcome = agent
+            .run(&ToolContext {
+                workspace: Arc::new(crate::workspace::Workspace::new(dir.path()).unwrap()),
+                policy: Arc::new(crate::policy::LocalPolicy::empty()),
+                cwd: dir.path().to_path_buf(),
+                now_epoch: 0,
+                approval: None,
+            })
+            .await
+            .unwrap();
+
+        assert_eq!(outcome.answer, "the file is written");
+        assert_eq!(model.calls.load(std::sync::atomic::Ordering::SeqCst), 3,
+            "the cut-off turn must be continued");
     }
 
     #[tokio::test]

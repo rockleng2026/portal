@@ -107,4 +107,61 @@
 		</action>
 
 	</package>
+
+	<!--
+	  The task endpoints. One package per URL segment, like the rest of the namespace:
+	  "/api/harness/task/list" therefore resolves to the namespace "/api/harness/task" and the
+	  action "list".
+	-->
+	<package name="harness-api-task" extends="json-default" namespace="/api/harness/task">
+
+		<interceptors>
+			<interceptor name="harnessAuth" class="com.fuao.fajxc.interceptor.HarnessApiInterceptor"/>
+			<interceptor-stack name="harnessStack">
+				<interceptor-ref name="harnessAuth"/>
+				<interceptor-ref name="defaultStack"/>
+			</interceptor-stack>
+		</interceptors>
+
+		<action name="list" class="HarnessTaskApiAction" method="list">
+			<interceptor-ref name="harnessStack"/>
+			<result name="success" type="json">
+				<param name="root">payload</param>
+			</result>
+			<result name="harnessRejected" type="json">
+				<param name="root">error</param>
+			</result>
+		</action>
+
+		<action name="accept" class="HarnessTaskApiAction" method="accept">
+			<interceptor-ref name="harnessStack"/>
+			<result name="success" type="json">
+				<param name="root">payload</param>
+			</result>
+			<result name="harnessRejected" type="json">
+				<param name="root">error</param>
+			</result>
+		</action>
+
+		<action name="complete" class="HarnessTaskApiAction" method="complete">
+			<interceptor-ref name="harnessStack"/>
+			<result name="success" type="json">
+				<param name="root">payload</param>
+			</result>
+			<result name="harnessRejected" type="json">
+				<param name="root">error</param>
+			</result>
+		</action>
+
+		<action name="publish" class="HarnessTaskApiAction" method="publish">
+			<interceptor-ref name="harnessStack"/>
+			<result name="success" type="json">
+				<param name="root">payload</param>
+			</result>
+			<result name="harnessRejected" type="json">
+				<param name="root">error</param>
+			</result>
+		</action>
+
+	</package>
 </struts>

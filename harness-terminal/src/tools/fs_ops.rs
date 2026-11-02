@@ -301,11 +301,15 @@ impl Tool for ListFiles {
         let files = workspace.list_files()?;
         let mut out = String::new();
         for file in files.iter().take(self.max_entries) {
+            // The path comes first, because the path is what the model has to use. A listing
+            // that leads with the language reads as a directory listing - "rust  35  main.rs"
+            // looks like a folder called rust - and a model that reads it that way spends
+            // its steps looking for a directory that does not exist.
             out.push_str(&format!(
-                "{:<10} {:>9}  {}\n",
-                file.language.unwrap_or("-"),
-                file.size,
-                file.path
+                "{}  ({}, {} bytes)\n",
+                file.path,
+                file.language.unwrap_or("text"),
+                file.size
             ));
         }
         if files.len() > self.max_entries {

@@ -22,7 +22,8 @@ public class TaskRepository {
 
     private static final String COLUMNS = """
             task_id, terminal_id, prompt, status, answer, transcript, touched, error,
-            created_by, created_at, started_at, finished_at, claimed_at
+            created_by, created_at, started_at, finished_at, claimed_at,
+            portal_assignment_id, portal_mission_id, portal_sbh, portal_employee_id, portal_delivered
             """;
 
     /** A request from the console to a terminal. */
@@ -38,7 +39,12 @@ public class TaskRepository {
             String createdBy,
             Instant createdAt,
             Instant startedAt,
-            Instant finishedAt) {
+            Instant finishedAt,
+            String portalAssignmentId,
+            Integer portalMissionId,
+            String portalSbh,
+            Integer portalEmployeeId,
+            String portalDelivered) {
     }
 
     public void insert(String taskId, String terminalId, String prompt, String createdBy, Instant now) {
@@ -52,6 +58,58 @@ public class TaskRepository {
                 .param("prompt", prompt)
                 .param("createdBy", createdBy)
                 .param("now", Timestamp.from(now))
+                .update();
+    }
+
+    /**
+     * A task that came from the portal.
+     *
+     * <p>The link back is what makes the delivery possible: without it the answer would stay in
+     * the platform and the portal's task list would keep saying "not done" for ever.
+     */
+    public void insertFromPortal(String taskId, String terminalId, String prompt, String createdBy,
+                                 String assignmentId, Integer missionId, String sbh, Integer employeeId,
+                                 Instant now) {
+        jdbc.sql("""
+                        INSERT INTO harness_terminal_task
+                          (task_id, terminal_id, prompt, status, created_by, created_at,
+                           portal_assignment_id, portal_mission_id, portal_sbh, portal_employee_id)
+                        VALUES (:taskId, :terminalId, :prompt, 'pending', :createdBy, :now,
+                                :assignmentId, :missionId, :sbh, :employeeId)
+                        """)
+                .param("taskId", taskId)
+                .param("terminalId", terminalId)
+                .param("prompt", prompt)
+                .param("createdBy", createdBy)
+                .param("assignmentId", assignmentId)
+                .param("missionId", missionId)
+                .param("sbh", sbh)
+                .param("employeeId", employeeId)
+                .param("now", Timestamp.from(now))
+                .update();
+    }
+
+    /**
+     * The task of one portal assignment, if it was already picked up.
+     *
+     * <p>The platform polls, so the same assignment is offered again and again. This is what
+     * stops the second poll from creating a second task.
+     */
+    public Optional<TaskRow> findByPortalAssignment(String assignmentId, String terminalId) {
+        return jdbc.sql("SELECT " + COLUMNS + " FROM harness_terminal_task"
+                        + " WHERE portal_assignment_id = :assignmentId AND terminal_id = :terminalId"
+                        + " ORDER BY created_at DESC LIMIT 1")
+                .param("assignmentId", assignmentId)
+                .param("terminalId", terminalId)
+                .query((rs, i) -> map(rs))
+                .optional();
+    }
+
+    /** Records what was delivered back to the portal. */
+    public void markDelivered(String taskId, String note) {
+        jdbc.sql("UPDATE harness_terminal_task SET portal_delivered = :note WHERE task_id = :id")
+                .param("note", note)
+                .param("id", taskId)
                 .update();
     }
 
@@ -193,7 +251,12 @@ public class TaskRepository {
                 rs.getString("created_by"),
                 rs.getTimestamp("created_at").toInstant(),
                 rs.getTimestamp("started_at") == null ? null : rs.getTimestamp("started_at").toInstant(),
-                rs.getTimestamp("finished_at") == null ? null : rs.getTimestamp("finished_at").toInstant());
+                rs.getTimestamp("finished_at") == null ? null : rs.getTimestamp("finished_at").toInstant(),
+                rs.getString("portal_assignment_id"),
+                (Integer) rs.getObject("portal_mission_id"),
+                rs.getString("portal_sbh"),
+                (Integer) rs.getObject("portal_employee_id"),
+                rs.getString("portal_delivered"));
     }
 
     /** The JSON columns, parsed for the console. */

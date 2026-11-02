@@ -23,4 +23,13 @@
 		<property name="harnessAccountDao" ref="harnessAccountDao"></property>
 	</bean>
 
+	<!-- The task side: the assignments that are waiting for a digital employee, and the
+	     write-back when the work is done. Same session factory, same database. -->
+	<bean id="harnessTaskDao" class="com.fuao.fajxc.dao.harness.HarnessTaskDao" parent="baseDao">
+	</bean>
+
+	<bean id="HarnessTaskApiAction" class="com.fuao.fajxc.action.harness.HarnessTaskApiAction">
+		<property name="harnessTaskDao" ref="harnessTaskDao"></property>
+	</bean>
+
 </beans>

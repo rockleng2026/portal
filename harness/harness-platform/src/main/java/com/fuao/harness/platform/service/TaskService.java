@@ -26,11 +26,14 @@ public class TaskService {
     private final TaskRepository tasks;
     private final AuditService audit;
     private final AuthContext authContext;
+    private final PortalTaskService portalTasks;
 
-    public TaskService(TaskRepository tasks, AuditService audit, AuthContext authContext) {
+    public TaskService(TaskRepository tasks, AuditService audit, AuthContext authContext,
+                       PortalTaskService portalTasks) {
         this.tasks = tasks;
         this.audit = audit;
         this.authContext = authContext;
+        this.portalTasks = portalTasks;
     }
 
     /** Creates a request for a terminal. Only a natural human may. */
@@ -66,6 +69,10 @@ public class TaskService {
                 .map(task -> {
                     audit.record(actor, task.taskId(), "task.claim", "task", task.taskId(), "allow", null,
                             "terminal " + terminalId + " took the task", Map.of("terminalId", terminalId));
+                    // A task that came from the portal becomes the employee's own todo now:
+                    // this is the moment the work really starts, so this is the moment the
+                    // portal is told.
+                    portalTasks.acceptInPortal(task);
                     return task;
                 })
                 .orElse(null);
@@ -91,6 +98,14 @@ public class TaskService {
         audit.record(actor, taskId, "task.complete", "task", taskId, ok ? "allow" : "deny",
                 ok ? null : "NOT_CLAIMED", error == null ? "the terminal answered" : error,
                 Map.of("status", status == null ? "done" : status));
+        if (ok) {
+            // The delivery: a task that came from the portal has to go back to the portal, or
+            // the employee's todo would keep saying "in progress" for ever.
+            TaskRepository.TaskRow task = tasks.find(taskId).orElse(null);
+            if (task != null && task.portalMissionId() != null) {
+                portalTasks.deliverBack(task, answer);
+            }
+        }
         return ok;
     }
 

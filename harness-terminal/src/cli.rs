@@ -624,6 +624,7 @@ async fn serve(args: ServeArgs) -> Result<()> {
                 &platform_config,
                 &identity_dir,
                 &roots,
+                &workspace_root(&args.workspace),
                 &mut policy,
                 &mut policy_fingerprint,
             )
@@ -812,6 +813,7 @@ async fn refresh_grant(
     config: &crate::platform::PlatformConfig,
     identity_dir: &std::path::Path,
     roots: &[std::path::PathBuf],
+    workspace: &std::path::Path,
     policy: &mut Arc<LocalPolicy>,
     fingerprint: &mut String,
 ) -> Result<bool> {
@@ -822,10 +824,27 @@ async fn refresh_grant(
             None,
         )
         .await?;
-    let grant: grant::Grant = serde_json::from_value(answer)
+    let mut grant: grant::Grant = serde_json::from_value(answer)
         .with_context(|| "the platform's grant cannot be read")?;
+
+    // The roots stay the machine's own.
+    //
+    // The platform says what the agent may DO (capabilities, scope, TTL). Where it may do it
+    // on this particular machine is a fact about the machine - the directory the installer
+    // was told about - and the platform cannot know it. So a refresh that overwrote the roots
+    // with the platform's answer (which carries none) would leave the agent with an empty
+    // list: unable to touch even its own workspace, and every file tool refused with
+    // "outside the roots this agent may touch".
+    if grant.allowed_roots.is_empty() {
+        grant.allowed_roots = existing_roots(identity_dir);
+    }
+    if grant.allowed_roots.is_empty() {
+        // Nothing else knows where this machine works, so the workspace is the boundary.
+        grant.allowed_roots = vec![workspace.to_string_lossy().to_string()];
+    }
+
     let current = format!(
-        "{}|{}|{}",
+        "{}|{}|{}|{}",
         grant.autonomy_level,
         grant.capabilities.join(","),
         grant
@@ -833,7 +852,8 @@ async fn refresh_grant(
             .iter()
             .map(|id| id.to_string())
             .collect::<Vec<_>>()
-            .join(",")
+            .join(","),
+        grant.allowed_roots.join(",")
     );
     if current == *fingerprint {
         return Ok(false);
@@ -856,6 +876,16 @@ async fn refresh_grant(
     );
     *policy = Arc::new(grant::policy_from(&grant, roots));
     Ok(true)
+}
+
+/// The roots the installer gave this machine, as they were written before the last refresh.
+///
+/// A refresh must not lose them: they are the machine's own boundary and the platform does
+/// not know them.
+fn existing_roots(identity_dir: &std::path::Path) -> Vec<String> {
+    grant::read(&grant::grant_file(identity_dir))
+        .map(|g| g.allowed_roots)
+        .unwrap_or_default()
 }
 
 /// Makes a file readable by its owner only.
