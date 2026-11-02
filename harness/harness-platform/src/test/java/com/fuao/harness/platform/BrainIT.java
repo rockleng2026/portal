@@ -1,6 +1,7 @@
 package com.fuao.harness.platform;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -103,12 +104,30 @@ class BrainIT extends PlatformTestBase {
 
     @Test
     void everyToolTheBrainHasIsReadOnly() {
-        // The brain observes and advises. A tool that changes something would put the
+        // The brain observes and advises. A tool that changes the world would put the
         // authority of a natural human behind a model's whim - so every tool is a read.
+        //
+        // The two exceptions write a **proposal**: a request that changes nothing. No portal
+        // row, no assignment, no machine - the proposal sits in a queue until a natural human
+        // publishes it, and publishing is what creates the task (ADR-007, 02 R-02).
         for (Map<String, Object> tool : BrainService.toolCatalogue()) {
             String name = String.valueOf(tool.get("name"));
-            assertTrue(name.startsWith("list_") || name.startsWith("get_"),
+            assertTrue(name.startsWith("list_") || name.startsWith("get_")
+                            || name.startsWith("propose_") || name.startsWith("assess_"),
                     "the brain must not have a tool that changes anything: " + name);
+        }
+    }
+
+    @Test
+    void theBrainMayProposeButNotPublish() {
+        // Proposing writes down a request. Publishing it - the thing that creates a task in
+        // the portal and assigns it to a machine - is a natural human's.
+        for (Map<String, Object> tool : BrainService.toolCatalogue()) {
+            String name = String.valueOf(tool.get("name"));
+            assertFalse(name.contains("publish"),
+                    "the brain must not be able to publish a task: " + name);
+            assertFalse(name.contains("assign"),
+                    "the brain must not be able to assign a task: " + name);
         }
     }
 }

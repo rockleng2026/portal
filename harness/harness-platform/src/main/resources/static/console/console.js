@@ -262,7 +262,7 @@ function confirmBox(title, message, onOk) {
 const state = {
   agents: [], terminals: [], approvals: [], grants: [], switches: [], events: [], audit: [], tasks: [],
   skills: [], skillInstalls: [], skillRegistries: [], skillCategories: [],
-  skillRegistryResults: [],
+  skillRegistryResults: [], proposals: [],
   capabilities: [],
 };
 
@@ -312,6 +312,9 @@ async function loadSkills() {
   try {
     state.skillCategories = (await api('GET', '/api/harness/skill/categories')) || [];
   } catch (e) { state.skillCategories = []; }
+  try {
+    state.proposals = (await api('GET', '/api/harness/task-proposal')) || [];
+  } catch (e) { state.proposals = []; }
 }
 
 /** Reloads the market and puts it on the screen. */
@@ -324,6 +327,7 @@ async function loadSkillsAndRender() {
 
 function renderAll() {
   renderOverview();
+  renderProposals();
   renderAgents();
   renderTerminals();
   renderGrants();
@@ -373,6 +377,28 @@ function renderOverview() {
     + '<span class="grow mono">' + esc(a.op) + '</span>'
     + '<span class="muted">' + esc(when(a.at)) + '</span></div>').join('')
     : '<div class="empty">还没有审计记录</div>';
+}
+
+/**
+ * The proposals the brain wrote down, waiting for a human to publish them.
+ *
+ * The two buttons are the whole governance: the brain may ask, a person may decide.
+ */
+function renderProposals() {
+  const rows = state.proposals || [];
+  $('#proposalList').innerHTML = rows.length ? rows.map(p =>
+    '<div class="row">'
+    + '<span class="dot ' + (p.status === 'proposed' ? 'warn' : p.status === 'assessed' ? 'ok' : 'grey') + '"></span>'
+    + '<span class="grow"><span class="label">' + esc(p.title) + '</span>'
+    + '<span class="muted"> — ' + esc((p.description || '').slice(0, 60)) + '</span></span>'
+    + '<span class="tag grey">' + esc(p.status) + '</span>'
+    + (p.status === 'proposed'
+      ? '<button class="tiny" data-act="proposal-publish" data-id="' + esc(p.proposalId) + '">发布</button>'
+        + '<button class="tiny" data-act="proposal-reject" data-id="' + esc(p.proposalId) + '">驳回</button>'
+      : '')
+    + (p.assessment ? '<span class="muted">' + esc(p.assessment.slice(0, 40)) + '</span>' : '')
+    + '</div>').join('')
+    : '<div class="empty">还没有提案。在「对话」里跟大脑说「给某个数字员工派个活」，它会把提案写在这里。</div>';
 }
 
 function renderAgents() {
@@ -1227,6 +1253,21 @@ function bindEvents() {
       else if (act === 'reject') { decideApproval(id, 'rejected'); return; }
       else if (act === 'grant-revoke') { await api('POST', '/api/harness/grant/' + id + '/revoke', { reason: '控制台吊销' }); toast('已吊销授权', 'ok'); }
       else if (act === 'switch-release') { await api('DELETE', '/api/harness/killswitch/' + id + '?reason=' + encodeURIComponent('控制台解除')); toast('已解除', 'ok'); }
+      else if (act === 'proposal-publish') {
+        await api('POST', '/api/harness/task-proposal/' + encodeURIComponent(id) + '/publish',
+          { reason: '控制台发布' });
+        toast('已发布，任务会出现在 portal 里', 'ok');
+        await loadSkillsAndRender();
+        return;
+      }
+      else if (act === 'proposal-reject') {
+        const reason = window.prompt('驳回的理由（提案人会看到）');
+        if (reason === null) return;
+        await api('POST', '/api/harness/task-proposal/' + encodeURIComponent(id) + '/reject', { reason });
+        toast('已驳回', 'ok');
+        await loadSkillsAndRender();
+        return;
+      }
       else if (act === 'skill-open') { openSkill(id); return; }
       else if (act === 'skill-close') { skillView.selected = null; renderSkillDetail(); return; }
       else if (act === 'skill-details-edit') { skillDetailsModal(id); return; }

@@ -125,7 +125,9 @@ public class TaskRepository {
         // trailing spaces, so "SELECT " + COLUMNS would come out as "SELECTtask_id".
         return jdbc.sql("""
                         SELECT task_id, terminal_id, prompt, status, answer, transcript, touched, error,
-                               created_by, created_at, started_at, finished_at, claimed_at
+                               created_by, created_at, started_at, finished_at, claimed_at,
+                               portal_assignment_id, portal_mission_id, portal_sbh,
+                               portal_employee_id, portal_delivered
                           FROM harness_terminal_task
                          WHERE (:terminalId IS NULL OR terminal_id = :terminalId)
                            AND (:status IS NULL OR status = :status)

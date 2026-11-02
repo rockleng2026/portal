@@ -5,6 +5,7 @@ import com.fuao.harness.platform.repo.AuditRepository;
 import com.fuao.harness.platform.repo.CapabilityRepository;
 import com.fuao.harness.platform.repo.EventRepository;
 import com.fuao.harness.platform.repo.KillSwitchRepository;
+import com.fuao.harness.platform.repo.TaskProposalRepository;
 import com.fuao.harness.platform.repo.TaskRepository;
 import com.fuao.harness.platform.security.AuthContext;
 import com.fuao.harness.platform.security.AuthenticatedClient;
@@ -62,6 +63,7 @@ public class BrainService {
     private final AuditService audit;
     private final CapabilityRepository capabilities;
     private final KillSwitchService killSwitches;
+    private final TaskProposalService proposals;
     private final AuthContext authContext;
 
     private final Map<String, Session> sessions = new ConcurrentHashMap<>();
@@ -70,7 +72,7 @@ public class BrainService {
                         TerminalService terminals, GrantService grants, ApprovalService approvals,
                         TaskService tasks, EventIngestService events, AuditService audit,
                         CapabilityRepository capabilities, KillSwitchService killSwitches,
-                        AuthContext authContext) {
+                        TaskProposalService proposals, AuthContext authContext) {
         this.models = models;
         this.modelConfigs = modelConfigs;
         this.agents = agents;
@@ -82,6 +84,7 @@ public class BrainService {
         this.audit = audit;
         this.capabilities = capabilities;
         this.killSwitches = killSwitches;
+        this.proposals = proposals;
         this.authContext = authContext;
     }
 
@@ -294,6 +297,32 @@ public class BrainService {
         tools.add(tool("list_tasks", "列出终端上的任务与结果。",
                 Map.of("type", "object", "properties", Map.of("terminalId", Map.of(
                         "type", "string", "description", "可留空，留空看全部")))));
+        tools.add(tool("list_proposals", "列出任务提案：大脑提了但还没人发布的活。",
+                Map.of("type", "object", "properties", Map.of("status", Map.of(
+                        "type", "string", "description", "proposed / published / delivered / assessed，可留空")))));
+        tools.add(tool("propose_task",
+                "提一个任务提案。\n"
+                        + "这只是**记下来**，不是派活：没有人点发布之前，portal 里什么都不会出现，"
+                        + "也没有人会被指派。\n"
+                        + "title 最多 20 个字（portal 的任务名就是这个长度）。",
+                Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                                "title", Map.of("type", "string", "description", "任务标题，最多 20 字"),
+                                "description", Map.of("type", "string",
+                                        "description", "任务说明，写清楚要做什么"),
+                                "agentKey", Map.of("type", "string",
+                                        "description", "给哪个数字员工（业务键，如 agent:coder）")),
+                        "required", List.of("title", "description", "agentKey"))));
+        tools.add(tool("assess_proposal",
+                "给一个已交付的任务提案写下验收结论。\n"
+                        + "这只是**记一笔**：算不算做完，是人的判断，你写下的是你的看法。",
+                Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                                "proposalId", Map.of("type", "string", "description", "提案号"),
+                                "assessment", Map.of("type", "string", "description", "验收结论")),
+                        "required", List.of("proposalId", "assessment"))));
         tools.add(tool("list_events", "列出事件流与被判定为注入的那些。",
                 Map.of("type", "object", "properties", Map.of("status", Map.of(
                         "type", "string", "description", "可留空")))));
@@ -398,6 +427,36 @@ public class BrainService {
                                 "prompt", String.valueOf(t.prompt()),
                                 "answer", String.valueOf(t.answer())))
                         .toList());
+                case "list_proposals" -> json(proposals.list(text(arguments, "status")).stream()
+                        .map(p -> Map.<String, Object>of(
+                                "proposalId", p.proposalId(),
+                                "title", p.title(),
+                                "description", p.description(),
+                                "agentKey", String.valueOf(p.targetAgentKey()),
+                                "status", p.status(),
+                                "assessment", String.valueOf(p.assessment()),
+                                "createdAt", String.valueOf(p.createdAt())))
+                        .toList());
+                case "propose_task" -> {
+                    TaskProposalRepository.ProposalRow proposal = proposals.propose(
+                            text(arguments, "title"), text(arguments, "description"),
+                            text(arguments, "agentKey"), null, authContext.require());
+                    yield json(List.of(Map.<String, Object>of(
+                            "proposalId", proposal.proposalId(),
+                            "title", proposal.title(),
+                            "status", proposal.status(),
+                            "note", "提案已记下。还需要一位自然人在控制台点「发布」，"
+                                    + "portal 里才会出现这个任务。")));
+                }
+                case "assess_proposal" -> {
+                    TaskProposalRepository.ProposalRow proposal = proposals.assess(
+                            text(arguments, "proposalId"), text(arguments, "assessment"),
+                            authContext.require());
+                    yield json(List.of(Map.<String, Object>of(
+                            "proposalId", proposal.proposalId(),
+                            "status", proposal.status(),
+                            "assessment", String.valueOf(proposal.assessment()))));
+                }
                 case "list_events" -> json(events.poll(text(arguments, "status"), 30).stream()
                         .map(e -> Map.<String, Object>of(
                                 "eventId", e.eventId(),

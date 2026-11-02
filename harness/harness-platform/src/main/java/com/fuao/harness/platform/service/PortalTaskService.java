@@ -46,14 +46,17 @@ public class PortalTaskService {
     private final TaskRepository tasks;
     private final TerminalService terminals;
     private final AuditService audit;
+    private final TaskProposalService proposals;
 
     public PortalTaskService(PortalClient portal, AgentRepository agents, TaskRepository tasks,
-                             TerminalService terminals, AuditService audit) {
+                             TerminalService terminals, AuditService audit,
+                             TaskProposalService proposals) {
         this.portal = portal;
         this.agents = agents;
         this.tasks = tasks;
         this.terminals = terminals;
         this.audit = audit;
+        this.proposals = proposals;
     }
 
     /**
@@ -191,6 +194,13 @@ public class PortalTaskService {
             return false;
         }
         tasks.markDelivered(task.taskId(), "已回写 portal 任务 " + task.portalMissionId());
+        // A proposal that the brain made is now delivered: the row says the whole story -
+        // who asked, who published it, when the work came back and what the brain thought
+        // of it.
+        if (task.portalAssignmentId() != null) {
+            proposals.byPortalAssignment(task.portalAssignmentId()).ifPresent(proposal ->
+                    proposals.markDelivered(proposal.proposalId(), task.taskId(), Instant.now()));
+        }
         audit.record(com.fuao.harness.platform.security.AuthenticatedClient.system("portal-sync"),
                 "task.deliver", "task", task.taskId(), "allow", null,
                 "wrote the answer back to the portal task " + task.portalMissionId(),

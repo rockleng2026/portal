@@ -57,6 +57,8 @@ public class ConsoleController {
     private final com.fuao.harness.platform.service.ModelConfigService modelConfigs;
     private final com.fuao.harness.platform.security.ClientAuthenticator authenticator;
     private final com.fuao.harness.platform.service.PrincipalService principalService;
+    private final com.fuao.harness.platform.service.TaskProposalService proposals;
+    private final com.fuao.harness.platform.security.AuthContext authContext;
 
     public ConsoleController(AgentService agents, GrantService grants,
                              com.fuao.harness.platform.service.ApprovalService approvals,
@@ -68,10 +70,14 @@ public class ConsoleController {
                              com.fuao.harness.platform.security.ClientAuthenticator authenticator,
                              com.fuao.harness.platform.service.PrincipalService principalService,
                              com.fuao.harness.platform.service.OnboardingService onboarding,
-                             com.fuao.harness.platform.service.BrainService brain) {
+                             com.fuao.harness.platform.service.BrainService brain,
+                             com.fuao.harness.platform.service.TaskProposalService proposals,
+                             com.fuao.harness.platform.security.AuthContext authContext) {
         this.agents = agents;
         this.onboarding = onboarding;
         this.brain = brain;
+        this.proposals = proposals;
+        this.authContext = authContext;
         this.grants = grants;
         this.approvals = new ApprovalServiceHolder(approvals);
         this.killSwitches = killSwitches;
@@ -490,6 +496,63 @@ public class ConsoleController {
     @GetMapping("/terminal")
     public List<PolicyInputs.TerminalRow> terminals(@RequestParam(defaultValue = "200") int limit) {
         return terminals.list(limit);
+    }
+
+    // ------------------------------------------------------------------ task proposals
+
+    /**
+     * The queue the brain writes into.
+     *
+     * <p>A proposal is a request, not a task: publishing one is what creates the task in the
+     * portal, and only a natural human does that (ADR-007, 02 R-02).
+     */
+    @GetMapping("/task-proposal")
+    public List<Map<String, Object>> listProposals(@RequestParam(required = false) String status) {
+        return proposals.list(status).stream()
+                .map(p -> Maps.of(
+                        "proposalId", p.proposalId(),
+                        "title", p.title(),
+                        "description", p.description(),
+                        "agentKey", p.targetAgentKey() == null ? "" : p.targetAgentKey(),
+                        "proposedBy", p.proposedBy(),
+                        "status", p.status(),
+                        "assessment", p.assessment() == null ? "" : p.assessment(),
+                        "portalMissionId", p.portalMissionId() == null ? ""
+                                : String.valueOf(p.portalMissionId()),
+                        "createdAt", String.valueOf(p.createdAt())))
+                .toList();
+    }
+
+    public record ProposalRequest(String title, String description, String agentKey, String reason) {
+    }
+
+    /** Writes down what somebody asked for. Nothing happens to the world yet. */
+    @PostMapping("/task-proposal")
+    public Map<String, Object> createProposal(@RequestBody ProposalRequest request) {
+        com.fuao.harness.platform.repo.TaskProposalRepository.ProposalRow proposal = proposals.propose(
+                request.title(), request.description(), request.agentKey(), null, authContext.require());
+        return Maps.of("proposalId", proposal.proposalId(), "title", proposal.title(),
+                "status", proposal.status(),
+                "note", "提案已记下。还需要一位自然人点「发布」，portal 里才会出现这个任务。");
+    }
+
+    /** Publishes the proposal: the task appears in the portal. */
+    @PostMapping("/task-proposal/{proposalId}/publish")
+    public Map<String, Object> publishProposal(@PathVariable String proposalId,
+                                               @RequestBody(required = false) ProposalRequest request) {
+        com.fuao.harness.platform.repo.TaskProposalRepository.ProposalRow proposal =
+                proposals.publish(proposalId, request == null ? null : request.reason());
+        return Maps.of("proposalId", proposal.proposalId(), "status", proposal.status(),
+                "portalMissionId", proposal.portalMissionId() == null ? ""
+                        : String.valueOf(proposal.portalMissionId()));
+    }
+
+    @PostMapping("/task-proposal/{proposalId}/reject")
+    public Map<String, Object> rejectProposal(@PathVariable String proposalId,
+                                              @RequestBody(required = false) ProposalRequest request) {
+        com.fuao.harness.platform.repo.TaskProposalRepository.ProposalRow proposal =
+                proposals.reject(proposalId, request == null ? null : request.reason());
+        return Maps.of("proposalId", proposal.proposalId(), "status", proposal.status());
     }
 
     // ------------------------------------------------------------------ version
