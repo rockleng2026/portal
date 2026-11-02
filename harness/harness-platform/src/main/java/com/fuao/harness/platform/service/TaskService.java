@@ -125,10 +125,19 @@ public class TaskService {
      */
     @Transactional
     public int failStaleRunning(int minutes) {
+        // Two different questions. "Did the machine stop talking?" - then the task is lost.
+        // "Has this been running for ever?" - then something is wrong, but not necessarily
+        // with the machine: a reasoning model that thinks for half an hour is working.
         List<String> stale = tasks.staleRunning(Instant.now().minusSeconds(minutes * 60L));
+        List<String> runaway = tasks.runawayRunning(Instant.now().minusSeconds(RUNAWAY_TASK_MINUTES * 60L));
         int failed = 0;
         for (String taskId : stale) {
             if (tasks.fail(taskId, "the terminal stopped reporting before it answered")) {
+                failed++;
+            }
+        }
+        for (String taskId : runaway) {
+            if (tasks.fail(taskId, "the task ran for over " + RUNAWAY_TASK_MINUTES + " hours")) {
                 failed++;
             }
         }
@@ -140,6 +149,9 @@ public class TaskService {
         }
         return failed;
     }
+
+    /** How long a task may run before the platform gives up on it whatever the machine says. */
+    public static final int RUNAWAY_TASK_MINUTES = 360;
 
     public List<TaskRepository.TaskRow> list(String terminalId, String status, int limit) {
         return tasks.list(terminalId, status, limit);

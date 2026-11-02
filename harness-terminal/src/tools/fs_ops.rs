@@ -461,6 +461,7 @@ mod tests {
         let (registry, context) = registry_and_context(dir.path());
         let result = registry.dispatch(
             &ToolCall {
+                id: None,
                 name: "read_file".into(),
                 arguments: json!({"path": "a.txt"}),
             },
@@ -478,6 +479,7 @@ mod tests {
         let (registry, context) = registry_and_context(dir.path());
         let result = registry.dispatch(
             &ToolCall {
+                id: None,
                 name: "edit_file".into(),
                 arguments: json!({"path": "a.txt", "old": "x = 1", "new": "x = 2"}),
             },
@@ -496,6 +498,7 @@ mod tests {
         let (registry, context) = registry_and_context(dir.path());
         let result = registry.dispatch(
             &ToolCall {
+                id: None,
                 name: "edit_file".into(),
                 arguments: json!({"path": "a.txt", "old": "x = 1\nx = 1", "new": "x = 2"}),
             },
@@ -513,6 +516,7 @@ mod tests {
         let (registry, context) = registry_and_context(dir.path());
         let result = registry.dispatch(
             &ToolCall {
+                id: None,
                 name: "delete_file".into(),
                 arguments: json!({"path": "a.txt"}),
             },
@@ -531,6 +535,7 @@ mod tests {
         let (registry, context) = registry_and_context(dir.path());
         let result = registry.dispatch(
             &ToolCall {
+                id: None,
                 name: "search_code".into(),
                 arguments: json!({"pattern": "fn main"}),
             },

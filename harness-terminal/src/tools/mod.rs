@@ -31,6 +31,14 @@ pub struct ToolCall {
     /// The arguments, as the model produced them.
     #[serde(default)]
     pub arguments: Value,
+    /// The id the model gave this call.
+    ///
+    /// <p>Anthropic pairs a tool result with the call it answers by id
+    /// ({@code tool_use_id}), and OpenAI does the same with {@code tool_call_id}. A gateway
+    /// that speaks the Anthropic protocol refuses a result whose id it cannot find - so the id
+    /// has to travel with the call all the way to the result.
+    #[serde(default)]
+    pub id: Option<String>,
 }
 
 // `serde_json::Value` is `PartialEq` but not `Eq`, so the equality is spelled out here. Two
@@ -297,6 +305,7 @@ mod tests {
         let registry = ToolRegistry::new();
         let result = registry.dispatch(
             &ToolCall {
+                id: None,
                 name: "nope".into(),
                 arguments: json!({}),
             },
@@ -315,6 +324,7 @@ mod tests {
         ctx.policy = Arc::new(LocalPolicy::empty());
         let result = registry.dispatch(
             &ToolCall {
+                id: None,
                 name: "echo".into(),
                 arguments: json!({"text": "hi"}),
             },
@@ -337,6 +347,7 @@ mod tests {
         ctx.policy = Arc::new(policy);
         let result = registry.dispatch(
             &ToolCall {
+                id: None,
                 name: "echo".into(),
                 arguments: json!({"text": "hi"}),
             },

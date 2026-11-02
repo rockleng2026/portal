@@ -116,7 +116,12 @@ struct RunArgs {
     #[arg(long)]
     base_url: Option<String>,
     /// The maximum number of model turns.
-    #[arg(long, default_value_t = 40)]
+    ///
+    /// <p>A step is one model turn, and a turn can be one tool call. Building something real
+    /// takes a lot of them: the model writes a first version, reads it back, and fixes it
+    /// twenty times. A budget of forty ends the job half way through, with the work done and
+    /// nobody saying so.
+    #[arg(long, default_value_t = 120)]
     max_steps: usize,
     /// The autonomy level the agent runs at.
     #[arg(long, default_value_t = 2)]
@@ -170,7 +175,12 @@ struct ServeArgs {
     #[arg(long)]
     base_url: Option<String>,
     /// The maximum number of model turns per request.
-    #[arg(long, default_value_t = 40)]
+    ///
+    /// <p>A step is one model turn, and a turn can be one tool call. Building something real
+    /// takes a lot of them: the model writes a first version, reads it back, and fixes it
+    /// twenty times. A budget of forty ends the job half way through, with the work done and
+    /// nobody saying so.
+    #[arg(long, default_value_t = 120)]
     max_steps: usize,
     /// How often to look for new work, in seconds.
     #[arg(long, default_value_t = 2)]
@@ -387,6 +397,7 @@ async fn replay(args: ReplayArgs) -> Result<()> {
                         calls
                             .iter()
                             .map(|call| crate::tools::ToolCall {
+                                id: None,
                                 name: call
                                     .get("name")
                                     .and_then(|v| v.as_str())
@@ -561,6 +572,7 @@ async fn serve(args: ServeArgs) -> Result<()> {
                 &config.model_name,
                 &config.base_url,
                 &config.api_key,
+                config.max_tokens,
             )?);
         }
         Ok(None) => {}
@@ -640,7 +652,8 @@ async fn serve(args: ServeArgs) -> Result<()> {
                 let fingerprint = format!("{}|{}|{}", config.provider, config.model_name, config.api_key);
                 if fingerprint != model_fingerprint {
                     model_fingerprint = fingerprint.clone();
-                    match model_of(&config.provider, &config.model_name, &config.base_url, &config.api_key) {
+                    match model_of(&config.provider, &config.model_name, &config.base_url, &config.api_key,
+                                   config.max_tokens) {
                         Ok(model) => {
                             println!("model: {} / {}", config.provider, config.model_name);
                             brain = Brain::Model(model);
@@ -708,6 +721,24 @@ async fn serve(args: ServeArgs) -> Result<()> {
             .to_string();
         println!("--- task {task_id}: {prompt}");
 
+        // The machine is alive while it works.
+        //
+        // The heartbeat is the device's liveness, and the platform reads a silent device as
+        // a lost one: after fifteen minutes it loses its authority, after thirty the task is
+        // failed. But the loop is blocked while the agent works, so a long job - a reasoning
+        // model that thinks for half an hour before it writes the file - looks exactly like a
+        // machine that died mid-task. So the heartbeat goes on while the work goes on.
+        let heartbeat_platform = platform.clone();
+        let heartbeat_terminal = platform_config.terminal_id.clone();
+        let heartbeat = tokio::spawn(async move {
+            loop {
+                tokio::time::sleep(std::time::Duration::from_secs(HEARTBEAT_INTERVAL_SECONDS)).await;
+                if let Err(error) = heartbeat_platform.heartbeat(&heartbeat_terminal).await {
+                    eprintln!("heartbeat failed: {error:#}");
+                }
+            }
+        });
+
         let outcome = answer(
             &prompt,
             &args,
@@ -718,6 +749,7 @@ async fn serve(args: ServeArgs) -> Result<()> {
             policy.clone(),
         )
         .await;
+        heartbeat.abort();
         let result = match outcome {
             Ok((answer, transcript, touched)) => {
                 crate::platform::task_result(&answer, transcript, touched, None)
@@ -756,6 +788,7 @@ fn model_of(
     model_name: &str,
     base_url: &str,
     api_key: &str,
+    max_tokens: Option<u32>,
 ) -> Result<Arc<dyn Model>> {
     match provider {
         "anthropic" => {
@@ -763,12 +796,18 @@ fn model_of(
             if !base_url.is_empty() {
                 model = model.with_base_url(base_url.to_string());
             }
+            if let Some(budget) = max_tokens {
+                model = model.with_max_tokens(budget as usize);
+            }
             Ok(Arc::new(model))
         }
         "openai" => {
             let mut model = OpenAiModel::new(api_key, model_name);
             if !base_url.is_empty() {
                 model = model.with_base_url(base_url.to_string());
+            }
+            if let Some(budget) = max_tokens {
+                model = model.with_max_tokens(budget as usize);
             }
             Ok(Arc::new(model))
         }
@@ -796,6 +835,7 @@ fn brain_from_environment(args: &ServeArgs) -> Result<Option<Brain>> {
         &name,
         args.base_url.as_deref().unwrap_or(""),
         &key,
+        None,
     )?)))
 }
 
@@ -993,6 +1033,7 @@ async fn answer(
             approval: None,
         };
         let call = crate::tools::ToolCall {
+            id: None,
             name: "shell_exec".to_string(),
             arguments: json!({"command": prompt}),
         };

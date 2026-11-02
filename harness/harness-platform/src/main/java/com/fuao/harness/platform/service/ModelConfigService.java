@@ -87,17 +87,18 @@ public class ModelConfigService {
 
     /** What the console sees: the key is not in it. */
     public record ModelConfigView(String configId, String scope, String scopeId, String provider,
-                                  String modelName, String baseUrl, boolean keyConfigured,
-                                  String createdBy, Instant updatedAt) {
+                                  String modelName, String baseUrl, Integer maxTokens,
+                                  boolean keyConfigured, String createdBy, Instant updatedAt) {
     }
 
-    /** What the terminal gets: the key is in it. */
-    public record TerminalModelConfig(String provider, String modelName, String baseUrl, String apiKey) {
+    /** What the terminal gets: the key is in it, and so is the output budget. */
+    public record TerminalModelConfig(String provider, String modelName, String baseUrl, String apiKey,
+                                      Integer maxTokens) {
     }
 
     @Transactional
     public ModelConfigView set(String scope, String scopeId, String provider, String modelName,
-                               String baseUrl, String apiKey) {
+                               String baseUrl, String apiKey, Integer maxTokens) {
         AuthenticatedClient actor = authContext.require();
         if (!actor.isHuman()) {
             throw new AgentService.NotAHumanException(
@@ -123,7 +124,7 @@ public class ModelConfigService {
                 : Ids.newId();
         configs.upsert(configId, scopeName, id, provider == null ? "anthropic" : provider,
                 modelName == null || modelName.isBlank() ? "claude-sonnet-4-5" : modelName, baseUrl, cipher,
-                actor.actorId(), now);
+                maxTokens, actor.actorId(), now);
         audit.record(actor, configId, "model.config.set", "modelConfig", configId, "allow", null,
                 "model " + provider + "/" + modelName + " for " + scopeName + " " + id,
                 Map.of("scope", scopeName, "scopeId", id, "provider", provider == null ? "" : provider));
@@ -139,14 +140,14 @@ public class ModelConfigService {
     public Optional<TerminalModelConfig> forBrain() {
         return configs.find("brain", "*")
                 .map(row -> new TerminalModelConfig(row.provider(), row.modelName(), row.baseUrl(),
-                        decrypt(row.apiKeyCipher())));
+                        decrypt(row.apiKeyCipher()), row.maxTokens()));
     }
 
     /** The configuration of a terminal, with the key - only for the terminal itself. */
     public Optional<TerminalModelConfig> forTerminal(String terminalId, String agentId) {
         for (ModelConfigRepository.ConfigRow row : configs.resolveFor(terminalId, agentId)) {
             return Optional.of(new TerminalModelConfig(row.provider(), row.modelName(), row.baseUrl(),
-                    decrypt(row.apiKeyCipher())));
+                    decrypt(row.apiKeyCipher()), row.maxTokens()));
         }
         return Optional.empty();
     }
@@ -178,8 +179,8 @@ public class ModelConfigService {
 
     private ModelConfigView view(ModelConfigRepository.ConfigRow row) {
         return new ModelConfigView(row.configId(), row.scope(), row.scopeId(), row.provider(),
-                row.modelName(), row.baseUrl() == null ? "" : row.baseUrl(), true, row.createdBy(),
-                row.updatedAt());
+                row.modelName(), row.baseUrl() == null ? "" : row.baseUrl(), row.maxTokens(), true,
+                row.createdBy(), row.updatedAt());
     }
 
     private String encrypt(String plain) {

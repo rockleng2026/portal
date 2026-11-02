@@ -621,7 +621,8 @@ public class ConsoleController {
     // ------------------------------------------------------------------ model configuration
 
     public record ModelConfigRequest(@NotBlank String scope, String scopeId, @NotBlank String provider,
-                                     @NotBlank String modelName, String baseUrl, @NotBlank String apiKey) {
+                                     @NotBlank String modelName, String baseUrl, @NotBlank String apiKey,
+                                     Integer maxTokens) {
     }
 
     /** The model configurations, without the keys. */
@@ -634,6 +635,7 @@ public class ConsoleController {
                 "provider", c.provider(),
                 "modelName", c.modelName(),
                 "baseUrl", c.baseUrl(),
+                "maxTokens", c.maxTokens() == null ? "" : String.valueOf(c.maxTokens()),
                 "keyConfigured", c.keyConfigured(),
                 "createdBy", c.createdBy(),
                 "updatedAt", c.updatedAt().toString())).toList();
@@ -644,7 +646,7 @@ public class ConsoleController {
     public Map<String, Object> setModelConfig(@RequestBody ModelConfigRequest request) {
         com.fuao.harness.platform.service.ModelConfigService.ModelConfigView view =
                 modelConfigs.set(request.scope(), request.scopeId(), request.provider(),
-                        request.modelName(), request.baseUrl(), request.apiKey());
+                        request.modelName(), request.baseUrl(), request.apiKey(), request.maxTokens());
         return Map.of("configId", view.configId(), "scope", view.scope(), "scopeId", view.scopeId(),
                 "provider", view.provider(), "modelName", view.modelName(), "keyConfigured", true);
     }

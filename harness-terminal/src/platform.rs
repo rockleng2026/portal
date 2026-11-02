@@ -200,6 +200,10 @@ impl PlatformClient {
                 .and_then(Value::as_str)
                 .unwrap_or("")
                 .to_string(),
+            max_tokens: answer
+                .get("maxTokens")
+                .and_then(|v| v.as_u64())
+                .map(|v| v as u32),
         }))
     }
 
@@ -313,6 +317,13 @@ pub struct ModelConfig {
     pub model_name: String,
     pub base_url: String,
     pub api_key: String,
+    /// How many tokens the model may spend on one turn.
+    ///
+    /// <p>The budget belongs to the model, not to the agent: a reasoning model that writes a
+    /// file thinks for 46 000 tokens before it acts, and a budget that is too small does not
+    /// make it act sooner - it makes it think the same tokens again from the start, and the
+    /// file never appears.
+    pub max_tokens: Option<u32>,
 }
 
 /// The answer the agent posts back.

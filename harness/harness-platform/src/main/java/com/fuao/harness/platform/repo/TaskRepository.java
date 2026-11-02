@@ -204,6 +204,31 @@ public class TaskRepository {
      * back.
      */
     public List<String> staleRunning(Instant cutoff) {
+        // A task is lost when its MACHINE is lost, not when it has been running for a while.
+        //
+        // A reasoning model that thinks for half an hour before it writes the file is working
+        // the whole time, and a clock would call that task dead while the machine is busy
+        // making something. What says the machine is gone is that it stopped saying anything
+        // since it took the task.
+        return jdbc.sql("""
+                        SELECT t.task_id
+                          FROM harness_terminal_task t
+                          LEFT JOIN harness_terminal tm ON tm.terminal_id = t.terminal_id
+                         WHERE t.status = 'running'
+                           AND t.claimed_at IS NOT NULL
+                           AND (tm.last_heartbeat IS NULL OR tm.last_heartbeat < t.claimed_at)
+                        """)
+                .query(String.class)
+                .list();
+    }
+
+    /**
+     * The tasks that have been running for ever, whatever the machine says.
+     *
+     * <p>The ceiling exists so a task that nobody will ever answer does not stay "running"
+     * for ever - but it is measured in hours, not minutes: a long job is not a lost job.
+     */
+    public List<String> runawayRunning(Instant cutoff) {
         return jdbc.sql("""
                         SELECT task_id
                           FROM harness_terminal_task

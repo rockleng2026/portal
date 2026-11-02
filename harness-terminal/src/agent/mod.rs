@@ -43,7 +43,10 @@ impl Default for AgentConfig {
     fn default() -> Self {
         Self {
             task: String::new(),
-            max_steps: 40,
+            // A step is one model turn. Building something real takes a lot of them: the model
+            // writes a first version, reads it back and fixes it twenty times. Forty ends the
+            // job half way through, with the work done and nobody saying so.
+            max_steps: 120,
             max_context_tokens: 120_000,
             system_prompt: DEFAULT_SYSTEM_PROMPT.to_string(),
             allow_writes: true,
@@ -62,7 +65,9 @@ then check the result.
 Use the tools to look at the code (list_files, read_file, search_code), to change it
 (write_file, edit_file), and to find out whether your change worked (run_tests, shell_exec).
 When a tool returns an error, read the error and fix the cause rather than retrying the same
-call. When you are done, state what you changed and what you verified.
+call. When you are done, state what you changed and what you verified - and then stop.
+A working answer that is good enough beats an endless polish: if the task is met, say so and
+hand it back.
 
 If the task asks for a new file, write it. Do not design the file in prose first - a design in
 prose is not a deliverable, and a model that thinks until it runs out of output has produced
@@ -121,6 +126,24 @@ pub enum StopReason {
     OutOfContext,
     /// The model or a tool failed in a way the loop could not recover from.
     Failed,
+}
+
+/// One tool result, rendered for the model.
+///
+/// The id of the call travels with it: a gateway that speaks the Anthropic protocol pairs
+/// the result with the call by id, and refuses a result it cannot place.
+fn render_result(call: &crate::tools::ToolCall, result: &ToolResult) -> String {
+    format!(
+        "<tool_result tool=\"{}\" ok=\"{}\" reason_code=\"{}\"{}>\n{}\n</tool_result>\n",
+        result.tool,
+        result.ok,
+        result.reason_code.as_deref().unwrap_or(""),
+        match call.id.as_deref() {
+            Some(id) => format!(" tool_use_id=\"{}\"", id),
+            None => String::new(),
+        },
+        result.output,
+    )
 }
 
 /// The agent.
@@ -287,11 +310,19 @@ impl Agent {
                         text: None,
                         tools: names,
                     });
+                    // The assistant's turn is part of the conversation: a tool result only
+                    // means something next to the call it answers. Anthropic refuses a
+                    // conversation whose tool_result has no tool_use to point at.
+                    self.context.push(Message::assistant_calling(String::new(), calls.clone()));
                     for call in calls {
                         let result = self.tools.dispatch(&call, tool_context);
                         self.record(&result);
+                        // One message per call, each naming the call it answers.
+                        self.context.push(Message::tool(
+                            render_result(&call, &result),
+                            call.id.clone(),
+                        ));
                     }
-                    self.context.push(Message::tool(self.render_results()));
                     if self.tokens() > self.config.max_context_tokens {
                         self.transcript.push(AgentEvent::Finished {
                             steps,
@@ -310,13 +341,16 @@ impl Agent {
             }
         }
 
+        // The budget ran out. Saying only that is useless to whoever reads the answer: the
+        // work may well be done. So the answer says what was done.
+        let answer = self.summary_of_the_work();
         self.transcript.push(AgentEvent::Finished {
             steps,
             tokens: self.tokens(),
-            outcome: "the step budget ran out".to_string(),
+            outcome: answer.clone(),
         });
         Ok(TaskOutcome {
-            answer: "the step budget ran out before the task was finished".to_string(),
+            answer,
             steps,
             tokens: self.tokens(),
             touched: self.touched.clone(),
@@ -340,7 +374,36 @@ impl Agent {
         });
     }
 
+    /// What the agent did, for an answer that has to stand in for a missing summary.
+    ///
+    /// <p>A run that ends on the step budget has no summary from the model, and the person
+    /// reading the task list needs to know what is on their disk. So the answer lists the files
+    /// that were touched and the last thing the agent saw.
+    fn summary_of_the_work(&self) -> String {
+        let files: Vec<String> = self.touched.clone();
+        let calls = self
+            .transcript
+            .iter()
+            .filter(|e| matches!(e, AgentEvent::Tool { .. }))
+            .count();
+        let mut answer = String::new();
+        answer.push_str("【本次运行到步数上限结束，模型没有写交付说明】\n\n");
+        answer.push_str(&format!("工具调用 {} 次。", calls));
+        if files.is_empty() {
+            answer.push_str("\n没有改动任何文件。");
+        } else {
+            answer.push_str("\n改动过的文件：");
+            for file in &files {
+                answer.push_str("\n- ");
+                answer.push_str(file);
+            }
+        }
+        answer.push_str("\n\n工作区里的东西是模型的产出，请自己看一眼再决定要不要收下。");
+        answer
+    }
+
     /// The tool results, rendered for the model.
+    #[allow(dead_code)]
     fn render_results(&self) -> String {
         let mut out = String::new();
         for event in self.transcript.iter().rev() {
@@ -468,6 +531,7 @@ mod tests {
         std::fs::write(dir.path().join("a.txt"), "hello\n").unwrap();
 
         let model = Arc::new(ScriptedModel::once(ToolCall {
+            id: None,
             name: "read_file".into(),
             arguments: json!({"path": "a.txt"}),
         }));
@@ -496,6 +560,7 @@ mod tests {
         std::fs::write(dir.path().join("a.txt"), "hello\n").unwrap();
 
         let model = Arc::new(ScriptedModel::once(ToolCall {
+            id: None,
             name: "read_file".into(),
             arguments: json!({"path": "a.txt"}),
         }));
@@ -529,6 +594,7 @@ mod tests {
         let model = Arc::new(ScriptedModel::new(vec![
             Ok(Turn::Truncated("I was working out the geometry and then I ran out of".to_string())),
             Ok(Turn::Tools(vec![ToolCall {
+                id: None,
                 name: "list_files".into(),
                 arguments: json!({}),
             }])),
@@ -567,14 +633,17 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let model = Arc::new(ScriptedModel::new(vec![
             Ok(Turn::Tools(vec![ToolCall {
+                id: None,
                 name: "list_files".into(),
                 arguments: json!({}),
             }])),
             Ok(Turn::Tools(vec![ToolCall {
+                id: None,
                 name: "list_files".into(),
                 arguments: json!({}),
             }])),
             Ok(Turn::Tools(vec![ToolCall {
+                id: None,
                 name: "list_files".into(),
                 arguments: json!({}),
             }])),

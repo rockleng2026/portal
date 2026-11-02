@@ -26,13 +26,14 @@ public class ModelConfigRepository {
             String modelName,
             String baseUrl,
             String apiKeyCipher,
+            Integer maxTokens,
             String createdBy,
             Instant createdAt,
             Instant updatedAt) {
     }
 
     private static final String COLUMNS = """
-            config_id, scope, scope_id, provider, model_name, base_url, api_key_cipher,
+            config_id, scope, scope_id, provider, model_name, base_url, api_key_cipher, max_tokens,
             created_by, created_at, updated_at
             """;
 
@@ -73,16 +74,17 @@ public class ModelConfigRepository {
     }
 
     public void upsert(String configId, String scope, String scopeId, String provider, String modelName,
-                       String baseUrl, String apiKeyCipher, String createdBy, Instant now) {
+                       String baseUrl, String apiKeyCipher, Integer maxTokens, String createdBy, Instant now) {
         jdbc.sql("""
                         INSERT INTO harness_model_config
                           (config_id, scope, scope_id, provider, model_name, base_url, api_key_cipher,
-                           created_by, created_at, updated_at)
+                           max_tokens, created_by, created_at, updated_at)
                         VALUES (:configId, :scope, :scopeId, :provider, :modelName, :baseUrl, :cipher,
-                                :createdBy, :now, :now)
+                                :maxTokens, :createdBy, :now, :now)
                         ON DUPLICATE KEY UPDATE
                           provider = VALUES(provider), model_name = VALUES(model_name),
                           base_url = VALUES(base_url), api_key_cipher = VALUES(api_key_cipher),
+                          max_tokens = VALUES(max_tokens),
                           updated_at = VALUES(updated_at)
                         """)
                 .param("configId", configId)
@@ -92,6 +94,7 @@ public class ModelConfigRepository {
                 .param("modelName", modelName)
                 .param("baseUrl", baseUrl)
                 .param("cipher", apiKeyCipher)
+                .param("maxTokens", maxTokens)
                 .param("createdBy", createdBy)
                 .param("now", Timestamp.from(now))
                 .update();
@@ -113,6 +116,7 @@ public class ModelConfigRepository {
                 rs.getString("model_name"),
                 rs.getString("base_url"),
                 rs.getString("api_key_cipher"),
+                (Integer) rs.getObject("max_tokens"),
                 rs.getString("created_by"),
                 rs.getTimestamp("created_at").toInstant(),
                 rs.getTimestamp("updated_at").toInstant());

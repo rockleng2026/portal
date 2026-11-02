@@ -166,6 +166,11 @@ class TaskChannelIT extends PlatformTestBase {
         jdbc.sql("UPDATE harness_terminal_task SET claimed_at = DATE_SUB(NOW(), INTERVAL 2 HOUR) "
                         + "WHERE task_id = :id")
                 .param("id", taskId).update();
+        // And the machine went quiet: it has not said anything since it took the task. That is
+        // what "lost" means - not "running for a long time", which is a job that is still going.
+        jdbc.sql("UPDATE harness_terminal SET last_heartbeat = DATE_SUB(NOW(), INTERVAL 3 HOUR) "
+                        + "WHERE terminal_id = :id")
+                .param("id", terminalId).update();
 
         // The sweep is what the scheduler runs; call it the same way.
         int failed = staleSweep();
