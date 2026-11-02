@@ -300,6 +300,12 @@ public class BrainService {
         tools.add(tool("list_proposals", "列出任务提案：大脑提了但还没人发布的活。",
                 Map.of("type", "object", "properties", Map.of("status", Map.of(
                         "type", "string", "description", "proposed / published / delivered / assessed，可留空")))));
+        tools.add(tool("get_task",
+                "看一个任务的结果：它做了什么、回答是什么、改了哪些文件。\n"
+                        + "提案里带着它变成的那个任务的 taskId，验收的时候先拿它去查。",
+                Map.of("type", "object", "properties", Map.of(
+                        "taskId", Map.of("type", "string", "description", "任务号")),
+                        "required", List.of("taskId"))));
         tools.add(tool("propose_task",
                 "提一个任务提案。\n"
                         + "这只是**记下来**，不是派活：没有人点发布之前，portal 里什么都不会出现，"
@@ -435,8 +441,27 @@ public class BrainService {
                                 "agentKey", String.valueOf(p.targetAgentKey()),
                                 "status", p.status(),
                                 "assessment", String.valueOf(p.assessment()),
+                                "taskId", String.valueOf(p.harnessTaskId()),
                                 "createdAt", String.valueOf(p.createdAt())))
                         .toList());
+                case "get_task" -> {
+                    com.fuao.harness.platform.repo.TaskRepository.TaskRow task =
+                            tasks.get(text(arguments, "taskId"));
+                    if (task == null) {
+                        yield json(List.of(Map.of("error", "no such task")));
+                    } else {
+                        yield json(List.of(Map.<String, Object>of(
+                                "taskId", task.taskId(),
+                                "terminalId", task.terminalId(),
+                                "status", task.status(),
+                                "prompt", String.valueOf(task.prompt()),
+                                "answer", String.valueOf(task.answer()),
+                                "touched", String.valueOf(task.touched()),
+                                "error", String.valueOf(task.error()),
+                                "portalMissionId", String.valueOf(task.portalMissionId()),
+                                "finishedAt", String.valueOf(task.finishedAt()))));
+                    }
+                }
                 case "propose_task" -> {
                     TaskProposalRepository.ProposalRow proposal = proposals.propose(
                             text(arguments, "title"), text(arguments, "description"),

@@ -47,7 +47,10 @@ impl Default for AgentConfig {
             // writes a first version, reads it back and fixes it twenty times. Forty ends the
             // job half way through, with the work done and nobody saying so.
             max_steps: 120,
-            max_context_tokens: 120_000,
+            // A tool result is capped (see MAX_TOOL_OUTPUT_CHARS), so what fills the
+            // context is the model's own reasoning - which is what it needs to keep
+            // working. A model with a million tokens of context gets a bigger budget.
+            max_context_tokens: 400_000,
             system_prompt: DEFAULT_SYSTEM_PROMPT.to_string(),
             allow_writes: true,
         }
@@ -65,9 +68,12 @@ then check the result.
 Use the tools to look at the code (list_files, read_file, search_code), to change it
 (write_file, edit_file), and to find out whether your change worked (run_tests, shell_exec).
 When a tool returns an error, read the error and fix the cause rather than retrying the same
-call. When you are done, state what you changed and what you verified - and then stop.
-A working answer that is good enough beats an endless polish: if the task is met, say so and
-hand it back.
+call.
+
+When the task is done, write one plain sentence saying what you changed and how you checked
+it, and stop. Do not call a tool in that turn: that sentence is the delivery note, and it is
+what the person who gave you the task will read. A working answer that is good enough beats an
+endless polish - if the task is met, say so and hand it back.
 
 If the task asks for a new file, write it. Do not design the file in prose first - a design in
 prose is not a deliverable, and a model that thinks until it runs out of output has produced
@@ -142,7 +148,30 @@ fn render_result(call: &crate::tools::ToolCall, result: &ToolResult) -> String {
             Some(id) => format!(" tool_use_id=\"{}\"", id),
             None => String::new(),
         },
-        result.output,
+        cap_output(&result.output),
+    )
+}
+
+/// How much of a tool result goes back into the conversation.
+///
+/// <p>A file read is worth thousands of tokens, and a model that reads thirty files would
+/// blow the context apart before it wrote a line. The tail of a long result is the part the
+/// model acts on - the last lines of a file, the end of an error - so the head goes first.
+const MAX_TOOL_OUTPUT_CHARS: usize = 4000;
+
+fn cap_output(output: &str) -> String {
+    if output.chars().count() <= MAX_TOOL_OUTPUT_CHARS {
+        return output.to_string();
+    }
+    let all: Vec<char> = output.chars().collect();
+    let head: String = all[..MAX_TOOL_OUTPUT_CHARS / 3].iter().collect();
+    let tail_start = all.len().saturating_sub(MAX_TOOL_OUTPUT_CHARS - MAX_TOOL_OUTPUT_CHARS / 3);
+    let tail: String = all[tail_start..].iter().collect();
+    format!(
+        "{}\n\n... [中间 {} 个字被省略，这是长输出的头尾] ...\n\n{}",
+        head,
+        MAX_TOOL_OUTPUT_CHARS,
+        tail
     )
 }
 
@@ -281,6 +310,10 @@ impl Agent {
                     // assistant messages ("Cannot have 2 or more assistant messages at the
                     // end of the list"), so the text is added to the message that is
                     // already there.
+                    // The partial thinking goes back, so the model continues where it
+                    // left off instead of thinking the same thing again. It is NOT capped:
+                    // cutting the model's own reasoning off mid-thought makes it start over,
+                    // and a model that keeps starting over never gets anywhere.
                     match self.context.last_mut() {
                         Some(last) if last.role == "assistant" => {
                             last.content.push_str(&partial);
@@ -288,13 +321,14 @@ impl Agent {
                         _ => self.context.push(Message::assistant(partial)),
                     }
                     if self.tokens() > self.config.max_context_tokens {
+                        let answer = self.summary_of_the_work("上下文预算用完了");
                         self.transcript.push(AgentEvent::Finished {
                             steps,
                             tokens: self.tokens(),
-                            outcome: "the context budget ran out".to_string(),
+                            outcome: answer.clone(),
                         });
                         return Ok(TaskOutcome {
-                            answer: "the context budget ran out".to_string(),
+                            answer,
                             steps,
                             tokens: self.tokens(),
                             touched: self.touched.clone(),
@@ -324,13 +358,14 @@ impl Agent {
                         ));
                     }
                     if self.tokens() > self.config.max_context_tokens {
+                        let answer = self.summary_of_the_work("上下文预算用完了");
                         self.transcript.push(AgentEvent::Finished {
                             steps,
                             tokens: self.tokens(),
-                            outcome: "the context budget ran out".to_string(),
+                            outcome: answer.clone(),
                         });
                         return Ok(TaskOutcome {
-                            answer: "the context budget ran out".to_string(),
+                            answer,
                             steps,
                             tokens: self.tokens(),
                             touched: self.touched.clone(),
@@ -343,7 +378,7 @@ impl Agent {
 
         // The budget ran out. Saying only that is useless to whoever reads the answer: the
         // work may well be done. So the answer says what was done.
-        let answer = self.summary_of_the_work();
+        let answer = self.summary_of_the_work("到步数上限结束");
         self.transcript.push(AgentEvent::Finished {
             steps,
             tokens: self.tokens(),
@@ -379,7 +414,7 @@ impl Agent {
     /// <p>A run that ends on the step budget has no summary from the model, and the person
     /// reading the task list needs to know what is on their disk. So the answer lists the files
     /// that were touched and the last thing the agent saw.
-    fn summary_of_the_work(&self) -> String {
+    fn summary_of_the_work(&self, reason: &str) -> String {
         let files: Vec<String> = self.touched.clone();
         let calls = self
             .transcript
@@ -387,7 +422,7 @@ impl Agent {
             .filter(|e| matches!(e, AgentEvent::Tool { .. }))
             .count();
         let mut answer = String::new();
-        answer.push_str("【本次运行到步数上限结束，模型没有写交付说明】\n\n");
+        answer.push_str(&format!("【本次运行{}，模型没有写交付说明】\n\n", reason));
         answer.push_str(&format!("工具调用 {} 次。", calls));
         if files.is_empty() {
             answer.push_str("\n没有改动任何文件。");

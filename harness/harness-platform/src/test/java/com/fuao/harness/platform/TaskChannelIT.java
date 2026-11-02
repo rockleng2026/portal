@@ -137,6 +137,11 @@ class TaskChannelIT extends PlatformTestBase {
         mvc.perform(complete).andExpect(status().isOk()).andExpect(jsonPath("$.accepted").value(true));
 
         // And the console sees the answer.
+        //
+        // The list carries the answer and the files that were touched, but NOT the
+        // transcript: a task that ran for an hour has a transcript of a hundred kilobytes,
+        // and sorting rows that size does not fit in the sort buffer - MySQL answers "Out of
+        // sort memory" and the whole task list is gone. The trajectory is one call away.
         MockHttpServletRequestBuilder list = get("/api/harness/tasks?terminalId=" + terminalId);
         signAsHuman("GET", "/api/harness/tasks?terminalId=" + terminalId, list, "");
         mvc.perform(list)
@@ -144,7 +149,14 @@ class TaskChannelIT extends PlatformTestBase {
                 .andExpect(jsonPath("$[0].status").value("done"))
                 .andExpect(jsonPath("$[0].answer").value("hi"))
                 .andExpect(jsonPath("$[0].touched[0]").value("main.rs"))
-                .andExpect(jsonPath("$[0].transcript[1].tool").value("shell_exec"));
+                .andExpect(jsonPath("$[0].transcript").isEmpty());
+
+        // The detail has the trajectory.
+        MockHttpServletRequestBuilder detail = get("/api/harness/tasks/" + taskId);
+        signAsHuman("GET", "/api/harness/tasks/" + taskId, detail, "");
+        mvc.perform(detail)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.transcript[1].tool").value("shell_exec"));
     }
 
     @Test

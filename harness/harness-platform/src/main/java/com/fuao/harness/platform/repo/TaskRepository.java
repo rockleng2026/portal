@@ -121,10 +121,20 @@ public class TaskRepository {
     }
 
     public List<TaskRow> list(String terminalId, String status, int limit) {
+        // The list does NOT read the transcript, and the answer only as far as its first
+        // eight hundred characters.
+        //
+        // A task that ran for an hour carries a transcript of a hundred kilobytes, and
+        // sorting rows that size does not fit in the sort buffer: MySQL answers
+        // "Out of sort memory" and the whole task list is gone. The full answer is one
+        // call away - GET /api/harness/tasks/{id} - and the list has never needed more
+        // than the first line of it.
+        //
         // The column list is spelled out here rather than concatenated: a text block strips
         // trailing spaces, so "SELECT " + COLUMNS would come out as "SELECTtask_id".
         return jdbc.sql("""
-                        SELECT task_id, terminal_id, prompt, status, answer, transcript, touched, error,
+                        SELECT task_id, terminal_id, prompt, status,
+                               LEFT(answer, 800) AS answer, touched, error,
                                created_by, created_at, started_at, finished_at, claimed_at,
                                portal_assignment_id, portal_mission_id, portal_sbh,
                                portal_employee_id, portal_delivered
@@ -137,7 +147,7 @@ public class TaskRepository {
                 .param("terminalId", terminalId)
                 .param("status", status)
                 .param("limit", limit)
-                .query((rs, i) -> map(rs))
+                .query((rs, i) -> mapSummary(rs))
                 .list();
     }
 
@@ -263,6 +273,28 @@ public class TaskRepository {
                 .param("id", taskId)
                 .param("reason", reason)
                 .update() == 1;
+    }
+
+    /** The list's row: the same task, without the transcript - the list does not select it. */
+    private static TaskRow mapSummary(java.sql.ResultSet rs) throws java.sql.SQLException {
+        return new TaskRow(
+                rs.getString("task_id"),
+                rs.getString("terminal_id"),
+                rs.getString("prompt"),
+                rs.getString("status"),
+                rs.getString("answer"),
+                null,
+                rs.getString("touched"),
+                rs.getString("error"),
+                rs.getString("created_by"),
+                rs.getTimestamp("created_at").toInstant(),
+                rs.getTimestamp("started_at") == null ? null : rs.getTimestamp("started_at").toInstant(),
+                rs.getTimestamp("finished_at") == null ? null : rs.getTimestamp("finished_at").toInstant(),
+                rs.getString("portal_assignment_id"),
+                (Integer) rs.getObject("portal_mission_id"),
+                rs.getString("portal_sbh"),
+                (Integer) rs.getObject("portal_employee_id"),
+                rs.getString("portal_delivered"));
     }
 
     private static TaskRow map(java.sql.ResultSet rs) throws java.sql.SQLException {

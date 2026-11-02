@@ -169,7 +169,8 @@ public class PortalTaskService {
                 + "（list_files / read_file / write_file / edit_file / run_tests / shell_exec），")
                 .append("不要把文件内容打在回答里。\n");
         prompt.append("- 产出物请写进工作区的文件；回答里说明写了哪个文件、怎么验证的。\n");
-        prompt.append("- 回答会作为交付说明回到 portal 的任务列表，所以回答要说得清楚做了什么。\n");
+        prompt.append("- 交付说明会回到 portal 的任务列表：做完之后用一句普通话说清楚做了什么、怎么验证的，"
+                + "不要再调用工具。一句够用的回答，比无限打磨有价值。\n");
         return prompt.toString();
     }
 
