@@ -210,29 +210,53 @@ public class PortalClient {
     /**
      * The digital employee took the task.
      *
-     * <p>This is the portal's "handout": the row in the employee's own todo appears, with the
-     * status 处理中. Until it happens the task is only an assignment, and a human looking at
-     * the employee's list would not see it.
+     * <p>This is the portal's "accept": the row in the employee's todo moves to the state the
+     * portal calls "being worked on". It is the same click a human makes, and the same state
+     * the portal knows.
      */
     public void acceptTask(int missionId, int employeeId) {
         call("/api/harness/task/accept.do", Map.of(
                 "missionId", String.valueOf(missionId),
                 "employeeId", String.valueOf(employeeId)));
     }
+    /**
+     * The task has been handed to the digital employee.
+     *
+     * <p>This is the portal's first step: the task appears in the employee's own todo with
+     * the status "not accepted yet". Until it happens the task is only an assignment, and a
+     * human looking at the employee's list would not see it.
+     */
+    public void handoutTask(int missionId, int employeeId) {
+        call("/api/harness/task/handout.do", Map.of(
+                "missionId", String.valueOf(missionId),
+                "employeeId", String.valueOf(employeeId)));
+    }
+
+
 
     /**
      * The work is done.
      *
      * <p>The description is the agent's own answer: it is what a human reads when they ask
-     * "what did the digital employee actually do?", so it must not be a summary written by the
-     * platform.
+     * "what did the digital employee actually do?", so it must not be a summary written by
+     * the platform.
+     *
+     * <p>The files are the deliverable. They are attached to the portal's own todo, the way a
+     * human's attachments are - so the work is visible where the work is listed, and not
+     * only on the machine that made it.
+     *
+     * @param files the produced files: the path inside the workspace and its content (base64)
      */
-    public void completeTask(int missionId, int employeeId, String description) {
-        call("/api/harness/task/complete.do", Map.of(
-                "missionId", String.valueOf(missionId),
-                "employeeId", String.valueOf(employeeId),
-                "describe", description == null ? "" : description));
+    public void completeTask(int missionId, int employeeId, String description,
+                             List<Map<String, Object>> files) {
+        Map<String, Object> command = new LinkedHashMap<>();
+        command.put("missionId", String.valueOf(missionId));
+        command.put("employeeId", String.valueOf(employeeId));
+        command.put("describe", description == null ? "" : description);
+        command.put("files", files == null ? List.of() : files);
+        call("/api/harness/task/complete.do", command);
     }
+
 
     /**
      * Publishes a task for a digital employee.

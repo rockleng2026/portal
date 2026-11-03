@@ -752,11 +752,16 @@ async fn serve(args: ServeArgs) -> Result<()> {
         heartbeat.abort();
         let result = match outcome {
             Ok((answer, transcript, touched)) => {
-                crate::platform::task_result(&answer, transcript, touched, None)
+                // The files the work produced travel with the answer: the task list lives in
+                // the portal, and a deliverable that stays on this machine is a deliverable
+                // nobody sees.
+                let files = collect_deliverables(&workspace, &touched);
+                crate::platform::task_result(&answer, transcript, touched, files, None)
             }
             Err(error) => crate::platform::task_result(
                 &format!("the request failed: {error}"),
                 json!({}),
+                Vec::new(),
                 Vec::new(),
                 Some(error.to_string()),
             ),
@@ -1092,6 +1097,25 @@ async fn answer(
     let transcript = serde_json::to_value(agent.transcript())?;
     Ok((outcome.answer, transcript, outcome.touched))
     }
+}
+
+/// The files the work produced, with their content.
+///
+/// <p>Only what the agent touched, and only what is still there: a file the agent deleted on
+/// the way to a better version is not a deliverable. A file that cannot be read (too big, or
+/// gone) is left out rather than reported as a failure - the work is what it is.
+fn collect_deliverables(workspace: &Workspace, touched: &[String]) -> Vec<(String, String)> {
+    let mut out = Vec::new();
+    for path in touched {
+        let Ok(content) = workspace.read_file(path) else {
+            continue;
+        };
+        if content.is_empty() {
+            continue;
+        }
+        out.push((path.clone(), content));
+    }
+    out
 }
 
 /// How often the terminal says it is alive (03 §3.1: heartbeat 10s).

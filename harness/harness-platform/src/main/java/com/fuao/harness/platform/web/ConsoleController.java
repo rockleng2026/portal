@@ -687,7 +687,8 @@ public class ConsoleController {
 
     public record TaskResultRequest(String status, String answer,
                                     List<Map<String, Object>> transcript,
-                                    java.util.List<String> touched, String error) {
+                                    java.util.List<String> touched,
+                                    List<Map<String, Object>> files, String error) {
     }
 
     /** A human asks a terminal to do something. */
@@ -729,7 +730,7 @@ public class ConsoleController {
     public Map<String, Object> completeTask(@PathVariable String taskId,
                                              @RequestBody TaskResultRequest request) {
         boolean ok = tasks.complete(taskId, request.status(), request.answer(),
-                request.transcript(), request.touched(), request.error());
+                request.transcript(), request.touched(), request.files(), request.error());
         return Map.of("accepted", ok);
     }
 

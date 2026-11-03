@@ -133,6 +133,16 @@
 			</result>
 		</action>
 
+		<action name="handout" class="HarnessTaskApiAction" method="handout">
+			<interceptor-ref name="harnessStack"/>
+			<result name="success" type="json">
+				<param name="root">payload</param>
+			</result>
+			<result name="harnessRejected" type="json">
+				<param name="root">error</param>
+			</result>
+		</action>
+
 		<action name="accept" class="HarnessTaskApiAction" method="accept">
 			<interceptor-ref name="harnessStack"/>
 			<result name="success" type="json">

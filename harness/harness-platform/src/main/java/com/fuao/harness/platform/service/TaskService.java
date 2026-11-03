@@ -81,7 +81,8 @@ public class TaskService {
     /** The terminal's side: the answer. */
     @Transactional
     public boolean complete(String taskId, String status, String answer,
-                            List<Map<String, Object>> transcript, List<String> touched, String error) {
+                            List<Map<String, Object>> transcript, List<String> touched,
+                            List<Map<String, Object>> files, String error) {
         AuthenticatedClient actor = authContext.require();
         // A device account may only answer the tasks of its own terminal.
         if (actor.isTerminal()) {
@@ -103,7 +104,7 @@ public class TaskService {
             // the employee's todo would keep saying "in progress" for ever.
             TaskRepository.TaskRow task = tasks.find(taskId).orElse(null);
             if (task != null && task.portalMissionId() != null) {
-                portalTasks.deliverBack(task, answer);
+                portalTasks.deliverBack(task, answer, files);
             }
         }
         return ok;

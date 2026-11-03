@@ -135,6 +135,15 @@ public class PortalTaskService {
                 assignmentId, integer(missionId), string(portalTask.get("sbh")), integer(employeeId),
                 Instant.now());
 
+        // The task is handed to the employee now: it appears in the employee's own todo with
+        // the status "not accepted yet", the way a human's task appears before they click
+        // accept. The employee accepts it when its machine claims the work.
+        try {
+            portal.handoutTask(integer(missionId), integer(employeeId));
+        } catch (RuntimeException e) {
+            log.warn("cannot hand the portal task {} to the employee: {}", missionId, e.getMessage());
+        }
+
         audit.record(com.fuao.harness.platform.security.AuthenticatedClient.system("portal-sync"),
                 "task.create", "task", taskId, "allow", null,
                 "picked up the portal task " + missionId + " for " + agentKey,
@@ -182,13 +191,14 @@ public class PortalTaskService {
      * be the platform's opinion rather than the agent's report.
      */
     @Transactional
-    public boolean deliverBack(TaskRepository.TaskRow task, String answer) {
+    public boolean deliverBack(TaskRepository.TaskRow task, String answer,
+                               List<Map<String, Object>> files) {
         if (task.portalMissionId() == null || task.portalEmployeeId() == null) {
             return false;
         }
         String description = answer == null ? "" : answer;
         try {
-            portal.completeTask(task.portalMissionId(), task.portalEmployeeId(), description);
+            portal.completeTask(task.portalMissionId(), task.portalEmployeeId(), description, files);
         } catch (RuntimeException e) {
             log.warn("cannot write the answer of task {} back to the portal: {}", task.taskId(),
                     e.getMessage());

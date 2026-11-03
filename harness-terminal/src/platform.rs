@@ -327,14 +327,57 @@ pub struct ModelConfig {
 }
 
 /// The answer the agent posts back.
-pub fn task_result(answer: &str, transcript: Value, touched: Vec<String>, error: Option<String>) -> Value {
+/// What the terminal reports back: the answer, and the files the work produced.
+///
+/// <p>The files are in here because they are the deliverable. The task list lives in the portal,
+/// and a person reads it there - so a demo that stays on the machine is a demo nobody sees.
+pub fn task_result(
+    answer: &str,
+    transcript: Value,
+    touched: Vec<String>,
+    files: Vec<(String, String)>,
+    error: Option<String>,
+) -> Value {
     json!({
         "status": if error.is_some() { "failed" } else { "done" },
         "answer": answer,
         "transcript": transcript,
         "touched": touched,
+        "files": files
+            .iter()
+            .map(|(path, content)| json!({"path": path, "content": base64(content)}))
+            .collect::<Vec<Value>>(),
         "error": error,
     })
+}
+
+/// The content of a file, base64 encoded.
+///
+/// <p>Base64 because the deliverable may be a binary file, and a JSON body that cannot carry
+/// a byte is a body that cannot carry the work.
+fn base64(content: &str) -> String {
+    const ALPHABET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let bytes = content.as_bytes();
+    let mut out = String::with_capacity((bytes.len() + 2) / 3 * 4);
+    for chunk in bytes.chunks(3) {
+        let b0 = chunk[0] as u32;
+        let b1 = *chunk.get(1).unwrap_or(&0) as u32;
+        let b2 = *chunk.get(2).unwrap_or(&0) as u32;
+        let triple = (b0 << 16) | (b1 << 8) | b2;
+        out.push(ALPHABET[(triple >> 18) as usize & 0x3f] as char);
+        out.push(ALPHABET[(triple >> 12) as usize & 0x3f] as char);
+        out.push(if chunk.len() > 1 {
+            ALPHABET[(triple >> 6) as usize & 0x3f] as char
+        } else {
+            '='
+        });
+        out.push(if chunk.len() > 2 {
+            ALPHABET[triple as usize & 0x3f] as char
+        } else {
+            '='
+        });
+    }
+    out
 }
 
 #[cfg(test)]

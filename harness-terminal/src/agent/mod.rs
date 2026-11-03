@@ -152,6 +152,25 @@ fn render_result(call: &crate::tools::ToolCall, result: &ToolResult) -> String {
     )
 }
 
+/// How much of the model's own thinking goes back into the conversation.
+///
+/// <p>The thinking has to go back: a model that cannot see where it was starts over, and a
+/// model that keeps starting over never gets anywhere. But it does not all have to: a
+/// reasoning model can spend 46 000 tokens on one thought, and forty turns of that is more
+/// than the context holds. The tail is what the model continues from.
+const MAX_THINKING_CHARS: usize = 24_000;
+
+fn cap_thinking(thinking: &str) -> String {
+    if thinking.chars().count() <= MAX_THINKING_CHARS {
+        return thinking.to_string();
+    }
+    let all: Vec<char> = thinking.chars().collect();
+    let start = all.len().saturating_sub(MAX_THINKING_CHARS);
+    let mut out: String = all[start..].iter().collect();
+    out.insert_str(0, "... [前文省略]\n\n");
+    out
+}
+
 /// How much of a tool result goes back into the conversation.
 ///
 /// <p>A file read is worth thousands of tokens, and a model that reads thirty files would
@@ -276,7 +295,7 @@ impl Agent {
                 }
                 Turn::Truncated(partial) => {
                     cut_off_in_a_row += 1;
-                    if cut_off_in_a_row > 3 {
+                    if cut_off_in_a_row > 6 {
                         self.transcript.push(AgentEvent::Finished {
                             steps,
                             tokens: self.tokens(),
@@ -317,8 +336,9 @@ impl Agent {
                     match self.context.last_mut() {
                         Some(last) if last.role == "assistant" => {
                             last.content.push_str(&partial);
+                            last.content = cap_thinking(&last.content);
                         }
-                        _ => self.context.push(Message::assistant(partial)),
+                        _ => self.context.push(Message::assistant(cap_thinking(&partial))),
                     }
                     if self.tokens() > self.config.max_context_tokens {
                         let answer = self.summary_of_the_work("上下文预算用完了");

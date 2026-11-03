@@ -1,5 +1,7 @@
 package com.fuao.fajxc.dao.harness;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +15,7 @@ import org.hibernate.Transaction;
 
 import com.fuao.fajxc.util.BaseDao;
 import com.fuao.fajxc.util.HarnessJson;
+import com.fuao.fajxc.vo.CommonScfjb;
 import com.fuao.fajxc.vo.Employee;
 import com.fuao.fajxc.vo.Mission;
 import com.fuao.fajxc.vo.MissionEmp;
@@ -133,15 +136,16 @@ public class HarnessTaskDao extends BaseDao {
     }
 
     /**
-     * The digital employee takes the task.
+     * The task has been handed to the digital employee - but it has not been taken yet.
      *
-     * <p>This is the portal's "handout": a row in {@code mission_emp} with status 1 (处理中),
-     * and the assignment marked as handed over so it is not offered twice.
+     * <p>This is the portal's own first step: a row in the employee's todo with the status
+     * "not accepted yet". A human employee sees the accept button on it and clicks it; the
+     * digital employee takes it when its machine claims the work, and the row moves on.
      *
      * <p>Doing it twice is not an error: the platform polls, and a poll that arrives after the
      * answer would otherwise create a second todo row.
      */
-    public Map accept(String missionId, String employeeId) {
+    public Map handout(String missionId, String employeeId) {
         Map result = new HashMap();
         Session session = getSession();
         Transaction transaction = null;
@@ -156,7 +160,7 @@ public class HarnessTaskDao extends BaseDao {
                     .list();
             if (existing != null && !existing.isEmpty()) {
                 result.put("ok", Boolean.TRUE);
-                result.put("alreadyAccepted", Boolean.TRUE);
+                result.put("alreadyHanded", Boolean.TRUE);
                 result.put("missionEmpId", String.valueOf(((MissionEmp) existing.get(0)).getId()));
                 return result;
             }
@@ -175,35 +179,21 @@ public class HarnessTaskDao extends BaseDao {
             MissionEmp me = new MissionEmp();
             me.setMission(mission);
             me.setEmployee(employee);
-            me.setStatus("1");
+            me.setStatus("0");
             me.setBuildTime(new Date());
-            me.setReceiveTime(new Date());
             me.setSbh(java.util.UUID.randomUUID().toString());
             session.save(me);
-
-            // The assignment is handed over now; the flag is what keeps the platform from
-            // offering the same work again.
-            List assignments = session.createQuery("from NewTask t where t.flag = 0 and t.emp.id = ?")
-                    .setInteger(0, empKey.intValue()).list();
-            for (int i = 0; assignments != null && i < assignments.size(); i++) {
-                NewTask assignment = (NewTask) assignments.get(i);
-                if (assignment.getFunction() != null
-                        && mission.getTmp2() != null
-                        && mission.getTmp2().equals(String.valueOf(assignment.getFunction().getId()))) {
-                    assignment.setFlag(Integer.valueOf(1));
-                    session.update(assignment);
-                }
-            }
             session.flush();
             transaction.commit();
             transaction = null;
 
             result.put("ok", Boolean.TRUE);
             result.put("missionEmpId", String.valueOf(me.getId()));
+            result.put("status", "0");
             return result;
         } catch (Exception e) {
             rollback(transaction);
-            logger.error("cannot accept mission " + missionId, e);
+            logger.error("cannot hand the mission " + missionId + " to the employee", e);
             result.put("ok", Boolean.FALSE);
             result.put("error", e.getMessage());
             return result;
@@ -211,12 +201,13 @@ public class HarnessTaskDao extends BaseDao {
     }
 
     /**
-     * The digital employee finished the task.
+     * The digital employee takes the task.
      *
-     * <p>The feedback text is what a human reads when they ask "what did the agent actually
-     * do?" - so it is the agent's own answer, not a summary written by the platform.
+     * <p>This is the portal's "accept": the row in the employee's todo moves to "being worked
+     * on" and gets the moment it was received - the same state, and the same click, that a
+     * human makes.
      */
-    public Map complete(String missionId, String employeeId, String describe, String attachmentId) {
+    public Map accept(String missionId, String employeeId) {
         Map result = new HashMap();
         Session session = getSession();
         Transaction transaction = null;
@@ -231,7 +222,73 @@ public class HarnessTaskDao extends BaseDao {
                     .list();
             if (rows == null || rows.isEmpty()) {
                 result.put("ok", Boolean.FALSE);
-                result.put("error", "the task was never accepted, so there is nothing to complete");
+                result.put("error", "the task was never handed to the employee");
+                return result;
+            }
+
+            transaction = session.beginTransaction();
+            MissionEmp me = (MissionEmp) rows.get(0);
+            if (!"2".equals(me.getStatus())) {
+                me.setStatus("1");
+                me.setReceiveTime(new Date());
+                session.update(me);
+            }
+            session.flush();
+            transaction.commit();
+            transaction = null;
+
+            result.put("ok", Boolean.TRUE);
+            result.put("missionEmpId", String.valueOf(me.getId()));
+            result.put("status", me.getStatus());
+            return result;
+        } catch (Exception e) {
+            rollback(transaction);
+            logger.error("cannot accept mission " + missionId, e);
+            result.put("ok", Boolean.FALSE);
+            result.put("error", e.getMessage());
+            return result;
+        }
+    }
+
+
+    /**
+     * The digital employee finished the task.
+     *
+     * <p>The feedback text is what a human reads when they ask "what did the agent actually
+     * do?" - so it is the agent's own answer, not a summary written by the platform.
+     */
+    /**
+     * The work is done: the description is written, and what was produced is attached.
+     *
+     * <p>The description is the digital employee's own words - a human reading the employee's
+     * todo asks "what did it actually do?", and a summary written by the platform would be
+     * the platform's opinion rather than the employee's report.
+     *
+     * <p>The files are the deliverable. They are written into the portal's own upload
+     * directory and attached to the todo the same way a human's attachments are: one row in
+     * {@code common_scfjb} per file, all of them naming the same business id, and that id
+     * stored in {@code complete_fjbs}. The todo page then shows them exactly as it shows
+     * the files a human attached.
+     *
+     * @param files the produced files: the name the employee knows them by, and their
+     *               content (base64, so that a binary file survives)
+     */
+    public Map complete(String missionId, String employeeId, String describe, List files) {
+        Map result = new HashMap();
+        Session session = getSession();
+        Transaction transaction = null;
+        try {
+            Integer missionKey = Integer.valueOf(missionId);
+            Integer empKey = Integer.valueOf(employeeId);
+
+            List rows = session.createQuery(
+                    "from MissionEmp me where me.mission.taskId = ? and me.employee.id = ?")
+                    .setInteger(0, missionKey.intValue())
+                    .setInteger(1, empKey.intValue())
+                    .list();
+            if (rows == null || rows.isEmpty()) {
+                result.put("ok", Boolean.FALSE);
+                result.put("error", "the task was never handed to the employee");
                 return result;
             }
 
@@ -240,12 +297,41 @@ public class HarnessTaskDao extends BaseDao {
             me.setStatus("2");
             me.setCompleteTime(new Date());
             me.setCompleteDescribe(describe == null ? "" : describe);
-            if (attachmentId != null && attachmentId.trim().length() > 0) {
-                me.setCompleteFjbs(attachmentId.trim());
+
+            // The attachments share one business id: the todo points at it, and every file
+            // names it. That is how the portal's own attachments work.
+            String businessId = java.util.UUID.randomUUID().toString();
+            int attached = 0;
+            if (files != null) {
+                for (int i = 0; i < files.size(); i++) {
+                    Map file = (Map) files.get(i);
+                    Object rawName = file.get("name") != null ? file.get("name") : file.get("path");
+                    String name = rawName == null ? "" : String.valueOf(rawName);
+                    String content = file.get("content") == null ? "" : String.valueOf(file.get("content"));
+                    if (name.trim().length() == 0 || content.trim().length() == 0) {
+                        continue;
+                    }
+                    String stored = storeAttachment(name, content);
+                    if (stored == null) {
+                        continue;
+                    }
+                    CommonScfjb scfjb = new CommonScfjb();
+                    scfjb.setFjmc(name);
+                    scfjb.setFjlj(stored);
+                    scfjb.setFjhz(suffixOf(name));
+                    scfjb.setSbh(java.util.UUID.randomUUID().toString());
+                    scfjb.setFbsbh(businessId);
+                    scfjb.setTmp("MissionEmp");
+                    scfjb.setBuildTime(new Date());
+                    session.save(scfjb);
+                    attached++;
+                }
+            }
+            if (attached > 0) {
+                me.setCompleteFjbs(businessId);
             }
             session.update(me);
 
-            // The task itself is finished as well - the status the task list shows.
             Mission mission = me.getMission();
             if (mission != null && !"2".equals(mission.getStatus())) {
                 mission.setStatus("2");
@@ -257,6 +343,11 @@ public class HarnessTaskDao extends BaseDao {
 
             result.put("ok", Boolean.TRUE);
             result.put("missionEmpId", String.valueOf(me.getId()));
+            result.put("status", me.getStatus());
+            result.put("attached", String.valueOf(attached));
+            if (attached > 0) {
+                result.put("attachmentId", businessId);
+            }
             return result;
         } catch (Exception e) {
             rollback(transaction);
@@ -266,6 +357,53 @@ public class HarnessTaskDao extends BaseDao {
             return result;
         }
     }
+
+    /**
+     * Writes one file into the portal's upload directory and returns the path it is served at.
+     *
+     * <p>The same directory the portal's own upload action uses ({@code <webapp>/uploads}),
+     * and the same shape of path ({@code /uploads/<uuid><ext>}), so the file is downloadable
+     * by the same link a human's attachment is.
+     */
+    private String storeAttachment(String name, String base64) {
+        try {
+            javax.servlet.ServletContext context =
+                    org.apache.struts2.ServletActionContext.getServletContext();
+            if (context == null) {
+                return null;
+            }
+            String savePath = context.getRealPath("/");
+            if (savePath == null) {
+                return null;
+            }
+            savePath = savePath + "uploads/";
+            File dir = new File(savePath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            byte[] bytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64);
+            String stored = java.util.UUID.randomUUID().toString() + suffixOf(name);
+            File file = new File(savePath + stored);
+            FileOutputStream out = new FileOutputStream(file);
+            try {
+                out.write(bytes);
+                out.flush();
+            } finally {
+                out.close();
+            }
+            return "/uploads/" + stored;
+        } catch (Exception e) {
+            logger.error("cannot store the attachment " + name, e);
+            return null;
+        }
+    }
+
+    /** The suffix of a file name, e.g. ".html". */
+    private static String suffixOf(String name) {
+        int dot = name.lastIndexOf('.');
+        return dot < 0 ? "" : name.substring(dot);
+    }
+
 
     /**
      * Publishes a task for a digital employee.

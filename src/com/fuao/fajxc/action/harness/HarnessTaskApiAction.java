@@ -1,5 +1,6 @@
 package com.fuao.fajxc.action.harness;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,32 @@ public class HarnessTaskApiAction {
         }
     }
 
+    /**
+     * The task has been handed to the digital employee.
+     *
+     * <p>This is the portal's first step: the task appears in the employee's own todo with
+     * the status "not accepted yet". The employee accepts it when its machine claims the
+     * work.
+     */
+    public String handout() {
+        reset();
+        try {
+            Map result = harnessTaskDao.handout(parameter("missionId"), parameter("employeeId"));
+            if (!Boolean.TRUE.equals(result.get("ok"))) {
+                error.put("code", "TASK_HANDOUT_FAILED");
+                error.put("message", String.valueOf(result.get("error")));
+                return "harnessRejected";
+            }
+            payload.putAll(result);
+            return "success";
+        } catch (Exception e) {
+            logger.error("cannot hand the task " + parameter("missionId") + " to the employee", e);
+            error.put("code", "TASK_HANDOUT_FAILED");
+            error.put("message", e.getMessage());
+            return "harnessRejected";
+        }
+    }
+
     /** The digital employee takes the task. */
     public String accept() {
         reset();
@@ -98,7 +125,7 @@ public class HarnessTaskApiAction {
         reset();
         try {
             Map result = harnessTaskDao.complete(parameter("missionId"), parameter("employeeId"),
-                    parameter("describe"), parameter("attachmentId"));
+                    parameter("describe"), fileList());
             if (!Boolean.TRUE.equals(result.get("ok"))) {
                 error.put("code", "TASK_COMPLETE_FAILED");
                 error.put("message", String.valueOf(result.get("error")));
@@ -139,6 +166,36 @@ public class HarnessTaskApiAction {
             error.put("message", e.getMessage());
             return "harnessRejected";
         }
+    }
+
+    /**
+     * The files the digital employee produced.
+     *
+     * <p>They arrive as a list of {name, content}, and the content is base64 so that a
+     * binary file survives the trip.
+     */
+    private List fileList() {
+        List files = new ArrayList();
+        Object raw = parameterObject("files");
+        if (raw instanceof List) {
+            for (int i = 0; i < ((List) raw).size(); i++) {
+                Object item = ((List) raw).get(i);
+                if (item instanceof Map) {
+                    files.add(item);
+                }
+            }
+        }
+        return files;
+    }
+
+    /** A parameter that is a list or a map, rather than a string. */
+    private Object parameterObject(String name) {
+        Map parameters = (Map) org.apache.struts2.ServletActionContext.getRequest().getAttribute(
+                "harness.parameters");
+        if (parameters != null && parameters.get(name) != null) {
+            return parameters.get(name);
+        }
+        return null;
     }
 
     /**
