@@ -238,6 +238,43 @@ impl PlatformClient {
         .map(|_| ())
     }
 
+    /// The lessons the platform has adopted for this terminal.
+    ///
+    /// <p>The harness lives on this machine, but the lessons about it are decided on the
+    /// platform - so they travel the same way the skills do.
+    pub async fn harness_lessons(&self, terminal_id: &str) -> Result<Vec<Lesson>> {
+        let answer = self
+            .send("GET", &format!("/api/harness/terminal/{terminal_id}/harness"), None)
+            .await?;
+        let mut out = Vec::new();
+        if let Some(list) = answer.get("lessons").and_then(Value::as_array) {
+            for item in list {
+                let Some(id) = item.get("id").and_then(Value::as_str) else {
+                    continue;
+                };
+                let component = item
+                    .get("component")
+                    .and_then(Value::as_str)
+                    .unwrap_or("memory")
+                    .to_string();
+                let text = item.get("text").and_then(Value::as_str).unwrap_or("").to_string();
+                if text.trim().is_empty() {
+                    continue;
+                }
+                out.push(Lesson {
+                    id: id.to_string(),
+                    component,
+                    text,
+                });
+            }
+        }
+        Ok(out)
+    }
+
+    /// The lessons the platform has adopted for this terminal.
+    ///
+    /// <p>The harness lives on this machine, but the lessons about it are decided on the
+    /// platform - so they travel the same way the skills do.
     /// The skills this terminal has been given.
     ///
     /// The platform answers with the skill's text, its digest and its signature. The terminal
@@ -324,6 +361,16 @@ pub struct ModelConfig {
     /// make it act sooner - it makes it think the same tokens again from the start, and the
     /// file never appears.
     pub max_tokens: Option<u32>,
+}
+
+/// A lesson the platform adopted: what the agent learned, and where it goes.
+#[derive(Debug, Clone)]
+pub struct Lesson {
+    pub id: String,
+    /// Which part of the harness it belongs to: systemprompt, guardrails, tool_guidance, memory.
+    pub component: String,
+    /// The text that goes into that part.
+    pub text: String,
 }
 
 /// The answer the agent posts back.

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +59,7 @@ public class ConsoleController {
     private final com.fuao.harness.platform.security.ClientAuthenticator authenticator;
     private final com.fuao.harness.platform.service.PrincipalService principalService;
     private final com.fuao.harness.platform.service.TaskProposalService proposals;
+    private final com.fuao.harness.platform.service.HarnessLessonService lessons;
     private final com.fuao.harness.platform.security.AuthContext authContext;
 
     public ConsoleController(AgentService agents, GrantService grants,
@@ -72,11 +74,13 @@ public class ConsoleController {
                              com.fuao.harness.platform.service.OnboardingService onboarding,
                              com.fuao.harness.platform.service.BrainService brain,
                              com.fuao.harness.platform.service.TaskProposalService proposals,
+                             com.fuao.harness.platform.service.HarnessLessonService lessons,
                              com.fuao.harness.platform.security.AuthContext authContext) {
         this.agents = agents;
         this.onboarding = onboarding;
         this.brain = brain;
         this.proposals = proposals;
+        this.lessons = lessons;
         this.authContext = authContext;
         this.grants = grants;
         this.approvals = new ApprovalServiceHolder(approvals);
@@ -755,6 +759,79 @@ public class ConsoleController {
         out.put("startedAt", task.startedAt() == null ? "" : task.startedAt().toString());
         out.put("finishedAt", task.finishedAt() == null ? "" : task.finishedAt().toString());
         return out;
+    }
+
+    // ------------------------------------------------------------------ harness lessons
+
+    /**
+     * The lessons the harness has learned.
+     *
+     * <p>A lesson is a proposal until a natural human adopts it, and a candidate until the
+     * next task shows whether it helped. The harness decides how the agent works; the policy
+     * decides what it may do - and the difference between the two is what a human keeps an
+     * eye on.
+     */
+    @GetMapping("/harness-lesson")
+    public List<Map<String, Object>> listLessons(@RequestParam(required = false) String status,
+                                                 @RequestParam(required = false) String agentId) {
+        return lessons.list(status, agentId).stream()
+                .map(l -> Maps.of(
+                        "lessonId", l.lessonId(),
+                        "agentId", l.agentId() == null ? "" : l.agentId(),
+                        "cue", l.cue(),
+                        "lesson", l.lesson(),
+                        "component", l.component(),
+                        "evidence", l.evidence(),
+                        "confidence", l.confidence(),
+                        "status", l.status(),
+                        "taskId", l.taskId() == null ? "" : l.taskId(),
+                        "createdAt", String.valueOf(l.createdAt())))
+                .toList();
+    }
+
+    public record LessonRequest(String reason) {
+    }
+
+    /** Reflects on a run and proposes what it taught. */
+    @PostMapping("/harness-lesson")
+    public Map<String, Object> proposeLesson(@RequestParam String taskId) {
+        com.fuao.harness.platform.repo.TaskRepository.TaskRow task =
+                tasks.get(taskId);
+        if (task == null) {
+            throw new IllegalArgumentException("no such task: " + taskId);
+        }
+        String agentId = terminals.agentIdOf(task.terminalId());
+        com.fuao.harness.platform.repo.HarnessLessonRepository.LessonRow lesson =
+                lessons.reflect(taskId, agentId, task.terminalId());
+        if (lesson == null) {
+            return Maps.of("proposed", false, "note", "这一趟没教出什么东西来");
+        }
+        return Maps.of("proposed", true, "lessonId", lesson.lessonId(),
+                "cue", lesson.cue(), "lesson", lesson.lesson(), "component", lesson.component());
+    }
+
+    /** Adopts a lesson: it goes in as a candidate, and the next task is the probe. */
+    @PutMapping("/harness-lesson/{lessonId}/adopt")
+    public Map<String, Object> adoptLesson(@PathVariable String lessonId,
+                                           @RequestBody(required = false) LessonRequest request) {
+        com.fuao.harness.platform.repo.HarnessLessonRepository.LessonRow lesson =
+                lessons.adopt(lessonId, request == null ? null : request.reason());
+        return Maps.of("lessonId", lesson.lessonId(), "status", lesson.status());
+    }
+
+    @PutMapping("/harness-lesson/{lessonId}/reject")
+    public Map<String, Object> rejectLesson(@PathVariable String lessonId,
+                                            @RequestBody(required = false) LessonRequest request) {
+        com.fuao.harness.platform.repo.HarnessLessonRepository.LessonRow lesson =
+                lessons.reject(lessonId, request == null ? null : request.reason());
+        return Maps.of("lessonId", lesson.lessonId(), "status", lesson.status());
+    }
+
+    /** What the terminal should have in its harness: the lessons that are in force. */
+    @GetMapping("/terminal/{terminalId}/harness")
+    public Map<String, Object> terminalHarness(@PathVariable String terminalId) {
+        String agentId = terminals.agentIdOf(terminalId);
+        return Map.of("terminalId", terminalId, "lessons", lessons.forTerminal(terminalId, agentId));
     }
 
     // ------------------------------------------------------------------ audit

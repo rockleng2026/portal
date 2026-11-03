@@ -599,6 +599,11 @@ async fn serve(args: ServeArgs) -> Result<()> {
         .skills
         .clone()
         .unwrap_or_else(crate::skills::default_skills_dir);
+    // The harness: the files that decide how the agent works. It sits beside the skills, and
+    // it is seeded on the first run, so a machine that has never had one gets it for free.
+    let harness_dir = harness_dir(&identity_dir);
+    let harness = crate::harness::Harness::load_or_seed(&harness_dir)?;
+    sync_lessons(&platform, &platform_config.terminal_id, &harness).await;
     let mut library = match sync_skills(&platform, &platform_config.terminal_id, &skills_dir).await {
         Ok(report) => {
             if !report.installed.is_empty() || !report.removed.is_empty() {
@@ -671,6 +676,10 @@ async fn serve(args: ServeArgs) -> Result<()> {
                 }
                 Err(error) => eprintln!("heartbeat failed: {error:#}"),
             }
+            // The harness changes while the machine is running too: a lesson is adopted, or
+            // rolled back after its probe. The copy on the disk follows, the same way the
+            // grant does.
+            sync_lessons(&platform, &platform_config.terminal_id, &harness).await;
             // The shelf changes while the machine is running: a skill is published, withdrawn
             // or upgraded. The copy on the disk follows, the same way the grant does.
             match sync_skills(&platform, &platform_config.terminal_id, &skills_dir).await {
@@ -743,6 +752,7 @@ async fn serve(args: ServeArgs) -> Result<()> {
             &prompt,
             &args,
             &brain,
+            &harness,
             &library,
             workspace.clone(),
             tools.clone(),
@@ -1024,6 +1034,7 @@ async fn answer(
     prompt: &str,
     args: &ServeArgs,
     brain: &Brain,
+    harness: &crate::harness::Harness,
     skills: &SkillLibrary,
     workspace: Arc<Workspace>,
     tools: ToolRegistry,
@@ -1072,7 +1083,8 @@ async fn answer(
             // The skills that match the request go into the system prompt. They are content,
             // not authority: whatever they say, every action still goes through the policy.
             system_prompt: {
-                let mut system = crate::agent::DEFAULT_SYSTEM_PROMPT.to_string();
+                // The harness decides how the agent works; the skills are added on top of it.
+                let mut system = harness.system_prompt();
                 let skill_text = skills.render(prompt, 3);
                 if !skill_text.is_empty() {
                     system.push_str("\n\n");
@@ -1116,6 +1128,44 @@ fn collect_deliverables(workspace: &Workspace, touched: &[String]) -> Vec<(Strin
         out.push((path.clone(), content));
     }
     out
+}
+
+/// Where the harness lives on this machine.
+fn harness_dir(identity_dir: &std::path::Path) -> PathBuf {
+    identity_dir
+        .parent()
+        .map(|home| home.join("harness"))
+        .unwrap_or_else(|| PathBuf::from("harness"))
+}
+
+/// Fetches the lessons the platform adopted and writes them into the harness.
+///
+/// <p>The harness is the agent's own copy; the lessons are decided on the platform, so they
+/// travel the way the skills do. A lesson that is already in the file is not added twice.
+async fn sync_lessons(
+    platform: &crate::platform::PlatformClient,
+    terminal_id: &str,
+    harness: &crate::harness::Harness,
+) {
+    let lessons = match platform.harness_lessons(terminal_id).await {
+        Ok(lessons) => lessons,
+        Err(error) => {
+            eprintln!("cannot fetch the lessons: {error:#}");
+            return;
+        }
+    };
+    let pairs: Vec<(String, String)> = lessons
+        .iter()
+        .map(|lesson| (lesson.component.clone(), lesson.text.clone()))
+        .collect();
+    match harness.set_lessons(&pairs) {
+        Ok(count) => {
+            if count > 0 {
+                println!("harness: {count} lesson(s) in the memory");
+            }
+        }
+        Err(error) => eprintln!("cannot write the lessons: {error:#}"),
+    }
 }
 
 /// How often the terminal says it is alive (03 §3.1: heartbeat 10s).

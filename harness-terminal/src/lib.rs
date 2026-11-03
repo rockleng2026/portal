@@ -19,6 +19,7 @@ pub mod agent;
 pub mod cli;
 pub mod device;
 pub mod grant;
+pub mod harness;
 pub mod mcp;
 pub mod model;
 pub mod platform;

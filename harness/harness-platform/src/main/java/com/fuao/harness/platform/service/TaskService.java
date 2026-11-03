@@ -27,13 +27,18 @@ public class TaskService {
     private final AuditService audit;
     private final AuthContext authContext;
     private final PortalTaskService portalTasks;
+    private final HarnessLessonService harnessLessons;
+    private final TerminalService terminals;
 
     public TaskService(TaskRepository tasks, AuditService audit, AuthContext authContext,
-                       PortalTaskService portalTasks) {
+                       PortalTaskService portalTasks, HarnessLessonService harnessLessons,
+                       TerminalService terminals) {
         this.tasks = tasks;
         this.audit = audit;
         this.authContext = authContext;
         this.portalTasks = portalTasks;
+        this.harnessLessons = harnessLessons;
+        this.terminals = terminals;
     }
 
     /** Creates a request for a terminal. Only a natural human may. */
@@ -105,6 +110,16 @@ public class TaskService {
             TaskRepository.TaskRow task = tasks.find(taskId).orElse(null);
             if (task != null && task.portalMissionId() != null) {
                 portalTasks.deliverBack(task, answer, files);
+            }
+            // And the reflection: what this run teaches the harness. The lesson is a proposal
+            // until a human adopts it - the harness decides how the agent works, the policy
+            // decides what it may do, and a human keeps an eye on the difference.
+            try {
+                harnessLessons.reflect(taskId, terminals.agentIdOf(task == null ? null : task.terminalId()),
+                        task == null ? null : task.terminalId());
+            } catch (RuntimeException e) {
+                // A reflection that fails must not fail the task: the work is done either way.
+                System.out.println("cannot reflect on the task " + taskId + ": " + e.getMessage());
             }
         }
         return ok;

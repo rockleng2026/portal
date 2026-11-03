@@ -262,7 +262,7 @@ function confirmBox(title, message, onOk) {
 const state = {
   agents: [], terminals: [], approvals: [], grants: [], switches: [], events: [], audit: [], tasks: [],
   skills: [], skillInstalls: [], skillRegistries: [], skillCategories: [],
-  skillRegistryResults: [], proposals: [],
+  skillRegistryResults: [], proposals: [], lessons: [],
   capabilities: [],
 };
 
@@ -315,6 +315,9 @@ async function loadSkills() {
   try {
     state.proposals = (await api('GET', '/api/harness/task-proposal')) || [];
   } catch (e) { state.proposals = []; }
+  try {
+    state.lessons = (await api('GET', '/api/harness/harness-lesson')) || [];
+  } catch (e) { state.lessons = []; }
 }
 
 /** Reloads the market and puts it on the screen. */
@@ -327,6 +330,7 @@ async function loadSkillsAndRender() {
 
 function renderAll() {
   renderOverview();
+  renderLessons();
   renderProposals();
   renderAgents();
   renderTerminals();
@@ -384,6 +388,35 @@ function renderOverview() {
  *
  * The two buttons are the whole governance: the brain may ask, a person may decide.
  */
+/**
+ * The lessons the harness has learned, and what is proposed with them.
+ *
+ * The button says what it does: a lesson goes in as a candidate and the next task is the
+ * probe - so "采纳" is not the same as "生效".
+ */
+function renderLessons() {
+  const rows = state.lessons || [];
+  const statusNames = {
+    proposed: '待定', candidate: '候选（下一趟验证）',
+    confirmed: '已生效', rolled_back: '已撤回', rejected: '已否',
+  };
+  $('#lessonList').innerHTML = rows.length ? rows.map(l =>
+    '<div class="row">'
+    + '<span class="dot ' + (l.status === 'confirmed' ? 'ok' : l.status === 'proposed' ? 'warn' : 'grey') + '"></span>'
+    + '<span class="grow">'
+    + '<span class="label">' + esc(l.lesson) + '</span>'
+    + '<span class="muted"> — 情形：' + esc(l.cue)
+    + '｜组件：' + esc(l.component) + '｜证据：' + esc(l.evidence) + '</span>'
+    + '</span>'
+    + '<span class="tag grey">' + esc(statusNames[l.status] || l.status) + '</span>'
+    + (l.status === 'proposed'
+      ? '<button class="tiny" data-act="lesson-adopt" data-id="' + esc(l.lessonId) + '">采纳</button>'
+        + '<button class="tiny" data-act="lesson-reject" data-id="' + esc(l.lessonId) + '">否</button>'
+      : '')
+    + '</div>').join('')
+    : '<div class="empty">还没有 lesson。做几个任务，平台会看它们教出了什么。</div>';
+}
+
 function renderProposals() {
   const rows = state.proposals || [];
   $('#proposalList').innerHTML = rows.length ? rows.map(p =>
@@ -1253,6 +1286,20 @@ function bindEvents() {
       else if (act === 'reject') { decideApproval(id, 'rejected'); return; }
       else if (act === 'grant-revoke') { await api('POST', '/api/harness/grant/' + id + '/revoke', { reason: '控制台吊销' }); toast('已吊销授权', 'ok'); }
       else if (act === 'switch-release') { await api('DELETE', '/api/harness/killswitch/' + id + '?reason=' + encodeURIComponent('控制台解除')); toast('已解除', 'ok'); }
+      else if (act === 'lesson-adopt') {
+        await api('PUT', '/api/harness/harness-lesson/' + encodeURIComponent(id) + '/adopt',
+          { reason: '控制台采纳' });
+        toast('已采纳，下一趟任务验证它有没有用', 'ok');
+        await loadSkillsAndRender();
+        return;
+      }
+      else if (act === 'lesson-reject') {
+        await api('PUT', '/api/harness/harness-lesson/' + encodeURIComponent(id) + '/reject',
+          { reason: '控制台否决' });
+        toast('已否', 'ok');
+        await loadSkillsAndRender();
+        return;
+      }
       else if (act === 'proposal-publish') {
         await api('POST', '/api/harness/task-proposal/' + encodeURIComponent(id) + '/publish',
           { reason: '控制台发布' });

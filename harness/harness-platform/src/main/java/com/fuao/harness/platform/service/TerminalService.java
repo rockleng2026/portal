@@ -257,6 +257,20 @@ public class TerminalService {
      *
      * @return the terminal id, or {@code null} when the agent has no terminal
      */
+    /**
+     * The agent a terminal speaks for.
+     *
+     * @return the agent id, or null when the terminal is not bound to one
+     */
+    public String agentIdOf(String terminalId) {
+        if (terminalId == null || terminalId.isBlank()) {
+            return null;
+        }
+        return terminals.findById(terminalId)
+                .map(t -> t.agentId())
+                .orElse(null);
+    }
+
     public String liveTerminalOf(String agentId) {
         List<PolicyInputs.TerminalRow> mine = terminals.list(500).stream()
                 .filter(row -> agentId.equals(row.agentId()))
