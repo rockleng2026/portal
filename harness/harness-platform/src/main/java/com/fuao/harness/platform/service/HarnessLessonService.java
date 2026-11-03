@@ -69,6 +69,9 @@ public class HarnessLessonService {
         if (observation == null) {
             return null;
         }
+        // What the run did is recorded first: the lesson rests on it, and the probe needs it
+        // to judge whether the lesson helped.
+        reflection.record(observation);
         TaskReflectionService.Candidate candidate = reflection.lessonFor(observation);
         if (candidate == null) {
             // Nothing to learn from this one: the run went well and there is nothing to change.
